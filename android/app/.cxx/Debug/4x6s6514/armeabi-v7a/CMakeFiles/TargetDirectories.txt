@@ -1,0 +1,2 @@
+/Volumes/Project/mycoilpoll_metamask/android/app/.cxx/Debug/4x6s6514/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Volumes/Project/mycoilpoll_metamask/android/app/.cxx/Debug/4x6s6514/armeabi-v7a/CMakeFiles/rebuild_cache.dir

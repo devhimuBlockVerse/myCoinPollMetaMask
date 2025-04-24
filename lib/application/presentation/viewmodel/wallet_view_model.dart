@@ -165,9 +165,14 @@ class WalletViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      // If appKitModal is still not initialized after init, return false
+      if (appKitModal == null) {
+        print('Failed to initialize appKitModal');
+        return false;
+      }
       await appKitModal!.openModalView();
-
       return _isConnected;
+
      } catch (e) {
       print('Error connecting to wallet: $e');
       rethrow;
@@ -180,15 +185,13 @@ class WalletViewModel extends ChangeNotifier {
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet() async {
     if (!_isConnected) return;
-    //
-    // _isLoading = true;
-    // notifyListeners();
 
     try {
       await appKitModal!.disconnect();
-
-     await reset();
-
+      await reset();
+      appKitModal = null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
     } catch (e) {
       print('Error disconnecting wallet: $e');
       rethrow;

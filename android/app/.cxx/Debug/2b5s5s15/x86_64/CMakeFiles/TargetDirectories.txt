@@ -1,0 +1,2 @@
+/Volumes/Project/mycoinpoll_metamask/android/app/.cxx/Debug/2b5s5s15/x86_64/CMakeFiles/edit_cache.dir
+/Volumes/Project/mycoinpoll_metamask/android/app/.cxx/Debug/2b5s5s15/x86_64/CMakeFiles/rebuild_cache.dir

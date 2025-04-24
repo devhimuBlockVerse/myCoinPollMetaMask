@@ -44,6 +44,7 @@ dependencies:
   shared_preferences:
   fluttertoast: ^8.2.2
   url_launcher: ^6.2.5
+  another_flushbar: ^1.12.30
 
 dev_dependencies:
   flutter_test:

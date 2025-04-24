@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
-import 'package:reown_appkit/reown_appkit.dart';
-import 'package:mycoinpoll_metamask/view/dashboard.dart';
-import 'package:mycoinpoll_metamask/view/digital_model_screen.dart';
- import 'package:reown_walletkit/reown_walletkit.dart';
-import 'dart:ui';
-import '../viewmodel/wallet_view_model.dart';
 
+import 'application/presentation/screens/dashboard.dart';
+import 'application/presentation/viewmodel/wallet_view_model.dart';
+import 'framework/utils/routes/routes.dart';
 
-import 'components/buttonComponent.dart';
 
 
 
@@ -27,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => WalletViewModel(),)
+        ChangeNotifierProvider(create: (context) => WalletViewModel(),)
       ],
 
       child: MaterialApp(
@@ -37,9 +33,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true,
         ),
-        home: const DashboardView(),
+        // home: const DashboardView(),
         // home:  DigitalModelScreen(),
-       ),
+        onGenerateRoute: Routes.generateRoute,
+        initialRoute: RoutesName.dashboard,
+
+      ),
     );
   }
 }

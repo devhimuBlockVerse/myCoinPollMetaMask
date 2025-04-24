@@ -151,7 +151,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Volumes/Project/reown_appkit_wallet_flutter/android/app/.cxx/Debug/1e6a6ba3/x86"
+			"value" : "/Volumes/Project/mycoinpoll_metamask/android/app/.cxx/Debug/1e6a6ba3/x86"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -763,7 +763,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/Volumes/Project/reown_appkit_wallet_flutter/build/app/intermediates/cxx/Debug/1e6a6ba3/obj/x86"
+			"value" : "/Volumes/Project/mycoinpoll_metamask/build/app/intermediates/cxx/Debug/1e6a6ba3/obj/x86"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1035,7 +1035,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "/Volumes/Project/reown_appkit_wallet_flutter/build/app/intermediates/cxx/Debug/1e6a6ba3/obj/x86"
+			"value" : "/Volumes/Project/mycoinpoll_metamask/build/app/intermediates/cxx/Debug/1e6a6ba3/obj/x86"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1355,7 +1355,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Volumes/Project/reown_appkit_wallet_flutter/android/app/.cxx/Debug/1e6a6ba3/x86"
+			"value" : "/Volumes/Project/mycoinpoll_metamask/android/app/.cxx/Debug/1e6a6ba3/x86"
 		},
 		{
 			"name" : "Project_IS_TOP_LEVEL",

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../framework/components/gradient_animation_button.dart';
+
 
 class EcmStakingScreen extends StatefulWidget {
   const EcmStakingScreen({super.key});
@@ -87,7 +89,42 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                     ],
                   ),
                 ),
+                SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(
+                      color: Colors.blueGrey.withOpacity(0.2),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _ecmValidityRow("Annual Return Rate", "5%"),
+                      const Divider(color: Colors.white24,thickness: 1,),
+                      _ecmValidityRow("Duration", "7 Days", highlight: true),
+                      const Divider(color: Colors.white24),
+                      _ecmValidityRow("Unlocked on", "3rd, May 2025 11:26 PM"),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
 
+                Center(
+                  child: GradientButton(
+                    text: "Stake Now",
+                    trailingIcon: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      //  Add your action here
+                      print("Button Pressed!");
+                    },
+                  ),
+                ),
                ],
             ),
           ),

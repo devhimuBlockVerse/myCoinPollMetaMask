@@ -18,6 +18,7 @@ class GradientButton extends StatefulWidget {
 class _GradientButtonState extends State<GradientButton> {
   List<Color> _colors = [
     const Color(0xFF2D8EFF),
+    const Color(0xFF0090DE),
     const Color(0xFF2EE4A4),
   ];
   int _colorIndex = 0;

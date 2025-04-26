@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../framework/utils/routes/route_names.dart';
+
 class WalletViewModel extends ChangeNotifier {
    ReownAppKitModal? appKitModal;
   String _walletAddress = '';
@@ -63,89 +65,86 @@ class WalletViewModel extends ChangeNotifier {
           showMainWallets: true,
         ),
       );
-
-    }
-
-    ///Saving User Connected Session
-    appKitModal!.onModalConnect.subscribe((session)async {
-      _isConnected = true;
-      if (appKitModal!.session != null && appKitModal!.selectedChain != null) {
-        final chainId = appKitModal!.selectedChain!.chainId;
-        print("Chain ID: $chainId");
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-        _walletAddress = appKitModal!.session!.getAddress(namespace)!;
-        await prefs.setBool('isConnected', true);
-        await prefs.setString('walletAddress', _walletAddress);
-        await prefs.setInt('chainId', int.parse(chainId));
-      }
-      notifyListeners();
-    });
-    appKitModal!.onModalUpdate.subscribe((ModalConnect? event){
-      print("Modal Update ; ${event.toString()}");
-
-      if(event != null && event.session != null){
+      await appKitModal?.init();
+      ///Saving User Connected Session
+      appKitModal!.onModalConnect.subscribe((session)async {
         _isConnected = true;
-
-        final chainId =  appKitModal!.selectedChain?.chainId;
-        if(chainId != null){
+        if (appKitModal!.session != null && appKitModal!.selectedChain != null) {
+          final chainId = appKitModal!.selectedChain!.chainId;
+          print("Chain ID: $chainId");
           final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-          final updatedAddress = event.session!.getAddress(namespace);
-
-          if(updatedAddress != null && updatedAddress != _walletAddress){
-            _walletAddress = updatedAddress;
-            print("Modal Update - New Wallet Address: $_walletAddress");
-
-          }
+          _walletAddress = appKitModal!.session!.getAddress(namespace)!;
+          await prefs.setBool('isConnected', true);
+          await prefs.setString('walletAddress', _walletAddress);
+          await prefs.setInt('chainId', int.parse(chainId));
         }
-      }else{
+        notifyListeners();
+      });
+      appKitModal!.onModalUpdate.subscribe((ModalConnect? event){
+        print("Modal Update ; ${event.toString()}");
+
+        if(event != null && event.session != null){
+          _isConnected = true;
+
+          final chainId =  appKitModal!.selectedChain?.chainId;
+          if(chainId != null){
+            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+            final updatedAddress = event.session!.getAddress(namespace);
+
+            if(updatedAddress != null && updatedAddress != _walletAddress){
+              _walletAddress = updatedAddress;
+              print("Modal Update - New Wallet Address: $_walletAddress");
+
+            }
+          }
+        }else{
+          _isConnected = false;
+          _walletAddress = '';
+          print("Modal Update - Session cleared or null");
+
+        }
+
+        notifyListeners();
+      });
+      appKitModal!.onModalDisconnect.subscribe((_)async {
         _isConnected = false;
         _walletAddress = '';
-        print("Modal Update - Session cleared or null");
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        await reset();
+        notifyListeners();
+      });
+      appKitModal!.onSessionExpireEvent.subscribe((event)async{
+        print("Session expired: ${event?.topic}");
+        _isConnected = false;
+        _walletAddress = '';
+        await reset();
+        notifyListeners();
+      });
+      appKitModal!.onSessionUpdateEvent.subscribe((event)async{
+        print("Session Update : ${event?.topic}");
 
-      }
+        final chainId = appKitModal!.selectedChain!.chainId;
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+        final updateAddress = appKitModal!.session!.getAddress(namespace)!;
 
-      notifyListeners();
-    });
-    appKitModal!.onModalDisconnect.subscribe((_)async {
-      _isConnected = false;
-      _walletAddress = '';
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-     await reset();
-      notifyListeners();
-    });
-    appKitModal!.onSessionExpireEvent.subscribe((event)async{
-      print("Session expired: ${event?.topic}");
-      _isConnected = false;
-      _walletAddress = '';
-     await reset();
-      notifyListeners();
-    });
-    appKitModal!.onSessionUpdateEvent.subscribe((event)async{
-      print("Session Update : ${event?.topic}");
+        if(appKitModal!.session != null && updateAddress != _walletAddress ){
+          _walletAddress = updateAddress;
+          print("Updated New Wallet Address: $_walletAddress");
+        }
 
-      final chainId = appKitModal!.selectedChain!.chainId;
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-      final updateAddress = appKitModal!.session!.getAddress(namespace)!;
+        try{
+          final balance = await getBalance();
+          print("Updated new Balance : $balance");
+        }catch(e){
+          print("Failed to refresh balance: $e");
+        }
 
-      if(appKitModal!.session != null && updateAddress != _walletAddress ){
-        _walletAddress = updateAddress;
-        print("Updated New Wallet Address: $_walletAddress");
-      }
+        _isConnected= true;
+        notifyListeners();
 
-      try{
-        final balance = await getBalance();
-        print("Updated new Balance : $balance");
-      }catch(e){
-        print("Failed to refresh balance: $e");
-      }
-
-      _isConnected= false;
-       notifyListeners();
-
-    });
-
-    await appKitModal!.init();
+      });
+    }
 
     if (wasConnected && savedWallet != null && savedChainId != null) {
       _isConnected = true;
@@ -157,20 +156,121 @@ class WalletViewModel extends ChangeNotifier {
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
+  // Future<bool> connectWallet(BuildContext context) async {
+  //   // if (appKitModal == null) {
+  //   //   await init(context);
+  //   // }
+  //
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     if (appKitModal != null) {
+  //       await appKitModal?.disconnect();
+  //       appKitModal = null;
+  //       notifyListeners();
+  //     }
+  //
+  //     appKitModal = ReownAppKitModal(
+  //       context: context,
+  //       projectId:
+  //       'f3d7c5a3be3446568bcc6bcc1fcc6389',
+  //       metadata: const PairingMetadata(
+  //         name: "MyWallet",
+  //         description: "Example Description",
+  //         url: 'https://example.com/',
+  //         icons: ['https://example.com/logo.png'],
+  //         redirect: Redirect(
+  //           native: 'exampleapp',
+  //           universal: 'https://reown.com/exampleapp',
+  //           linkMode: true,
+  //         ),
+  //       ),
+  //       logLevel: LogLevel.error,
+  //       enableAnalytics: true,
+  //       featuresConfig: FeaturesConfig(
+  //         email: true,
+  //         socials: [
+  //           AppKitSocialOption.Google,
+  //           AppKitSocialOption.Discord,
+  //           AppKitSocialOption.Facebook,
+  //           AppKitSocialOption.GitHub,
+  //           AppKitSocialOption.X,
+  //           AppKitSocialOption.Apple,
+  //           AppKitSocialOption.Twitch,
+  //           AppKitSocialOption.Farcaster,
+  //         ],
+  //         showMainWallets: true,
+  //       ),
+  //     );
+  //     await appKitModal?.init();
+  //
+  //     await appKitModal!.openModalView();
+  //     notifyListeners();
+  //
+  //     return _isConnected;
+  //
+  //    } catch (e) {
+  //     print('Error connecting to wallet: $e');
+  //     rethrow;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
   Future<bool> connectWallet(BuildContext context) async {
-    if (appKitModal == null) {
-      await init(context);
-    }
+    // if (appKitModal == null) {
+    //   await init(context);
+    // }
+
     _isLoading = true;
     notifyListeners();
 
     try {
-      // If appKitModal is still not initialized after init, return false
-      if (appKitModal == null) {
-        print('Failed to initialize appKitModal');
-        return false;
+      if (appKitModal == null){
+        appKitModal = ReownAppKitModal(
+          context: context,
+          projectId:
+          'f3d7c5a3be3446568bcc6bcc1fcc6389',
+          metadata: const PairingMetadata(
+            name: "MyWallet",
+            description: "Example Description",
+            url: 'https://example.com/',
+            icons: ['https://example.com/logo.png'],
+            redirect: Redirect(
+              native: 'exampleapp',
+              universal: 'https://reown.com/exampleapp',
+              linkMode: true,
+            ),
+          ),
+          logLevel: LogLevel.error,
+          enableAnalytics: true,
+          featuresConfig: FeaturesConfig(
+            email: true,
+            socials: [
+              AppKitSocialOption.Google,
+              AppKitSocialOption.Discord,
+              AppKitSocialOption.Facebook,
+              AppKitSocialOption.GitHub,
+              AppKitSocialOption.X,
+              AppKitSocialOption.Apple,
+              AppKitSocialOption.Twitch,
+              AppKitSocialOption.Farcaster,
+            ],
+            showMainWallets: true,
+          ),
+        );
+        await appKitModal?.init();
+        // Open the modal view
+        await appKitModal!.openModalView();
+        notifyListeners();
+      }else{
+        await appKitModal!.openModalView();
+        // notifyListeners();
+
       }
-      await appKitModal!.openModalView();
+
+
       return _isConnected;
 
      } catch (e) {
@@ -183,42 +283,54 @@ class WalletViewModel extends ChangeNotifier {
   }
 
   /// Disconnect from the wallet and clear stored wallet info.
-  Future<void> disconnectWallet() async {
-    if (!_isConnected) return;
+  Future<void> disconnectWallet(BuildContext context) async {
+    if (!_isConnected || appKitModal == null) return;
 
     try {
       await appKitModal!.disconnect();
       await reset();
-      appKitModal = null;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
+      // await init(context);
+      //  final prefs = await SharedPreferences.getInstance();
+      // await prefs.clear();
+
     } catch (e) {
       print('Error disconnecting wallet: $e');
       rethrow;
     } finally {
+      await reset();
       _isLoading = false;
+
       notifyListeners();
     }
   }
 
    Future<bool> reset() async{
+
+     // Clear all appKitModal listeners safely
+     if (appKitModal != null) {
+       appKitModal!.onModalConnect.unsubscribeAll();
+       appKitModal!.onModalDisconnect.unsubscribeAll();
+       appKitModal!.onModalUpdate.unsubscribeAll();
+       appKitModal!.onSessionExpireEvent.unsubscribeAll();
+       appKitModal!.onSessionUpdateEvent.unsubscribeAll();
+     }
+
+     // Clear appKitModal instance
+     appKitModal = null;
+     // Clear wallet state
+     _walletAddress = '';
+     _isLoading = false;
+     _isConnected = false;
+
+
+
      final SharedPreferences sp = await SharedPreferences.getInstance();
      sp.remove('isConnected');
      sp.remove('walletAddress');
      sp.remove('chainId');
 
-     appKitModal!.dispose();
-     appKitModal = null;
-     _walletAddress = '';
-     _isConnected = false;
-     _isLoading = false;
-
-
      notifyListeners();
-
      return true;
-
-
 
    }
 

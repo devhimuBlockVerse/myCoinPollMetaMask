@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +15,6 @@ class DashboardView extends StatefulWidget {
 class _DashboardViewState extends State<DashboardView> {
 
 
-  @override
-  void initState() {
-    super.initState();
-
-
-    Future.microtask(() =>
-        Provider.of<WalletViewModel>(context,listen: false).init(context)
-    );
-  }
 
   final TextEditingController _recipientController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -42,7 +31,7 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
 
-    return WillPopScope(
+     return WillPopScope(
       onWillPop: () async => false,
       child:   Scaffold(
           backgroundColor: Color(0xFF0A1C2F),
@@ -79,7 +68,7 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
 
                   child: SafeArea(
-                    child: model.isConnected ? SingleChildScrollView(
+                    child:   SingleChildScrollView(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -296,74 +285,36 @@ class _DashboardViewState extends State<DashboardView> {
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ) : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.account_balance_wallet_outlined,
-                          size: 80,
-                          color: Colors.blueAccent,
-                        ),
-                        const SizedBox(height: 24),
-                        const Text(
-                          'Connect your wallet',
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Connect your Reown wallet to screens your balance',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(height: 48),
-                        SizedBox(
-                          width: 240,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                await model.connectWallet(context);
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Connection error: ${e.toString()}'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                          const SizedBox(height: 16),
+
+                          SizedBox(
+                            width: 240,
+                            height: 56,
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                Navigator.pushNamed(context, RoutesName.ecmStaking);
+                               },
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.lightGreenAccent,
+                                side: const BorderSide(color: Colors.lightGreenAccent),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                'ECM Staking',
+                                style: TextStyle(fontSize: 18),
                               ),
                             ),
-                            child: const Text(
-                              'Connect Wallet',
-                              style: TextStyle(fontSize: 18),
-                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    )
                   ),
                 );
           })
           ),
       );
-
   }
 
 

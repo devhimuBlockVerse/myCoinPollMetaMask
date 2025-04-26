@@ -42,6 +42,8 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
   int  _stageIndex = 0;
   double _currentECM = 0.0;
   double _maxECM = 0.0;
+  bool isDisconnecting = false;
+
 
 
 
@@ -396,26 +398,26 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
 
 
                                 if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                                  isDisconnecting ? Center(child: CircularProgressIndicator())
+                                      :
                                   DisconnectButton(
                                   label: 'Disconnect',
                                   color: Colors.redAccent,
                                   icon: Icons.visibility_off_rounded,
                                   onPressed: () async {
+                                    setState(() {
+                                      isDisconnecting = true;
+                                    });
                                     try {
-                                      await walletVM.disconnectWallet();
-                                      // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> DashboardView()));
-                                      // Navigator.pushNamed(context, RoutesName.dashboard);
-                                      // Navigator.pushNamedAndRemoveUntil(
-                                      //   context,
-                                      //   RoutesName.dashboard, (route) => false,
-                                      // );
-
-                                      setState(() {
-                                        Navigator.pushNamed(context, RoutesName.dashboard);
-
-                                      });
-                                      // Use Navigator.pushReplacement for smooth navigation
-
+                                      await walletVM.disconnectWallet(context);
+                                      walletVM.reset();
+                                      if (context.mounted && !walletVM.isConnected) {
+                                        Navigator.pushReplacementNamed(context, RoutesName.walletLogin);
+                                      }
+                                      // setState(() {
+                                      // // Navigator.pushNamed(context, RoutesName.dashboard);
+                                      //   !walletVM.isConnected;
+                                      // });
 
                                      } catch (e) {
                                       if (context.mounted) {
@@ -425,6 +427,12 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                             backgroundColor: Colors.red,
                                           ),
                                         );
+                                      }
+                                    }finally{
+                                      if (mounted) {
+                                        setState(() {
+                                          isDisconnecting = false;
+                                        });
                                       }
                                     }
                                   },

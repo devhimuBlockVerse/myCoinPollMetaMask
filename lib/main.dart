@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         // home: const DashboardView(),
         // home:  DigitalModelScreen(),
         onGenerateRoute: Routes.generateRoute,
-        initialRoute: RoutesName.dashboard,
+        initialRoute: RoutesName.walletLogin,
 
       ),
     );

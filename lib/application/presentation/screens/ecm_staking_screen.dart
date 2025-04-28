@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/components/buy_Ecm.dart';
 
 import '../../../framework/components/statke_now_animation_button.dart';
-
+import 'package:intl/intl.dart';
 
 class EcmStakingScreen extends StatefulWidget {
   const EcmStakingScreen({super.key});
@@ -13,61 +13,78 @@ class EcmStakingScreen extends StatefulWidget {
 class _EcmStakingScreenState extends State<EcmStakingScreen> {
   String selectedPercentage = '25%'; // Default selected
   String selectedDay = '7D'; // Default selected
+  double originalInputAmount = 0.0; // Store user input
+
+  double estimatedProfit = 0.0;
+  double totalWithReward = 0.0;
+  DateTime? unlockDate;
+
+  String lockOverviewText = '';
+  String durationDisplayText = '';
+
 
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController ecmAmountController = TextEditingController();
+  final TextEditingController _dayController = TextEditingController();
+
   List<Map<String, String>> _stakingData = [];
   List<Map<String, String>> _filteredData = [];
 
-  void _loadDummyData(){
-    _stakingData = [
-      {
-        'date': '2024-04-01',
-        'amount': '100',
-        'arrDuration': '10% - 30d',
-        'reward': '10',
-        'totalReceive': '110',
-        'remaining': '0',
-        'status': 'Completed',
-      },
-      {
-        'date': '2024-03-20',
-        'amount': '200',
-        'arrDuration': '12% - 60d',
-        'reward': '24',
-        'totalReceive': '224',
-        'remaining': '10',
-        'status': 'Active',
-      },
-      {
-        'date': '2024-03-20',
-        'amount': '200',
-        'arrDuration': '12% - 60d',
-        'reward': '24',
-        'totalReceive': '224',
-        'remaining': '10',
-        'status': 'Active',
-      },
-      {
-        'date': '2024-03-20',
-        'amount': '200',
-        'arrDuration': '12% - 60d',
-        'reward': '24',
-        'totalReceive': '224',
-        'remaining': '10',
-        'status': 'Active',
-      },
-      {
-        'date': '2024-03-20',
-        'amount': '200',
-        'arrDuration': '12% - 60d',
-        'reward': '24',
-        'totalReceive': '224',
-        'remaining': '10',
-        'status': 'Active',
-      },
+   final Map<String, double> annualReturnRates = {
+    '7D': 0.05,
+    '30D': 0.08,
+    '90D': 0.11,
+    '180D': 0.15,
+    '365D': 0.20,
 
-    ];
+  };
+
+  void calculateRewards() {
+    double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
+
+    if (ecmAmount <= 0) {
+       estimatedProfit = 0.0;
+      totalWithReward = 0.0;
+      unlockDate = null;
+      lockOverviewText = '';
+      setState(() {});
+      return;
+    }
+
+    int numberOfDays = int.tryParse(selectedDay.replaceAll('D', '')) ?? 7;
+    double annualRate = annualReturnRates[selectedDay] ?? 0.05;
+    double dailyRate = annualRate / 365;
+
+    estimatedProfit = ecmAmount * dailyRate * numberOfDays;
+    totalWithReward = ecmAmount + estimatedProfit;
+    unlockDate = DateTime.now().add(Duration(days: numberOfDays));
+
+    lockOverviewText = "My ${ecmAmount.toStringAsFixed(0)} ECM Staked for $numberOfDays Days";
+
+    setState(() {});
   }
+
+   void selectDuration(String duration) {
+    setState(() {
+      selectedDay = duration;
+    });
+    calculateRewards();
+  }
+
+  String formatDateWithSuffix(DateTime date) {
+    int day = date.day;
+    String suffix = 'th';
+    if (day == 1 || day == 21 || day == 31) suffix = 'st';
+    else if (day == 2 || day == 22) suffix = 'nd';
+    else if (day == 3 || day == 23) suffix = 'rd';
+
+    String formatted = "${day}$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
+    return formatted;
+  }
+
+
+
+
 
   void _onSearchChanged() {
     String query = _searchController.text.toLowerCase();
@@ -83,9 +100,18 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     super.initState();
     _loadDummyData();
     _filteredData = List.from(_stakingData);
+    ecmAmountController.addListener(calculateRewards);
+
+    calculateRewards();
 
   }
-
+  @override
+  void dispose() {
+    ecmAmountController.removeListener(calculateRewards);
+    ecmAmountController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final textScale = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
@@ -154,12 +180,18 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                      children: [
-                      _ecmAmountRow("Stack amount", "100 ECM"),
-                      const Divider(color: Colors.white24,thickness: 1,),
-                      _ecmAmountRow("Estimated Profit", "0.658 ECM", highlight: true),
-                      const Divider(color: Colors.white24),
-                      _ecmAmountRow("Total with Reward", "100.658 ECM"),
-                    ],
+                      // _ecmAmountRow("Stack amount", "100 ECM"),
+                       _ecmAmountRow("Stack amount", "${ecmAmountController.text} ECM"),
+
+                       const Divider(color: Colors.white24,thickness: 1,),
+                      // _ecmAmountRow("Estimated Profit", "0.658 ECM", highlight: true),
+                       _ecmAmountRow("Estimated Profit", "${estimatedProfit.toStringAsFixed(3)} ECM", highlight: true),
+
+                       const Divider(color: Colors.white24),
+                      // _ecmAmountRow("Total with Reward", "100.658 ECM"),
+                       _ecmAmountRow("Total with Reward", "${totalWithReward.toStringAsFixed(3)} ECM"),
+
+                     ],
                   ),
                 ),
                 SizedBox(height: 8),
@@ -175,11 +207,19 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _ecmValidityRow("Annual Return Rate", "5%"),
+                      // _ecmValidityRow("Annual Return Rate", "5%"),
+                      _ecmValidityRow("Annual Return Rate", "${(annualReturnRates[selectedDay] ?? 0.05) * 100}%"),
+
                       const Divider(color: Colors.white24,thickness: 1,),
-                      _ecmValidityRow("Duration", "7 Days", highlight: true),
+                      // _ecmValidityRow("Duration", "7 Days", highlight: true),
+                      _ecmValidityRow("Duration", "${selectedDay.replaceAll('D', '')} Days", highlight: true),
+
                       const Divider(color: Colors.white24),
-                      _ecmValidityRow("Unlocked on", "3rd, May 2025 11:26 PM"),
+                      // _ecmValidityRow("Unlocked on", "3rd, May 2025 11:26 PM"),
+                      _ecmValidityRow("Unlocked On", unlockDate != null ? formatDateWithSuffix(unlockDate!) : "Not Available"),
+
+
+
                     ],
                   ),
                 ),
@@ -365,7 +405,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   }
 
 
-
   Widget ecmInputSection(double textScale, double screenWidth, double screenHeight) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,8 +436,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
           ),
         ),
         const SizedBox(height: 6),
-
-        // Input Field with Leading Icon and Trailing Balance
         Container(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.003),
           decoration: BoxDecoration(
@@ -428,6 +465,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
               // Input field
               Expanded(
                 child: TextField(
+                  controller: ecmAmountController,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     hintText: '0',
@@ -435,6 +473,12 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                     border: InputBorder.none,
                   ),
                   keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      originalInputAmount = double.tryParse(value) ?? 0.0;
+                      selectedPercentage = '';
+                    });
+                  },
                 ),
               ),
 
@@ -485,6 +529,20 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
       onTap: () {
         setState(() {
           selectedPercentage = text;
+
+          double percentage = 0.0;
+          if (text == '25%') {
+            percentage = 0.25;
+          } else if (text == '50%') {
+            percentage = 0.5;
+          } else if (text == '75%') {
+            percentage = 0.75;
+          } else if (text == 'Max') {
+            percentage = 1.0;
+          }
+
+          double calculatedAmount = originalInputAmount * percentage;
+          ecmAmountController.text = calculatedAmount.toStringAsFixed(2); // You can format it as you wish
         });
         print('Selected Percentage: $selectedPercentage');
       },
@@ -587,9 +645,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     );
   }
 
-
-
-
   Widget validitySection(double textScale, double screenWidth, double screenHeight) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -652,13 +707,21 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
               // Input field
               Expanded(
                 child: TextField(
+                  controller: _dayController,
                   style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    hintText: '0',
-                    hintStyle: TextStyle(color: Colors.white54),
+                  decoration: InputDecoration(
+                     hintText: _dayController.text.isEmpty ? (selectedDay.replaceAll('D', '')) : null,
+                      hintStyle: const TextStyle(color: Colors.white),
                     border: InputBorder.none,
                   ),
                   keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDay = '${value}D';
+                      selectedDay = '';
+                    });
+                  },
+                  readOnly: true,
                 ),
               ),
 
@@ -705,9 +768,11 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
     return InkWell(
       onTap: () {
+
         setState(() {
           selectedDay = text;
         });
+        calculateRewards();
         print('Selected Percentage: $selectedDay');
       },
       child: Container(
@@ -808,9 +873,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     );
   }
 
-
-
-
   Widget lockOverViewSection(double textScale, double screenWidth, double screenHeight) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -876,7 +938,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                 // Main Text
                 Text(
-                  'My 100 ECM Stack for 7 Days',
+                  lockOverviewText.isNotEmpty ? lockOverviewText : "Enter ECM to Stake",
                   style: TextStyle(
                     fontSize: 18 * textScale, // Responsive text size
                     color: Colors.white,
@@ -921,6 +983,56 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     );
   }
 
+  void _loadDummyData(){
+    _stakingData = [
+      {
+        'date': '2024-04-01',
+        'amount': '100',
+        'arrDuration': '10% - 30d',
+        'reward': '10',
+        'totalReceive': '110',
+        'remaining': '0',
+        'status': 'Completed',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+
+    ];
+  }
 }
 
 

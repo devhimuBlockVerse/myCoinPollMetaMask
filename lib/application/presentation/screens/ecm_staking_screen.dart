@@ -185,6 +185,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 ),
                 SizedBox(height: 8),
 
+                /// Stake Now  Button Section
                 GradientButton(
                   text: "Stake Now",
                   trailingIcon: Icon(
@@ -200,6 +201,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                 SizedBox(height: 0.5),
 
+                /// Buy ECM  Button Section
 
                 BuyEcm(
                   text: 'Buy ECM',
@@ -211,22 +213,23 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                 SizedBox(height:20),
 
+                /// Staking History Section with Search Bar
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001), // Responsive padding
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
                   child: Container(
-                    padding: EdgeInsets.all(12),
+                    padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
-                      border: Border.all(color: Colors.white60),
+                      // border: Border.all(color: Colors.white60),
+                      border: Border.all(color: Colors.white60, width: 0.5),
+
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
                       children: [
-
-
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric( vertical: 5, horizontal: 5),
+                          padding: const EdgeInsets.symmetric( vertical: 15, horizontal: 5),
                           child:  Text(
                             'Staking History',
                             style: TextStyle(
@@ -240,21 +243,29 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         ),
 
                         // Search bar
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.tealAccent),
-                            borderRadius: BorderRadius.circular(8),
+                        Align(
+                          alignment: Alignment.center,
 
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            onChanged: (_) => _onSearchChanged(),
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              hintText: 'Search here...',
-                              hintStyle: TextStyle(color: Colors.white60),
-                              border: InputBorder.none,
-                              prefixIcon: Icon(Icons.search, color: Colors.white60),
+                          child: Container(
+
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.tealAccent),
+                              borderRadius: BorderRadius.circular(8),
+
+                            ),
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: (_) => _onSearchChanged(),
+                              style: const TextStyle(color: Colors.white),
+                              decoration: const InputDecoration(
+                                hintText: 'Search here...',
+                                hintStyle: TextStyle(color: Colors.white60),
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.search, color: Colors.white60),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+
+                              ),
+                              textAlign: TextAlign.start,
                             ),
                           ),
                         ),
@@ -266,6 +277,8 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                               width: 800, // Adjust if needed
                               child: SingleChildScrollView(
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+
                                   children: [
                                     Container(
                                       color: const Color(0xFF151A30),
@@ -295,24 +308,41 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                       ..._filteredData.asMap().entries.map((entry) {
                                         final index = entry.key;
                                         final data = entry.value;
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(color: Colors.white10),
+                                        return Column(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(color: Colors.white10),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  _buildTableRowCell('${index + 1}'),
+                                                  Divider(
+                                                    color: Colors.white10,
+                                                    thickness: 0.5,
+                                                    height: 1,
+                                                  ),
+                                                  _buildTableRowCell(data['date'] ?? ''),
+
+                                                  _buildTableRowCell(data['amount'] ?? ''),
+
+                                                  Divider(
+                                                    color: Colors.white10,
+                                                    thickness: 0.5,
+                                                    height: 1,
+                                                  ),_buildTableRowCell(data['arrDuration'] ?? ''),
+                                                  _buildTableRowCell(data['reward'] ?? ''),
+                                                  _buildTableRowCell(data['totalReceive'] ?? ''),
+                                                  _buildTableRowCell(data['remaining'] ?? ''),
+                                                  _buildTableRowCell(data['status'] ?? ''),
+                                                ],
+                                              ),
+
                                             ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              _buildTableRowCell('${index + 1}'),
-                                              _buildTableRowCell(data['date'] ?? ''),
-                                              _buildTableRowCell(data['amount'] ?? ''),
-                                              _buildTableRowCell(data['arrDuration'] ?? ''),
-                                              _buildTableRowCell(data['reward'] ?? ''),
-                                              _buildTableRowCell(data['totalReceive'] ?? ''),
-                                              _buildTableRowCell(data['remaining'] ?? ''),
-                                              _buildTableRowCell(data['status'] ?? ''),
-                                            ],
-                                          ),
+
+                                          ],
                                         );
                                       }).toList(),
                                   ],
@@ -865,25 +895,28 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
 
 
-
-
   Widget _buildTableHeaderCell(String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      child: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
 
-  Widget _buildTableRowCell(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.white),
+  Widget _buildTableRowCell(String value) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          value,
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

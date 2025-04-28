@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/components/buy_Ecm.dart';
 
-import '../../../framework/components/gradient_animation_button.dart';
+import '../../../framework/components/statke_now_animation_button.dart';
 
 
 class EcmStakingScreen extends StatefulWidget {
@@ -12,6 +13,78 @@ class EcmStakingScreen extends StatefulWidget {
 class _EcmStakingScreenState extends State<EcmStakingScreen> {
   String selectedPercentage = '25%'; // Default selected
   String selectedDay = '7D'; // Default selected
+
+  final TextEditingController _searchController = TextEditingController();
+  List<Map<String, String>> _stakingData = [];
+  List<Map<String, String>> _filteredData = [];
+
+  void _loadDummyData(){
+    _stakingData = [
+      {
+        'date': '2024-04-01',
+        'amount': '100',
+        'arrDuration': '10% - 30d',
+        'reward': '10',
+        'totalReceive': '110',
+        'remaining': '0',
+        'status': 'Completed',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+      {
+        'date': '2024-03-20',
+        'amount': '200',
+        'arrDuration': '12% - 60d',
+        'reward': '24',
+        'totalReceive': '224',
+        'remaining': '10',
+        'status': 'Active',
+      },
+
+    ];
+  }
+
+  void _onSearchChanged() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredData = _stakingData.where((row){
+        return row.values.any((value) => value.toLowerCase().contains(query));
+      }).toList();
+    });
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadDummyData();
+    _filteredData = List.from(_stakingData);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,20 +185,148 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 ),
                 SizedBox(height: 8),
 
-                Center(
-                  child: GradientButton(
-                    text: "Stake Now",
-                    trailingIcon: Icon(
-                      Icons.arrow_forward,
-                      color: Colors.white,
+                GradientButton(
+                  text: "Stake Now",
+                  trailingIcon: Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    //  Add your action here
+                    print("Button Pressed!");
+                  },
+                ),
+
+
+                SizedBox(height: 0.5),
+
+
+                BuyEcm(
+                  text: 'Buy ECM',
+                  trailingIcon: const Icon(Icons.shopping_cart, color: Colors.white),
+                  onPressed: () {
+                     print('Button tapped!');
+                   },
+                ),
+
+                SizedBox(height:20),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001), // Responsive padding
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      border: Border.all(color: Colors.white60),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    onPressed: () {
-                      //  Add your action here
-                      print("Button Pressed!");
-                    },
+                    child: Column(
+                      children: [
+
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric( vertical: 5, horizontal: 5),
+                          child:  Text(
+                            'Staking History',
+                            style: TextStyle(
+                              fontSize: 20 * textScale,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Oxanium',
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+
+                        // Search bar
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.tealAccent),
+                            borderRadius: BorderRadius.circular(8),
+
+                          ),
+                          child: TextField(
+                            controller: _searchController,
+                            onChanged: (_) => _onSearchChanged(),
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: 'Search here...',
+                              hintStyle: TextStyle(color: Colors.white60),
+                              border: InputBorder.none,
+                              prefixIcon: Icon(Icons.search, color: Colors.white60),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SizedBox(
+                              width: 800, // Adjust if needed
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      color: const Color(0xFF151A30),
+                                      child: Row(
+                                        children: [
+                                          _buildTableHeaderCell('SL'),
+                                          _buildTableHeaderCell('Date'),
+                                          _buildTableHeaderCell('Amount'),
+                                          _buildTableHeaderCell('ARR - Duration'),
+                                          _buildTableHeaderCell('Reward'),
+                                          _buildTableHeaderCell('Total Receive'),
+                                          _buildTableHeaderCell('Remaining?'),
+                                          _buildTableHeaderCell('Status'),
+                                        ],
+                                      ),
+                                    ),
+                                    if (_filteredData.isEmpty)
+                                      Container(
+                                        alignment: Alignment.center,
+                                        padding: const EdgeInsets.all(20),
+                                        child: const Text(
+                                          'No data found',
+                                          style: TextStyle(color: Colors.white70),
+                                        ),
+                                      )
+                                    else
+                                      ..._filteredData.asMap().entries.map((entry) {
+                                        final index = entry.key;
+                                        final data = entry.value;
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(color: Colors.white10),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              _buildTableRowCell('${index + 1}'),
+                                              _buildTableRowCell(data['date'] ?? ''),
+                                              _buildTableRowCell(data['amount'] ?? ''),
+                                              _buildTableRowCell(data['arrDuration'] ?? ''),
+                                              _buildTableRowCell(data['reward'] ?? ''),
+                                              _buildTableRowCell(data['totalReceive'] ?? ''),
+                                              _buildTableRowCell(data['remaining'] ?? ''),
+                                              _buildTableRowCell(data['status'] ?? ''),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
                   ),
                 ),
-               ],
+              ],
             ),
           ),
         ),
@@ -662,8 +863,31 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   }
 
 
+
+
+
+
+  Widget _buildTableHeaderCell(String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      child: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildTableRowCell(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
 }
-
-
 
 

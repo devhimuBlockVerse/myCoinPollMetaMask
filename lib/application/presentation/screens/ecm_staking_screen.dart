@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/components/buy_Ecm.dart';
+import 'package:provider/provider.dart';
 
 import '../../../framework/components/statke_now_animation_button.dart';
 import 'package:intl/intl.dart';
+
+import '../viewmodel/wallet_view_model.dart';
 
 class EcmStakingScreen extends StatefulWidget {
   const EcmStakingScreen({super.key});
@@ -81,12 +84,8 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     String formatted = "${day}$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
     return formatted;
   }
-
-
-
-
-
   void _onSearchChanged() {
+
     String query = _searchController.text.toLowerCase();
     setState(() {
       _filteredData = _stakingData.where((row){
@@ -94,16 +93,37 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
       }).toList();
     });
   }
-  
+
+  String? balance;
+  bool isLoading = true;
+  String? error;
+
+  Future<void> _fetchBalance() async {
+    try {
+      final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+      final result = await walletProvider.getBalance();
+      setState(() {
+        balance = result;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadDummyData();
     _filteredData = List.from(_stakingData);
     ecmAmountController.addListener(calculateRewards);
-
     calculateRewards();
-
+    // _fetchBalance();
+    final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+    walletProvider.getBalance();
   }
   @override
   void dispose() {
@@ -225,33 +245,42 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 ),
                 SizedBox(height: 8),
 
-                /// Stake Now  Button Section
-                GradientButton(
-                  text: "Stake Now",
-                  trailingIcon: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+                  child: Row(
+                    children: [
+
+
+                      /// Stake Now  Button
+                      GradientButton(
+                        text: "Stake Now",
+                        trailingIcon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          //  Add your action here
+                          print("Button Pressed!");
+                        },
+                      ),
+
+                      SizedBox(width: screenWidth * 0.03),
+                      /// Buy ECM  Button Section
+
+                      BuyEcm(
+                        text: 'Buy ECM',
+                        trailingIcon: const Icon(Icons.shopping_cart, color: Colors.white),
+                        onPressed: () {
+                          print('Button tapped!');
+                        },
+                      ),
+
+                    ],
                   ),
-                  onPressed: () {
-                    //  Add your action here
-                    print("Button Pressed!");
-                  },
                 ),
 
 
-                SizedBox(height: 0.5),
-
-                /// Buy ECM  Button Section
-
-                BuyEcm(
-                  text: 'Buy ECM',
-                  trailingIcon: const Icon(Icons.shopping_cart, color: Colors.white),
-                  onPressed: () {
-                     print('Button tapped!');
-                   },
-                ),
-
-                SizedBox(height:20),
+                SizedBox(height:screenHeight * 0.03),
 
                 /// Staking History Section with Search Bar
                 Padding(
@@ -309,12 +338,13 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        // const SizedBox(height: 16),
+                         SizedBox(height: screenHeight * 0.03),
                         SizedBox(
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: SizedBox(
-                              width: 800, // Adjust if needed
+                              width: screenWidth * 1.4,
                               child: SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -406,121 +436,162 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
 
   Widget ecmInputSection(double textScale, double screenWidth, double screenHeight) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Min: 20 ECM',
-                style: TextStyle(
-                  fontSize: 12 * textScale,
-                  color: Colors.white60,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Montserrat',
-                ),
-              ),
-              Text(
-                'Max: 5000 ECM',
-                style: TextStyle(
-                  fontSize: 12 * textScale,
-                  color: Colors.white60,
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'Montserrat',
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 6),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.003),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white24),
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.transparent,
-          ),
-          child: Row(
-            children: [
-              // Leading icon
-              Container(
-                width: 32,
-                height: 32,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/icons/ecm.png',
-                    width: 20,
-                    height: 20,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
 
-              // Input field
-              Expanded(
-                child: TextField(
-                  controller: ecmAmountController,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    hintText: '0',
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: InputBorder.none,
-                  ),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) {
-                    setState(() {
-                      originalInputAmount = double.tryParse(value) ?? 0.0;
-                      selectedPercentage = '';
-                    });
-                  },
-                ),
-              ),
+    // if(isLoading){
+    //   return const Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // }
+    if(error != null){
+      return Text('Error: $error', style: TextStyle(color: Colors.red));
+    }
 
-              // Trailing balance
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+        return  Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Balance',
+                    'Min: 20 ECM',
                     style: TextStyle(
                       fontSize: 12 * textScale,
                       color: Colors.white60,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Montserrat',
                     ),
                   ),
                   Text(
-                    '0 ECM',
+                    'Max: 5000 ECM',
                     style: TextStyle(
                       fontSize: 12 * textScale,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                      color: Colors.white60,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Montserrat',
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.003),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white24),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.transparent,
+              ),
+              child: Row(
+                children: [
+                  // Leading icon
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/icons/ecm.png',
+                        width: 20,
+                        height: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
 
-        const SizedBox(height: 3),
+                  // Input field
+                  Expanded(
+                    child: TextField(
+                      controller: ecmAmountController,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: const InputDecoration(
+                        hintText: '0',
+                        hintStyle: TextStyle(color: Colors.white54),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        setState(() {
+                          originalInputAmount = double.tryParse(value) ?? 0.0;
+                          selectedPercentage = '';
+                        });
+                      },
+                    ),
+                  ),
 
-        // Percentage Buttons Row
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _percentageButton('25%', textScale),
-            _percentageButton('50%', textScale),
-            _percentageButton('75%', textScale),
-            _percentageButton('Max', textScale),
+                  // Trailing balance
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+
+                      Text(
+                        'Balance',
+                        style: TextStyle(
+                          fontSize: 12 * textScale,
+                          color: Colors.white60,
+                        ),
+                      ),
+                      // Text(
+                      //   '$balance ECM',
+                      //   style: TextStyle(
+                      //     fontSize: 12 * textScale,
+                      //     color: Colors.white,
+                      //     fontWeight: FontWeight.w500,
+                      //   ),
+                      // ),
+
+                      Consumer<WalletViewModel>(
+                        builder: (context, model, child){
+
+                          if(model.isLoading || model.balance == null){
+                            return  SizedBox(
+                              width:  screenWidth * 0.055,
+                              height:  screenHeight * 0.015,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white,
+                              ),
+                            );
+                          }
+
+
+                          return Text(
+                            '${model.balance} ECM',
+                            style: TextStyle(
+                              fontSize: 12 * textScale,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }
+
+                      ),
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 3),
+
+            // Percentage Buttons Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _percentageButton('25%', textScale),
+                _percentageButton('50%', textScale),
+                _percentageButton('75%', textScale),
+                _percentageButton('Max', textScale),
+              ],
+            ),
           ],
-        ),
-      ],
-    );
+        );
+
+
+
   }
   Widget _percentageButton(String text, double textScale) {
     bool isSelected = selectedPercentage == text;
@@ -921,20 +992,20 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
               children: [
                 // Leading icon
                 Container(
-                  width: screenWidth * 0.08, // Icon container width responsive
-                  height: screenWidth * 0.08, // Icon container height responsive (square)
+                  width: screenWidth * 0.08,
+                  height: screenWidth * 0.08,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/icons/timer.png',
-                      width: screenWidth * 0.05, // Icon size responsive
+                      'assets/icons/ecm.png',
+                      width: screenWidth * 0.05,
                       height: screenWidth * 0.05,
                     ),
                   ),
                 ),
-                SizedBox(width: screenWidth * 0.02), // Responsive spacing
+                SizedBox(width: screenWidth * 0.02),
 
                 // Main Text
                 Text(

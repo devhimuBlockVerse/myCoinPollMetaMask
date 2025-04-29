@@ -15,8 +15,11 @@ class WalletViewModel extends ChangeNotifier {
   String _walletAddress = '';
   bool _isLoading = false;
   bool _isConnected = false;
+   String? _balance;
 
-  String get walletAddress => _walletAddress;
+
+   String? get balance => _balance;
+   String get walletAddress => _walletAddress;
   bool get isConnected => _isConnected;
   bool get isLoading => _isLoading;
 
@@ -156,72 +159,7 @@ class WalletViewModel extends ChangeNotifier {
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
-  // Future<bool> connectWallet(BuildContext context) async {
-  //   // if (appKitModal == null) {
-  //   //   await init(context);
-  //   // }
-  //
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     if (appKitModal != null) {
-  //       await appKitModal?.disconnect();
-  //       appKitModal = null;
-  //       notifyListeners();
-  //     }
-  //
-  //     appKitModal = ReownAppKitModal(
-  //       context: context,
-  //       projectId:
-  //       'f3d7c5a3be3446568bcc6bcc1fcc6389',
-  //       metadata: const PairingMetadata(
-  //         name: "MyWallet",
-  //         description: "Example Description",
-  //         url: 'https://example.com/',
-  //         icons: ['https://example.com/logo.png'],
-  //         redirect: Redirect(
-  //           native: 'exampleapp',
-  //           universal: 'https://reown.com/exampleapp',
-  //           linkMode: true,
-  //         ),
-  //       ),
-  //       logLevel: LogLevel.error,
-  //       enableAnalytics: true,
-  //       featuresConfig: FeaturesConfig(
-  //         email: true,
-  //         socials: [
-  //           AppKitSocialOption.Google,
-  //           AppKitSocialOption.Discord,
-  //           AppKitSocialOption.Facebook,
-  //           AppKitSocialOption.GitHub,
-  //           AppKitSocialOption.X,
-  //           AppKitSocialOption.Apple,
-  //           AppKitSocialOption.Twitch,
-  //           AppKitSocialOption.Farcaster,
-  //         ],
-  //         showMainWallets: true,
-  //       ),
-  //     );
-  //     await appKitModal?.init();
-  //
-  //     await appKitModal!.openModalView();
-  //     notifyListeners();
-  //
-  //     return _isConnected;
-  //
-  //    } catch (e) {
-  //     print('Error connecting to wallet: $e');
-  //     rethrow;
-  //   } finally {
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
   Future<bool> connectWallet(BuildContext context) async {
-    // if (appKitModal == null) {
-    //   await init(context);
-    // }
 
     _isLoading = true;
     notifyListeners();
@@ -267,9 +205,7 @@ class WalletViewModel extends ChangeNotifier {
       }else{
         await appKitModal!.openModalView();
         // notifyListeners();
-
       }
-
 
       return _isConnected;
 
@@ -369,8 +305,7 @@ class WalletViewModel extends ChangeNotifier {
               functionName: 'decimals');
 
 
-      // print("Addresses: $addresses (${addresses.runtimeType})");
-      print("Wallet address used: $walletAddress");
+       print("Wallet address used: $walletAddress");
 
       final balanceOf = await appKitModal!.requestReadContract(
               topic: appKitModal!.session!.topic,
@@ -378,24 +313,24 @@ class WalletViewModel extends ChangeNotifier {
               deployedContract: tetherContract,
               functionName: 'balanceOf',
               parameters: [ EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!)]
-              // parameters: [ EthereumAddress.fromHex(walletAddress)]
-
     );
-
 
       final tokenDecimals = (decimals[0] as BigInt).toInt();
       final balance = balanceOf[0] as BigInt;
 
       final divisor = BigInt.from(10).pow(tokenDecimals);
-      final formatBalance = balance / divisor;
+      // final formatBalance = balance / divisor;
+
+      _balance = (balance / divisor).toString();
 
 
       print('balanceOf: ${balanceOf[0]}');
       print('runtimeType: ${balanceOf[0].runtimeType}');
 
-      return  '$formatBalance'  ;
+      return  '$_balance'  ;
 
     } catch (e) {
+      _balance = null;
       print('Error getting balance: $e');
       rethrow;
     } finally {

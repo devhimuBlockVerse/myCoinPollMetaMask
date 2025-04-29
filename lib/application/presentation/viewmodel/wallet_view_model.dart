@@ -330,7 +330,6 @@ class WalletViewModel extends ChangeNotifier {
       final balance = balanceOf[0] as BigInt;
 
       final divisor = BigInt.from(10).pow(tokenDecimals);
-      // final formatBalance = balance / divisor;
 
       _balance = (balance / divisor).toString();
 
@@ -453,7 +452,6 @@ class WalletViewModel extends ChangeNotifier {
             from: EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!)
           ),
         parameters: [ EthereumAddress.fromHex(recipientAddress),transferValue,
-          // EthereumAddress.fromHex('0x30C8E35377208ebe1b04f78B3008AAc408F00D1d'),transferValue,
         ]
       );
 
@@ -651,7 +649,6 @@ class WalletViewModel extends ChangeNotifier {
       await launchUrl(metaMaskUrl,);
 
       await Future.delayed(Duration(seconds: 3));
-      // BigInt amountInWei = amount.getInWei;
 
       final result = await appKitModal!.requestWriteContract(
           topic: appKitModal!.session!.topic,
@@ -660,13 +657,10 @@ class WalletViewModel extends ChangeNotifier {
           functionName: 'buyECMWithUSDT',
           transaction: Transaction(
             from: EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!),
-            // value: EtherAmount.inWei(BigInt.zero),
-           ),
-          // parameters: []
-          // parameters: [ amountInWei,EthereumAddress.fromHex(referrerAddress)]
+            ),
+
           parameters: [ amount,EthereumAddress.fromHex(referrerAddress)]
       );
-      // Navigator.pop(context); // Close the dialog after transaction starts
 
 
       print('Transaction Hash: $result');
@@ -692,7 +686,7 @@ class WalletViewModel extends ChangeNotifier {
     }
   }
 
-   Future<int> getTokenDecimals() async {
+  Future<int> getTokenDecimals() async {
      final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
      final abiData = jsonDecode(abiString);
 
@@ -710,8 +704,6 @@ class WalletViewModel extends ChangeNotifier {
 
      return (decimalsResult[0] as BigInt).toInt();
    }
-
-
   Future<String> getMinimunStake() async {
      if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
        throw Exception("Wallet not Connected");
@@ -763,7 +755,6 @@ class WalletViewModel extends ChangeNotifier {
        notifyListeners();
      }
    }
-
   Future<String> getMaximumStake() async {
      if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
        throw Exception("Wallet not Connected");

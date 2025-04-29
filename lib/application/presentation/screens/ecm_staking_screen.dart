@@ -450,7 +450,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                       return  Text(
                         'Max: ${model.maximumStake ?? '...'} ECM',
-
                         style: TextStyle(
                         fontSize: 12 * textScale,
                         color: Colors.white60,
@@ -535,7 +534,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                             );
                           }
 
-
                           return Text(
                             '${model.balance} ECM',
                             style: TextStyle(
@@ -545,9 +543,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                             ),
                           );
                         }
-
                       ),
-
                     ],
                   ),
                 ],
@@ -1009,8 +1005,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     );
   }
 
-
-
   Widget _stakingHistoryTableCell(String text, {bool isHeader = false}) {
     return SizedBox(
       width: 100,
@@ -1082,33 +1076,3 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     ];
   }
 }
-
-
-// if(balanceStr != null){
-//   final balance = double.tryParse(balanceStr) ?? 0.0;
-//   double percentageValue = 0.0;
-//
-//   switch(text){
-//     case '25%':
-//       percentageValue = balance * 0.25;
-//       break;
-//     case '50%':
-//       percentageValue =  balance * 0.50;
-//       break;
-//     case '75%':
-//       percentageValue = balance *  0.75;
-//       break;
-//     case 'Max':
-//       percentageValue = balance;
-//       break;
-//   }
-//
-//
-//
-//   ecmAmountController.text = percentageValue.toStringAsFixed(2);
-//   calculateRewards();
-// }
-// setState(() {
-//   selectedPercentage = text;
-// });
-// print('Selected Percentage: $selectedPercentage');

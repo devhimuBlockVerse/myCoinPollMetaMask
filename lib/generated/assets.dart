@@ -2,15 +2,21 @@
 class Assets {
   Assets._();
 
+  static const String abiECMContractABI = 'assets/abi/ECMContractABI.json';
+  static const String abiECMStakingContractABI = 'assets/abi/ECMStakingContractABI.json';
+  static const String abiIERC20ABI = 'assets/abi/IERC20ABI.json';
   static const String abiMyContract = 'assets/abi/MyContract.json';
   static const String abiSaleContractABI = 'assets/abi/SaleContractABI.json';
+  static const String assetsAbiECMStakingContractABI = 'assets/abi/ECMStakingContractABI.json';
   static const String assetsAbiMyContract = 'assets/abi/MyContract.json';
+  static const String assetsAbiSaleContractABI = 'assets/abi/SaleContractABI.json';
   static const String assetsAppIcon = 'assets/app_icon.png';
   static const String fontsMontserratMedium = 'assets/fonts/Montserrat-Medium.ttf';
   static const String fontsOxaniumRegular = 'assets/fonts/Oxanium-Regular.ttf';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEth = 'assets/icons/eth.png';
+  static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
-  static const String reownAppkitWalletFlutterAssetsAppIcon = 'assets/app_icon.png';
+  static const String mycoinpollMetamaskAssetsAppIcon = 'assets/app_icon.png';
 
 }

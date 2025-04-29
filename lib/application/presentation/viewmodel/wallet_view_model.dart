@@ -15,11 +15,18 @@ class WalletViewModel extends ChangeNotifier {
   String _walletAddress = '';
   bool _isLoading = false;
   bool _isConnected = false;
-   String? _balance;
+
+  String? _balance;
+  String? _minimumStake;
+  String? _maximumStake;
 
 
-   String? get balance => _balance;
-   String get walletAddress => _walletAddress;
+
+
+  String? get balance => _balance;
+  String? get minimumStake => _minimumStake;
+  String? get maximumStake => _maximumStake;
+  String get walletAddress => _walletAddress;
   bool get isConnected => _isConnected;
   bool get isLoading => _isLoading;
 
@@ -139,6 +146,10 @@ class WalletViewModel extends ChangeNotifier {
         try{
           final balance = await getBalance();
           print("Updated new Balance : $balance");
+          await getMinimunStake();
+          await getMaximumStake();
+
+
         }catch(e){
           print("Failed to refresh balance: $e");
         }
@@ -681,8 +692,133 @@ class WalletViewModel extends ChangeNotifier {
     }
   }
 
+   Future<int> getTokenDecimals() async {
+     final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
+     final abiData = jsonDecode(abiString);
 
-  /// Mock function to format decimal value to token unit (BigInt)
+     final contract = DeployedContract(
+       ContractAbi.fromJson(jsonEncode(abiData), 'eCommerce Coin'),
+       EthereumAddress.fromHex('0x30C8E35377208ebe1b04f78B3008AAc408F00D1d'),
+     );
+
+     final decimalsResult = await appKitModal!.requestReadContract(
+       deployedContract: contract,
+       topic: appKitModal!.session!.topic,
+       chainId: appKitModal!.selectedChain!.chainId,
+       functionName: 'decimals',
+     );
+
+     return (decimalsResult[0] as BigInt).toInt();
+   }
+
+
+  Future<String> getMinimunStake() async {
+     if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
+       throw Exception("Wallet not Connected");
+     }
+
+     try {
+       _isLoading = true;
+       notifyListeners();
+
+       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
+       final abiData = jsonDecode(abiString);
+       final decimals = await getTokenDecimals();
+       print("Decimals: $decimals");
+
+       final tetherContract = DeployedContract(
+         ContractAbi.fromJson(
+           jsonEncode(abiData),
+           'eCommerce Coin',
+         ),
+         EthereumAddress.fromHex(
+             '0x0Bce6B3f0412c6650157DC0De959bf548F063833'),
+       );
+
+       final chainID = appKitModal!.selectedChain!.chainId;
+       print("Chain ID : $chainID");
+
+
+
+       final minimumStakeResult = await appKitModal!.requestReadContract(
+           topic: appKitModal!.session!.topic,
+           chainId: chainID,
+           deployedContract: tetherContract,
+           functionName: 'minimumStake',
+        );
+
+       final min = (minimumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
+       _minimumStake = min.toDouble().toStringAsFixed(0);
+       print("Raw minimumStakeResult: ${minimumStakeResult[0]}");
+
+       notifyListeners();
+       return _minimumStake!;
+
+     } catch (e) {
+       print('Error getting minimum stake: $e');
+       _minimumStake = null;
+       rethrow;
+     } finally {
+       _isLoading = false;
+       notifyListeners();
+     }
+   }
+
+  Future<String> getMaximumStake() async {
+     if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
+       throw Exception("Wallet not Connected");
+     }
+
+     try {
+       _isLoading = true;
+       notifyListeners();
+
+       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
+       final abiData = jsonDecode(abiString);
+       final decimals = await getTokenDecimals();
+       print("Decimals: $decimals");
+
+       final tetherContract = DeployedContract(
+         ContractAbi.fromJson(
+           jsonEncode(abiData),
+           'eCommerce Coin',
+         ),
+         EthereumAddress.fromHex(
+             '0x0Bce6B3f0412c6650157DC0De959bf548F063833'),
+       );
+
+       final chainID = appKitModal!.selectedChain!.chainId;
+       print("Chain ID : $chainID");
+
+
+
+       final maximumStakeResult = await appKitModal!.requestReadContract(
+           topic: appKitModal!.session!.topic,
+           chainId: chainID,
+           deployedContract: tetherContract,
+           functionName: 'maximumStake',
+        );
+
+       final max = (maximumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
+       _maximumStake = max.toDouble().toStringAsFixed(0);
+       print("Raw maximumStakeResult: ${maximumStakeResult[0]}");
+
+       notifyListeners();
+       return _maximumStake!;
+
+     } catch (e) {
+       print('Error getting Maximum stake: $e');
+       _maximumStake = null;
+       rethrow;
+
+     } finally {
+       _isLoading = false;
+       notifyListeners();
+     }
+   }
+
+
+   /// Mock function to format decimal value to token unit (BigInt)
   BigInt _formatValue(double amount, {required BigInt decimals}) {
     final decimalPlaces = decimals.toInt(); // e.g., 6 for USDT, 18 for ETH
     final factor = BigInt.from(10).pow(decimalPlaces);

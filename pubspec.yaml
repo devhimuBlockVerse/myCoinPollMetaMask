@@ -73,6 +73,7 @@ flutter:
     - assets/app_icon.png
     - assets/abi/MyContract.json
     - assets/abi/SaleContractABI.json
+    - assets/abi/ECMStakingContractABI.json
     - assets/icons/
    #   - images/a_dot_ham.jpeg
 

@@ -108,6 +108,9 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     calculateRewards();
      final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
     walletProvider.getBalance();
+    walletProvider.getMinimunStake();
+    walletProvider.getMaximumStake();
+
   }
   @override
   void dispose() {
@@ -426,23 +429,37 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Min: 20 ECM',
-                    style: TextStyle(
-                      fontSize: 12 * textScale,
-                      color: Colors.white60,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Montserrat',
-                    ),
+                  Consumer<WalletViewModel>(
+                    builder: (context, model, child){
+
+                      return Text(
+                        'Min: ${model.minimumStake ?? '...'} ECM',
+
+                        style: TextStyle(
+                          fontSize: 12 * textScale,
+                          color: Colors.white60,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Montserrat',
+                        ),
+                      );
+                    }
                   ),
-                  Text(
-                    'Max: 5000 ECM',
-                    style: TextStyle(
-                      fontSize: 12 * textScale,
-                      color: Colors.white60,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Montserrat',
-                    ),
+
+                  Consumer<WalletViewModel>(
+                    builder: (context, model, child){
+
+                      return  Text(
+                        'Max: ${model.maximumStake ?? '...'} ECM',
+
+                        style: TextStyle(
+                        fontSize: 12 * textScale,
+                        color: Colors.white60,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Montserrat',
+                      ),
+                      );
+                    }
+
                   ),
                 ],
               ),

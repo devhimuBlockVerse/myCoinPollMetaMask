@@ -52,6 +52,7 @@ class CustomGradientButton extends StatelessWidget {
                       fontSize: screenWidth * 0.045 * textScale, // responsive text
                     ),
                     maxLines: 1,
+                    textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

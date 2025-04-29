@@ -44,6 +44,8 @@ class _GradientButtonState extends State<GradientButton> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final textScale = MediaQuery.of(context).textScaleFactor;
+
     return GestureDetector(
       onTap: widget.onPressed,
       child: Container(
@@ -63,28 +65,38 @@ class _GradientButtonState extends State<GradientButton> {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.text,
-                style: const TextStyle(
-                  fontFamily: 'SansSerif',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
+          child: Center(
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
 
-              if (widget.trailingIcon != null) ...[
-                const SizedBox(width: 8),
-                // Apply the rotation here
-                Transform.rotate(
-                  angle: 90 * 3.1415926535 / 50, // Convert degrees to radians
-                  child: widget.trailingIcon!,
+              children: [
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    widget.text,
+                    style:  TextStyle(
+                      fontFamily: 'SansSerif',
+                      fontWeight: FontWeight.w700,
+                      // fontSize: screenWidth * 0.045 * textScale, // responsive text
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                  ),
                 ),
+
+                if (widget.trailingIcon != null) ...[
+                  const SizedBox(width: 8),
+                  // Apply the rotation here
+                  Transform.rotate(
+                    angle: 90 * 3.1415926535 / 50, // Convert degrees to radians
+                    child: widget.trailingIcon!,
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

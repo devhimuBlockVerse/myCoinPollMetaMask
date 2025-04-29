@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../framework/components/statke_now_animation_button.dart';
 import 'package:intl/intl.dart';
 
+import '../../../framework/utils/routes/route_names.dart';
 import '../viewmodel/wallet_view_model.dart';
 
 class EcmStakingScreen extends StatefulWidget {
@@ -14,9 +15,8 @@ class EcmStakingScreen extends StatefulWidget {
   State<EcmStakingScreen> createState() => _EcmStakingScreenState();
 }
 class _EcmStakingScreenState extends State<EcmStakingScreen> {
-  String selectedPercentage = '25%'; // Default selected
+  String selectedPercentage = ''; // Default selected
   String selectedDay = '7D'; // Default selected
-  double originalInputAmount = 0.0; // Store user input
 
   double estimatedProfit = 0.0;
   double totalWithReward = 0.0;
@@ -98,21 +98,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   bool isLoading = true;
   String? error;
 
-  Future<void> _fetchBalance() async {
-    try {
-      final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
-      final result = await walletProvider.getBalance();
-      setState(() {
-        balance = result;
-        isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        error = e.toString();
-        isLoading = false;
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -121,8 +106,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     _filteredData = List.from(_stakingData);
     ecmAmountController.addListener(calculateRewards);
     calculateRewards();
-    // _fetchBalance();
-    final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+     final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
     walletProvider.getBalance();
   }
   @override
@@ -257,6 +241,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         trailingIcon: Icon(
                           Icons.arrow_forward,
                           color: Colors.white,
+                          size: screenHeight * 0.02,
                         ),
                         onPressed: () {
                           //  Add your action here
@@ -266,11 +251,12 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                       SizedBox(width: screenWidth * 0.03),
                       /// Buy ECM  Button Section
-
                       BuyEcm(
                         text: 'Buy ECM',
-                        trailingIcon: const Icon(Icons.shopping_cart, color: Colors.white),
+                        trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                         onPressed: () {
+                          Navigator.pushNamed(context, RoutesName.digitalModel);
+
                           print('Button tapped!');
                         },
                       ),
@@ -340,12 +326,13 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         ),
                         // const SizedBox(height: 16),
                          SizedBox(height: screenHeight * 0.03),
-                        SizedBox(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: SizedBox(
-                              width: screenWidth * 1.4,
-                              child: SingleChildScrollView(
+
+                        LayoutBuilder(
+                          builder: (context, constraints){
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(minWidth: constraints.maxWidth),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -354,14 +341,14 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                       color: const Color(0xFF151A30),
                                       child: Row(
                                         children: [
-                                          _buildTableHeaderCell('SL'),
-                                          _buildTableHeaderCell('Date'),
-                                          _buildTableHeaderCell('Amount'),
-                                          _buildTableHeaderCell('ARR - Duration'),
-                                          _buildTableHeaderCell('Reward'),
-                                          _buildTableHeaderCell('Total Receive'),
-                                          _buildTableHeaderCell('Remaining?'),
-                                          _buildTableHeaderCell('Status'),
+                                          _stakingHistoryTableCell('SL', isHeader: true),
+                                          _stakingHistoryTableCell('Date', isHeader: true),
+                                          _stakingHistoryTableCell('Amount', isHeader: true),
+                                          _stakingHistoryTableCell('ARR - Duration', isHeader: true),
+                                          _stakingHistoryTableCell('Reward', isHeader: true),
+                                          _stakingHistoryTableCell('Total Receive', isHeader: true),
+                                          _stakingHistoryTableCell('Remaining?', isHeader: true),
+                                          _stakingHistoryTableCell('Status', isHeader: true),
                                         ],
                                       ),
                                     ),
@@ -388,25 +375,14 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                               ),
                                               child: Row(
                                                 children: [
-                                                  _buildTableRowCell('${index + 1}'),
-                                                  Divider(
-                                                    color: Colors.white10,
-                                                    thickness: 0.5,
-                                                    height: 1,
-                                                  ),
-                                                  _buildTableRowCell(data['date'] ?? ''),
-
-                                                  _buildTableRowCell(data['amount'] ?? ''),
-
-                                                  Divider(
-                                                    color: Colors.white10,
-                                                    thickness: 0.5,
-                                                    height: 1,
-                                                  ),_buildTableRowCell(data['arrDuration'] ?? ''),
-                                                  _buildTableRowCell(data['reward'] ?? ''),
-                                                  _buildTableRowCell(data['totalReceive'] ?? ''),
-                                                  _buildTableRowCell(data['remaining'] ?? ''),
-                                                  _buildTableRowCell(data['status'] ?? ''),
+                                                  _stakingHistoryTableCell('${index + 1}'),
+                                                  _stakingHistoryTableCell(data['date'] ?? ''),
+                                                  _stakingHistoryTableCell(data['amount'] ?? ''),
+                                                  _stakingHistoryTableCell(data['arrDuration'] ?? ''),
+                                                  _stakingHistoryTableCell(data['reward'] ?? ''),
+                                                  _stakingHistoryTableCell(data['totalReceive'] ?? ''),
+                                                  _stakingHistoryTableCell(data['remaining'] ?? ''),
+                                                  _stakingHistoryTableCell(data['status'] ?? ''),
                                                 ],
                                               ),
 
@@ -418,8 +394,9 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                   ],
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+
+                          }
                         ),
 
                       ],
@@ -437,11 +414,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
   Widget ecmInputSection(double textScale, double screenWidth, double screenHeight) {
 
-    // if(isLoading){
-    //   return const Center(
-    //     child: CircularProgressIndicator(),
-    //   );
-    // }
     if(error != null){
       return Text('Error: $error', style: TextStyle(color: Colors.red));
     }
@@ -515,8 +487,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
-                          originalInputAmount = double.tryParse(value) ?? 0.0;
-                          selectedPercentage = '';
+                           selectedPercentage = '';
                         });
                       },
                     ),
@@ -534,15 +505,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                           color: Colors.white60,
                         ),
                       ),
-                      // Text(
-                      //   '$balance ECM',
-                      //   style: TextStyle(
-                      //     fontSize: 12 * textScale,
-                      //     color: Colors.white,
-                      //     fontWeight: FontWeight.w500,
-                      //   ),
-                      // ),
-
                       Consumer<WalletViewModel>(
                         builder: (context, model, child){
 
@@ -576,46 +538,51 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
             ),
 
             const SizedBox(height: 3),
-
             // Percentage Buttons Row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _percentageButton('25%', textScale),
-                _percentageButton('50%', textScale),
-                _percentageButton('75%', textScale),
-                _percentageButton('Max', textScale),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _percentageButton('25%', textScale),
+                  _percentageButton('50%', textScale),
+                  _percentageButton('75%', textScale),
+                  _percentageButton('Max', textScale),
+                ],
+              ),
             ),
           ],
         );
-
-
 
   }
   Widget _percentageButton(String text, double textScale) {
     bool isSelected = selectedPercentage == text;
 
+    final walletProvider = Provider.of<WalletViewModel>(context, listen: true);
+    final balanceStr = walletProvider.balance;
     return InkWell(
       onTap: () {
-        setState(() {
-          selectedPercentage = text;
+        if(balanceStr != null){
+          final balance = double.tryParse(balanceStr) ?? 0.0;
 
-          double percentage = 0.0;
-          if (text == '25%') {
-            percentage = 0.25;
-          } else if (text == '50%') {
-            percentage = 0.5;
-          } else if (text == '75%') {
-            percentage = 0.75;
-          } else if (text == 'Max') {
-            percentage = 1.0;
-          }
+          double percentageValue = switch (text) {
+            '25%' => balance * 0.25,
+            '50%' => balance * 0.50,
+            '75%' => balance * 0.75,
+            'Max' => balance,
+            _ => 0.0
+          };
 
-          double calculatedAmount = originalInputAmount * percentage;
-          ecmAmountController.text = calculatedAmount.toStringAsFixed(2); // You can format it as you wish
-        });
-        print('Selected Percentage: $selectedPercentage');
+          ecmAmountController.text = percentageValue.toStringAsFixed(2);
+          calculateRewards();
+
+          setState(() {
+            selectedPercentage = text;
+          });
+
+          print('Selected Percentage: $selectedPercentage');
+        }
+
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -1027,32 +994,25 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
 
 
-
-  Widget _buildTableHeaderCell(String title) {
-    return Expanded(
+  Widget _stakingHistoryTableCell(String text, {bool isHeader = false}) {
+    return SizedBox(
+      width: 100,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         child: Text(
-          title,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+          ),
           textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
   }
 
-  Widget _buildTableRowCell(String value) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(
-          value,
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
+
 
   void _loadDummyData(){
     _stakingData = [
@@ -1107,3 +1067,31 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 }
 
 
+// if(balanceStr != null){
+//   final balance = double.tryParse(balanceStr) ?? 0.0;
+//   double percentageValue = 0.0;
+//
+//   switch(text){
+//     case '25%':
+//       percentageValue = balance * 0.25;
+//       break;
+//     case '50%':
+//       percentageValue =  balance * 0.50;
+//       break;
+//     case '75%':
+//       percentageValue = balance *  0.75;
+//       break;
+//     case 'Max':
+//       percentageValue = balance;
+//       break;
+//   }
+//
+//
+//
+//   ecmAmountController.text = percentageValue.toStringAsFixed(2);
+//   calculateRewards();
+// }
+// setState(() {
+//   selectedPercentage = text;
+// });
+// print('Selected Percentage: $selectedPercentage');

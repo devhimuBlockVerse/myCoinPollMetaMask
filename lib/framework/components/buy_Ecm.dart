@@ -90,24 +90,31 @@ class _BuyEcmState extends State<BuyEcm> {
                 color: _isPressed ? null : Colors.transparent,
                 borderRadius: BorderRadius.circular(24 - (_isPressed ? 0 : borderWidth)),
               ),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      widget.text,
-                      style: const TextStyle(
-                        fontFamily: 'SansSerif',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                        color: Colors.white, // Always white
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+
+                        child: Text(
+                          widget.text,
+                          style: const TextStyle(
+                            fontFamily: 'SansSerif',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            color: Colors.white, // Always white
+                          ),
+                        ),
                       ),
-                    ),
-                    if (widget.trailingIcon != null) ...[
-                      const SizedBox(width: 8),
-                      widget.trailingIcon!, // No rotation anymore if not needed
+                      if (widget.trailingIcon != null) ...[
+                        const SizedBox(width: 8),
+                        widget.trailingIcon!, // No rotation anymore if not needed
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             ),

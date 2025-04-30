@@ -83,6 +83,7 @@ flutter:
     - assets/abi/IERC20ABI.json
     - assets/abi/ECMContractABI.json
     - assets/icons/
+    - assets/icons/frame.png
    #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -105,6 +106,12 @@ flutter:
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat-Medium.ttf
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Medium.ttf
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+        - asset: assets/fonts/Poppins-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

@@ -704,6 +704,7 @@ class WalletViewModel extends ChangeNotifier {
 
      return (decimalsResult[0] as BigInt).toInt();
    }
+
   Future<String> getMinimunStake() async {
      if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
        throw Exception("Wallet not Connected");
@@ -755,6 +756,7 @@ class WalletViewModel extends ChangeNotifier {
        notifyListeners();
      }
    }
+
   Future<String> getMaximumStake() async {
      if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
        throw Exception("Wallet not Connected");
@@ -807,7 +809,6 @@ class WalletViewModel extends ChangeNotifier {
        notifyListeners();
      }
    }
-
 
    /// Mock function to format decimal value to token unit (BigInt)
   BigInt _formatValue(double amount, {required BigInt decimals}) {

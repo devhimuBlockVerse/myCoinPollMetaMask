@@ -16,7 +16,8 @@ class EcmStakingScreen extends StatefulWidget {
 }
 class _EcmStakingScreenState extends State<EcmStakingScreen> {
   String selectedPercentage = ''; // Default selected
-  String selectedDay = '7D'; // Default selected
+  // String selectedDay = '7D'; // Default selected
+  String selectedDay = ''; // Default selected
 
   double estimatedProfit = 0.0;
   double totalWithReward = 0.0;
@@ -768,7 +769,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     setState(() {
-                      selectedDay = '${value}D';
+                      // selectedDay = '${value}D';
                       selectedDay = '';
                     });
                   },
@@ -1022,6 +1023,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
       ),
     );
   }
+
 
 
 

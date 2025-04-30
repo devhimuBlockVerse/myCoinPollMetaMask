@@ -206,14 +206,23 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 1;
     double screenHeight = MediaQuery.of(context).size.height * 1;
-    return SafeArea(child: WillPopScope(
-      onWillPop:()async{
-        final value = await showDialog<bool>(
+    return SafeArea(
+
+        child: WillPopScope(
+
+          onWillPop:()async{
+
+            final value = await showDialog<bool>(
+
             context: context,
+
             builder: (context){
+
               return Theme(
+
                 data: ThemeData(
                     dialogBackgroundColor: Colors.white
+
                 ),
                 child: AlertDialog(
                   contentPadding: EdgeInsets.symmetric(
@@ -303,21 +312,15 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       },
 
       child: Scaffold(
+        backgroundColor: Colors.transparent,
         body:  _pages[_currentIndex],
         bottomNavigationBar: Container(
           height: screenHeight * 0.08,
           // color: AppColors.bottomNavBgColor,
           padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
           decoration: BoxDecoration(
-            color: Color(0xFF1C1B2A), // Dark background like your image
-            borderRadius: BorderRadius.circular(2), // Rounded corners
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 10,
-              ),
-            ],
+            color: Color(0xFF2C2E41),
+            borderRadius: BorderRadius.circular(15),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

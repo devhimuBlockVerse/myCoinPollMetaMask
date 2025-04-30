@@ -98,7 +98,6 @@ class _BuyEcmState extends State<BuyEcm> {
                     children: [
                       FittedBox(
                         fit: BoxFit.scaleDown,
-
                         child: Text(
                           widget.text,
                           style: const TextStyle(

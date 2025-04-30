@@ -18,10 +18,13 @@ class Assets {
   static const String iconsAndroverse = 'assets/icons/androverse.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEth = 'assets/icons/eth.png';
-  static const String iconsGrid = 'assets/icons/features.png';
+  static const String iconsFeatures = 'assets/icons/features.png';
+  static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsHome = 'assets/icons/home.png';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
+  static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.png';
+  static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String mycoinpollMetamaskAssetsAppIcon = 'assets/app_icon.png';

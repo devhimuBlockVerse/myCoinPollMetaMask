@@ -52,151 +52,314 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
      super.dispose();
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   double screenWidth = MediaQuery.of(context).size.width * 1;
+  //   double screenHeight = MediaQuery.of(context).size.height * 1;
+  //   return SafeArea(child: WillPopScope(
+  //       onWillPop:()async{
+  //         final value = await showDialog<bool>(
+  //             context: context,
+  //             builder: (context){
+  //               return Theme(
+  //                   data: ThemeData(
+  //                       dialogBackgroundColor: Colors.white
+  //                   ),
+  //                   child: AlertDialog(
+  //                     contentPadding: EdgeInsets.symmetric(
+  //                       horizontal: screenWidth * 0.02,
+  //                       vertical: screenHeight * 0.02,
+  //                     ),
+  //                     insetPadding: EdgeInsets.symmetric(
+  //                       horizontal: screenWidth * 0.1,
+  //                       vertical: screenHeight * 0.2,
+  //                     ),
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(10),
+  //                     ),
+  //                     content: Text(
+  //                       "  Are you sure you want to exit ?",
+  //                       style: TextStyle(fontSize: 18),
+  //                     ),
+  //                     actions: [
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           GestureDetector(
+  //                             onTap: () {
+  //                               exit(0);
+  //                             },
+  //                             child: Container(
+  //                               width: screenWidth * 0.2,
+  //                               padding: EdgeInsets.symmetric(
+  //                                 vertical: screenHeight * 0.011,
+  //                               ),
+  //                               decoration: BoxDecoration(
+  //                                 color: AppColors.loginButtonColor,
+  //                                 borderRadius: BorderRadius.circular(15),
+  //                               ),
+  //                               child: Center(
+  //                                 child: Text(
+  //                                   'Yes',
+  //                                   style: TextStyle(
+  //                                     color: Colors.white,
+  //                                     fontSize: 18,
+  //                                     fontWeight: FontWeight.w600,
+  //                                     letterSpacing: 1,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           SizedBox(
+  //                             width: screenWidth * 0.020,
+  //                           ),
+  //                           GestureDetector(
+  //                             onTap: () => Navigator.of(context).pop(false),
+  //                             child: Container(
+  //                               width: screenWidth * 0.2,
+  //                               padding: EdgeInsets.symmetric(
+  //                                 vertical: screenHeight * 0.011,
+  //                                 // horizontal: screenWidth * 0.001
+  //                               ),
+  //                               decoration: BoxDecoration(
+  //                                 color: AppColors.whiteColor,
+  //                                 borderRadius: BorderRadius.circular(15),
+  //                               ),
+  //                               child: Center(
+  //                                 child: Text(
+  //                                   'No',
+  //                                   style: TextStyle(
+  //                                     color: Colors.black,
+  //                                     fontSize: 18,
+  //                                     fontWeight: FontWeight.w600,
+  //                                     letterSpacing: 1,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       )
+  //                     ],
+  //                   ),
+  //               );
+  //             });
+  //             if(value != null){
+  //               return Future.value(value);
+  //             }else{
+  //               return Future.value(false);
+  //             }
+  //         },
+  //
+  //           child: Scaffold(
+  //             body:  _pages[_currentIndex],
+  //             bottomNavigationBar: Container(
+  //               height: screenHeight * 0.08,
+  //               color: AppColors.bottomNavBgColor,
+  //               padding: EdgeInsets.symmetric(horizontal: 15),
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: List.generate(5, (index) {
+  //                   bool isSelected = _currentIndex == index;
+  //                   return InkWell(
+  //                     onTap: () {
+  //                       setState(() {
+  //                         _currentIndex = index;
+  //                       });
+  //                     },
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Container(
+  //                           width: screenWidth*0.14,
+  //                           child: Image.asset(
+  //                             _imgPaths[index],
+  //                             color: isSelected ? Color(0xFF6BB2FF) :  Color(0xFFB2B0B6),
+  //                             height: 25,
+  //                             width: 26,
+  //                           ),
+  //                         ),
+  //                         SizedBox(height: 5),
+  //                         Text(
+  //                           _labels[index],
+  //                           style: TextStyle(
+  //                               color: isSelected ? Color(0xFF6BB2FF) : Color(0xFFB2B0B6),
+  //                               fontSize:isSelected ? 12:10,
+  //                               fontWeight: isSelected ? FontWeight.bold: FontWeight.normal
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   );
+  //                 }),
+  //               ),
+  //             ),
+  //           ),
+  //
+  //   ));
+  // }
+
+
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 1;
     double screenHeight = MediaQuery.of(context).size.height * 1;
     return SafeArea(child: WillPopScope(
-        onWillPop:()async{
-          final value = await showDialog<bool>(
-              context: context,
-              builder: (context){
-                return Theme(
-                    data: ThemeData(
-                        dialogBackgroundColor: Colors.white
-                    ),
-                    child: AlertDialog(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.02,
-                        vertical: screenHeight * 0.02,
-                      ),
-                      insetPadding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.1,
-                        vertical: screenHeight * 0.2,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      content: Text(
-                        "  Are you sure you want to exit ?",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      actions: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                exit(0);
-                              },
-                              child: Container(
-                                width: screenWidth * 0.2,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.011,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.loginButtonColor,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Yes',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: screenWidth * 0.020,
-                            ),
-                            GestureDetector(
-                              onTap: () => Navigator.of(context).pop(false),
-                              child: Container(
-                                width: screenWidth * 0.2,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.011,
-                                  // horizontal: screenWidth * 0.001
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'No',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                );
-              });
-              if(value != null){
-                return Future.value(value);
-              }else{
-                return Future.value(false);
-              }
-          },
-
-            child: Scaffold(
-              body:  _pages[_currentIndex],
-              bottomNavigationBar: Container(
-                height: screenHeight * 0.08,
-                color: AppColors.bottomNavBgColor,
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(5, (index) {
-                    bool isSelected = _currentIndex == index;
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = index;
-
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: screenWidth*0.14,
-                            child: Image.asset(
-                              _imgPaths[index],
-                              height: 25,
-                              width: 26,
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            _labels[index],
-                            style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.white,
-                                fontSize:isSelected ? 12:10,
-                                fontWeight: isSelected ? FontWeight.bold: FontWeight.normal
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+      onWillPop:()async{
+        final value = await showDialog<bool>(
+            context: context,
+            builder: (context){
+              return Theme(
+                data: ThemeData(
+                    dialogBackgroundColor: Colors.white
                 ),
+                child: AlertDialog(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.02,
+                    vertical: screenHeight * 0.02,
+                  ),
+                  insetPadding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.1,
+                    vertical: screenHeight * 0.2,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  content: Text(
+                    "  Are you sure you want to exit ?",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  actions: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            exit(0);
+                          },
+                          child: Container(
+                            width: screenWidth * 0.2,
+                            padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.011,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.loginButtonColor,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Yes',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.020,
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(false),
+                          child: Container(
+                            width: screenWidth * 0.2,
+                            padding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.011,
+                              // horizontal: screenWidth * 0.001
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.whiteColor,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'No',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              );
+            });
+        if(value != null){
+          return Future.value(value);
+        }else{
+          return Future.value(false);
+        }
+      },
+
+      child: Scaffold(
+        body:  _pages[_currentIndex],
+        bottomNavigationBar: Container(
+          height: screenHeight * 0.08,
+          // color: AppColors.bottomNavBgColor,
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+          decoration: BoxDecoration(
+            color: Color(0xFF1C1B2A), // Dark background like your image
+            borderRadius: BorderRadius.circular(2), // Rounded corners
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 10,
               ),
-            ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(5, (index) {
+              bool isSelected = _currentIndex == index;
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: screenWidth*0.14,
+                      child: Image.asset(
+                        _imgPaths[index],
+                        color: isSelected ? Color(0xFF6BB2FF) :  Color(0xFFB2B0B6),
+                        height: 25,
+                        width: 26,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      _labels[index],
+                      style: TextStyle(
+                          color: isSelected ? Color(0xFF6BB2FF) : Color(0xFFB2B0B6),
+                          fontSize:isSelected ? 12:10,
+                          fontWeight: isSelected ? FontWeight.bold: FontWeight.normal
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
 
     ));
   }
+
+
 }

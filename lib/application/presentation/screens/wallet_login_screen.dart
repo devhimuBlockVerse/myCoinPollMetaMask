@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
 
@@ -91,7 +92,13 @@ class _WalletLoginScreenState
                       try {
                         await model.connectWallet(context);
                         if (context.mounted && model.isConnected) {
-                          Navigator.pushReplacementNamed(context, RoutesName.dashboard);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BottomNavBar(initialIndex: 0), // 👈 0 to show Dashboard tab
+                            ),
+                          );
+
                         } else {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

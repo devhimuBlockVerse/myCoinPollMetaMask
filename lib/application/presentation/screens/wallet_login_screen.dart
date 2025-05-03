@@ -3,6 +3,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_
 import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
 
+import '../viewmodel/bottom_nav_provider.dart';
 import '../viewmodel/wallet_view_model.dart';
 import 'dashboard.dart';
 
@@ -92,12 +93,13 @@ class _WalletLoginScreenState
                       try {
                         await model.connectWallet(context);
                         if (context.mounted && model.isConnected) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BottomNavBar(initialIndex: 0), // 👈 0 to show Dashboard tab
-                            ),
-                          );
+                          // Navigator.pushReplacement(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => BottomNavBar(initialIndex: 0), // 👈 0 to show Dashboard tab
+                          //   ),
+                          // );
+                          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
 
                         } else {
                           if (context.mounted) {

@@ -19,7 +19,10 @@ class Assets {
   static const String fontsPoppinsMedium = 'assets/fonts/Poppins-Medium.ttf';
   static const String fontsPoppinsRegular = 'assets/fonts/Poppins-Regular.ttf';
   static const String fontsPoppinsSemiBold = 'assets/fonts/Poppins-SemiBold.ttf';
+  static const String fontsPoppinsSemiBoldItalic = 'assets/fonts/Poppins-SemiBoldItalic.ttf';
   static const String iconsAndroverse = 'assets/icons/androverse.png';
+  static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
+  static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';

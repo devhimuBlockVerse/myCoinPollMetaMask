@@ -3,7 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
 
+import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/dashboard.dart';
+import 'application/presentation/screens/features/features_screen.dart';
+import 'application/presentation/screens/home/home_screen.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 import 'framework/res/colors.dart';
 import 'framework/utils/routes/routes.dart';
@@ -51,10 +54,10 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true,
         ),
-        // home: const DashboardView(),
-        // home:  DigitalModelScreen(),
-        onGenerateRoute: Routes.generateRoute,
-        initialRoute: RoutesName.walletLogin,
+        // home:  FeaturesScreen(),
+        home:  BottomNavBar(),
+        // onGenerateRoute: Routes.generateRoute,
+        // initialRoute: RoutesName.walletLogin,
 
       ),
     );

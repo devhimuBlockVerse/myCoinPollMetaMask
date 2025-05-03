@@ -75,7 +75,7 @@ class WalletViewModel extends ChangeNotifier {
           showMainWallets: true,
         ),
       );
-      await appKitModal?.init();
+      await appKitModal!.init();
       ///Saving User Connected Session
       appKitModal!.onModalConnect.subscribe((session)async {
         _isConnected = true;

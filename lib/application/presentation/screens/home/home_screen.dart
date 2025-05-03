@@ -4,6 +4,7 @@ import 'package:mycoinpoll_metamask/framework/components/disconnectButton.dart';
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
+import '../bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+
       extendBodyBehindAppBar: true,
       backgroundColor: Color(0xFF0B0A1E),
       body: Stack(
@@ -52,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
              ),
              child: Column(
                children: [
+
                  /// Hello + Name + Settings Section
                  Row(
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,

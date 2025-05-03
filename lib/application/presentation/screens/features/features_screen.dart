@@ -62,6 +62,8 @@ class _FeaturesScreenState
               ),
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                 
                     FeatureCard(
@@ -76,7 +78,7 @@ class _FeaturesScreenState
                     ),
                 
                 
-                    SizedBox(height: screenHeight * 0.01),
+                    SizedBox(height: screenHeight * 0.016),
                     FeatureCard(
                       iconPath: 'assets/icons/ecmToken.png',
                       title: 'ECM Token',
@@ -88,7 +90,7 @@ class _FeaturesScreenState
                       },
                     ),
 
-                    SizedBox(height: screenHeight * 0.01),
+                    SizedBox(height: screenHeight * 0.016),
                     FeatureCard(
                       iconPath: 'assets/icons/communityVoting.png',
                       title: 'Community Voting',
@@ -99,7 +101,7 @@ class _FeaturesScreenState
                         // Navigate or do any action here
                       },
                     ),
-                    SizedBox(height: screenHeight * 0.01),
+                    SizedBox(height: screenHeight * 0.016),
                     FeatureCard(
                       iconPath: 'assets/icons/educationalRes.png',
                       title: 'Educational Resources',
@@ -110,7 +112,7 @@ class _FeaturesScreenState
                         // Navigate or do any action here
                       },
                     ),
-                    SizedBox(height: screenHeight * 0.01),
+                    SizedBox(height: screenHeight * 0.016),
                     FeatureCard(
                       iconPath: 'assets/icons/metaVerseIntegration.png',
                       title: 'Metaverse Integration',
@@ -121,7 +123,7 @@ class _FeaturesScreenState
                         // Navigate or do any action here
                       },
                     ),
-                    SizedBox(height: screenHeight * 0.01),
+                    SizedBox(height: screenHeight * 0.016),
                     FeatureCard(
                       iconPath: 'assets/icons/projectLaunch.png',
                       title: 'Project Launches',

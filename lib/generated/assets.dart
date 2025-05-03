@@ -39,9 +39,11 @@ class Assets {
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.png';
+  static const String iconsProfileIcon = 'assets/icons/profileIcon.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsTimer = 'assets/icons/timer.png';
+  static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String mycoinpollMetamaskAssetsAppIcon = 'assets/app_icon.png';
 

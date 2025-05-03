@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/androverse/androverse_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/features/features_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/learnAndEarn/learn&build_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
+ import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/res/colors.dart';
 import '../viewmodel/bottom_nav_provider.dart';
@@ -263,17 +263,17 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     FeaturesScreen(),
     AndroVerseScreen(),
     NewsScreen(),
-    LearnAndBuildScreen(),
+    ProfileScreen(),
   ];
 
-  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Learn & Earn'];
+  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
 
   final List<String> _imgPaths = [
     'assets/icons/home.png',
     'assets/icons/features.png',
     'assets/icons/androverse.png',
     'assets/icons/news.png',
-    'assets/icons/learnearn.png',
+    'assets/icons/profileIcon.png',
   ];
 
   Future<bool> _onWillPop(double screenWidth, double screenHeight) async {

@@ -27,7 +27,9 @@ class Assets {
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
+  static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
+  static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';

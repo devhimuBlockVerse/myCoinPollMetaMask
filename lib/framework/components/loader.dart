@@ -23,7 +23,9 @@ class ECMProgressIndicator extends StatelessWidget {
      final width = size.width;
     final height = size.height;
     final textScale = MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.3);
-    final containerHeight = (isPortrait ? height * 0.03 : height * 0.05).clamp(6.0, 20.0);
+    // final containerHeight = (isPortrait ? height * 0.03 : height * 0.05).clamp(6.0, 20.0);
+    final containerHeight = (isPortrait ? height * 0.015 : height * 0.025).clamp(6.0, 20.0);
+
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * 0.04),
@@ -31,35 +33,40 @@ class ECMProgressIndicator extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: FittedBox(
+              Flexible(
+                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
                     'Stage $stageIndex: ${currentECM.toStringAsFixed(4)} ECM',
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontSize: 14 * textScale,
+                      fontSize: 12 * textScale,
                       color: Colors.white,
+                      height: 0.8,
                       fontWeight: FontWeight.w400,
-                      fontFamily: 'Montserrat',
+                      fontFamily: 'Poppins',
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: FittedBox(
+               // SizedBox(width: 90,),
+              Flexible(
+                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
                     'Max: ${maxECM.toStringAsFixed(1)} ECM',
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 14 * textScale,
+                      fontSize: 12 * textScale,
                       color: Colors.white,
+                      height: 0.8,
                       fontWeight: FontWeight.w400,
-                      fontFamily: 'Montserrat',
+                      fontFamily: 'Poppins',
                     ),
                   ),
                 ),

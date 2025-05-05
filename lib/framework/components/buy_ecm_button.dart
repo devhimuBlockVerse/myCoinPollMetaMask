@@ -52,47 +52,44 @@ class CustomGradientButton extends StatelessWidget {
 
         return GestureDetector(
           onTap: onTap,
-          child: ClipPath(
-            clipper: BuyEcmClipper(),
-            child: Container(
-              width: buttonWidth,
-              height: buttonHeight,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: gradientColors,
-                ),
+          child: Container(
+            width: buttonWidth,
+            height: buttonHeight,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: gradientColors,
               ),
-              child: Center(
+            ),
+            child: Center(
 
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
 
-                  children: [
-                    if (leadingImagePath != null) ...[
-                      _buildImage(leadingImagePath!, imageSize),
-                      const SizedBox(width: 8),
-                    ],
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: screenWidth * 0.045 * textScale, // responsive text
-                        ),
-                        maxLines: 1,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (trailingImagePath != null) ...[
-                      const SizedBox(width: 8),
-                      _buildImage(trailingImagePath!, imageSize),
-                    ],
+                children: [
+                  if (leadingImagePath != null) ...[
+                    _buildImage(leadingImagePath!, imageSize),
+                    const SizedBox(width: 8),
                   ],
-                ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.045 * textScale, // responsive text
+                      ),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (trailingImagePath != null) ...[
+                    const SizedBox(width: 8),
+                    _buildImage(trailingImagePath!, imageSize),
+                  ],
+                ],
               ),
             ),
           ),

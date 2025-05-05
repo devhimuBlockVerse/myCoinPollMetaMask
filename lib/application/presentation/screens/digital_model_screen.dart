@@ -225,6 +225,8 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               ///Action Buttons
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+
                                 children: [
                                   //Buy with ETH Button
                                   Expanded(

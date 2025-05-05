@@ -790,18 +790,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(
                             height: 3),
-                        // const SizedBox(height: 8),
-                        if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                         // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                           CustomLabeledInputField(
-                            // labelText: '',
-                            labelText: 'Your Address:',
+                             labelText: 'Your Address:',
                             hintText: '${walletVM.walletAddress}',
                             controller: readingMoreController,
                             isReadOnly: true,
                           ),
                         const SizedBox(height: 3),
-
-                        if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                        CustomLabeledInputField(
+                          labelText: 'Referral Link:',
+                          hintText: ' https://mycoinpoll.com?ref=125482458661',
+                          controller: referredController,
+                          isReadOnly:
+                          false, // or false
+                        ),
+                        const SizedBox(height: 3),
+                        // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                           CustomLabeledInputField(
                             labelText: 'Referred By:',
                             hintText: 'Show and Enter Referred id..',
@@ -915,10 +920,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
                               : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
 
-                          style: const TextStyle(
+                          style:  TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontSize: screenWidth * 0.035,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Poppins',
+                            height: 0.6,
                           ),
                         ),
 

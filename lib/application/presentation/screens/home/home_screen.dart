@@ -759,6 +759,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
                width: screenWidth,
                decoration: BoxDecoration(
+                 border: Border.all(
+                     color: Colors.transparent
+                 ),
                 image:const DecorationImage(
                   image: AssetImage('assets/icons/buyEcmContainerImage.png'),
                   fit: BoxFit.fill,
@@ -770,274 +773,270 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(
-                      children: [
-                        const SizedBox(height: 8),
+                    const SizedBox(height: 8),
 
-                        ECMProgressIndicator(
-                          stageIndex: _stageIndex,
-                          currentECM: _currentECM,
-                          maxECM: _maxECM,
-                        ),
-                        const SizedBox(
-                            height: 1),
+                    // Stage &  MAx Section
+                    ECMProgressIndicator(
+                      stageIndex: _stageIndex,
+                      currentECM: _currentECM,
+                      maxECM: _maxECM,
+                    ),
 
-                        const Divider(
-                          color: Colors
-                              .white12,
-                          thickness: 2,
-                          height: 20,
-                        ),
-                        const SizedBox(
-                            height: 3),
-                         // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
+
+                    const Divider(
+                      color: Colors.white12,
+                      thickness: 1,
+                      height: 20,
+                     ),
+
+                     /// Address Section
+                     Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Column(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                           CustomLabeledInputField(
                              labelText: 'Your Address:',
-                            hintText: '${walletVM.walletAddress}',
-                            controller: readingMoreController,
-                            isReadOnly: true,
-                          ),
-                        const SizedBox(height: 3),
-                        CustomLabeledInputField(
-                          labelText: 'Referral Link:',
-                          hintText: ' https://mycoinpoll.com?ref=125482458661',
-                          controller: referredController,
-                          isReadOnly:
-                          false, // or false
-                        ),
-                        const SizedBox(height: 3),
-                        // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Referred By:',
-                            hintText: 'Show and Enter Referred id..',
-                            controller: referredController,
-                            isReadOnly:
-                            false, // or false
-                          ),
+                             hintText: '${walletVM.walletAddress}',
+                             controller: readingMoreController,
+                             isReadOnly: true,
+                           ),
+                           const SizedBox(height: 3),
+                           CustomLabeledInputField(
+                             labelText: 'Referral Link:',
+                             hintText: ' https://mycoinpoll.com?ref=125482458661',
+                             controller: referredController,
+                             isReadOnly: true,
+                             trailingIconAsset: 'assets/icons/copyImg.svg',
+                             onTrailingIconTap: () {
+                               print('Trailing icon tapped');
+                             },
+                           ),
+                           const SizedBox(height: 3),
+                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                           CustomLabeledInputField(
+                             labelText: 'Referred By:',
+                             hintText: 'Show and Enter Referred id..',
+                             controller: referredController,
+                             isReadOnly:
+                             false, // or false
+                           ),
 
-                        const SizedBox(height: 3),
+                         ],
+                       ),
+                     ),
+                    const Divider(
+                      color: Colors.white12,
+                      thickness: 1,
+                      height: 20,
+                    ),
 
-                        const Divider(
-                          color: Colors.white12,
-                          thickness: 2,
-                          height: 20,
-                        ),
-                        const SizedBox(height: 8),
+                    ///Action Buttons
+                    Padding(
+                      padding: const EdgeInsets.symmetric( horizontal: 38.0 , vertical: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //Buy with ETH Button
+                          Expanded(
+                            child: CustomButton(
+                              text: 'Buy with ETH',
+                              icon: 'assets/icons/eth.png',
+                              isActive: isETHActive,
+                              onPressed: ()async {
+                                try {
+                                  final stageInfo = await walletVM.getCurrentStageInfo();
+                                  final ethPrice = stageInfo['ethPrice'];
 
-                        Text(
-                          'ICO is Live',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Oxanium',
-                            height: 1.07,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+                                  setState(() {
+                                    _ethPrice = ethPrice;
+                                    isETHActive = true;
+                                    isUSDTActive = false;
 
-                        const SizedBox(height: 14),
+                                  });
+                                  _updatePayableAmount();
 
-                        ///Action Buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            //Buy with ETH Button
-                            Expanded(
-                              child: CustomButton(
-                                text: 'Buy with ETH',
-                                icon: 'assets/icons/eth.png',
-                                isActive: isETHActive,
-                                onPressed: ()async {
-                                  try {
-                                    final stageInfo = await walletVM.getCurrentStageInfo();
-                                    final ethPrice = stageInfo['ethPrice'];
-
-                                    setState(() {
-                                      _ethPrice = ethPrice;
-                                      isETHActive = true;
-                                      isUSDTActive = false;
-
-                                    });
-                                    _updatePayableAmount();
-
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      print('Error fetching stage info: ${e.toString()}');
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error fetching stage info: ${e.toString()}'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    print('Error fetching stage info: ${e.toString()}');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error fetching stage info: ${e.toString()}'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
                                   }
+                                }
 
-                                },
-                              ),
+                              },
+
                             ),
-                            const SizedBox(width: 14),
-                            //Buy with USDT Button
-                            Expanded(
-                              child:
-                              CustomButton(
-                                text: 'Buy with USDT',
-                                icon: 'assets/icons/usdt.png',
-                                isActive: isUSDTActive,
-                                onPressed: ()async {
-                                  try {
-                                    final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
-                                    final usdtPrice = stageInfo['usdtPrice'];
-
-                                    setState(() {
-                                      _usdtPrice = usdtPrice;
-                                      isETHActive = false;
-                                      isUSDTActive = true;
-                                    });
-                                    _updatePayableAmount();
-                                    print("Switched to USDT mode. USDT Price: $_usdtPrice");
-
-                                  } catch (e) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Error fetching stage info: ${e.toString()}'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  }
-
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-
-                        Text(
-                          isETHActive
-                              ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
-                              : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
-
-                          style:  TextStyle(
-                            color: Colors.white,
-                            fontSize: screenWidth * 0.035,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Poppins',
-                            height: 0.6,
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          //Buy with USDT Button
+                          Expanded(
+                            child:
+                            CustomButton(
+                              text: 'Buy with USDT',
+                              icon: 'assets/icons/usdt.png',
+                              isActive: isUSDTActive,
+                              onPressed: ()async {
+                                try {
+                                  final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
+                                  final usdtPrice = stageInfo['usdtPrice'];
 
-                        const SizedBox(height: 22),
+                                  setState(() {
+                                    _usdtPrice = usdtPrice;
+                                    isETHActive = false;
+                                    isUSDTActive = true;
+                                  });
+                                  _updatePayableAmount();
+                                  print("Switched to USDT mode. USDT Price: $_usdtPrice");
 
-                        CustomInputField(
-                          hintText: 'ECM Amount',
-                          iconAssetPath: 'assets/icons/ecm.png',
-                          controller: ecmController,
-                        ),
-                        const SizedBox(height: 12),
-                        CustomInputField(
-                          hintText: isETHActive ? 'ETH Payable' : 'USDT Payable',
-                          iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
-                          controller: usdtController,
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Error fetching stage info: ${e.toString()}'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
 
-                        ),
+                              },
 
-                        const SizedBox(height: 14),
-                        CustomGradientButton(
-                          label: 'Buy ECM',
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: MediaQuery.of(context).size.height * 0.05,
-                          leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
-                          onTap: () async {
-                            print("ECM Purchase triggered");
-                            try{
-                              final inputEth = ecmController.text.trim();
-                              print("User input: $inputEth");
-                              final ethDouble = double.tryParse(inputEth);
-                              print("Parsed double: $ethDouble");
-                              if (ethDouble == null || ethDouble <= 0) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Enter a valid ECM amount')),
-                                );
-                                return;
-                              }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 5),
 
-                              final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-                              // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
-                              final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                              print("ETH in Wei: $ecmAmountInWeiETH");
-                              print("USDT in smallest unit: $ecmAmountInWeiUSDT");
+                    Text(
+                      isETHActive
+                          ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
+                          : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
 
-                              final isETH = isETHActive;
-                              final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                              print("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                              print("Purchase Button Pressed");
+                      style:  TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.032,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        height: 0.6,
+                      ),
+                    ),
 
-                              if (isETH) {
-                                print("Calling buyECMWithETH with: $ecmAmountInWeiETH");
-                                await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
-                              } else  {
-                                print("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
-                                await walletVM.buyECMWithUSDT(amount,context);
-                              }
-                              print("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Purchase successful')),
-                              );
-                            }catch (e) {
-                              debugPrint("Buy ECM failed: $e");
-                            }
-                          },
-                          gradientColors: [
-                            Color(0xFF2D8EFF),
-                            Color(0xFF2EE4A4)
-                          ],
-                        ),
-                        const SizedBox(height: 14),
+                    const SizedBox(height: 22),
 
 
-                        // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                        //   isDisconnecting ? Center(child: CircularProgressIndicator())
-                        //       :
-                        //   DisconnectButton(
-                        //     label: 'Disconnect',
-                        //     color: Colors.redAccent,
-                        //     icon: Icons.visibility_off_rounded,
-                        //     onPressed: () async {
-                        //       setState(() {
-                        //         isDisconnecting = true;
-                        //       });
-                        //       try {
-                        //         await walletVM.disconnectWallet(context);
-                        //         walletVM.reset();
-                        //         if (context.mounted && !walletVM.isConnected) {
-                        //           Navigator.pushReplacementNamed(context, RoutesName.walletLogin);
-                        //         }
-                        //
-                        //       } catch (e) {
-                        //         if (context.mounted) {
-                        //           ScaffoldMessenger.of(context).showSnackBar(
-                        //             SnackBar(
-                        //               content: Text('Error disconnecting: ${e.toString()}'),
-                        //               backgroundColor: Colors.red,
-                        //             ),
-                        //           );
-                        //         }
-                        //       }finally{
-                        //         if (mounted) {
-                        //           setState(() {
-                        //             isDisconnecting = false;
-                        //           });
-                        //         }
-                        //       }
-                        //     },
-                        //
-                        //   ),
+                    /// ECm AMount INput Section
+                    CustomInputField(
+                      hintText: 'ECM',
+                      iconAssetPath: 'assets/icons/ecm.png',
+                      controller: ecmController,
+                    ),
+                    const SizedBox(height: 12),
+                    CustomInputField(
+                      hintText: isETHActive ? 'ETH ' : 'USDT ',
+                      iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
+                      controller: usdtController,
+
+                    ),
+
+                    const SizedBox(height: 14),
+                    CustomGradientButton(
+                      label: 'Buy ECM',
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
+                      onTap: () async {
+                        print("ECM Purchase triggered");
+                        try{
+                          final inputEth = ecmController.text.trim();
+                          print("User input: $inputEth");
+                          final ethDouble = double.tryParse(inputEth);
+                          print("Parsed double: $ethDouble");
+                          if (ethDouble == null || ethDouble <= 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Enter a valid ECM amount')),
+                            );
+                            return;
+                          }
+
+                          final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
+                          // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
+                          final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
+                          print("ETH in Wei: $ecmAmountInWeiETH");
+                          print("USDT in smallest unit: $ecmAmountInWeiUSDT");
+
+                          final isETH = isETHActive;
+                          final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
+                          print("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                          print("Purchase Button Pressed");
+
+                          if (isETH) {
+                            print("Calling buyECMWithETH with: $ecmAmountInWeiETH");
+                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                          } else  {
+                            print("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
+                            await walletVM.buyECMWithUSDT(amount,context);
+                          }
+                          print("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Purchase successful')),
+                          );
+                        }catch (e) {
+                          debugPrint("Buy ECM failed: $e");
+                        }
+                      },
+                      gradientColors: [
+                        Color(0xFF2D8EFF),
+                        Color(0xFF2EE4A4)
                       ],
                     ),
+                    const SizedBox(height: 14),
+
+
+                    // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                    //   isDisconnecting ? Center(child: CircularProgressIndicator())
+                    //       :
+                    //   DisconnectButton(
+                    //     label: 'Disconnect',
+                    //     color: Colors.redAccent,
+                    //     icon: Icons.visibility_off_rounded,
+                    //     onPressed: () async {
+                    //       setState(() {
+                    //         isDisconnecting = true;
+                    //       });
+                    //       try {
+                    //         await walletVM.disconnectWallet(context);
+                    //         walletVM.reset();
+                    //         if (context.mounted && !walletVM.isConnected) {
+                    //           Navigator.pushReplacementNamed(context, RoutesName.walletLogin);
+                    //         }
+                    //
+                    //       } catch (e) {
+                    //         if (context.mounted) {
+                    //           ScaffoldMessenger.of(context).showSnackBar(
+                    //             SnackBar(
+                    //               content: Text('Error disconnecting: ${e.toString()}'),
+                    //               backgroundColor: Colors.red,
+                    //             ),
+                    //           );
+                    //         }
+                    //       }finally{
+                    //         if (mounted) {
+                    //           setState(() {
+                    //             isDisconnecting = false;
+                    //           });
+                    //         }
+                    //       }
+                    //     },
+                    //
+                    //   ),
                   ],
                 );
               }
@@ -1048,8 +1047,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 
 }
 

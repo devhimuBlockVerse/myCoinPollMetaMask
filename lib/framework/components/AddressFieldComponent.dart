@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CustomLabeledInputField extends StatelessWidget {
   final String hintText;
   final String labelText;
   final TextEditingController controller;
   final bool isReadOnly;
+  final String? trailingIconAsset;
+  final VoidCallback? onTrailingIconTap;
 
   const CustomLabeledInputField({
     super.key,
     required this.labelText,
     required this.hintText,
     required this.controller,
-    this.isReadOnly = false,
+    this.isReadOnly = false, this.trailingIconAsset, this.onTrailingIconTap,
   });
 
   @override
@@ -19,19 +22,19 @@ class CustomLabeledInputField extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    final safePadding = MediaQuery.of(context).padding; // Safe area padding (handles notch)
+    final safePadding = MediaQuery.of(context).padding;
 
     final baseFontSize = screenWidth < screenHeight ? screenWidth * 0.03 : screenHeight * 0.04;
 
     final fontSize = baseFontSize * textScale;
-
-    return ClipPath(
+     return ClipPath(
       clipper: _CustomAddressPainter(safePadding),
       child: Padding(
-        padding: const EdgeInsets.all(1.5),
+        padding: const EdgeInsets.all(3.5),
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.050,
+            horizontal: screenWidth * 0.030,
+            vertical: screenHeight * 0.008,
           ),
           color: Colors.white12,
           child: Row(
@@ -46,32 +49,60 @@ class CustomLabeledInputField extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: fontSize,
-                    fontWeight: FontWeight.w500,
+
+                    height: 0.8,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
               SizedBox(width: screenWidth * 0.02),
               Expanded(
-                child: TextFormField(
-                  readOnly: isReadOnly,
-                  controller: controller,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: fontSize,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: hintText,
-                    hintStyle: TextStyle(
-                      fontSize: fontSize * 0.95,
-                      color: Colors.grey,
+                child: Row(
+                   children: [
+                    Expanded(
+                      child: TextFormField(
+                        readOnly: isReadOnly,
+                        controller: controller,
+                        style: TextStyle(
+                          color: Colors.white,
+                          height: 0.8,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          fontSize: fontSize,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: hintText,
+                          hintStyle: TextStyle(
+                            fontSize: fontSize * 0.95,
+                            height: 0.8,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xffFFF5ED),
+                      
+                          ),
+                      
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                         ),
+                        cursorColor: Colors.white,
+                      ),
                     ),
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: screenHeight * 0.015,
-                    ),
-                  ),
-                  cursorColor: Colors.white,
+                    if (trailingIconAsset != null)
+                      GestureDetector(
+                        onTap: onTrailingIconTap,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: SvgPicture.asset(
+                            trailingIconAsset!,
+                            height: fontSize * 0.8,
+                            // width: iconSize,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
@@ -81,22 +112,23 @@ class CustomLabeledInputField extends StatelessWidget {
     );
   }
 }
+ 
 
 
-class _CustomAddressPainter extends CustomClipper<Path> {
+
+ class _CustomAddressPainter extends CustomClipper<Path> {
   final EdgeInsets safePadding;
   _CustomAddressPainter(this.safePadding);
-
   @override
   Path getClip(Size size) {
     final Path path = Path();
-    const double notchWidth = 30;
-    const double notchHeight = 6;
-    const double cutSize = 20;
+    const double notchWidth = 10;
+    const double notchHeight = 5;
+    const double cutSize =  10;
 
     // Offset amounts
-    const double topNotchOffset = 50; // move right
-    const double bottomNotchOffset = -50; // move left
+    const double topNotchOffset = 90; // move right
+    const double bottomNotchOffset = -90; // move left
 
     // Top-left angled start
     path.moveTo(cutSize, 0);

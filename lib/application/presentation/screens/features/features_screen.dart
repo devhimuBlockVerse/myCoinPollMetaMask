@@ -19,7 +19,8 @@ class _FeaturesScreenState
 
     return Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: Color(0xFF0B0A1E),
+        // backgroundColor: Color(0xFF0B0A1E),
+        backgroundColor: Color(0xFF01090B),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: const Text(

@@ -5,6 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../framework/components/BlockButton.dart';
+import '../../../../framework/components/CustomRadioSelection.dart';
+import '../../../../framework/components/ListingFields.dart';
 
 class ApplyForListingScreen extends StatefulWidget {
   @override
@@ -18,6 +20,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
   TextEditingController projectNameController = TextEditingController();
   TextEditingController projectDetailsController = TextEditingController();
   TextEditingController projectStatusController = TextEditingController();
+  String selectedOptionPlatform = 'Solana';
+  String selectedOptionTeam = 'Solana';
 
   @override
   void initState() {
@@ -38,7 +42,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
           width: screenWidth,
           height: screenHeight,
           decoration: BoxDecoration(
-            color: const Color(0xFF0B0A1E),
+            // color: const Color(0xFF0B0A1E),
+            color: const Color(0xFF01090B),
             image: DecorationImage(
               image: AssetImage('assets/icons/gradientBgImage.png'),
               fit: BoxFit.contain,
@@ -272,7 +277,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
 
                                SizedBox(height: screenHeight * 0.05),
 
-                               ///Blockchain/Platform
+                               ///Blockchain/Platform Radio Buttons
                                Text(
                                  'Blockchain/Platform:',
                                  textAlign: TextAlign.start,
@@ -284,9 +289,64 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                    color: Colors.white,
                                  ),
                                ),
-                               SizedBox(height: screenHeight * 0.05),
-                               Frame1321314803(),
+                               SizedBox(height: screenHeight * 0.02),
+                               CustomRadioOption(
+                                 label: 'Blockchain/Platform',
+                                 value: 'Blockchain/Platform',
+                                 selectedValue: selectedOptionPlatform,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionPlatform = 'Blockchain/Platform';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
 
+                               CustomRadioOption(
+                                 label: 'Solana',
+                                 value: 'Solana',
+                                 selectedValue: selectedOptionPlatform,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionPlatform = 'Solana';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
+
+                               CustomRadioOption(
+                                 label: 'Ethereum',
+                                 value: 'Ethereum',
+                                 selectedValue: selectedOptionPlatform,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionPlatform = 'Ethereum';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
+                               CustomRadioOption(
+                                 label: 'Polygon (Matic)',
+                                 value: 'Polygon (Matic)',
+                                 selectedValue: selectedOptionPlatform,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionPlatform = 'Polygon (Matic)';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
+                                CustomRadioOption(
+                                 label: 'Other',
+                                 value: 'Other',
+                                 selectedValue: selectedOptionPlatform,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionPlatform = 'Other';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.05),
 
                                ///Is your team Anon or Public?
                                Text(
@@ -301,7 +361,39 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                  ),
                                ),
 
-
+                               SizedBox(height: screenHeight * 0.02),
+                               CustomRadioOption(
+                                 label: 'Anon',
+                                 value: 'Anon',
+                                 selectedValue: selectedOptionTeam,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionTeam = 'Anon';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
+                               CustomRadioOption(
+                                 label: 'Fully Public',
+                                 value: 'Fully Public',
+                                 selectedValue: selectedOptionTeam,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionTeam = 'Fully Public';
+                                   });
+                                 },
+                               ),
+                               SizedBox(height: screenHeight * 0.02),
+                               CustomRadioOption(
+                                 label: 'Mixed',
+                                 value: 'Mixed',
+                                 selectedValue: selectedOptionTeam,
+                                 onTap: () {
+                                   setState(() {
+                                     selectedOptionTeam = 'Mixed';
+                                   });
+                                 },
+                               ),
                                SizedBox(height: screenHeight * 0.05),
 
                                Text(
@@ -623,74 +715,3 @@ class Frame1321314803 extends StatelessWidget {
   }
 }
 
-class ListingField extends StatelessWidget {
-  final TextEditingController? controller;
-  final String? labelText;
-  final double? height;
-  final double? width;
-  final bool expandable;
-  final TextInputType? keyboard;
-
-  const ListingField({
-    Key? key,
-    this.controller,
-    this.labelText,
-    this.height,
-    this.width,
-    this.expandable = false, this.keyboard,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return Container(
-      width: width ?? screenWidth * 0.85,
-      height: expandable ? null : height ?? screenHeight * 0.06,
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.045,
-        vertical: screenHeight * 0.012,
-      ),
-      decoration: ShapeDecoration(
-        color: const Color(0xFF12161D),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFF141317)),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFFC7E0FF),
-            blurRadius: 0,
-            offset: Offset(0.10, 0.50),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: TextField(
-        keyboardType:keyboard,
-        controller: controller,
-        maxLines: expandable ? null : 1,
-        style: TextStyle(
-          fontFamily: 'Poppins',
-          fontWeight: FontWeight.w400,
-          fontSize: screenHeight * 0.015,
-          // height: 0.8,
-          height: 1.2,
-          color: Colors.white.withOpacity(0.4),
-        ),
-        decoration: InputDecoration(
-          isCollapsed: true,
-          border: InputBorder.none,
-          hintText: labelText,
-          hintStyle: TextStyle(
-            color: Colors.white70,
-            fontSize: screenHeight * 0.015,
-            fontFamily: 'Poppins',
-
-          ),
-        ),
-      ),
-    );
-  }
-}

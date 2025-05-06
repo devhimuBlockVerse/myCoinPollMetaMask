@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+
+
 class CustomLabeledInputField extends StatelessWidget {
   final String hintText;
   final String labelText;
@@ -14,7 +16,9 @@ class CustomLabeledInputField extends StatelessWidget {
     required this.labelText,
     required this.hintText,
     required this.controller,
-    this.isReadOnly = false, this.trailingIconAsset, this.onTrailingIconTap,
+    this.isReadOnly = false,
+    this.trailingIconAsset,
+    this.onTrailingIconTap,
   });
 
   @override
@@ -24,10 +28,13 @@ class CustomLabeledInputField extends StatelessWidget {
     final textScale = MediaQuery.of(context).textScaleFactor;
     final safePadding = MediaQuery.of(context).padding;
 
-    final baseFontSize = screenWidth < screenHeight ? screenWidth * 0.03 : screenHeight * 0.04;
+    final baseFontSize = screenWidth < screenHeight
+        ? screenWidth * 0.03
+        : screenHeight * 0.04;
 
     final fontSize = baseFontSize * textScale;
-     return ClipPath(
+
+    return ClipPath(
       clipper: _CustomAddressPainter(safePadding),
       child: Padding(
         padding: const EdgeInsets.all(3.5),
@@ -37,82 +44,79 @@ class CustomLabeledInputField extends StatelessWidget {
             vertical: screenHeight * 0.008,
           ),
           color: Colors.white12,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
-                ).createShader(bounds),
-                child: Text(
-                  labelText,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: fontSize,
-
-                    height: 0.8,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
+          child: IntrinsicHeight( // Ensures row content defines its own height
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min, // Wrap content height
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+                  ).createShader(bounds),
+                  child: Text(
+                    labelText,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: fontSize,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: screenWidth * 0.02),
-              Expanded(
-                child: Row(
-                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        readOnly: isReadOnly,
-                        controller: controller,
-                        style: TextStyle(
-                          color: Colors.white,
-                          height: 0.8,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          fontSize: fontSize,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: hintText,
-                          hintStyle: TextStyle(
-                            fontSize: fontSize * 0.95,
-                            height: 0.8,
+                SizedBox(width: screenWidth * 0.02),
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          readOnly: isReadOnly,
+                          controller: controller,
+                          style: TextStyle(
+                            color: Colors.white,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
-                            color: Color(0xffFFF5ED),
-                      
+                            fontSize: fontSize,
                           ),
-                      
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                         ),
-                        cursorColor: Colors.white,
-                      ),
-                    ),
-                    if (trailingIconAsset != null)
-                      GestureDetector(
-                        onTap: onTrailingIconTap,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: SvgPicture.asset(
-                            trailingIconAsset!,
-                            height: fontSize * 0.8,
-                            // width: iconSize,
-                            fit: BoxFit.cover,
+                          decoration: InputDecoration(
+                            hintText: hintText,
+                            hintStyle: TextStyle(
+                              fontSize: fontSize * 0.95,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xffFFF5ED),
+                            ),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
                           ),
+                          cursorColor: Colors.white,
                         ),
                       ),
-                  ],
+                      if (trailingIconAsset != null)
+                        GestureDetector(
+                          onTap: onTrailingIconTap,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: SvgPicture.asset(
+                              trailingIconAsset!,
+                              height: fontSize * 1.1,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
- 
 
 
 

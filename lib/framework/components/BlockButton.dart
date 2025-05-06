@@ -7,7 +7,7 @@ class BlockButton extends StatelessWidget {
   final String label;
   final double? width;
   final double? height;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final List<Color> gradientColors;
 
   final String? iconPath;

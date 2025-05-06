@@ -13,6 +13,7 @@ class Assets {
   static const String assetsAbiMyContract = 'assets/abi/MyContract.json';
   static const String assetsAbiSaleContractABI = 'assets/abi/SaleContractABI.json';
   static const String assetsAppIcon = 'assets/app_icon.png';
+  static const String assetsIconsCopyImg = 'assets/icons/copyImg.svg';
   static const String assetsIconsFrame = 'assets/icons/frame.png';
   static const String fontsMontserratMedium = 'assets/fonts/Montserrat-Medium.ttf';
   static const String fontsOxaniumRegular = 'assets/fonts/Oxanium-Regular.ttf';
@@ -23,8 +24,11 @@ class Assets {
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
   static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
+  static const String iconsApplyForLisitngImg = 'assets/icons/applyForLisitngImg.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
+  static const String iconsBackButton = 'assets/icons/back_button.svg';
+  static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
@@ -50,6 +54,7 @@ class Assets {
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsWarningImg = 'assets/icons/warningImg.png';
   static const String iconsXIcon = 'assets/icons/xIcon.svg';
   static const String mycoinpollMetamaskAssetsAppIcon = 'assets/app_icon.png';
 

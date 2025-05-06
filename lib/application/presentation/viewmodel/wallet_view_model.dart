@@ -59,9 +59,9 @@ class WalletViewModel extends ChangeNotifier {
           ),
         ),
         logLevel: LogLevel.error,
-        enableAnalytics: true,
+        enableAnalytics: false,
         featuresConfig: FeaturesConfig(
-          email: true,
+          email: false,
           socials: [
             AppKitSocialOption.Google,
             AppKitSocialOption.Discord,
@@ -76,6 +76,7 @@ class WalletViewModel extends ChangeNotifier {
         ),
       );
       await appKitModal?.init();
+
       ///Saving User Connected Session
       appKitModal!.onModalConnect.subscribe((session)async {
         _isConnected = true;
@@ -170,75 +171,94 @@ class WalletViewModel extends ChangeNotifier {
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
-  Future<bool> connectWallet(BuildContext context) async {
+  // Future<bool> connectWallet(BuildContext context) async {
+  //
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     if (appKitModal == null){
+  //       appKitModal = ReownAppKitModal(
+  //         context: context,
+  //         projectId:
+  //         'f3d7c5a3be3446568bcc6bcc1fcc6389',
+  //         metadata: const PairingMetadata(
+  //           name: "MyWallet",
+  //           description: "Example Description",
+  //           url: 'https://example.com/',
+  //           icons: ['https://example.com/logo.png'],
+  //           redirect: Redirect(
+  //             native: 'exampleapp',
+  //             universal: 'https://reown.com/exampleapp',
+  //             linkMode: true,
+  //           ),
+  //         ),
+  //         logLevel: LogLevel.error,
+  //         enableAnalytics: true,
+  //         featuresConfig: FeaturesConfig(
+  //           email: true,
+  //           socials: [
+  //             AppKitSocialOption.Google,
+  //             AppKitSocialOption.Discord,
+  //             AppKitSocialOption.Facebook,
+  //             AppKitSocialOption.GitHub,
+  //             AppKitSocialOption.X,
+  //             AppKitSocialOption.Apple,
+  //             AppKitSocialOption.Twitch,
+  //             AppKitSocialOption.Farcaster,
+  //           ],
+  //           showMainWallets: true,
+  //         ),
+  //       );
+  //       await appKitModal?.init();
+  //       // Open the modal view
+  //       await appKitModal!.openModalView();
+  //       notifyListeners();
+  //     }else{
+  //       await appKitModal!.openModalView();
+  //       // notifyListeners();
+  //     }
+  //
+  //     return _isConnected;
+  //
+  //    } catch (e) {
+  //     print('Error connecting to wallet: $e');
+  //     rethrow;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+   Future<bool> connectWallet(BuildContext context) async {
+     _isLoading = true;
+     notifyListeners();
 
-    _isLoading = true;
-    notifyListeners();
+     try {
+       // Initialize appKitModal if it's not already initialized
+       if (appKitModal == null) {
+         await init(context); // Reusing init method
+       }
 
-    try {
-      if (appKitModal == null){
-        appKitModal = ReownAppKitModal(
-          context: context,
-          projectId:
-          'f3d7c5a3be3446568bcc6bcc1fcc6389',
-          metadata: const PairingMetadata(
-            name: "MyWallet",
-            description: "Example Description",
-            url: 'https://example.com/',
-            icons: ['https://example.com/logo.png'],
-            redirect: Redirect(
-              native: 'exampleapp',
-              universal: 'https://reown.com/exampleapp',
-              linkMode: true,
-            ),
-          ),
-          logLevel: LogLevel.error,
-          enableAnalytics: true,
-          featuresConfig: FeaturesConfig(
-            email: true,
-            socials: [
-              AppKitSocialOption.Google,
-              AppKitSocialOption.Discord,
-              AppKitSocialOption.Facebook,
-              AppKitSocialOption.GitHub,
-              AppKitSocialOption.X,
-              AppKitSocialOption.Apple,
-              AppKitSocialOption.Twitch,
-              AppKitSocialOption.Farcaster,
-            ],
-            showMainWallets: true,
-          ),
-        );
-        await appKitModal?.init();
-        // Open the modal view
-        await appKitModal!.openModalView();
-        notifyListeners();
-      }else{
-        await appKitModal!.openModalView();
-        // notifyListeners();
-      }
+       // Open the modal view if appKitModal is initialized
+       await appKitModal!.openModalView();
 
-      return _isConnected;
-
+       return _isConnected;
      } catch (e) {
-      print('Error connecting to wallet: $e');
-      rethrow;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
+       print('Error connecting to wallet: $e');
+       return false;
+     } finally {
+       _isLoading = false;
+       notifyListeners();
+     }
+   }
 
-  /// Disconnect from the wallet and clear stored wallet info.
+   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
     if (!_isConnected || appKitModal == null) return;
 
     try {
       await appKitModal!.disconnect();
       await reset();
-      // await init(context);
-      //  final prefs = await SharedPreferences.getInstance();
-      // await prefs.clear();
 
     } catch (e) {
       print('Error disconnecting wallet: $e');

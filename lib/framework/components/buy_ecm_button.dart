@@ -52,44 +52,47 @@ class CustomGradientButton extends StatelessWidget {
 
         return GestureDetector(
           onTap: onTap,
-          child: Container(
-            width: buttonWidth,
-            height: buttonHeight,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: gradientColors,
+          child: ClipPath(
+            clipper: BuyEcmClipper(),
+            child: Container(
+              width: buttonWidth,
+              height: buttonHeight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: gradientColors,
+                ),
               ),
-            ),
-            child: Center(
+              child: Center(
 
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
 
-                children: [
-                  if (leadingImagePath != null) ...[
-                    _buildImage(leadingImagePath!, imageSize),
-                    const SizedBox(width: 8),
-                  ],
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        fontSize: screenWidth * 0.045 * textScale, // responsive text
+                  children: [
+                    if (leadingImagePath != null) ...[
+                      _buildImage(leadingImagePath!, imageSize),
+                      const SizedBox(width: 8),
+                    ],
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.045 * textScale, // responsive text
+                        ),
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  if (trailingImagePath != null) ...[
-                    const SizedBox(width: 8),
-                    _buildImage(trailingImagePath!, imageSize),
+                    if (trailingImagePath != null) ...[
+                      const SizedBox(width: 8),
+                      _buildImage(trailingImagePath!, imageSize),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -107,8 +110,8 @@ class BuyEcmClipper extends CustomClipper<Path> {
     const double cutSize = 8;
 
     // Offset amounts
-    const double topNotchOffset = 60; // move right
-    const double bottomNotchOffset = -60; // move left
+    const double topNotchOffset = 90; // move right
+    const double bottomNotchOffset = -120; // move left
 
     // Top-left angled start
     path.moveTo(cutSize, 0);

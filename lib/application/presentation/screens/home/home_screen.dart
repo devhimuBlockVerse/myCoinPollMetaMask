@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/framework/components/disconnectButton.dart';
+import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -52,8 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isDisconnecting = false;
 
 
-
-
   @override
   void initState() {
     super.initState();
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-      await walletVM.init(context);
+      walletVM.init(context);
 
       try {
         final stageInfo = await walletVM.getCurrentStageInfo();
@@ -121,46 +121,34 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
 
       extendBodyBehindAppBar: true,
-      backgroundColor: Color(0xFF0B0A1E),
-      body: Stack(
-       children: [
-         Positioned(
-           top: -screenHeight * 0.01,
-           right: -screenWidth * 0.09,
-           child: Container(
-             width: screenWidth ,
-             height: screenWidth ,
-             decoration: BoxDecoration(
-               shape: BoxShape.circle,
-             ),
-             child: Image.asset(
-               'assets/icons/gradientBgImage.png',
-               width: screenWidth ,
-               height: screenHeight ,
-               fit: BoxFit.fill,
+      backgroundColor: Colors.transparent,
+       body: SafeArea(
+         child: Container(
+           width: screenWidth,
+           height: screenHeight,
+           decoration: BoxDecoration(
+             color: const Color(0xFF0B0A1E),
+             image: DecorationImage(
+               image: AssetImage('assets/icons/gradientBgImage.png'),
+               fit: BoxFit.contain,
+               alignment: Alignment.topRight,
              ),
            ),
-
-         ),
-
-         SafeArea(
-           child: Padding(
-             padding: EdgeInsets.symmetric(
-               // horizontal: screenWidth * 0.04,
-               // vertical: screenHeight * 0.02,
-               horizontal: screenWidth * 0.01,
-               vertical: screenHeight * 0.02,
-             ),
-             child: SingleChildScrollView(
+           child: SingleChildScrollView(
+             child: Padding(
+               padding: EdgeInsets.symmetric(
+                 horizontal: screenWidth * 0.01,
+                 vertical: screenHeight * 0.02,
+               ),
                child: Column(
                  children: [
-               
-                  ///MyCoinPoll & Connected Wallet Button
-                    Row(
+
+                   ///MyCoinPoll & Connected Wallet Button
+                   Row(
                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-               
+
                        Padding(
                          padding: EdgeInsets.only(
                              top: screenHeight * 0.01,
@@ -173,64 +161,56 @@ class _HomeScreenState extends State<HomeScreen> {
                            fit: BoxFit.contain,
                          ),
                        ),
-               
+
                        /// Connected Wallet Button
                        Padding(
                          padding: EdgeInsets.only(
-                             top: screenHeight * 0.01,
-                             right: screenWidth * 0.02,
+                           top: screenHeight * 0.01,
+                           right: screenWidth * 0.02,
                          ), // Padding to Button
                          child: Consumer<WalletViewModel>(
-                           builder: (context, model, _){
-                             return  BlockButton(
-                               height: screenHeight * 0.040,
-                               width: screenWidth * 0.4,
-                               label: 'Connect Wallet',
-                               textStyle:  TextStyle(
-                                 fontWeight: FontWeight.w700,
-                                 color: Colors.white,
-                                 fontSize: baseSize * 0.030,
-                               ),
-                               gradientColors: const [
-                                 Color(0xFF2680EF),
-                                 Color(0xFF1CD494)
-                                 // 1CD494
-                               ],
-                               onTap:() async {
-                                 try {
-                                   await model.connectWallet(context);
-                                 } catch (e) {
-                                   if (context.mounted) {
-                                     ScaffoldMessenger.of(context).showSnackBar(
-                                       SnackBar(
-                                         content: Text('Connection error: ${e.toString()}'),
-                                         backgroundColor: Colors.red,
-                                       ),
-                                     );
+                             builder: (context, model, _){
+                               return  BlockButton(
+                                 height: screenHeight * 0.040,
+                                 width: screenWidth * 0.4,
+                                 label: model.isConnected ? 'Wallet Connected' : "Connect Wallet",
+                                 textStyle:  TextStyle(
+                                   fontWeight: FontWeight.w700,
+                                   color: Colors.white,
+                                   fontSize: baseSize * 0.030,
+                                 ),
+                                 gradientColors: const [
+                                   Color(0xFF2680EF),
+                                   Color(0xFF1CD494)
+                                   // 1CD494
+                                 ],
+                                 // onTap: () async {
+                                 //   try {
+                                 //     await model.connectWallet(context);
+                                 //   } catch (e) {
+                                 //     if (context.mounted) {
+                                 //       ScaffoldMessenger.of(context).showSnackBar(
+                                 //         SnackBar(
+                                 //           content: Text('Connection error: ${e.toString()}'),
+                                 //           backgroundColor: Colors.red,
+                                 //         ),
+                                 //       );
+                                 //     }
+                                 //   }
+                                 // },
+                                 onTap: model.isLoading ? null : () { () async {
+                                   try {
+                                     await model.connectWallet(context);
+                                   } catch (e) {
+                                     if (context.mounted) {
+                                       Utils.flushBarErrorMessage('Connection error', context);
+                                     }
                                    }
-                                 }
-                               },
+                                 }();
+                                 },
 
-                             );
-                           }
-                           // child: BlockButton(
-                           //   height: screenHeight * 0.040,
-                           //   width: screenWidth * 0.4,
-                           //   label: 'Connect Wallet',
-                           //   textStyle:  TextStyle(
-                           //     fontWeight: FontWeight.w700,
-                           //     color: Colors.white,
-                           //     fontSize: baseSize * 0.030,
-                           //   ),
-                           //   gradientColors: const [
-                           //     Color(0xFF2680EF),
-                           //     Color(0xFF1CD494)
-                           //     // 1CD494
-                           //   ],
-                           //   onTap: () {
-                           //    },
-                           //
-                           // ),
+                               );
+                             }
                          ),
                        ),
                      ],
@@ -249,72 +229,77 @@ class _HomeScreenState extends State<HomeScreen> {
                          fit: BoxFit.fill,
                        ),
                      ),
-               
+
                      /// Apply For Lisign Button
-               
+
                      child: Stack(
-                       children: [
-                         Container(
-                           padding: EdgeInsets.symmetric(
-                             horizontal: screenWidth * 0.035,
-                             vertical: screenHeight * 0.015,
-                           ),
-                           child: Column(
-                             mainAxisAlignment: MainAxisAlignment.start,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             children: [
-                               Text(
-                                 'Blockchain Innovation \nLaunchpad Hub',
-                                 style: TextStyle(
-                                   color: Color(0xFFFFF5ED),
-                                   fontFamily: 'Poppins',
-                                   fontSize: screenWidth * 0.04,
-                                   fontWeight: FontWeight.w400,
-                                 ),
-                                 maxLines: 2,
-                               ),
-                               // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
-               
-                               /// Apply For Lising Button
-                               Padding(
-                                 padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
-                                 child: BlockButton(
-                                   height: screenHeight * 0.05,
-                                   width: screenWidth * 0.4,
-                                   label: 'Apply For Listing',
-                                   textStyle:  TextStyle(
-                                     fontWeight: FontWeight.w700,
-                                     color: Colors.white,
-                                     fontSize: screenWidth * 0.030,
+                         children: [
+                           Container(
+                             padding: EdgeInsets.symmetric(
+                               horizontal: screenWidth * 0.035,
+                               vertical: screenHeight * 0.015,
+                             ),
+                             child: Column(
+                               mainAxisAlignment: MainAxisAlignment.start,
+                               crossAxisAlignment: CrossAxisAlignment.start,
+                               children: [
+                                 Text(
+                                   'Blockchain Innovation \nLaunchpad Hub',
+                                   style: TextStyle(
+                                     color: Color(0xFFFFF5ED),
+                                     fontFamily: 'Poppins',
+                                     fontSize: screenWidth * 0.04,
+                                     fontWeight: FontWeight.w400,
                                    ),
-                                   gradientColors: const [
-                                     Color(0xFF2680EF),
-                                     Color(0xFF1CD494)
-                                     // 1CD494
-                                   ],
-                                   onTap: () {
-                                     print('Button tapped');
-                                   },
-                                   iconPath: 'assets/icons/arrowIcon.png',
-                                   iconSize : screenHeight * 0.028,
+                                   maxLines: 2,
                                  ),
-                               ),
-                             ],
-                           ),
-                         ),
-                         Align(
-                           alignment: Alignment.centerRight,
-                           child: Padding(
-                             padding: EdgeInsets.only(left: screenWidth * 0.02),
-                             child: Image.asset(
-                               'assets/icons/frame.png',
-                               width: screenWidth * 0.4,
-                               height: screenHeight * 0.4,
-                               fit: BoxFit.fitWidth,
+                                 // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
+
+                                 /// Apply For Lising Button
+                                 Padding(
+                                   padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
+                                   child: BlockButton(
+                                     height: screenHeight * 0.05,
+                                     width: screenWidth * 0.4,
+                                     label: 'Apply For Listing',
+                                     textStyle:  TextStyle(
+                                       fontWeight: FontWeight.w700,
+                                       color: Colors.white,
+                                       fontSize: screenWidth * 0.030,
+                                     ),
+                                     gradientColors: const [
+                                       Color(0xFF2680EF),
+                                       Color(0xFF1CD494)
+                                       // 1CD494
+                                     ],
+                                     onTap: () {
+                                       print('Button tapped');
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => ApplyForListingScreen()),
+                                       );
+
+                                     },
+                                     iconPath: 'assets/icons/arrowIcon.png',
+                                     iconSize : screenHeight * 0.028,
+                                   ),
+                                 ),
+                               ],
                              ),
                            ),
-                         ),
-                       ]
+                           Align(
+                             alignment: Alignment.centerRight,
+                             child: Padding(
+                               padding: EdgeInsets.only(left: screenWidth * 0.02),
+                               child: Image.asset(
+                                 'assets/icons/frame.png',
+                                 width: screenWidth * 0.4,
+                                 height: screenHeight * 0.4,
+                                 fit: BoxFit.fitWidth,
+                               ),
+                             ),
+                           ),
+                         ]
                      ),
                    ),
                    SizedBox(height: screenHeight * 0.03),
@@ -326,10 +311,224 @@ class _HomeScreenState extends State<HomeScreen> {
              ),
            ),
          ),
-       ]
       ),
     );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   double screenWidth = MediaQuery.of(context).size.width;
+  //   double screenHeight = MediaQuery.of(context).size.height;
+  //   final isPortrait = screenHeight > screenWidth;
+  //
+  //   // Dynamic multipliers
+  //   final baseSize = isPortrait ? screenWidth : screenHeight;
+  //   return Scaffold(
+  //
+  //     extendBodyBehindAppBar: true,
+  //     backgroundColor: Color(0xFF0B0A1E),
+  //
+  //     body: Stack(
+  //      children: [
+  //        Positioned(
+  //          top: -screenHeight * 0.01,
+  //          right: -screenWidth * 0.09,
+  //          child: Container(
+  //            width: screenWidth ,
+  //            height: screenWidth ,
+  //            decoration: BoxDecoration(
+  //              shape: BoxShape.circle,
+  //            ),
+  //            child: Image.asset(
+  //              'assets/icons/gradientBgImage.png',
+  //              width: screenWidth ,
+  //              height: screenHeight ,
+  //              fit: BoxFit.fill,
+  //            ),
+  //          ),
+  //
+  //        ),
+  //
+  //        Padding(
+  //          padding: EdgeInsets.symmetric(
+  //            horizontal: screenWidth * 0.01,
+  //            vertical: screenHeight * 0.02,
+  //          ),
+  //          child: SingleChildScrollView(
+  //            child: Column(
+  //              children: [
+  //
+  //               ///MyCoinPoll & Connected Wallet Button
+  //                 Row(
+  //                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                  crossAxisAlignment: CrossAxisAlignment.start,
+  //                  children: [
+  //
+  //                    Padding(
+  //                      padding: EdgeInsets.only(
+  //                          top: screenHeight * 0.01,
+  //                          right: screenWidth * 0.02
+  //                      ),
+  //                      child: Image.asset(
+  //                        'assets/icons/mycoinpolllogo.png',
+  //                        width: screenWidth * 0.40,
+  //                        height: screenHeight * 0.040,
+  //                        fit: BoxFit.contain,
+  //                      ),
+  //                    ),
+  //
+  //                    /// Connected Wallet Button
+  //                    Padding(
+  //                      padding: EdgeInsets.only(
+  //                          top: screenHeight * 0.01,
+  //                          right: screenWidth * 0.02,
+  //                      ), // Padding to Button
+  //                      child: Consumer<WalletViewModel>(
+  //                        builder: (context, model, _){
+  //                          return  BlockButton(
+  //                            height: screenHeight * 0.040,
+  //                            width: screenWidth * 0.4,
+  //                            label: model.isConnected ? 'Wallet Connected' : "Connect Wallet",
+  //                            textStyle:  TextStyle(
+  //                              fontWeight: FontWeight.w700,
+  //                              color: Colors.white,
+  //                              fontSize: baseSize * 0.030,
+  //                            ),
+  //                            gradientColors: const [
+  //                              Color(0xFF2680EF),
+  //                              Color(0xFF1CD494)
+  //                              // 1CD494
+  //                            ],
+  //                            // onTap: () async {
+  //                            //   try {
+  //                            //     await model.connectWallet(context);
+  //                            //   } catch (e) {
+  //                            //     if (context.mounted) {
+  //                            //       ScaffoldMessenger.of(context).showSnackBar(
+  //                            //         SnackBar(
+  //                            //           content: Text('Connection error: ${e.toString()}'),
+  //                            //           backgroundColor: Colors.red,
+  //                            //         ),
+  //                            //       );
+  //                            //     }
+  //                            //   }
+  //                            // },
+  //                            onTap: model.isLoading ? null : () { () async {
+  //                                try {
+  //                                  await model.connectWallet(context);
+  //                                } catch (e) {
+  //                                  if (context.mounted) {
+  //                                    Utils.flushBarErrorMessage('Connection error', context);
+  //                                  }
+  //                                }
+  //                              }();
+  //                            },
+  //
+  //                          );
+  //                        }
+  //                       ),
+  //                    ),
+  //                  ],
+  //                ),
+  //                SizedBox(height: screenHeight * 0.03),
+  //                /// Apply For Lisign Button
+  //                Container(
+  //                  width: screenWidth,
+  //                  height: screenHeight * 0.16,
+  //                  decoration: BoxDecoration(
+  //                    border: Border.all(
+  //                        color: Colors.transparent
+  //                    ),
+  //                    image:const DecorationImage(
+  //                      image: AssetImage('assets/icons/applyForListingBG.png'),
+  //                      fit: BoxFit.fill,
+  //                    ),
+  //                  ),
+  //
+  //                  /// Apply For Lisign Button
+  //
+  //                  child: Stack(
+  //                    children: [
+  //                      Container(
+  //                        padding: EdgeInsets.symmetric(
+  //                          horizontal: screenWidth * 0.035,
+  //                          vertical: screenHeight * 0.015,
+  //                        ),
+  //                        child: Column(
+  //                          mainAxisAlignment: MainAxisAlignment.start,
+  //                          crossAxisAlignment: CrossAxisAlignment.start,
+  //                          children: [
+  //                            Text(
+  //                              'Blockchain Innovation \nLaunchpad Hub',
+  //                              style: TextStyle(
+  //                                color: Color(0xFFFFF5ED),
+  //                                fontFamily: 'Poppins',
+  //                                fontSize: screenWidth * 0.04,
+  //                                fontWeight: FontWeight.w400,
+  //                              ),
+  //                              maxLines: 2,
+  //                            ),
+  //                            // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
+  //
+  //                            /// Apply For Lising Button
+  //                            Padding(
+  //                              padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
+  //                              child: BlockButton(
+  //                                height: screenHeight * 0.05,
+  //                                width: screenWidth * 0.4,
+  //                                label: 'Apply For Listing',
+  //                                textStyle:  TextStyle(
+  //                                  fontWeight: FontWeight.w700,
+  //                                  color: Colors.white,
+  //                                  fontSize: screenWidth * 0.030,
+  //                                ),
+  //                                gradientColors: const [
+  //                                  Color(0xFF2680EF),
+  //                                  Color(0xFF1CD494)
+  //                                  // 1CD494
+  //                                ],
+  //                                onTap: () {
+  //                                  print('Button tapped');
+  //                                  Navigator.push(
+  //                                    context,
+  //                                    MaterialPageRoute(builder: (context) => ApplyForListingScreen()),
+  //                                  );
+  //
+  //                                },
+  //                                iconPath: 'assets/icons/arrowIcon.png',
+  //                                iconSize : screenHeight * 0.028,
+  //                              ),
+  //                            ),
+  //                          ],
+  //                        ),
+  //                      ),
+  //                      Align(
+  //                        alignment: Alignment.centerRight,
+  //                        child: Padding(
+  //                          padding: EdgeInsets.only(left: screenWidth * 0.02),
+  //                          child: Image.asset(
+  //                            'assets/icons/frame.png',
+  //                            width: screenWidth * 0.4,
+  //                            height: screenHeight * 0.4,
+  //                            fit: BoxFit.fitWidth,
+  //                          ),
+  //                        ),
+  //                      ),
+  //                    ]
+  //                  ),
+  //                ),
+  //                SizedBox(height: screenHeight * 0.03),
+  //                _buildTokenCard(),
+  //                SizedBox(height: screenHeight * 0.05),
+  //                _buildBuyEcmSection(),
+  //              ],
+  //            ),
+  //          ),
+  //        ),
+  //
+  //       ]
+  //     ),
+  //   );
+  // }
 
 
    Widget _buildTokenCard() {
@@ -834,7 +1033,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     ///Action Buttons
                     Padding(
-                      padding: const EdgeInsets.symmetric( horizontal: 38.0 , vertical: 10),
+                      padding: const EdgeInsets.symmetric( horizontal: 55.0 , vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -945,7 +1144,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 18),
                     CustomGradientButton(
                       label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,
@@ -997,8 +1196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Color(0xFF2EE4A4)
                       ],
                     ),
-                    const SizedBox(height: 14),
-
+                    const SizedBox(height: 18),
 
                     // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                     //   isDisconnecting ? Center(child: CircularProgressIndicator())

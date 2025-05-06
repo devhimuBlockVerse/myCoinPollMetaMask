@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/wallet_login_screen.dart';
 import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 
@@ -28,6 +29,10 @@ class Routes {
       case RoutesName.ecmStaking:
         return MaterialPageRoute(
             builder: (BuildContext context) => const EcmStakingScreen());
+
+      case RoutesName.applyForListing:
+            return MaterialPageRoute(
+                builder: (BuildContext context) =>  ApplyForListingScreen());
 
 
       default:

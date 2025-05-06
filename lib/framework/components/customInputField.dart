@@ -25,12 +25,12 @@ class CustomInputField extends StatelessWidget {
     final fieldHeight = containerHeight * 0.65;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
       height: containerHeight,
-      width: screenWidth * 0.85, // 85% width
+      width: screenWidth * 0.75, // 85% width
       decoration: BoxDecoration(
         color: const Color(0xFF191D26),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(
             color: Color(0x7F000000),
@@ -51,13 +51,7 @@ class CustomInputField extends StatelessWidget {
                 image: AssetImage(iconAssetPath),
                 fit: BoxFit.cover,
               ),
-              // boxShadow: const [
-              //   BoxShadow(
-              //     color: Color(0x7F000000),
-              //     blurRadius: 2,
-              //     offset: Offset(0, 2),
-              //   ),
-              // ],
+
             ),
           ),
 
@@ -72,7 +66,7 @@ class CustomInputField extends StatelessWidget {
           ),
 
           // Divider
-          SizedBox(width: screenWidth * 0.025),
+          SizedBox(width: screenWidth * 0.135),
           Container(
             height: dividerHeight,
             width: 1,
@@ -92,6 +86,13 @@ class CustomInputField extends StatelessWidget {
                   color: const Color(0xFF2B2D40),
                   width: 0.25,
                 ),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0xFF191D26),
+                    blurRadius: 2,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
               alignment: Alignment.centerRight,
               child: TextFormField(

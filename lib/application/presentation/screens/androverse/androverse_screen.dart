@@ -27,7 +27,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
-        backgroundColor: Color(0xFF0B0A1E),
+        // backgroundColor: Color(0xFF0B0A1E),
+        backgroundColor: Color(0xFF01090B),
 
         body: Stack(
           children: [

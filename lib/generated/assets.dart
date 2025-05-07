@@ -28,6 +28,7 @@ class Assets {
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
   static const String iconsBackButton = 'assets/icons/back_button.svg';
+  static const String iconsBg = 'assets/icons/bg.png';
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
@@ -36,6 +37,7 @@ class Assets {
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
+  static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
   static const String iconsEth = 'assets/icons/eth.png';
@@ -44,6 +46,7 @@ class Assets {
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsHome = 'assets/icons/home.svg';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
+  static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';

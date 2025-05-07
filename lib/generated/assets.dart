@@ -36,6 +36,7 @@ class Assets {
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
+  static const String iconsDistributionImage = 'assets/icons/distributionImage.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';

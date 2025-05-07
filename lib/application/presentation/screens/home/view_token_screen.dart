@@ -170,8 +170,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         _buildBuyEcmSection(),
 
 
-
-                        SizedBox(height: screenHeight * 0.02),
+                        SizedBox(height: screenHeight * 0.04),
 
                          InfoCard(
                           label1: 'ECM',
@@ -185,7 +184,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
                         /// Submit & Clear Button Section
 
-                        SizedBox(height: screenHeight * 0.02),
+                        SizedBox(height: screenHeight * 0.04),
 
                         InfoCard(
                           label1: 'METAFUSION LABS',
@@ -195,6 +194,10 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           // backgroundImagePath: 'assets/icons/bg.png',
                           width: screenWidth ,
                         ),
+
+                        SizedBox(height: screenHeight * 0.04),
+
+                        _staticTokenSection(),
 
                       ],
                     ),
@@ -888,6 +891,59 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                 );
               }
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _staticTokenSection() {
+    final Size screenSize = MediaQuery.of(context).size;
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final bool isPortrait = screenSize.height > screenSize.width;
+    final double textScale = isPortrait ? screenWidth / 400 : screenHeight / 400;
+    final double paddingScale = screenWidth * 0.04;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+    return  Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Strategic Token Rollout',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: screenWidth,
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: Colors.transparent
+                ),
+               ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+
+                ],
+               ),
             ),
           ),
         ],

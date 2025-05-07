@@ -24,45 +24,36 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
     // Dynamic multipliers
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
-    return SafeArea(
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        // backgroundColor: Color(0xFF0B0A1E),
-        backgroundColor: Color(0xFF01090B),
-
-        body: Stack(
-          children: [
-            Positioned(
-              top: -screenHeight * 0.01,
-              right: -screenWidth * 0.09,
-              child: Container(
-                width: screenWidth ,
-                height: screenWidth ,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset(
-                  'assets/icons/gradientBgImage.png',
-                  width: screenWidth ,
-                  height: screenHeight ,
-                  fit: BoxFit.fill,
-                ),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+       // backgroundColor: Color(0xFF01090B),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+          top: false,
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            decoration: BoxDecoration(
+              color: const Color(0xFF01090B),
+              image: DecorationImage(
+                image: AssetImage('assets/icons/gradientBgImage.png'),
+                fit: BoxFit.contain,
+                alignment: Alignment.topRight,
               ),
-
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.04,
-                vertical: screenHeight * 0.02,
-              ),
+            child: SingleChildScrollView(
+              // padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
               child: Center(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-
-
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.04,
+                    vertical: screenHeight * 0.09,
+                  ),
                   child: Column(
+                    // mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
+
                     children: [
 
                       Text(
@@ -91,13 +82,13 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                       ),
 
 
-                      SizedBox(height: screenHeight * 0.04),
+                      SizedBox(height: screenHeight * 0.02),
 
 
                       Image.asset(
                         'assets/icons/androverseHumanImg.png',
                         width: isPortrait ? screenWidth * 0.8 : screenWidth * 0.5,
-                        height: isPortrait ? screenHeight * 0.35 : screenHeight * 0.5,
+                        height: isPortrait ? screenHeight * 0.38 : screenHeight * 0.5,
                         fit: BoxFit.contain,
                       ),
 
@@ -156,12 +147,11 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                   ),
                 ),
               ),
-            )
+            ),
+          )
 
-          ],
-        ),
+      )
 
-      ),
     );
   }
 

@@ -240,7 +240,7 @@ class WalletViewModel extends ChangeNotifier {
        }
 
        // Open the modal view if appKitModal is initialized
-       await appKitModal!.openModalView();
+       await appKitModal?.openModalView();
 
        return _isConnected;
      } catch (e) {

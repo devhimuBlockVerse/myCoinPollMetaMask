@@ -42,7 +42,7 @@ class Utils {
         backgroundColor: Colors.red,
         positionOffset: 10,
         icon: Icon(Icons.error_outline_rounded, size: 25, color: Colors.white,),
-        flushbarPosition: FlushbarPosition.BOTTOM,
+        flushbarPosition: FlushbarPosition.TOP,
       )..show(context),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
-import 'package:mycoinpoll_metamask/framework/components/disconnectButton.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
@@ -14,10 +14,7 @@ import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
-import '../../../../framework/utils/routes/route_names.dart';
-import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
-import '../bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,16 +78,13 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to fetch stage info: ${e.toString()}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+          Utils.flushBarErrorMessage("Please connect your wallet", context);
+
+    }
       }
     });
   }
+
 
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
@@ -315,221 +309,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   double screenWidth = MediaQuery.of(context).size.width;
-  //   double screenHeight = MediaQuery.of(context).size.height;
-  //   final isPortrait = screenHeight > screenWidth;
-  //
-  //   // Dynamic multipliers
-  //   final baseSize = isPortrait ? screenWidth : screenHeight;
-  //   return Scaffold(
-  //
-  //     extendBodyBehindAppBar: true,
-  //     backgroundColor: Color(0xFF0B0A1E),
-  //
-  //     body: Stack(
-  //      children: [
-  //        Positioned(
-  //          top: -screenHeight * 0.01,
-  //          right: -screenWidth * 0.09,
-  //          child: Container(
-  //            width: screenWidth ,
-  //            height: screenWidth ,
-  //            decoration: BoxDecoration(
-  //              shape: BoxShape.circle,
-  //            ),
-  //            child: Image.asset(
-  //              'assets/icons/gradientBgImage.png',
-  //              width: screenWidth ,
-  //              height: screenHeight ,
-  //              fit: BoxFit.fill,
-  //            ),
-  //          ),
-  //
-  //        ),
-  //
-  //        Padding(
-  //          padding: EdgeInsets.symmetric(
-  //            horizontal: screenWidth * 0.01,
-  //            vertical: screenHeight * 0.02,
-  //          ),
-  //          child: SingleChildScrollView(
-  //            child: Column(
-  //              children: [
-  //
-  //               ///MyCoinPoll & Connected Wallet Button
-  //                 Row(
-  //                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                  crossAxisAlignment: CrossAxisAlignment.start,
-  //                  children: [
-  //
-  //                    Padding(
-  //                      padding: EdgeInsets.only(
-  //                          top: screenHeight * 0.01,
-  //                          right: screenWidth * 0.02
-  //                      ),
-  //                      child: Image.asset(
-  //                        'assets/icons/mycoinpolllogo.png',
-  //                        width: screenWidth * 0.40,
-  //                        height: screenHeight * 0.040,
-  //                        fit: BoxFit.contain,
-  //                      ),
-  //                    ),
-  //
-  //                    /// Connected Wallet Button
-  //                    Padding(
-  //                      padding: EdgeInsets.only(
-  //                          top: screenHeight * 0.01,
-  //                          right: screenWidth * 0.02,
-  //                      ), // Padding to Button
-  //                      child: Consumer<WalletViewModel>(
-  //                        builder: (context, model, _){
-  //                          return  BlockButton(
-  //                            height: screenHeight * 0.040,
-  //                            width: screenWidth * 0.4,
-  //                            label: model.isConnected ? 'Wallet Connected' : "Connect Wallet",
-  //                            textStyle:  TextStyle(
-  //                              fontWeight: FontWeight.w700,
-  //                              color: Colors.white,
-  //                              fontSize: baseSize * 0.030,
-  //                            ),
-  //                            gradientColors: const [
-  //                              Color(0xFF2680EF),
-  //                              Color(0xFF1CD494)
-  //                              // 1CD494
-  //                            ],
-  //                            // onTap: () async {
-  //                            //   try {
-  //                            //     await model.connectWallet(context);
-  //                            //   } catch (e) {
-  //                            //     if (context.mounted) {
-  //                            //       ScaffoldMessenger.of(context).showSnackBar(
-  //                            //         SnackBar(
-  //                            //           content: Text('Connection error: ${e.toString()}'),
-  //                            //           backgroundColor: Colors.red,
-  //                            //         ),
-  //                            //       );
-  //                            //     }
-  //                            //   }
-  //                            // },
-  //                            onTap: model.isLoading ? null : () { () async {
-  //                                try {
-  //                                  await model.connectWallet(context);
-  //                                } catch (e) {
-  //                                  if (context.mounted) {
-  //                                    Utils.flushBarErrorMessage('Connection error', context);
-  //                                  }
-  //                                }
-  //                              }();
-  //                            },
-  //
-  //                          );
-  //                        }
-  //                       ),
-  //                    ),
-  //                  ],
-  //                ),
-  //                SizedBox(height: screenHeight * 0.03),
-  //                /// Apply For Lisign Button
-  //                Container(
-  //                  width: screenWidth,
-  //                  height: screenHeight * 0.16,
-  //                  decoration: BoxDecoration(
-  //                    border: Border.all(
-  //                        color: Colors.transparent
-  //                    ),
-  //                    image:const DecorationImage(
-  //                      image: AssetImage('assets/icons/applyForListingBG.png'),
-  //                      fit: BoxFit.fill,
-  //                    ),
-  //                  ),
-  //
-  //                  /// Apply For Lisign Button
-  //
-  //                  child: Stack(
-  //                    children: [
-  //                      Container(
-  //                        padding: EdgeInsets.symmetric(
-  //                          horizontal: screenWidth * 0.035,
-  //                          vertical: screenHeight * 0.015,
-  //                        ),
-  //                        child: Column(
-  //                          mainAxisAlignment: MainAxisAlignment.start,
-  //                          crossAxisAlignment: CrossAxisAlignment.start,
-  //                          children: [
-  //                            Text(
-  //                              'Blockchain Innovation \nLaunchpad Hub',
-  //                              style: TextStyle(
-  //                                color: Color(0xFFFFF5ED),
-  //                                fontFamily: 'Poppins',
-  //                                fontSize: screenWidth * 0.04,
-  //                                fontWeight: FontWeight.w400,
-  //                              ),
-  //                              maxLines: 2,
-  //                            ),
-  //                            // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
-  //
-  //                            /// Apply For Lising Button
-  //                            Padding(
-  //                              padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
-  //                              child: BlockButton(
-  //                                height: screenHeight * 0.05,
-  //                                width: screenWidth * 0.4,
-  //                                label: 'Apply For Listing',
-  //                                textStyle:  TextStyle(
-  //                                  fontWeight: FontWeight.w700,
-  //                                  color: Colors.white,
-  //                                  fontSize: screenWidth * 0.030,
-  //                                ),
-  //                                gradientColors: const [
-  //                                  Color(0xFF2680EF),
-  //                                  Color(0xFF1CD494)
-  //                                  // 1CD494
-  //                                ],
-  //                                onTap: () {
-  //                                  print('Button tapped');
-  //                                  Navigator.push(
-  //                                    context,
-  //                                    MaterialPageRoute(builder: (context) => ApplyForListingScreen()),
-  //                                  );
-  //
-  //                                },
-  //                                iconPath: 'assets/icons/arrowIcon.png',
-  //                                iconSize : screenHeight * 0.028,
-  //                              ),
-  //                            ),
-  //                          ],
-  //                        ),
-  //                      ),
-  //                      Align(
-  //                        alignment: Alignment.centerRight,
-  //                        child: Padding(
-  //                          padding: EdgeInsets.only(left: screenWidth * 0.02),
-  //                          child: Image.asset(
-  //                            'assets/icons/frame.png',
-  //                            width: screenWidth * 0.4,
-  //                            height: screenHeight * 0.4,
-  //                            fit: BoxFit.fitWidth,
-  //                          ),
-  //                        ),
-  //                      ),
-  //                    ]
-  //                  ),
-  //                ),
-  //                SizedBox(height: screenHeight * 0.03),
-  //                _buildTokenCard(),
-  //                SizedBox(height: screenHeight * 0.05),
-  //                _buildBuyEcmSection(),
-  //              ],
-  //            ),
-  //          ),
-  //        ),
-  //
-  //       ]
-  //     ),
-  //   );
-  // }
 
 
    Widget _buildTokenCard() {
@@ -819,6 +598,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                           onTap: () {
                             // Navigate
+                            Navigator.of(context).push(
+                               MaterialPageRoute(builder: (context) => ViewTokenScreen()),
+                            );
+
                           },
                         ),
                       ],
@@ -924,7 +707,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   /// Buy ECM Section
-
   Widget _buildBuyEcmSection() {
     final Size screenSize = MediaQuery.of(context).size;
 
@@ -973,7 +755,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 8),
+                    // const SizedBox(height: 9),
+                    const SizedBox(height: 18),
 
                     // Stage &  MAx Section
                     ECMProgressIndicator(
@@ -1058,14 +841,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                   _updatePayableAmount();
 
                                 } catch (e) {
+
                                   if (context.mounted) {
                                     print('Error fetching stage info: ${e.toString()}');
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error fetching stage info: ${e.toString()}'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
+                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
+
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: Text('Error fetching stage info: ${e.toString()}'),
+                                    //     backgroundColor: Colors.red,
+                                    //   ),
+                                    // );
                                   }
                                 }
 
@@ -1096,12 +882,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 } catch (e) {
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error fetching stage info: ${e.toString()}'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
+                                    print('Error fetching stage info: ${e.toString()}');
+
+                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
+
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   SnackBar(
+                                    //     content: Text('Error fetching stage info: ${e.toString()}'),
+                                    //     backgroundColor: Colors.red,
+                                    //   ),
+                                    // );
                                   }
                                 }
 

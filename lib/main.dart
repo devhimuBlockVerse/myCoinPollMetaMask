@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
 
 import 'application/presentation/screens/bottom_nav_bar.dart';
-import 'application/presentation/screens/dashboard.dart';
-import 'application/presentation/screens/features/features_screen.dart';
-import 'application/presentation/screens/home/home_screen.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
-import 'framework/res/colors.dart';
-import 'framework/utils/routes/routes.dart';
 
 
 

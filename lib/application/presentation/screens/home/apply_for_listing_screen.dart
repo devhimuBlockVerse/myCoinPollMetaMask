@@ -27,6 +27,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
   void initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -672,46 +673,4 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
 }
 
 
-class Frame1321314803 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 62,
-          height: 10,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Opacity(
-                opacity: 0.50,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: ShapeDecoration(
-                    shape: OvalBorder(
-                      side: BorderSide(width: 1.50, color: Color(0xFF1CD494)),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                'Solana',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  height: 0.07,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
 

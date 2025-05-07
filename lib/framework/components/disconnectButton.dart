@@ -67,7 +67,7 @@ class _DisconnectButtonState extends State<DisconnectButton> {
                   height: buttonHeight,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
@@ -104,8 +104,19 @@ class _DisconnectButtonState extends State<DisconnectButton> {
 class DisconnectButtonClipper extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+
+    // Define a linear gradient shader
+    final gradient = LinearGradient(
+      colors: [
+        Color(0xff1CD494),
+        Color(0xff2680EF)
+
+      ],
+    ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
     final paint = Paint()
       ..color = Colors.redAccent
+      // ..shader = gradient
       ..strokeWidth = .2
       ..style = PaintingStyle.stroke;
 

@@ -1,17 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../framework/components/AddressFieldComponent.dart';
-import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/InfoCard.dart';
 import '../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../framework/components/badgeComponent.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
-import '../../../../framework/components/disconnectButton.dart';
 import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../viewmodel/wallet_view_model.dart';
@@ -169,7 +169,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         /// Buy ECM section
                         _buildBuyEcmSection(),
 
-
                         SizedBox(height: screenHeight * 0.04),
 
                          InfoCard(
@@ -197,7 +196,22 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
                         SizedBox(height: screenHeight * 0.04),
 
-                        _staticTokenSection(),
+                        _strategicTokenSection(),
+
+
+                        // SizedBox(height: screenHeight * 0.04),
+
+                        Container(
+                          width: double.infinity,
+                          height: screenHeight * 0.25,
+                          decoration: BoxDecoration(
+                            image: const DecorationImage(
+                              image: AssetImage('assets/icons/disconverImg.png'),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+
+                        )
 
                       ],
                     ),
@@ -899,21 +913,22 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
   }
 
 
-  Widget _staticTokenSection() {
+  Widget _strategicTokenSection(){
     final Size screenSize = MediaQuery.of(context).size;
 
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final textScale = screenWidth / 375;
     final bool isPortrait = screenSize.height > screenSize.width;
-    final double textScale = isPortrait ? screenWidth / 400 : screenHeight / 400;
-    final double paddingScale = screenWidth * 0.04;
+
     final baseSize = isPortrait ? screenWidth : screenHeight;
-    return  Padding(
+    return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 'Strategic Token Rollout',
@@ -928,30 +943,351 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
             ],
           ),
           SizedBox(height: screenHeight * 0.02),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              width: screenWidth,
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: Colors.transparent
-                ),
-               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
 
-                ],
-               ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.015,
+              horizontal: screenWidth * 0.03,
+            ),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage('assets/icons/gradientImg.png'),
+                fit: BoxFit.cover,
+              ),
+              border: Border.all(width: 0.5, color: const Color(0xFF2B2D40)),
+              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Left column
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Our strategic token distribution ensures a balanced, fair launch, maximizing growth and long-term community involvement.',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12 * textScale,
+                          height: 1.6,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.015),
+                      Container(
+                        width: screenWidth * 0.6,
+                        decoration: BoxDecoration(
+                          image: const DecorationImage(
+                            image: AssetImage('assets/icons/progressFrameBg.png'),
+                            fit: BoxFit.contain,
+                          ),
+                          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.06,
+                            vertical: screenHeight * 0.03,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              buildProgressBarRow(
+                                title: "Presale & ICO",
+                                percent: 0.5,
+                                percentText: "50%",
+                                barColor: const Color(0xFF1CD494),
+                                textScale: textScale,
+                                screenHeight: screenHeight,
+                                screenWidth: screenWidth,
+                              ),
+                              SizedBox(height: screenHeight * 0.012),
+                              buildProgressBarRow(
+                                title: "Founder Team",
+                                percent: 0.4,
+                                percentText: "40%",
+                                barColor: const Color(0xFFF0B90B),
+                                textScale: textScale,
+                                screenHeight: screenHeight,
+                                screenWidth: screenWidth,
+                              ),
+                              SizedBox(height: screenHeight * 0.012),
+                              buildProgressBarRow(
+                                title: "Angel Investors",
+                                percent: 0.1,
+                                percentText: "10%",
+                                barColor: const Color(0xFF009951),
+                                textScale: textScale,
+                                screenHeight: screenHeight,
+                                screenWidth: screenWidth,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Right side image
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: screenWidth * 0.03,
+                    bottom: screenHeight * 0.1,
+                  ),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                      child: SizedBox(
+                        height: screenWidth * 0.3,
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            'assets/icons/distribution_image.png',
+                            fit: BoxFit.contain,
+                            filterQuality: FilterQuality.high,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+
+
   }
 
-
-
-
+  Widget buildProgressBarRow({
+    required String title,
+    required double percent,
+    required String percentText,
+    required Color barColor,
+    required double textScale,
+    required double screenWidth,
+    required double screenHeight,
+  }) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12 * textScale,
+                  height: 1.23,
+                ),
+              ),
+            ),
+            Text(
+              percentText,
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400,
+                fontSize: 12 * textScale,
+                height: 1.23,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: screenHeight * 0.012),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            image: const DecorationImage(
+              image: AssetImage('assets/icons/progressFrameBg.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(screenWidth * 0.02),
+            child: LinearProgressIndicator(
+              value: percent,
+              backgroundColor: const Color(0xFF2B2D40),
+              valueColor: AlwaysStoppedAnimation<Color>(barColor),
+              minHeight: screenHeight * 0.01,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
+
+// class Frame1321314826 extends StatelessWidget {
+//   const Frame1321314826({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final Size screenSize = MediaQuery.of(context).size;
+//
+//     final screenWidth = MediaQuery.of(context).size.width;
+//     final screenHeight = MediaQuery.of(context).size.height;
+//     final textScale = screenWidth / 375;
+//     final bool isPortrait = screenSize.height > screenSize.width;
+//
+//     final baseSize = isPortrait ? screenWidth : screenHeight;
+//
+//     return Padding(
+//       padding: const EdgeInsets.all(2.0),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.start,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             children: [
+//               Text(
+//                 'Strategic Token Rollout',
+//                 style: TextStyle(
+//                   fontFamily: 'Poppins',
+//                   fontWeight: FontWeight.w500,
+//                   fontSize: baseSize * 0.045,
+//                   height: 1.2,
+//                   color: Colors.white,
+//                 ),
+//               ),
+//             ],
+//           ),
+//           SizedBox(height: screenHeight * 0.02),
+//
+//           Container(
+//             width: double.infinity,
+//             padding: EdgeInsets.symmetric(
+//               vertical: screenHeight * 0.015,
+//               horizontal: screenWidth * 0.03,
+//             ),
+//             decoration: BoxDecoration(
+//               image: const DecorationImage(
+//                 image: AssetImage('assets/icons/gradientImg.png'),
+//                 fit: BoxFit.cover,
+//               ),
+//               border: Border.all(width: 0.5, color: const Color(0xFF2B2D40)),
+//               borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//             ),
+//             child: Row(
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               children: [
+//                 // Left column
+//                 Expanded(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         'Our strategic token distribution ensures a balanced, fair launch, maximizing growth and long-term community involvement.',
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontFamily: 'Poppins',
+//                           fontWeight: FontWeight.w400,
+//                           fontSize: 12 * textScale,
+//                           height: 1.6,
+//                         ),
+//                       ),
+//                       SizedBox(height: screenHeight * 0.015),
+//                       Container(
+//                         width: screenWidth * 0.6,
+//                         decoration: BoxDecoration(
+//                           image: const DecorationImage(
+//                             image: AssetImage('assets/icons/progressFrameBg.png'),
+//                             fit: BoxFit.contain,
+//                           ),
+//                           borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//                         ),
+//                         child: Padding(
+//                           padding: EdgeInsets.symmetric(
+//                             horizontal: screenWidth * 0.06,
+//                             vertical: screenHeight * 0.03,
+//                           ),
+//                           child: Column(
+//                             crossAxisAlignment: CrossAxisAlignment.center,
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               buildProgressBarRow(
+//                                 title: "Presale & ICO",
+//                                 percent: 0.5,
+//                                 percentText: "50%",
+//                                 barColor: const Color(0xFF1CD494),
+//                                 textScale: textScale,
+//                                 screenHeight: screenHeight,
+//                                 screenWidth: screenWidth,
+//                               ),
+//                               SizedBox(height: screenHeight * 0.012),
+//                               buildProgressBarRow(
+//                                 title: "Founder Team",
+//                                 percent: 0.4,
+//                                 percentText: "40%",
+//                                 barColor: const Color(0xFFF0B90B),
+//                                 textScale: textScale,
+//                                 screenHeight: screenHeight,
+//                                 screenWidth: screenWidth,
+//                               ),
+//                               SizedBox(height: screenHeight * 0.012),
+//                               buildProgressBarRow(
+//                                 title: "Angel Investors",
+//                                 percent: 0.1,
+//                                 percentText: "10%",
+//                                 barColor: const Color(0xFF009951),
+//                                 textScale: textScale,
+//                                 screenHeight: screenHeight,
+//                                 screenWidth: screenWidth,
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//
+//                 // Right side image
+//                 Padding(
+//                   padding: EdgeInsets.only(
+//                     left: screenWidth * 0.03,
+//                     bottom: screenHeight * 0.1,
+//                   ),
+//                   child: Align(
+//                     alignment: Alignment.topRight,
+//                     child: ClipRRect(
+//                       borderRadius: BorderRadius.circular(screenWidth * 0.02),
+//                       child: SizedBox(
+//                         height: screenWidth * 0.3,
+//                         child: AspectRatio(
+//                           aspectRatio: 1,
+//                           child: Image.asset(
+//                             'assets/icons/distribution_image.png',
+//                             fit: BoxFit.contain,
+//                             filterQuality: FilterQuality.high,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//
+// }
+

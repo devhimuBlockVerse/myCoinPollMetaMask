@@ -14,6 +14,7 @@ class Assets {
   static const String assetsAbiSaleContractABI = 'assets/abi/SaleContractABI.json';
   static const String assetsAppIcon = 'assets/app_icon.png';
   static const String assetsIconsCopyImg = 'assets/icons/copyImg.svg';
+  static const String assetsIconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String assetsIconsFrame = 'assets/icons/frame.png';
   static const String fontsMontserratMedium = 'assets/fonts/Montserrat-Medium.ttf';
   static const String fontsOxaniumRegular = 'assets/fonts/Oxanium-Regular.ttf';
@@ -36,7 +37,8 @@ class Assets {
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
-  static const String iconsDistributionImage = 'assets/icons/distributionImage.png';
+  static const String iconsDisconverImg = 'assets/icons/disconverImg.png';
+  static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
@@ -45,6 +47,7 @@ class Assets {
   static const String iconsFeatures = 'assets/icons/features.svg';
   static const String iconsFrame = 'assets/icons/frame.png';
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
+  static const String iconsGradientImg = 'assets/icons/gradientImg.png';
   static const String iconsHome = 'assets/icons/home.svg';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
@@ -52,6 +55,7 @@ class Assets {
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
   static const String iconsProfileIcon = 'assets/icons/profileIcon.svg';
+  static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';

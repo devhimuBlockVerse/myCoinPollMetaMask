@@ -1,127 +1,6 @@
 import 'package:flutter/material.dart';
 
 
-
-// class InfoCard extends StatelessWidget {
-//   final String label1;
-//   final String label2;
-//   final String description;
-//   final String imagePath;
-//   final String backgroundImagePath;
-//   final double? width;
-//
-//   const InfoCard({
-//     Key? key,
-//     required this.label1,
-//     required this.label2,
-//     required this.description,
-//     required this.imagePath,
-//     required this.backgroundImagePath,
-//     this.width,
-//   }) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final mediaWidth = MediaQuery.of(context).size.width;
-//     final mediaHeight = MediaQuery.of(context).size.height;
-//
-//     return Center(
-//       child: LayoutBuilder(
-//         builder: (context, constraints) {
-//           double baseSize = mediaWidth < 600 ? mediaWidth : mediaHeight;
-//
-//           return Container(
-//             width: width ?? mediaWidth * 0.9,
-//             padding: EdgeInsets.symmetric(
-//               horizontal: baseSize * 0.04,
-//               vertical: baseSize * 0.03,
-//             ),
-//             decoration: BoxDecoration(
-//               image: DecorationImage(
-//                 image: AssetImage(backgroundImagePath),
-//                 fit: BoxFit.cover,
-//               ),
-//               borderRadius: BorderRadius.circular(12),
-//             ),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 /// Header Row
-//                 Row(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     /// Labels
-//                     Expanded(
-//                       child: Column(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           FittedBox(
-//                             fit: BoxFit.scaleDown,
-//                             child: Text(
-//                               label1,
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                                 fontSize: baseSize * 0.045,
-//                                 fontWeight: FontWeight.bold,
-//                                 fontFamily: 'Poppins',
-//                               ),
-//                             ),
-//                           ),
-//                           SizedBox(height: 4),
-//                           FittedBox(
-//                             fit: BoxFit.scaleDown,
-//                             child: Text(
-//                               label2,
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                                 fontSize: baseSize * 0.035,
-//                                 fontFamily: 'Poppins',
-//                               ),
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//
-//                     /// Logo
-//                     SizedBox(width: 12),
-//                     Container(
-//                       width: baseSize * 0.12,
-//                       height: baseSize * 0.12,
-//                       decoration: BoxDecoration(
-//                         image: DecorationImage(
-//                           image: AssetImage(imagePath),
-//                           fit: BoxFit.contain,
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//
-//                 SizedBox(height: baseSize * 0.03),
-//
-//                 /// Description
-//                 Text(
-//                   description,
-//                   style: TextStyle(
-//                     color: Colors.white.withOpacity(0.85),
-//                     fontSize: baseSize * 0.03,
-//                     height: 1.5,
-//                     fontFamily: 'Poppins',
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-
-import 'package:flutter/material.dart';
-
 class InfoCard extends StatelessWidget {
   final String label1;
   final String label2;
@@ -142,16 +21,16 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaWidth = MediaQuery.of(context).size.width;
-    final mediaHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Center(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          double baseSize = mediaWidth < 600 ? mediaWidth : mediaHeight;
+          double baseSize = screenWidth < 600 ? screenWidth : screenHeight;
 
           return Container(
-            width: width ?? mediaWidth * 0.9,
+            width: width ?? screenWidth * 0.9,
             padding: EdgeInsets.symmetric(
               horizontal: baseSize * 0.04,
               vertical: baseSize * 0.04,

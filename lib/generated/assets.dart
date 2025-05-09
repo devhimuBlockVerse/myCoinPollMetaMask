@@ -37,7 +37,7 @@ class Assets {
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
-  static const String iconsDisconverImg = 'assets/icons/disconverImg.png';
+  static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
@@ -57,6 +57,9 @@ class Assets {
   static const String iconsProfileIcon = 'assets/icons/profileIcon.svg';
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
+  static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';
+  static const String iconsRoadMapLineXX = 'assets/icons/roadMapLineXX.png';
+  static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
@@ -64,6 +67,7 @@ class Assets {
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';
   static const String iconsXIcon = 'assets/icons/xIcon.svg';
+  static const String iconsYearCircular = 'assets/icons/yearCircular.png';
   static const String mycoinpollMetamaskAssetsAppIcon = 'assets/app_icon.png';
 
 }

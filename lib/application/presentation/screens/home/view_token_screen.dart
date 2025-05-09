@@ -13,6 +13,7 @@ import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart';
+import '../../../../framework/components/roadMapContainerComponent.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'home_screen.dart';
@@ -156,7 +157,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
 
 
@@ -199,19 +202,114 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         _strategicTokenSection(),
 
 
-                        // SizedBox(height: screenHeight * 0.04),
-
-                        Container(
-                          width: double.infinity,
-                          height: screenHeight * 0.25,
-                          decoration: BoxDecoration(
-                            image: const DecorationImage(
-                              image: AssetImage('assets/icons/disconverImg.png'),
-                              fit: BoxFit.contain,
+                        Center(
+                          child: Container(
+                            width: screenWidth * 0.7,
+                            height: screenHeight * 0.19,
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Image.asset(
+                                    'assets/icons/discoverIMG.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        "Discover Our Visionary Roadmap",
+                                        textAlign: TextAlign.right,
+                                        style:  TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w500,
+                                          height: 1.3,
+                                          fontSize: baseSize * 0.032,                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                        ),
 
-                        )
+                        SizedBox(height: screenHeight * 0.01),
+
+                        /// Road Map Component Functionalities
+                        Container(
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+
+                              children: [
+                                // _buildRoadMap(context),
+                                RoadmapContainerComponent(
+                                  title: "Start Walking",
+                                  labels: [
+                                    'Plan Creation',
+                                    'Token Concept Development',
+                                    'Community Build Plan',
+                                    'MyCoinPoll.Com Site Create.',
+
+                                  ],
+                                ),
+                                SizedBox(height: screenHeight * 0.06),
+
+                                // _buildRoadMap(context),
+                                RoadmapContainerComponent(
+                                  title: "Launching Lots of Project",
+
+                                  labels: [
+                                    'MyCoinPoll.Com Site launched',
+                                    'MyCoinPoll.Com ETH Community Donation Program launched',
+                                    'MyCoinPoll.Com USDT Community Donation Program launched',
+                                    '1000+ MyCoinPoll.Com Community Member',
+                                   ],
+                                ),
+                                SizedBox(height: screenHeight * 0.06),
+
+                                // _buildRoadMap(context),
+                                RoadmapContainerComponent(
+                                  title: "Launching ICO or Androverse",
+
+                                  labels: [
+                                    'Launching ICO or Androverse',
+                                    'MyCoinPoll.Com Site Update 2.0.',
+                                    'MyCoinPoll.Com Site Update 2.0.2',
+                                    'MyCoinPoll.Com Site Update 2.0.3 (Web3 Connected)'
+
+                                  ],
+                                ),
+
+                                SizedBox(height: screenHeight * 0.06),
+
+                                RoadmapContainerComponent(
+                                  title: 'ECM COIN',
+                                  labels: [
+                                    'ECM COIN Public Presale (Round 03)',
+                                    'ECM COIN Public Presale (Round 04)',
+                                    'Smart Contracts Development',
+                                    'Smart Contracts Development'
+
+                                  ],
+                                ),
+
+                                SizedBox(height: screenHeight * 0.06),
+                              ],
+                            ),
+                          ),
+                        ),
+
+
 
                       ],
                     ),
@@ -224,7 +322,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
       ),
     );
   }
-
 
 
   /// White Paper section With timer
@@ -912,7 +1009,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
     );
   }
 
-
+ /// Strategic Token Section
   Widget _strategicTokenSection(){
     final Size screenSize = MediaQuery.of(context).size;
 
@@ -1067,7 +1164,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
   }
-
   Widget buildProgressBarRow({
     required String title,
     required double percent,
@@ -1127,167 +1223,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
       ],
     );
   }
+
+
+  /// RoadMap Section
+
+
 }
 
 
-// class Frame1321314826 extends StatelessWidget {
-//   const Frame1321314826({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final Size screenSize = MediaQuery.of(context).size;
-//
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     final textScale = screenWidth / 375;
-//     final bool isPortrait = screenSize.height > screenSize.width;
-//
-//     final baseSize = isPortrait ? screenWidth : screenHeight;
-//
-//     return Padding(
-//       padding: const EdgeInsets.all(2.0),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             children: [
-//               Text(
-//                 'Strategic Token Rollout',
-//                 style: TextStyle(
-//                   fontFamily: 'Poppins',
-//                   fontWeight: FontWeight.w500,
-//                   fontSize: baseSize * 0.045,
-//                   height: 1.2,
-//                   color: Colors.white,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           SizedBox(height: screenHeight * 0.02),
-//
-//           Container(
-//             width: double.infinity,
-//             padding: EdgeInsets.symmetric(
-//               vertical: screenHeight * 0.015,
-//               horizontal: screenWidth * 0.03,
-//             ),
-//             decoration: BoxDecoration(
-//               image: const DecorationImage(
-//                 image: AssetImage('assets/icons/gradientImg.png'),
-//                 fit: BoxFit.cover,
-//               ),
-//               border: Border.all(width: 0.5, color: const Color(0xFF2B2D40)),
-//               borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//             ),
-//             child: Row(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               children: [
-//                 // Left column
-//                 Expanded(
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'Our strategic token distribution ensures a balanced, fair launch, maximizing growth and long-term community involvement.',
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontFamily: 'Poppins',
-//                           fontWeight: FontWeight.w400,
-//                           fontSize: 12 * textScale,
-//                           height: 1.6,
-//                         ),
-//                       ),
-//                       SizedBox(height: screenHeight * 0.015),
-//                       Container(
-//                         width: screenWidth * 0.6,
-//                         decoration: BoxDecoration(
-//                           image: const DecorationImage(
-//                             image: AssetImage('assets/icons/progressFrameBg.png'),
-//                             fit: BoxFit.contain,
-//                           ),
-//                           borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//                         ),
-//                         child: Padding(
-//                           padding: EdgeInsets.symmetric(
-//                             horizontal: screenWidth * 0.06,
-//                             vertical: screenHeight * 0.03,
-//                           ),
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.center,
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               buildProgressBarRow(
-//                                 title: "Presale & ICO",
-//                                 percent: 0.5,
-//                                 percentText: "50%",
-//                                 barColor: const Color(0xFF1CD494),
-//                                 textScale: textScale,
-//                                 screenHeight: screenHeight,
-//                                 screenWidth: screenWidth,
-//                               ),
-//                               SizedBox(height: screenHeight * 0.012),
-//                               buildProgressBarRow(
-//                                 title: "Founder Team",
-//                                 percent: 0.4,
-//                                 percentText: "40%",
-//                                 barColor: const Color(0xFFF0B90B),
-//                                 textScale: textScale,
-//                                 screenHeight: screenHeight,
-//                                 screenWidth: screenWidth,
-//                               ),
-//                               SizedBox(height: screenHeight * 0.012),
-//                               buildProgressBarRow(
-//                                 title: "Angel Investors",
-//                                 percent: 0.1,
-//                                 percentText: "10%",
-//                                 barColor: const Color(0xFF009951),
-//                                 textScale: textScale,
-//                                 screenHeight: screenHeight,
-//                                 screenWidth: screenWidth,
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//
-//                 // Right side image
-//                 Padding(
-//                   padding: EdgeInsets.only(
-//                     left: screenWidth * 0.03,
-//                     bottom: screenHeight * 0.1,
-//                   ),
-//                   child: Align(
-//                     alignment: Alignment.topRight,
-//                     child: ClipRRect(
-//                       borderRadius: BorderRadius.circular(screenWidth * 0.02),
-//                       child: SizedBox(
-//                         height: screenWidth * 0.3,
-//                         child: AspectRatio(
-//                           aspectRatio: 1,
-//                           child: Image.asset(
-//                             'assets/icons/distribution_image.png',
-//                             fit: BoxFit.contain,
-//                             filterQuality: FilterQuality.high,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//
-// }
+
 

@@ -31,12 +31,14 @@ class Assets {
   static const String iconsBackButton = 'assets/icons/back_button.svg';
   static const String iconsBg = 'assets/icons/bg.png';
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
+  static const String iconsBgRoadMapFrame = 'assets/icons/bgRoadMapFrame.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
+  static const String iconsDialogBg = 'assets/icons/dialogBg.png';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String iconsEcm = 'assets/icons/ecm.png';

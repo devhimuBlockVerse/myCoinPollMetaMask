@@ -20,27 +20,65 @@ class _NewsScreenState extends State<NewsScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('News'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'News',
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 20),
+          textAlign: TextAlign.center,
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
-          child: Column(
-            children: [
-              Center(
-                // child: CardNewsComponent(),
-                child: CardNewsComponent(
-                  imageUrl:"assets/icons/addSourceImage.png",
-                  source: "Mycoinpoll",
-                  timeAgo: "47mnt ago",
-                  headline:"Trump crypto soars as president offers dinner to top holders...",
-                ),
-              )
+        top: false,
+        child: Container(
+          width: screenWidth,
+          height: screenHeight,
+          decoration: BoxDecoration(
+            color: const Color(0xFF01090B),
+            image: DecorationImage(
+              image: AssetImage('assets/icons/gradientBgImage.png'),
+              fit: BoxFit.contain,
+              alignment: Alignment.topRight,
+            ),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04,
+                vertical: screenHeight * 0.02,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: screenHeight * 0.06),
 
-            ],
-          )
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
-    );
+
+     );
   }
 }
+
+
+
+
+//CardNewsComponent(
+//                   imageUrl:"assets/icons/addSourceImage.png",
+//                   source: "Mycoinpoll",
+//                   timeAgo: "47mnt ago",
+//                   headline:"Trump crypto soars as president offers dinner to top holders...",
+//                 ),

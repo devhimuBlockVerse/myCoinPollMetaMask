@@ -87,7 +87,11 @@ class _NewsScreenState extends State<NewsScreen> {
 
 
                   SizedBox(height: screenHeight * 0.06),
+
                   ///Grid View News Section
+
+                   _buildGridViewSection(),
+
 
                 ],
               ),
@@ -170,9 +174,6 @@ class _NewsScreenState extends State<NewsScreen> {
               },
             ),
           ),
-
-          // SizedBox(height: screenHeight * 0.015), // Spacing between card and dots
-
           // Dot Indicator
           SizedBox(
             height: dotSize + 10, // slightly more than dot size
@@ -199,6 +200,52 @@ class _NewsScreenState extends State<NewsScreen> {
     );
   }
 
+
+  Widget _buildGridViewSection() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    return Padding(padding: const EdgeInsets.all(1.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'News',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'View All',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: baseSize * 0.038,
+                    height: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+
+        ],
+      ),
+
+    );
+  }
 
 
 }

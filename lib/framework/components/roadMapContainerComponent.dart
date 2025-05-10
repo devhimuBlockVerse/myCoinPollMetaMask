@@ -256,251 +256,251 @@ import 'BlockButton.dart';
 //   }
 // }
 
-class RoadmapContainerComponent extends StatelessWidget {
-  final List<String> labels;
-  final String title;
-
-  const RoadmapContainerComponent({
-    super.key,
-    required this.labels,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final baseSize = screenWidth < screenHeight ? screenWidth : screenHeight;
-
-    final imageWidth = screenWidth * 0.80;
-
-    return Stack(
-      children: [
-        // The roadmap frame container
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: const EdgeInsets.only(top: 20.0, left: 35, right: 20, bottom: 20),
-            width: imageWidth,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/icons/roadmapFrame.png'),
-                fit: BoxFit.fill,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Poppins',
-                    fontSize: screenWidth / 375 * 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Dynamic Labels
-                ...labels.map(
-                      (label) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: CheckboxWithLabel(
-                      labelText: label,
-                      isChecked: true,
-                      onChanged: (_) {},
-                      containerHeight: baseSize,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                // Button aligned bottom-right
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: BlockButton(
-                    height: screenHeight * 0.035,
-                    width: screenWidth * 0.28,
-                    label: 'Show Other Roadmap',
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      fontSize: baseSize * 0.020,
-                    ),
-                    gradientColors: const [
-                      Color(0xFF2680EF),
-                      Color(0xFF1CD494),
-                    ],
-                    onTap: () {},
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Year Circular Image positioned at top-right of the container
-        Positioned(
-          top: screenHeight * 0.03,
-          // left: screenWidth * 0.0,
-          child: Container(
-            width: baseSize * 0.20,
-            height: baseSize * 0.20,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset(
-                  'assets/icons/yearCircular.png',
-                  width: baseSize * 0.18,
-                   fit: BoxFit.contain,
-                ),
-                Text(
-                  '2025', // <-- You can make this dynamic
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: baseSize * 0.04,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-
 // class RoadmapContainerComponent extends StatelessWidget {
-//   final String title;
 //   final List<String> labels;
-//   final VoidCallback? onTap;
+//   final String title;
 //
 //   const RoadmapContainerComponent({
 //     super.key,
+//     required this.labels,
 //     required this.title,
-//     required this.labels, this.onTap,
 //   });
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     final screenWidth = MediaQuery.of(context).size.width;
 //     final screenHeight = MediaQuery.of(context).size.height;
-//     final baseSize = MediaQuery.of(context).size.shortestSide;
+//     final baseSize = screenWidth < screenHeight ? screenWidth : screenHeight;
 //
-//     final double widthRatio = 0.85;
-//     final double imageWidth = screenWidth * widthRatio;
-//     final double yearImageWidth = baseSize * 0.15;
-//     final double yearImageHeight = baseSize * 0.15;
+//     final imageWidth = screenWidth * 0.80;
 //
-//     return LayoutBuilder(
-//       builder: (context, constraints) {
-//         return SizedBox(
-//           width: double.infinity,
-//            child: Stack(
-//             clipBehavior: Clip.none,
-//             children: [
-//
-//               // Background image that expands with content
-//               Positioned.fill(
-//                 child: Image.asset(
-//                   "assets/icons/roadmapFrame.png",
-//                   // "assets/icons/bgRoadMapFrame.png",
-//                   fit: BoxFit.fill,
-//                   alignment: Alignment.topCenter,
-//                 ),
+//     return Stack(
+//       children: [
+//         // The roadmap frame container
+//         Align(
+//           alignment: Alignment.bottomRight,
+//           child: Container(
+//             margin: const EdgeInsets.symmetric(vertical: 10),
+//             padding: const EdgeInsets.only(top: 20.0, left: 35, right: 20, bottom: 20),
+//             width: imageWidth,
+//             decoration: BoxDecoration(
+//               image: DecorationImage(
+//                 image: AssetImage('assets/icons/roadmapFrame.png'),
+//                 fit: BoxFit.fill,
 //               ),
-//
-//
-//
-//               // Foreground content
-//               Padding(
-//                 padding: EdgeInsets.symmetric(
-//                   horizontal: screenWidth * 0.21,
-//                   vertical: baseSize * 0.025,
-//                 ),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                    children: [
-//                     SizedBox(height: baseSize * 0.015),
-//
-//                     Text(
-//                       title,
-//                       textAlign: TextAlign.start,
-//                       style: TextStyle(
-//                         color: Colors.white,
-//                         fontFamily: 'Poppins',
-//                         fontSize: screenWidth / 375 * 11,
-//                         fontWeight: FontWeight.w700,
-//                       ),
-//                     ),
-//
-//                     SizedBox(height: baseSize * 0.015),
-//
-//                     ...labels.map(
-//                           (label) => Row(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Icon(Icons.check_box,
-//                                   size: baseSize * 0.038, color: Colors.white),
-//                               SizedBox(width: baseSize * 0.015),
-//                               Expanded(
-//                                 child: Text(
-//                                   label,
-//                                   textAlign: TextAlign.start,
-//                                   style: TextStyle(
-//                                     color: Colors.white,
-//                                     fontFamily: 'Poppins',
-//                                     fontSize: baseSize * 0.028,
-//                                     height: 1.6,
-//                                     fontWeight: FontWeight.w300,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                     ),
-//
-//                     SizedBox(height: baseSize * 0.12),
-//                   ],
-//                 ),
-//               ),
-//
-//               if (onTap != null)
-//                 Positioned(
-//                 bottom: baseSize * 0.05,
-//                 right: screenWidth * 0.04,
-//                 child: BlockButton(
-//                   height: screenHeight * 0.035,
-//                   width: screenWidth * 0.28,
-//                   label: 'Show Other Roadmap',
-//                   textStyle: TextStyle(
-//                     fontWeight: FontWeight.w700,
+//             ),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Title
+//                 Text(
+//                   title,
+//                   style: TextStyle(
 //                     color: Colors.white,
-//                     fontSize: baseSize * 0.020,
+//                     fontFamily: 'Poppins',
+//                     fontSize: screenWidth / 375 * 12,
+//                     fontWeight: FontWeight.w700,
 //                   ),
-//                   gradientColors: const [
-//                     Color(0xFF2680EF),
-//                     Color(0xFF1CD494),
-//                   ],
-//                   onTap: onTap,
 //                 ),
-//               ),
+//                 const SizedBox(height: 12),
 //
-//              ],
+//                 // Dynamic Labels
+//                 ...labels.map(
+//                       (label) => Padding(
+//                     padding: const EdgeInsets.symmetric(vertical: 4.0),
+//                     child: CheckboxWithLabel(
+//                       labelText: label,
+//                       isChecked: true,
+//                       onChanged: (_) {},
+//                       containerHeight: baseSize,
+//                     ),
+//                   ),
+//                 ),
+//
+//                 const SizedBox(height: 10),
+//
+//                 // Button aligned bottom-right
+//                 Align(
+//                   alignment: Alignment.bottomRight,
+//                   child: BlockButton(
+//                     height: screenHeight * 0.035,
+//                     width: screenWidth * 0.28,
+//                     label: 'Show Other Roadmap',
+//                     textStyle: TextStyle(
+//                       fontWeight: FontWeight.w700,
+//                       color: Colors.white,
+//                       fontSize: baseSize * 0.020,
+//                     ),
+//                     gradientColors: const [
+//                       Color(0xFF2680EF),
+//                       Color(0xFF1CD494),
+//                     ],
+//                     onTap: () {},
+//                   ),
+//                 ),
+//               ],
+//             ),
 //           ),
-//         );
-//       },
+//         ),
+//
+//         // Year Circular Image positioned at top-right of the container
+//         Positioned(
+//           top: screenHeight * 0.03,
+//           // left: screenWidth * 0.0,
+//           child: Container(
+//             width: baseSize * 0.20,
+//             height: baseSize * 0.20,
+//             child: Stack(
+//               alignment: Alignment.center,
+//               children: [
+//                 Image.asset(
+//                   'assets/icons/yearCircular.png',
+//                   width: baseSize * 0.18,
+//                    fit: BoxFit.contain,
+//                 ),
+//                 Text(
+//                   '2025', // <-- You can make this dynamic
+//                   style: TextStyle(
+//                     color: Colors.white,
+//                     fontSize: baseSize * 0.04,
+//                     fontWeight: FontWeight.bold,
+//                     fontFamily: 'Poppins',
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ],
 //     );
 //   }
 // }
+
+
+
+class RoadmapContainerComponent extends StatelessWidget {
+  final String title;
+  final List<String> labels;
+  final VoidCallback? onTap;
+
+  const RoadmapContainerComponent({
+    super.key,
+    required this.title,
+    required this.labels, this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final baseSize = MediaQuery.of(context).size.shortestSide;
+
+    final double widthRatio = 0.85;
+    final double imageWidth = screenWidth * widthRatio;
+    final double yearImageWidth = baseSize * 0.15;
+    final double yearImageHeight = baseSize * 0.15;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SizedBox(
+          width: double.infinity,
+           child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+
+              // Background image that expands with content
+              Positioned.fill(
+                child: Image.asset(
+                  "assets/icons/roadmapFrame.png",
+                  // "assets/icons/bgRoadMapFrame.png",
+                  fit: BoxFit.fill,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
+
+
+
+              // Foreground content
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.21,
+                  vertical: baseSize * 0.025,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                    SizedBox(height: baseSize * 0.015),
+
+                    Text(
+                      title,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontSize: screenWidth / 375 * 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    SizedBox(height: baseSize * 0.015),
+
+                    ...labels.map(
+                          (label) => Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.check_box,
+                                  size: baseSize * 0.038, color: Colors.white),
+                              SizedBox(width: baseSize * 0.015),
+                              Expanded(
+                                child: Text(
+                                  label,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins',
+                                    fontSize: baseSize * 0.028,
+                                    height: 1.6,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                    ),
+
+                    SizedBox(height: baseSize * 0.12),
+                  ],
+                ),
+              ),
+
+              if (onTap != null)
+                Positioned(
+                bottom: baseSize * 0.05,
+                right: screenWidth * 0.04,
+                child: BlockButton(
+                  height: screenHeight * 0.035,
+                  width: screenWidth * 0.28,
+                  label: 'Show Other Roadmap',
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: baseSize * 0.020,
+                  ),
+                  gradientColors: const [
+                    Color(0xFF2680EF),
+                    Color(0xFF1CD494),
+                  ],
+                  onTap: onTap,
+                ),
+              ),
+
+             ],
+          ),
+        );
+      },
+    );
+  }
+}
 
 class CheckboxWithLabel extends StatelessWidget {
   final String labelText;

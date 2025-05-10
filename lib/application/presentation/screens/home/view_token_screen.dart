@@ -601,7 +601,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'Community Build Plan',
                                   'MyCoinPoll.Com Site Create.',
                                 ],
-                                onTap:() =>DialogUtils.startWalkingDialog(context),
+                                // onTap:() =>DialogUtils.startWalkingDialog(context),
 
                               ),
 
@@ -616,7 +616,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'MyCoinPoll.Com USDT Community Donation Program launched',
                                   '1000+ MyCoinPoll.Com Community Member',
                                 ],
-                                onTap:() =>DialogUtils.launchingProjectDialog(context),
+                                // onTap:() =>DialogUtils.launchingProjectDialog(context),
 
                               ),
                               SizedBox(height: screenHeight * 0.05),
@@ -631,7 +631,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'MyCoinPoll.Com Site Update 2.0.3 (Web3 Connected)'
 
                                 ],
-                                onTap:() =>DialogUtils.launchingIcoDialog(context),
+                                // onTap:() =>DialogUtils.launchingIcoDialog(context),
 
 
                               ),
@@ -647,7 +647,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'Smart Contracts Development'
 
                                 ],
-                                onTap:() =>DialogUtils.ecmCoinDialog(context),
+                                // onTap:() =>DialogUtils.ecmCoinDialog(context),
 
                               ),
 
@@ -661,7 +661,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'ECM Token Distribute Private Holder',
 
                                 ],
-                                onTap:() =>DialogUtils.updateAndDevelopmentDialog(context),
+                                // onTap:() =>DialogUtils.updateAndDevelopmentDialog(context),
 
                               ),
                               SizedBox(height: screenHeight * 0.05),
@@ -674,7 +674,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'Androverse Access & VA Selling Planning',
                                   'ECM ICO Launch(www.mycoinpoll.com)',
                                 ],
-                                onTap:() =>DialogUtils.ecmIcoLaunchDialog(context),
+                                // onTap:() =>DialogUtils.ecmIcoLaunchDialog(context),
 
                               ),
                               SizedBox(height: screenHeight * 0.05),
@@ -687,7 +687,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'Tier 1 CEX listings',
                                   'Tier 2 CEX listings (ECM COIN LISTING)',
                                 ],
-                                onTap:() =>DialogUtils.launchingAndListingDialog(context),
+                                // onTap:() =>DialogUtils.launchingAndListingDialog(context),
 
                               ),
 
@@ -701,7 +701,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   'Staking Project Launching',
                                   'Androverse Platform Update V0.2',
                                 ],
-                                onTap:() =>DialogUtils.moreProjectDialog(context),
+                                // onTap:() =>DialogUtils.moreProjectDialog(context),
 
                               ),
                               SizedBox(height: screenHeight * 0.05),
@@ -1648,31 +1648,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
   ///
-
-
-  void showCustomDialog(BuildContext context) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Dismiss",
-      barrierColor: Colors.black.withOpacity(0.2),
-      pageBuilder: (_, __, ___) {
-        return CustomDialog(
-          title: 'ECM ICO launch',
-          subtitle: '2024-Q4',
-          items: [
-            DialogItem(text: 'Business registration as a crypto exchanger.', icon: Icons.check),
-            DialogItem(text: 'Androverse Access & VA Selling Planning', icon: Icons.check),
-            DialogItem(text: 'Press releases', icon: Icons.check),
-            DialogItem(text: 'Marketing articles published', icon: Icons.timer),
-            DialogItem(text: 'MyCoinPoll Mobile App Launching', icon: Icons.timer),
-          ],
-        );
-      },
-    );
-  }
-
-
 
 }
 

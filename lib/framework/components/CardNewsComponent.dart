@@ -19,7 +19,7 @@ class CardNewsComponent extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final containerWidth = screenWidth;
     final imageHeight = containerWidth * 0.48;
-    final overlayTopOffset = imageHeight * 0.5;
+    final overlayTopOffset = imageHeight * 0.6;
     final overlayHeight = imageHeight * 0.7;
 
     return Container(
@@ -67,6 +67,7 @@ class CardNewsComponent extends StatelessWidget {
                 children: [
                   // Source and time
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Flexible(
                         child: Text(
@@ -75,6 +76,8 @@ class CardNewsComponent extends StatelessWidget {
                             color: const Color(0xFF5CA4FF),
                             fontSize: containerWidth * 0.04,
                             fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w700, // Bold
+                            height: 1.6, // 160% line height
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -84,8 +87,10 @@ class CardNewsComponent extends StatelessWidget {
                         timeAgo,
                         style: TextStyle(
                           color: const Color(0xFF77798D),
-                          fontSize: containerWidth * 0.035,
+                          fontSize: containerWidth * 0.032,
                           fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700, // Bold
+                          height: 1.6, // 160% line height
                         ),
                       ),
                     ],
@@ -98,6 +103,9 @@ class CardNewsComponent extends StatelessWidget {
                       color: const Color(0xFFFFF5ED),
                       fontSize: containerWidth * 0.04,
                       fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w300,
+                      height: 1.6, // 160% line height
+
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

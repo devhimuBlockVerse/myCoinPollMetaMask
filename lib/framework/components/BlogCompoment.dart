@@ -107,11 +107,14 @@ class Blog extends StatelessWidget {
                   SizedBox(height: padding * 0.5),
                   Text(
                     title,
+                    maxLines: 2,
+
                     style: TextStyle(
                       fontSize: fontMedium,
                       color: Colors.white,
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
+                      overflow: TextOverflow.ellipsis,
                       height: 1.6,
                     ),
                   ),

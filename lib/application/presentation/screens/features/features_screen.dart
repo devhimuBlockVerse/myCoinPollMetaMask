@@ -22,22 +22,6 @@ class _FeaturesScreenState
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 
-        // appBar: AppBar(
-        //
-        //   title:   Text(
-        //
-        //     'Features',
-        //     style: TextStyle(
-        //         fontFamily: 'Poppins',
-        //         color: Colors.white,
-        //         fontWeight: FontWeight.w600,
-        //         // fontSize: 20,
-        //       fontSize: screenWidth * 0.05,
-        //     ),
-        //     textAlign: TextAlign.center,
-        //   ),
-        //   centerTitle: true,
-        // ),
         body:  SafeArea(
           top: false,
           child: Container(

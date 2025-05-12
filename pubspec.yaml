@@ -51,6 +51,7 @@ dependencies:
   flutter_svg: ^2.0.7
 #  flutter_local_notifications: ^17.2.3
   xml: ^6.1.0
+  share_plus:
 #  url_launcher: ^6.0.20
 
 

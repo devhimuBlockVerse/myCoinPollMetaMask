@@ -257,6 +257,24 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   Widget _buildGridViewSection() {
+
+
+    var description = '''
+Blockchain technology is a decentralized, distributed ledger system that records transactions across multiple computers, ensuring data integrity, transparency, and security. Unlike traditional databases managed by a central authority, blockchain relies on a peer-to-peer network, making it resistant to tampering and fraud.
+
+Key features include:
+
+- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
+- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
+- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
+- **Security**: Transactions are secured through cryptographic algorithms.
+- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
+
+Blockchain's applications extend beyond cryptocurrencies. In finance, it streamlines processes by eliminating intermediaries, reducing costs, and increasing transaction speed. Supply chains benefit from enhanced traceability and transparency, ensuring product authenticity and reducing fraud. In healthcare, blockchain can securely store patient records, ensuring data integrity and privacy.
+
+Despite its advantages, blockchain faces challenges such as scalability issues and energy consumption concerns, especially with consensus mechanisms like Proof of Work. However, ongoing developments, including the adoption of Proof of Stake, aim to address these challenges, making blockchain a transformative technology across various industries.
+''' ;
+
     double screenWidth =
         MediaQuery.of(context).size.width;
     double screenHeight =
@@ -271,21 +289,19 @@ class _NewsScreenState extends State<NewsScreen> {
             ? 3
             : 2;
 
-    final double aspectRatio =
-        isPortrait ? 166 / 216 : 180 / 200;
+    final double aspectRatio = isPortrait ? 166 / 216 : 180 / 200;
     final crossAxisSpacing = baseSize * 0.03;
     final mainAxisSpacing = baseSize * 0.015;
 
-    final verticalSpacing = baseSize * 0.02;
-
-    final List<Map<String, String>> blogList = List.generate(
-            10,
-            (index) => {
-                  'imageUrl': 'https://picsum.photos/id/${index + 30}/200/300',
-                  'source': 'mycoinpoll',
-                  'date': 'Oct ${20 + index % 10}, 2024',
-                  'title': 'Understanding Blockchain: The Backbone of Crypto #$index',
-                });
+     final List<Map<String, String>> blogList = List.generate(
+      10, (index) => {
+        'imageUrl': 'https://picsum.photos/id/${index + 30}/200/300',
+        'source': 'mycoinpoll',
+        'date': 'Oct ${20 + index % 10}, 2024',
+        'title': 'Understanding Blockchain: The Backbone of Cryptocurrencies',
+        'description': description,
+       },
+    );
 
 
 

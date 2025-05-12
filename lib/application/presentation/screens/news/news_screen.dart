@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/news/trending_screen.dart';
 
 import '../../../../framework/components/BlogCompoment.dart';
 import '../../../../framework/components/CardNewsComponent.dart';
 import '../../../data/services/BlogServices.dart';
-import '../../../domain/model/RssModel.dart';
-import 'package:http/http.dart' as http;
+ import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart' as xml;
 
 class NewsScreen extends StatefulWidget {
@@ -17,42 +17,17 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
-  final PageController _pageController =
-      PageController(viewportFraction: 0.9);
+  final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentPage = 0;
 
-  final List<Map<String, String>> _trendingNews =
-      List.generate(
+  final List<Map<String, String>> _trendingNews = List.generate(
           4,
           (index) => {
-                'imageUrl':
-                    "assets/icons/addSourceImage.png",
+                'imageUrl': "assets/icons/addSourceImage.png",
                 'source': "Mycoinpoll",
                 'timeAgo': "47mnt ago",
-                'headline':
-                    "Trump crypto soars as president offers dinner to top holders...",
+                'headline': "Trump crypto soars as president offers dinner to top holders...",
               });
-
-  // late Future<List<Map<String, String>>> _blogs;
-
-  final BlogService blogService = BlogService();
-  List<BlogPost> _blogPosts = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // _blogs = BlogService().fetchBlogData();
-
-    blogService.fetchPosts().then((posts) {
-      setState(() {
-        _blogPosts = posts;
-      });
-    }).catchError((e) {
-      print("Error fetching posts: $e");
-    });
-
-   }
 
   String getValidImageUrl(
       Map<String, String> blog) {
@@ -78,26 +53,11 @@ class _NewsScreenState extends State<NewsScreen> {
     final screenHeight =
         MediaQuery.of(context).size.height;
 
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'News',
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 20),
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-      ),
+      backgroundColor: Colors.transparent,
+
       body: SafeArea(
         top: false,
         child: Container(
@@ -112,33 +72,49 @@ class _NewsScreenState extends State<NewsScreen> {
               alignment: Alignment.topRight,
             ),
           ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.04,
-                vertical: screenHeight * 0.02,
+          child: Column(
+            children: [
+              SizedBox(height: screenHeight * 0.02),
+
+              Align(
+                alignment: Alignment.topCenter,
+                child: const Text(
+                  'News',
+                  style: TextStyle(
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                      height:
-                          screenHeight * 0.06),
 
-                  ///Trending Section
-                  _buildTrendingSection(),
-
-                  SizedBox(
-                      height:
-                          screenHeight * 0.02),
-
-                  ///Grid View News Section
-
-                  _buildGridViewSection(),
-                ],
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.04,
+                    vertical: screenHeight * 0.02,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: screenHeight * 0.01),
+                
+                        ///Trending Section
+                        _buildTrendingSection(),
+                
+                        SizedBox(height: screenHeight * 0.02),
+                
+                        ///Grid View News Section
+                
+                        _buildGridViewSection(),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -247,6 +223,7 @@ class _NewsScreenState extends State<NewsScreen> {
               },
             ),
           ),
+          SizedBox(height: screenHeight * 0.02),
 
           // Dot Indicator
           SizedBox(
@@ -302,17 +279,13 @@ class _NewsScreenState extends State<NewsScreen> {
 
     final verticalSpacing = baseSize * 0.02;
 
-    final List<Map<String, String>> blogList =
-        List.generate(
-            20,
+    final List<Map<String, String>> blogList = List.generate(
+            10,
             (index) => {
-                  'imageUrl':
-                      'https://picsum.photos/id/${index + 30}/200/300',
+                  'imageUrl': 'https://picsum.photos/id/${index + 30}/200/300',
                   'source': 'mycoinpoll',
-                  'date':
-                      'Oct ${20 + index % 10}, 2024',
-                  'title':
-                      'Understanding Blockchain: The Backbone of Crypto #$index',
+                  'date': 'Oct ${20 + index % 10}, 2024',
+                  'title': 'Understanding Blockchain: The Backbone of Crypto #$index',
                 });
 
     return Column(
@@ -362,78 +335,16 @@ class _NewsScreenState extends State<NewsScreen> {
           ),
         ),
 
-        //     FutureBuilder<List<Map<String, String>>>(
-        //       future: _blogs,
-        //       builder: (context, snapshot) {
-        //         if (snapshot.connectionState == ConnectionState.waiting) {
-        //           return const Center(child: CircularProgressIndicator());
-        //         } else if (snapshot.hasError) {
-        //           return Center(child: Text('Error: ${snapshot.error}'));
-        //         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        //           return const Center(child: Text('No blog posts found.'));
-        //         }
-        //         final blogs = snapshot.data!;
-        //
-        //         return Container(
-        //         width: double.infinity,
-        //         child: GridView.builder(
-        //           itemCount: blogs.length,
-        //           shrinkWrap: true,
-        //           physics: const NeverScrollableScrollPhysics(),
-        //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //             crossAxisCount: crossAxisCount,
-        //             crossAxisSpacing: crossAxisSpacing,
-        //             mainAxisSpacing: mainAxisSpacing,
-        //             childAspectRatio: aspectRatio,
-        //
-        //           ),
-        //           itemBuilder: (context, index) {
-        //             final blog = blogs[index];
-        //             // String getValidImageUrl(Map<String, String> blog) {
-        //             //   final url = blog['imageUrl'];
-        //             //   if (url == null || url.isEmpty || !url.startsWith('http')) {
-        //             //     return 'https://via.placeholder.com/200x300.png?text=No+Image';
-        //             //   }
-        //             //   return url;
-        //             // }
-        //
-        //             return Blog(
-        //
-        //               // imageUrl: blog['src'] ?? '', // Provide fallback
-        //               imageUrl: getValidImageUrl(blog), // ✅ Use validated URL
-        //               source: blog['src'] ?? '',
-        //               date: blog['pubDate'] ?? '',
-        //               title: blog['title'] ?? '',
-        //               onTap: (){
-        //                 Navigator.push(
-        //                   context,
-        //                   MaterialPageRoute(
-        //                     builder: (_) => TrendingScreen(
-        //                       blogData: blog,
-        //                     ),
-        //                   ),
-        //                 );
-        //               },
-        //             );
-        //           },
-        //         ),
-        //       );
-        //
-        //
-        //
-        //   },
-        // ),
+        SizedBox(height: screenHeight * 0.02),
 
 
       /// ✅ Add a tiny spacing to control vertical gap
-// SizedBox(height: verticalSpacing * 0),
 
-// GridView section
+        // GridView section
         Container(
   width: double.infinity,
   child: GridView.builder(
-    // itemCount: blogList.length,
-    itemCount: _blogPosts.length,
+    itemCount: blogList.length,
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -444,20 +355,18 @@ class _NewsScreenState extends State<NewsScreen> {
 
     ),
     itemBuilder: (context, index) {
-      // final blog = blogList[index];
-      final post = _blogPosts[index];
-
+      final blog = blogList[index];
       return Blog(
-        imageUrl: post.image ?? '',
-        source: post.source,
-        date: post.publishedAt,
-        title: post.title,
+        imageUrl: blog['imageUrl']!,
+        source: blog['source']!,
+        date: blog['date']!,
+        title: blog['title']!,
         onTap: (){
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => TrendingScreen(
-                blogData: _blogPosts[index],
+                blogData: blog,
               ),
             ),
           );
@@ -468,46 +377,48 @@ class _NewsScreenState extends State<NewsScreen> {
 ),
 
 
+        // Container(
+        //   width: double.infinity,
+        //   child: GridView.builder(
+        //     itemCount: blogList.length,
+        //     shrinkWrap: true,
+        //     physics: const NeverScrollableScrollPhysics(),
+        //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        //       crossAxisCount: crossAxisCount,
+        //       crossAxisSpacing: crossAxisSpacing,
+        //       mainAxisSpacing: mainAxisSpacing,
+        //       childAspectRatio: aspectRatio,
+        //
+        //     ),
+        //     itemBuilder: (context, index) {
+        //       final blog = blogList[index];
+        //       return Blog(
+        //         imageUrl: blog['imageUrl']!,
+        //         source: blog['source']!,
+        //         date: blog['date']!,
+        //         title: blog['title']!,
+        //         onTap: (){
+        //           Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //               builder: (_) => TrendingScreen(
+        //                 blogData: blog,
+        //               ),
+        //             ),
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
+
       ],
     );
   }
+
+
+
 }
 
-// ✅ Add a tiny spacing to control vertical gap
-// SizedBox(height: verticalSpacing * 0),
 
-// GridView section
-// Container(
-//   width: double.infinity,
-//   child: GridView.builder(
-//     itemCount: blogList.length,
-//     shrinkWrap: true,
-//     physics: const NeverScrollableScrollPhysics(),
-//     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//       crossAxisCount: crossAxisCount,
-//       crossAxisSpacing: crossAxisSpacing,
-//       mainAxisSpacing: mainAxisSpacing,
-//       childAspectRatio: aspectRatio,
-//
-//     ),
-//     itemBuilder: (context, index) {
-//       final blog = blogList[index];
-//       return Blog(
-//         imageUrl: blog['imageUrl']!,
-//         source: blog['source']!,
-//         date: blog['date']!,
-//         title: blog['title']!,
-//         onTap: (){
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (_) => TrendingScreen(
-//                 blogData: blog,
-//               ),
-//             ),
-//           );
-//         },
-//       );
-//     },
-//   ),
-// ),
+

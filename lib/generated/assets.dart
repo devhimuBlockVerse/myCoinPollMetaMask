@@ -64,12 +64,14 @@ class Assets {
   static const String iconsProfileIcon = 'assets/icons/profileIcon.svg';
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
+  static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';
   static const String iconsRoadMapLineXX = 'assets/icons/roadMapLineXX.png';
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
+  static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';

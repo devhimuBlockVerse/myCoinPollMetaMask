@@ -112,37 +112,18 @@ class _CustomShareButtonState extends State<CustomShareButton> {
   }
 }
 
-
 class ShareContainer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Relative sizing based on width/height
-    final double cutSize = size.height * 0.15;        // 15% of height
-    final double notchWidth = size.width * 0.1;       // 10% of width
-    final double notchHeight = size.height * 0.1;     // 10% of height
-    final double topNotchOffset = size.width * 0.15;  // 15% of width
-    final double bottomNotchOffset = -size.width * 0.15;
+    final double cutSize = size.height * 0.15;
 
     final path = Path();
 
-    path.moveTo(cutSize, 0);
-    double topNotchCenter = (size.width / 2) + topNotchOffset;
-    path.lineTo(topNotchCenter - (notchWidth / 2), 0);
-    path.lineTo(topNotchCenter - (notchWidth / 2), notchHeight);
-    path.lineTo(topNotchCenter + (notchWidth / 2), notchHeight);
-    path.lineTo(topNotchCenter + (notchWidth / 2), 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - cutSize);
-    path.lineTo(size.width - cutSize, size.height);
-
-    double bottomNotchCenter = (size.width / 2) + bottomNotchOffset;
-    path.lineTo(bottomNotchCenter + (notchWidth / 2), size.height);
-    path.lineTo(bottomNotchCenter + (notchWidth / 2), size.height - notchHeight);
-    path.lineTo(bottomNotchCenter - (notchWidth / 2), size.height - notchHeight);
-    path.lineTo(bottomNotchCenter - (notchWidth / 2), size.height);
+    path.moveTo(0, 0);
+    path.lineTo(size.width - cutSize, 0);
+    path.lineTo(size.width, cutSize);
+    path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
-    path.lineTo(0, cutSize);
-    path.lineTo(cutSize, 0);
     path.close();
 
     // Shadow
@@ -161,7 +142,7 @@ class ShareContainer extends CustomPainter {
 
     final borderPaint = Paint()
       ..shader = gradient
-      ..strokeWidth = size.height * 0.005  // responsive stroke width
+      ..strokeWidth = size.height * 0.005
       ..style = PaintingStyle.stroke;
 
     canvas.drawPath(path, borderPaint);

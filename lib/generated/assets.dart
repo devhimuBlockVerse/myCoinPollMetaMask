@@ -13,6 +13,7 @@ class Assets {
   static const String assetsAbiMyContract = 'assets/abi/MyContract.json';
   static const String assetsAbiSaleContractABI = 'assets/abi/SaleContractABI.json';
   static const String assetsAppIcon = 'assets/app_icon.png';
+  static const String assetsIconsAddSourceImage = 'assets/icons/addSourceImage.png';
   static const String assetsIconsCopyImg = 'assets/icons/copyImg.svg';
   static const String assetsIconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String assetsIconsFrame = 'assets/icons/frame.png';
@@ -22,6 +23,7 @@ class Assets {
   static const String fontsPoppinsRegular = 'assets/fonts/Poppins-Regular.ttf';
   static const String fontsPoppinsSemiBold = 'assets/fonts/Poppins-SemiBold.ttf';
   static const String fontsPoppinsSemiBoldItalic = 'assets/fonts/Poppins-SemiBoldItalic.ttf';
+  static const String iconsAddSourceImage = 'assets/icons/addSourceImage.png';
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
   static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
@@ -63,6 +65,7 @@ class Assets {
   static const String iconsRoadMapLineXX = 'assets/icons/roadMapLineXX.png';
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
+  static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';

@@ -119,7 +119,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
     final baseSize = isPortrait ? screenWidth : screenHeight;
     return Scaffold(
       extendBodyBehindAppBar: true,
-
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Container(
@@ -136,6 +135,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
           ),
           child: Column(
             children: [
+              SizedBox(height: screenHeight * 0.02),
+
               ///Back Button
               Align(
                 alignment: Alignment.topLeft,
@@ -143,8 +144,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                   icon: SvgPicture.asset(
                     'assets/icons/back_button.svg',
                     color: Colors.white,
-                    width: 15,
-                    height: 15,
+                      width: screenWidth * 0.04,
+                      height: screenWidth * 0.04
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),

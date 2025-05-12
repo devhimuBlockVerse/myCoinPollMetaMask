@@ -53,6 +53,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
           ),
           child: Column(
             children: [
+              SizedBox(height: screenHeight * 0.02),
+
               ///Back Button
               Align(
                 alignment: Alignment.topLeft,
@@ -60,8 +62,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                   icon: SvgPicture.asset(
                     'assets/icons/back_button.svg',
                     color: Colors.white,
-                    width: 15,
-                    height: 15,
+                      width: screenWidth * 0.04,
+                      height: screenWidth * 0.04
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),

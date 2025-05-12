@@ -48,10 +48,9 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth =
-        MediaQuery.of(context).size.width;
-    final screenHeight =
-        MediaQuery.of(context).size.height;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
 
     return Scaffold(
@@ -78,13 +77,15 @@ class _NewsScreenState extends State<NewsScreen> {
 
               Align(
                 alignment: Alignment.topCenter,
-                child: const Text(
+                child:  Text(
                   'News',
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
-                      fontSize: 20),
+                      // fontSize: 20
+                    fontSize: screenWidth * 0.05,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -198,9 +199,7 @@ class _NewsScreenState extends State<NewsScreen> {
                             child:
                                 CardNewsComponent(
                               imageUrl:
-                                  _trendingNews[
-                                          index][
-                                      'imageUrl']!,
+                                  _trendingNews[index]['imageUrl']!,
                               source:
                                   _trendingNews[
                                           index]
@@ -288,6 +287,8 @@ class _NewsScreenState extends State<NewsScreen> {
                   'title': 'Understanding Blockchain: The Backbone of Crypto #$index',
                 });
 
+
+
     return Column(
       crossAxisAlignment:
           CrossAxisAlignment.start,
@@ -342,7 +343,7 @@ class _NewsScreenState extends State<NewsScreen> {
 
         // GridView section
         Container(
-  width: double.infinity,
+          width: double.infinity,
   child: GridView.builder(
     itemCount: blogList.length,
     shrinkWrap: true,

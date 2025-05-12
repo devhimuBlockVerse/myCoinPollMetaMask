@@ -1,86 +1,168 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../data/services/BlogServices.dart';
-
-class TrendingScreen extends StatelessWidget {
-  final Map<String, String> blogData;
+class TrendingScreen extends StatefulWidget {
+   final Map<String, String> blogData;
 
 
-   TrendingScreen({super.key, required this.blogData});
+  const TrendingScreen({super.key, required this.blogData});
 
   @override
-  Widget build(BuildContext context) {
-    final BlogService blogService = BlogService();
+  State<TrendingScreen> createState() => _TrendingScreenState();
+}
 
+class _TrendingScreenState extends State<TrendingScreen> {
+  @override
+  Widget build(BuildContext context) {
+
+    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final String title = blogData['title'] ?? '';
-    final String description = blogData['description'] ?? '';
-    final String pubDate = blogData['pubDate'] ?? '';
-    final String link = blogData['link'] ?? '';
-
     return  Scaffold(
-      appBar: AppBar(
-        title: const Text('Blog Details'),
-
-      ),
-      body: SingleChildScrollView(
-        child: Container(
+      extendBodyBehindAppBar: true,
+      backgroundColor:  Colors.transparent,
+      body: SafeArea(
+         child: Container(
+          width: screenWidth,
           height: screenHeight,
-          width: double.infinity,
+          decoration: BoxDecoration(
+            color: const Color(0xFF01090B),
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/icons/gradientBgImage.png'),
+              fit: BoxFit.contain,
+              alignment: Alignment.topRight,
+            ),
+          ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              Image.network(blogData['imageUrl']!),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              SizedBox(height: screenHeight * 0.02),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/back_button.svg',
+                      color: Colors.white,
+                        width: screenWidth * 0.04,
+                        height: screenWidth * 0.04
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Trending News',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          // fontSize: 20,
+                          fontSize: screenWidth * 0.05,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                   SizedBox(width: screenWidth * 0.12), // Responsive spacer for balance
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                  pubDate,
-                style: const TextStyle(color: Colors.grey),
-              ),
-
-
-              const Divider(height: 20),
-
 
               Expanded(
-                child: SingleChildScrollView(
-                  child: Text(
-                    _stripHtmlTags(description),
-                    style: const TextStyle(fontSize: 16),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.04,
+                    vertical: screenHeight * 0.02,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         SizedBox(height: screenHeight * 0.01),
+
+                        _currentIndexNews(),
+                      ],
+
+
+                    )
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _currentIndexNews() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final containerWidth = screenWidth;
+    final imageHeight = containerWidth * 0.48;
+
+    double responsiveFontSize(double baseSize) => screenWidth * (baseSize / 375);
+
+    final String title = widget.blogData['title'] ?? '';
+    final String description = widget.blogData['title'] ?? ''; // here will be full description for the blog or news
+    final String imageUrl = widget.blogData['imageUrl'] ?? '';
+
+    return Container(
+      width: screenWidth,
+      height: screenHeight,
+      decoration: BoxDecoration(
+        // color:  Color(0xF2040C16),
+        color: Colors.red,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.05 , vertical:  screenHeight *0.02),
+        child: Column(
+          children: [
+
+             Text(
+              title,
+              style:  TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: responsiveFontSize(15),
+                height: 1.3,
+                color: Colors.white
+
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.02),
+
+
+            if (imageUrl.isNotEmpty)
+              Container(
+                 height: imageHeight,
+                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.fill
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              ElevatedButton.icon(
-                onPressed: () async {
-                  final uri = Uri.parse(link);
-                  if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Could not open the link')),
-                    );
-                  }
-                },
-                icon: const Icon(Icons.link),
-                label: const Text('Read Full Article'),
+
+            Text(
+              _stripHtmlTags(description),
+              style:  TextStyle(
+                fontWeight: FontWeight.w400, // Regular
+                fontSize: responsiveFontSize(12),
+                height: 1.6, // 130% line height
+                color: Colors.white
               ),
+            ),
 
 
-            ],
-
-
-          ),
-        )
+          ],
+        ),
       ),
     );
   }

@@ -23,14 +23,16 @@ class _FeaturesScreenState
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: const Text(
+          title:   Text(
 
             'Features',
             style: TextStyle(
                 fontFamily: 'Poppins',
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 20),
+                // fontSize: 20,
+              fontSize: screenWidth * 0.05,
+            ),
             textAlign: TextAlign.center,
           ),
           centerTitle: true,

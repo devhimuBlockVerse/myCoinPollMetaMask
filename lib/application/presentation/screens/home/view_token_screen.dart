@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -128,14 +129,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
             // color: const Color(0xFF0B0A1E),
             color: const Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage('assets/icons/gradientBgImage.png'),
-              fit: BoxFit.contain,
+              // image: AssetImage('assets/icons/gradientBgImage.png'),
+              // fit: BoxFit.contain,
+              image: AssetImage('assets/icons/starGradientBg.png'),
+              fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
           ),
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.02),
+              SizedBox(height: screenHeight * 0.01),
 
               ///Back Button
               Align(
@@ -206,6 +209,81 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         _strategicTokenSection(),
 
 
+                        // Center(
+                        //   child: Container(
+                        //     width: screenWidth * 0.7,
+                        //     height: screenHeight * 0.19,
+                        //     child: Stack(
+                        //       children: [
+                        //         Positioned.fill(
+                        //           child: Image.asset(
+                        //             // 'assets/icons/discoverIMG.png',
+                        //             'assets/icons/discoverIMG2.png',
+                        //             fit: BoxFit.contain,
+                        //             width: screenWidth ,
+                        //           ),
+                        //         ),
+                        //         Align(
+                        //           alignment: Alignment.centerRight,
+                        //           child: Padding(
+                        //             padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                        //             child:  Row(
+                        //               mainAxisAlignment: MainAxisAlignment.start,
+                        //               crossAxisAlignment: CrossAxisAlignment.center,
+                        //               children: [
+                        //                 SizedBox(width: screenWidth * 0.03),
+                        //
+                        //                 Image.asset(
+                        //                   // 'assets/icons/discoverIMG.png',
+                        //                   'assets/icons/ecmLarge.png',
+                        //                   fit: BoxFit.contain,
+                        //                   width: screenWidth * 0.17,
+                        //                 ),
+                        //
+                        //                 SizedBox(width: screenWidth * 0.01),
+                        //                 Flexible(
+                        //                   child: AutoSizeText(
+                        //                     "Discover Our Visionary Roadmap",
+                        //                     textAlign: TextAlign.left,
+                        //                     maxLines: 2,
+                        //
+                        //                     style:  TextStyle(
+                        //                       color: Colors.white,
+                        //                       fontFamily: 'Poppins',
+                        //                       fontWeight: FontWeight.w500,
+                        //                       height: 1.3,
+                        //                       fontSize: baseSize * 0.032,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //
+                        //
+                        //             // FittedBox(
+                        //             //   fit: BoxFit.scaleDown,
+                        //             //   alignment: Alignment.centerRight,
+                        //             //   child: Text(
+                        //             //     "Discover Our Visionary Roadmap",
+                        //             //     textAlign: TextAlign.right,
+                        //             //     style:  TextStyle(
+                        //             //       color: Colors.white,
+                        //             //       fontFamily: 'Poppins',
+                        //             //       fontWeight: FontWeight.w500,
+                        //             //       height: 1.3,
+                        //             //       fontSize: baseSize * 0.032,
+                        //             //     ),
+                        //             //   ),
+                        //             // ),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+
+
+
                         Center(
                           child: Container(
                             width: screenWidth * 0.7,
@@ -214,35 +292,71 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                               children: [
                                 Positioned.fill(
                                   child: Image.asset(
-                                    'assets/icons/discoverIMG.png',
+                                    // 'assets/icons/discoverIMG.png',
+                                    'assets/icons/discoverIMG2.png',
                                     fit: BoxFit.contain,
+                                    width: screenWidth ,
                                   ),
                                 ),
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        "Discover Our Visionary Roadmap",
-                                        textAlign: TextAlign.right,
-                                        style:  TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.3,
-                                          fontSize: baseSize * 0.032,
+                                    child:  Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(width: screenWidth * 0.03),
+
+                                        Image.asset(
+                                          // 'assets/icons/discoverIMG.png',
+                                          'assets/icons/ecmLarge.png',
+                                          fit: BoxFit.contain,
+                                          width: screenWidth * 0.17,
                                         ),
-                                      ),
+
+                                        SizedBox(width: screenWidth * 0.01),
+                                        Flexible(
+                                          child: AutoSizeText(
+                                            "Discover Our Visionary Roadmap",
+                                            textAlign: TextAlign.left,
+                                            maxLines: 2,
+
+                                            style:  TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.3,
+                                              fontSize: baseSize * 0.032,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
+
+
+                                    // FittedBox(
+                                    //   fit: BoxFit.scaleDown,
+                                    //   alignment: Alignment.centerRight,
+                                    //   child: Text(
+                                    //     "Discover Our Visionary Roadmap",
+                                    //     textAlign: TextAlign.right,
+                                    //     style:  TextStyle(
+                                    //       color: Colors.white,
+                                    //       fontFamily: 'Poppins',
+                                    //       fontWeight: FontWeight.w500,
+                                    //       height: 1.3,
+                                    //       fontSize: baseSize * 0.032,
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+
 
                         SizedBox(height: screenHeight * 0.01),
 
@@ -1487,23 +1601,47 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        'Our strategic token distribution ensures a balanced, fair launch, maximizing growth and long-term community involvement.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12 * textScale,
-                          height: 1.6,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Our strategic token distribution ensures a balanced, fair launch, maximizing growth and long-term community involvement.',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12 * textScale,
+                                height: 1.6,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                              child: SizedBox(
+                                height: screenWidth * 0.3,
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: Image.asset(
+                                    'assets/icons/distribution_image.png',
+                                    fit: BoxFit.contain,
+                                    filterQuality: FilterQuality.high,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: screenHeight * 0.015),
                       Container(
-                        width: screenWidth * 0.6,
+                        width: screenWidth,
                         decoration: BoxDecoration(
                           image: const DecorationImage(
                             image: AssetImage('assets/icons/progressFrameBg.png'),
-                            fit: BoxFit.contain,
+                            fit: BoxFit.fill,
                           ),
                           borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         ),
@@ -1550,31 +1688,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         ),
                       ),
                     ],
-                  ),
-                ),
-
-                // Right side image
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: screenWidth * 0.03,
-                    bottom: screenHeight * 0.1,
-                  ),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                      child: SizedBox(
-                        height: screenWidth * 0.3,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: Image.asset(
-                            'assets/icons/distribution_image.png',
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.high,
-                          ),
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ],
@@ -1648,7 +1761,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
 
-  ///
 
 }
 

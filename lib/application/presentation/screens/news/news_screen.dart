@@ -65,9 +65,10 @@ class _NewsScreenState extends State<NewsScreen> {
           decoration: BoxDecoration(
             color: const Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage(
-                  'assets/icons/gradientBgImage.png'),
-              fit: BoxFit.contain,
+              // image: AssetImage('assets/icons/gradientBgImage.png'),
+              // fit: BoxFit.contain,
+              image: AssetImage('assets/icons/starGradientBg.png'),
+              fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
           ),
@@ -319,12 +320,8 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
     final isPortrait = screenHeight > screenWidth;
     final baseSize =
         isPortrait ? screenWidth : screenHeight;
-    //
-    final int crossAxisCount = screenWidth > 900
-        ? 4
-        : screenWidth > 600
-            ? 3
-            : 2;
+
+    final int crossAxisCount = screenWidth > 900 ? 4 : screenWidth > 600 ? 3 : 2;
 
     final double aspectRatio = isPortrait ? 166 / 216 : 180 / 200;
     final crossAxisSpacing = baseSize * 0.03;
@@ -397,38 +394,38 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
         // GridView section
         Container(
           width: double.infinity,
-  child: GridView.builder(
-    itemCount: blogList.length,
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: crossAxisCount,
-      crossAxisSpacing: crossAxisSpacing,
-      mainAxisSpacing: mainAxisSpacing,
-      childAspectRatio: aspectRatio,
+          child: GridView.builder(
+            itemCount: blogList.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: crossAxisSpacing,
+              mainAxisSpacing: mainAxisSpacing,
+              childAspectRatio: aspectRatio,
 
-    ),
-    itemBuilder: (context, index) {
-      final blog = blogList[index];
-      return Blog(
-        imageUrl: blog['imageUrl']!,
-        source: blog['source']!,
-        date: blog['date']!,
-        title: blog['title']!,
-        onTap: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => TrendingScreen(
-                blogData: blog,
-              ),
             ),
-          );
-        },
-      );
-    },
-  ),
-),
+            itemBuilder: (context, index) {
+              final blog = blogList[index];
+              return Blog(
+                imageUrl: blog['imageUrl']!,
+                source: blog['source']!,
+                date: blog['date']!,
+                title: blog['title']!,
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TrendingScreen(
+                        blogData: blog,
+                      ),
+                    ),
+                  );
+                  },
+              );
+              },
+          ),
+        ),
 
 
         // Container(

@@ -42,8 +42,10 @@ class Assets {
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
+  static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String iconsEcm = 'assets/icons/ecm.png';
+  static const String iconsEcmLarge = 'assets/icons/ecmLarge.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
@@ -67,6 +69,7 @@ class Assets {
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
+  static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';

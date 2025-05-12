@@ -36,8 +36,10 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF01090B),
               image: DecorationImage(
-                image: AssetImage('assets/icons/gradientBgImage.png'),
-                fit: BoxFit.contain,
+                // image: AssetImage('assets/icons/gradientBgImage.png'),
+                // fit: BoxFit.contain,
+                image: AssetImage('assets/icons/starGradientBg.png'),
+                fit: BoxFit.cover,
                 alignment: Alignment.topRight,
               ),
             ),

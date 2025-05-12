@@ -122,10 +122,11 @@ class _HomeScreenState extends State<HomeScreen> {
            height: screenHeight,
            decoration: BoxDecoration(
              // color: const Color(0xFF0B0A1E),
-             color: const Color(0xFF01090B),
+             // color: const Color(0xFF01090B),
              image: DecorationImage(
-               image: AssetImage('assets/icons/gradientBgImage.png'),
-               fit: BoxFit.contain,
+               // image: AssetImage('assets/icons/gradientBgImage.png'),
+               image: AssetImage('assets/icons/starGradientBg.png'),
+               fit: BoxFit.cover,
                alignment: Alignment.topRight,
              ),
            ),

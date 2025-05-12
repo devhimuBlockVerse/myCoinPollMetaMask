@@ -58,6 +58,7 @@ class Assets {
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
+  static const String iconsNewsFrame = 'assets/icons/newsFrame.png';
   static const String iconsProfileIcon = 'assets/icons/profileIcon.svg';
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';

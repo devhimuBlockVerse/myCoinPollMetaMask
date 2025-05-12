@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class Blog extends StatelessWidget {
   final String imageUrl;
   final String source;

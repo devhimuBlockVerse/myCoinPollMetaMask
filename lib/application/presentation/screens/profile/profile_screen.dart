@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import '../../../../framework/components/profileOptionCompoent.dart';
+import 'personal_info/personal_information_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -106,6 +105,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     trailingIconPath: 'assets/icons/rightArrow.svg',
                                     onTrailingIconTap: () {
                                       print("Trailing icon tapped");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) => PersonalInformationScreen()),
+                                      );
                                     },
                                    ),
                                    SizedBox(height: screenHeight * 0.02),
@@ -172,6 +174,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        ),
                                      ),
                                    ),
+                                   SizedBox(height: screenHeight * 0.04),
+
 
                                  ],
                                ),

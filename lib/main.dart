@@ -4,10 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
+import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
-
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +39,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+        ChangeNotifierProvider(create: (_) => PersonalViewModel()),
 
       ],
 

@@ -1,5 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import 'package:provider/provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -10,6 +15,8 @@ class PersonalInformationScreen extends StatefulWidget {
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +31,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
-            color: const Color(0xFF01090B),
+          decoration: const BoxDecoration(
+            color: Color(0xFF01090B),
             image: DecorationImage(
 
               image: AssetImage('assets/icons/starGradientBg.png'),
@@ -87,7 +94,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         children: [
                           SizedBox(height: screenHeight * 0.01),
 
-                          Center(child: _profileHeaderSection()),
+                          Center(
+                              child: _profileHeaderSection(context)
+                          ),
 
                           SizedBox(height: screenHeight * 0.03),
 
@@ -95,13 +104,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                             width: double.infinity,
                             decoration: BoxDecoration(
                               // color: const Color(0xFF01090B),
-                              image: DecorationImage(
+                              image: const DecorationImage(
                                 image: AssetImage('assets/icons/profileFrameBg.png'),
                                 fit: BoxFit.fill,
                               ),
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: Color(0XFFFFF5ED),
+                                color: const Color(0XFFFFF5ED),
                                 width: 0.1,
                               ),
                             ),
@@ -116,24 +125,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 children: [
 
 
-                                  SizedBox(
-                                    width: screenWidth * 0.8, // Responsive width
-                                    child: Opacity(
-                                      opacity: 0.50,
-                                      child: Text(
-                                        'This service is provided by Team.',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: screenWidth * 0.028,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.6,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.04),
+                                   SizedBox(height: screenHeight * 0.04),
 
 
                                 ],
@@ -157,38 +149,55 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
 
 
-  Widget _profileHeaderSection(){
+  Widget _profileHeaderSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
-    // Scale factors (tweak if needed)
     double scale = screenWidth / 375;
+
+    final profileVM = Provider.of<PersonalViewModel>(context);
+    final pickedImage = profileVM.pickedImage;
     return Column(
-       children: [
+      children: [
         Container(
           width: screenWidth * 0.5,
           padding: EdgeInsets.symmetric(vertical: 10 * scale),
           child: Column(
-
             children: [
-              // Show User Profile Image
-              Container(
-                width: screenWidth * 0.26,
-                height: screenWidth * 0.26,
-                decoration: ShapeDecoration(
-                  image: const DecorationImage(
-                    image: NetworkImage("https://picsum.photos/90/90"), // Show User Profile
-                    fit: BoxFit.fill,
+              Stack(
+                children: [
+                  Container(
+                    width: screenWidth * 0.26,
+                    height: screenWidth * 0.26,
+                    decoration: ShapeDecoration(
+                      image: DecorationImage(
+                        image: pickedImage != null
+                            ? FileImage(pickedImage)
+                            : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+                        fit: BoxFit.contain,
+                      ),
+                      shape: OvalBorder(
+                        side: BorderSide(width: 1 * scale, color: Colors.white),
+                      ),
+                    ),
                   ),
-                  shape: OvalBorder(
-                    side: BorderSide(width: 1 * scale, color: Colors.white),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => profileVM.pickImage(),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        child: SvgPicture.asset(
+                          'assets/icons/editIcon.svg',
+                          width: screenWidth * 0.055,
+                          height: screenWidth * 0.05,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-
               SizedBox(height: 10 * scale),
-
-              // Name
               Text(
                 'Abdur Salam',
                 textAlign: TextAlign.center,
@@ -200,9 +209,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                   height: 1.3,
                 ),
               ),
-
-
-
             ],
           ),
         ),

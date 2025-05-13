@@ -48,6 +48,7 @@ class Assets {
   static const String iconsEcmLarge = 'assets/icons/ecmLarge.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
+  static const String iconsEditIcon = 'assets/icons/editIcon.svg';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
   static const String iconsEth = 'assets/icons/eth.png';
   static const String iconsFeatures = 'assets/icons/features.svg';

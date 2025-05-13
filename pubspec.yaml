@@ -53,6 +53,8 @@ dependencies:
   xml: ^6.1.0
   share_plus:
   auto_size_text:
+  image_picker: ^1.0.4
+
 #  url_launcher: ^6.0.20
 
 

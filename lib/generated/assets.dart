@@ -44,6 +44,7 @@ class Assets {
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
+  static const String iconsDropDownIcon = 'assets/icons/dropDownIcon.svg';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLarge = 'assets/icons/ecmLarge.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';

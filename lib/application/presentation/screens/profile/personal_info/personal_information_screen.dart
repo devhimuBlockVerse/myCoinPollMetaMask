@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 
 
@@ -19,12 +20,25 @@ class PersonalInformationScreen extends StatefulWidget {
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
 
+  TextEditingController emailAddressController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+
+
+  String? selectedGender;
+  String? selectedCountry;
 
   @override
   Widget build(BuildContext context) {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    final isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
 
     return  Scaffold(
       extendBodyBehindAppBar: true,
@@ -126,16 +140,157 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
 
+                                  /// First & last Name
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                     crossAxisAlignment: CrossAxisAlignment.center,
+                                     children: [
+                                      Expanded(
+                                        child: ListingField(
+                                          controller: firstNameController,
+                                          labelText: 'First Name',
+                                          height: screenHeight * 0.05,
+                                           expandable: false,
+                                          keyboard: TextInputType.name,
+                                        ),
+                                      ),
+
+                                       SizedBox(width: screenWidth * 0.01),
+
+                                       Expanded(
+                                         child: ListingField(
+                                           controller: lastNameController,
+                                           labelText: 'Last Name',
+                                           height: screenHeight * 0.05,
+                                            expandable: false,
+                                           keyboard: TextInputType.name,
+                                         ),
+                                       ),
+
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  /// Email Address
                                   ListingField(
-                                    // controller: "emailAddressController",
+                                    controller: emailAddressController,
                                     labelText: 'Email Address',
                                     height: screenHeight * 0.05,
                                     width: screenWidth* 0.88,
-                                    expandable: true,
+                                    expandable: false,
+                                    keyboard: TextInputType.name,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: ListingField(
+                                          // controller: firstNameController,
+                                          labelText: '+880',
+                                          height: screenHeight * 0.05,
+                                          expandable: false,
+                                          keyboard: TextInputType.name,
+                                        ),
+                                      ),
+
+                                      SizedBox(width: screenWidth * 0.01),
+
+                                      Expanded(
+                                        flex: 4,
+                                         child: ListingField(
+                                          controller: lastNameController,
+                                          labelText: 'Contract Number',
+                                          height: screenHeight * 0.05,
+                                          expandable: false,
+                                          keyboard: TextInputType.number,
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+
+
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                   /// Country and Address
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                     crossAxisAlignment: CrossAxisAlignment.center,
+
+                                     children: [
+                                       Expanded(
+                                         child: CustomDropdown(
+                                           label: 'Country',
+                                           items: ['Dubai', 'USA', 'Bangladesh'],
+                                           selectedValue: selectedGender,
+                                           onChanged: (value) {
+                                             setState(() {
+                                               selectedGender = value;
+                                             });
+                                           },
+                                         ),
+                                       ),
+                                       SizedBox(width: screenWidth * 0.01),
+
+                                       Expanded(
+                                         child: CustomDropdown(
+                                           label: 'Gender',
+                                           items: ['Male', 'Female', 'Other'],
+                                           selectedValue: selectedGender,
+                                           onChanged: (value) {
+                                             setState(() {
+                                               selectedGender = value;
+                                             });
+                                           },
+                                         ),
+                                       ),
+                                     ],
+                                   ),
+
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  /// Address
+                                  ListingField(
+                                    controller: addressController,
+                                    labelText: 'Address',
+                                    height: screenHeight * 0.05,
+                                    width: screenWidth* 0.88,
+                                    expandable: false,
                                     keyboard: TextInputType.emailAddress,
                                   ),
 
-                                   SizedBox(height: screenHeight * 0.04),
+                                   SizedBox(height: screenHeight * 0.03),
+
+
+
+                                  BlockButton(
+                                    height: screenHeight * 0.045,
+                                    width: screenWidth * 0.7,
+                                    label: 'Submit',
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontSize: baseSize * 0.030,
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494),
+                                    ],
+                                    onTap: () {
+                                      // Update Personal Information , Save & Navigate back to Profile Screen
+
+
+                                    },
+                                  ),
 
 
                                 ],
@@ -155,8 +310,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       ),
     );
   }
-
-
 
 
   Widget _profileHeaderSection(BuildContext context) {
@@ -227,9 +380,98 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   }
 
 
-
 }
 
+class CustomDropdown extends StatelessWidget {
+  final String label;
+  final List<String> items;
+  final String? selectedValue;
+  final ValueChanged<String?> onChanged;
+  final double? width;  // Made nullable
+  final double? height; // Made nullable
 
+  const CustomDropdown({
+    super.key,
+    required this.label,
+    required this.items,
+    required this.selectedValue,
+    required this.onChanged,
+    this.width,
+    this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    final double responsiveWidth = width ?? screenWidth * 0.4;
+    final double responsiveHeight = height ?? screenHeight * 0.040;
+
+    final double fontSize = screenHeight * 0.016;
+    final double horizontalPadding = screenWidth * 0.025;
+    final double borderRadius = screenWidth * 0.008;
+
+    return Container(
+      width: responsiveWidth,
+      height: responsiveHeight,
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      decoration: ShapeDecoration(
+        color: const Color(0xFF101A29),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFF141317)),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFFC7E0FF),
+            blurRadius: 0,
+            offset: Offset(0.10, 0.50),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          dropdownColor: const Color(0xFF101A29),
+          value: selectedValue,
+          isExpanded: true,
+          iconSize: screenHeight * 0.025,
+          icon: SvgPicture.asset(
+            'assets/icons/dropDownIcon.svg',
+            height: screenHeight * 0.01,
+            colorFilter: const ColorFilter.mode(Color(0xFF7D8FA9), BlendMode.srcIn),
+          ),
+          hint: Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+              fontSize: fontSize,
+              height: 1.6,
+              color: Colors.white.withOpacity(0.4),
+            ),
+          ),
+          onChanged: onChanged,
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  fontSize: fontSize,
+                  height: 1.6,
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
 
 

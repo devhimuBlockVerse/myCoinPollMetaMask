@@ -55,7 +55,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
           ),
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.02),
+              // SizedBox(height: screenHeight * 0.01),
 
               ///Back Button
               Align(

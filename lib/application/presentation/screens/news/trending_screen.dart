@@ -50,7 +50,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
           ),
           child: Column(
             children: [
-              SizedBox(height: screenHeight * 0.01),
+              // SizedBox(height: screenHeight * 0.01),
 
               Row(
                 // crossAxisAlignment: CrossAxisAlignment.center,

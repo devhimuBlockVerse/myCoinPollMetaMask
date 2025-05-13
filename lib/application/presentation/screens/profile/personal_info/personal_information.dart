@@ -1,15 +1,12 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
-import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {

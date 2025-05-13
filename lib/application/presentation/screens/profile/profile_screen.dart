@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
-import 'personal_info/personal_information_screen.dart';
+import 'notification/notifications.dart';
+import 'personal_info/personal_information.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -142,6 +143,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      trailingIconPath: 'assets/icons/rightArrow.svg',
                                      onTrailingIconTap: () {
                                        print("Trailing icon tapped");
+                                       Navigator.of(context).push(
+                                       MaterialPageRoute(builder: (context) => NotificationsScreen()),
+                                     );
                                      },
                                    ),
                                    SizedBox(height: screenHeight * 0.02),

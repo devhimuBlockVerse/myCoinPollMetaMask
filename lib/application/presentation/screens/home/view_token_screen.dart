@@ -18,6 +18,7 @@ import '../../../../framework/components/loader.dart';
 import '../../../../framework/components/roadMapContainerComponent.dart';
 import '../../../../framework/utils/dialog_utils.dart';
 import '../../../../framework/utils/general_utls.dart';
+import '../../../../framework/widgets/roadMapHelper.dart';
 import '../../../domain/model/DialogModel.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'home_screen.dart';
@@ -208,82 +209,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
                         _strategicTokenSection(),
 
-
-                        // Center(
-                        //   child: Container(
-                        //     width: screenWidth * 0.7,
-                        //     height: screenHeight * 0.19,
-                        //     child: Stack(
-                        //       children: [
-                        //         Positioned.fill(
-                        //           child: Image.asset(
-                        //             // 'assets/icons/discoverIMG.png',
-                        //             'assets/icons/discoverIMG2.png',
-                        //             fit: BoxFit.contain,
-                        //             width: screenWidth ,
-                        //           ),
-                        //         ),
-                        //         Align(
-                        //           alignment: Alignment.centerRight,
-                        //           child: Padding(
-                        //             padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                        //             child:  Row(
-                        //               mainAxisAlignment: MainAxisAlignment.start,
-                        //               crossAxisAlignment: CrossAxisAlignment.center,
-                        //               children: [
-                        //                 SizedBox(width: screenWidth * 0.03),
-                        //
-                        //                 Image.asset(
-                        //                   // 'assets/icons/discoverIMG.png',
-                        //                   'assets/icons/ecmLarge.png',
-                        //                   fit: BoxFit.contain,
-                        //                   width: screenWidth * 0.17,
-                        //                 ),
-                        //
-                        //                 SizedBox(width: screenWidth * 0.01),
-                        //                 Flexible(
-                        //                   child: AutoSizeText(
-                        //                     "Discover Our Visionary Roadmap",
-                        //                     textAlign: TextAlign.left,
-                        //                     maxLines: 2,
-                        //
-                        //                     style:  TextStyle(
-                        //                       color: Colors.white,
-                        //                       fontFamily: 'Poppins',
-                        //                       fontWeight: FontWeight.w500,
-                        //                       height: 1.3,
-                        //                       fontSize: baseSize * 0.032,
-                        //                     ),
-                        //                   ),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //
-                        //
-                        //             // FittedBox(
-                        //             //   fit: BoxFit.scaleDown,
-                        //             //   alignment: Alignment.centerRight,
-                        //             //   child: Text(
-                        //             //     "Discover Our Visionary Roadmap",
-                        //             //     textAlign: TextAlign.right,
-                        //             //     style:  TextStyle(
-                        //             //       color: Colors.white,
-                        //             //       fontFamily: 'Poppins',
-                        //             //       fontWeight: FontWeight.w500,
-                        //             //       height: 1.3,
-                        //             //       fontSize: baseSize * 0.032,
-                        //             //     ),
-                        //             //   ),
-                        //             // ),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-
-
-
                         Center(
                           child: Container(
                             width: screenWidth * 0.7,
@@ -330,515 +255,180 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   ],
                                 ),
 
-
-                                // FittedBox(
-                                //   fit: BoxFit.scaleDown,
-                                //   alignment: Alignment.centerRight,
-                                //   child: Text(
-                                //     "Discover Our Visionary Roadmap",
-                                //     textAlign: TextAlign.right,
-                                //     style:  TextStyle(
-                                //       color: Colors.white,
-                                //       fontFamily: 'Poppins',
-                                //       fontWeight: FontWeight.w500,
-                                //       height: 1.3,
-                                //       fontSize: baseSize * 0.032,
-                                //     ),
-                                //   ),
-                                // ),
                               ),
                             )
                           ),
                         ),
 
 
-                        SizedBox(height: screenHeight * 0.01),
+                        SizedBox(height: screenHeight * 0.06),
 
                         /// Road Map Component Functionalities
+
                         // Container(
                         //   width: double.infinity,
-                        //   padding: EdgeInsets.all(10.0),
+                        //
                         //   child: Column(
                         //     crossAxisAlignment: CrossAxisAlignment.start,
                         //     mainAxisAlignment: MainAxisAlignment.start,
                         //
                         //     children: [
                         //
-                        //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           // Fixed-size image with top padding
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.04),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           // Roadmap container takes remaining space but doesn't overflow
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: "Start Walking",
-                        //               labels: [
-                        //                 'Plan Creation',
-                        //                 'Token Concept Development',
-                        //                 'Community Build Plan',
-                        //                 'MyCoinPoll.Com Site Create.',
-                        //               ],
-                        //               onTap: () {},
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: "Start Walking",
+                        //         labels: [
+                        //           'Plan Creation',
+                        //           'Token Concept Development',
+                        //           'Community Build Plan',
+                        //           'MyCoinPoll.Com Site Create.',
                         //         ],
+                        //         onTap:() =>DialogUtils.startWalkingDialog(context),
+                        //
                         //       ),
                         //
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.12),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //       RoadmapContainerComponent(
+                        //         title: "Launching Lots of Project",
                         //
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: "Launching Lots of Project",
-                        //
-                        //               labels: [
-                        //                 'MyCoinPoll.Com Site launched',
-                        //                 'MyCoinPoll.Com ETH Community Donation Program launched',
-                        //                 'MyCoinPoll.Com USDT Community Donation Program launched',
-                        //                 '1000+ MyCoinPoll.Com Community Member',
-                        //                ],
-                        //               onTap: (){},
-                        //             ),
-                        //           ),
+                        //         labels: [
+                        //           'MyCoinPoll.Com Site launched',
+                        //           'MyCoinPoll.Com ETH Community Donation Program launched',
+                        //           'MyCoinPoll.Com USDT Community Donation Program launched',
+                        //           '1000+ MyCoinPoll.Com Community Member',
                         //         ],
+                        //         onTap:() =>DialogUtils.launchingProjectDialog(context),
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.12),
                         //
-                        //        Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: "Launching ICO or Androverse",
                         //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: "Launching ICO or Androverse",
+                        //         labels: [
+                        //           'Launching ICO or Androverse',
+                        //           'MyCoinPoll.Com Site Update 2.0.',
+                        //           'MyCoinPoll.Com Site Update 2.0.2',
+                        //           'MyCoinPoll.Com Site Update 2.0.3 (Web3 Connected)'
                         //
-                        //               labels: [
-                        //                 'Launching ICO or Androverse',
-                        //                 'MyCoinPoll.Com Site Update 2.0.',
-                        //                 'MyCoinPoll.Com Site Update 2.0.2',
-                        //                 'MyCoinPoll.Com Site Update 2.0.3 (Web3 Connected)'
-                        //
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
                         //         ],
+                        //         onTap:() =>DialogUtils.launchingIcoDialog(context),
+                        //
+                        //
                         //       ),
                         //
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.04),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'ECM COIN',
+                        //         labels: [
+                        //           'ECM COIN Public Presale (Round 03)',
+                        //           'ECM COIN Public Presale (Round 04)',
+                        //           'Smart Contracts Development',
+                        //           'Smart Contracts Development'
                         //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'ECM COIN',
-                        //               labels: [
-                        //                 'ECM COIN Public Presale (Round 03)',
-                        //                 'ECM COIN Public Presale (Round 04)',
-                        //                 'Smart Contracts Development',
-                        //                 'Smart Contracts Development'
-                        //
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
                         //         ],
+                        //         onTap:() =>DialogUtils.ecmCoinDialog(context),
+                        //
                         //       ),
                         //
-                        //       SizedBox(height: screenHeight * 0.06),
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.04),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
+                        //       SizedBox(height: screenHeight * 0.09),
+                        //       RoadmapContainerComponent(
+                        //         title: 'Update & Development',
+                        //         labels: [
+                        //           'Community building',
+                        //           ' MyCoinPoll.Com Site Update 2.0.4',
+                        //           ' MyCoinPoll.Com Site Update 2.0.5',
+                        //           'ECM Token Distribute Private Holder',
                         //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'Update & Development',
-                        //               labels: [
-                        //                 'Community building',
-                        //                ' MyCoinPoll.Com Site Update 2.0.4',
-                        //                ' MyCoinPoll.Com Site Update 2.0.5',
-                        //                 'ECM Token Distribute Private Holder',
-                        //
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
                         //         ],
+                        //         onTap:() =>DialogUtils.updateAndDevelopmentDialog(context),
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'ECM ICO launch',
-                        //               labels: [
-                        //                 'The founder company has done business registration as a crypto exchanger.',
-                        //                 'Telegram Tap to Earn Game Development Planning',
-                        //                 'Androverse Access & VA Selling Planning',
-                        //                 'ECM ICO Launch(www.mycoinpoll.com)',
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'ECM ICO launch',
+                        //         labels: [
+                        //           'The founder company has done business registration as a crypto exchanger.',
+                        //           'Telegram Tap to Earn Game Development Planning',
+                        //           'Androverse Access & VA Selling Planning',
+                        //           'ECM ICO Launch(www.mycoinpoll.com)',
                         //         ],
+                        //         onTap:() =>DialogUtils.ecmIcoLaunchDialog(context),
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'Launching & Listing',
-                        //               labels: [
-                        //               'Launching Multi Trading Platform',
-                        //               'CEX (Centralized Exchange) launch -bCoinMart.com',
-                        //               'Tier 1 CEX listings',
-                        //               'Tier 2 CEX listings (ECM COIN LISTING)',
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'Launching & Listing',
+                        //         labels: [
+                        //           'Launching Multi Trading Platform',
+                        //           'CEX (Centralized Exchange) launch -bCoinMart.com',
+                        //           'Tier 1 CEX listings',
+                        //           'Tier 2 CEX listings (ECM COIN LISTING)',
                         //         ],
+                        //         onTap:() =>DialogUtils.launchingAndListingDialog(context),
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'Launching & Listing',
-                        //               labels: [
-                        //               'Launching Multi Trading Platform',
-                        //               'CEX (Centralized Exchange) launch -bCoinMart.com',
-                        //               'Tier 1 CEX listings',
-                        //               'Tier 2 CEX listings (ECM COIN LISTING)',
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'More Project Launching',
+                        //         labels: [
+                        //           'Launching Multi Copy Trading Platform',
+                        //           'ECM COIN LISTING Other CEX (Binance , Bybit , Kucoin & others)',
+                        //           'Staking Project Launching',
+                        //           'Androverse Platform Update V0.2',
                         //         ],
+                        //         onTap:() =>DialogUtils.moreProjectDialog(context),
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'More Project Launching',
-                        //               labels: [
-                        //                  'Launching Multi Copy Trading Platform',
-                        //                  'ECM COIN LISTING Other CEX (Binance , Bybit , Kucoin & others)',
-                        //                  'Staking Project Launching',
-                        //                  'Androverse Platform Update V0.2',
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'ECM Blockchain',
+                        //         labels: [
+                        //           'ECM launches own BlockChain',
+                        //           'ECM COIN transactions will be connected to the e-commerce sites',
+                        //           'Androverse Platform Update V0.3',
+                        //           'More to be announced',
                         //         ],
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.09),
                         //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.05),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'ECM Blockchain',
-                        //               labels: [
-                        //                  'ECM launches own BlockChain',
-                        //                 'ECM COIN transactions will be connected to the e-commerce sites',
-                        //                 'Androverse Platform Update V0.3',
-                        //                 'More to be announced',
-                        //               ],
-                        //               onTap: (){},
-                        //
-                        //             ),
-                        //           ),
+                        //       RoadmapContainerComponent(
+                        //         title: 'More to be announced',
+                        //         labels: [
+                        //           'More to be announced',
                         //         ],
+                        //
                         //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
-                        //
-                        //       Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Padding(
-                        //             padding: EdgeInsets.only(top: screenHeight * 0.02),
-                        //             child: Image.asset(
-                        //               'assets/icons/yearCircular.png',
-                        //               width: baseSize * 0.18,
-                        //               fit: BoxFit.contain,
-                        //             ),
-                        //           ),
-                        //
-                        //           Flexible(
-                        //             child: RoadmapContainerComponent(
-                        //               title: 'More to be announced',
-                        //               labels: [
-                        //                  'More to be announced',
-                        //               ],
-                        //
-                        //             ),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //       SizedBox(height: screenHeight * 0.06),
+                        //       SizedBox(height: screenHeight * 0.12),
                         //
                         //     ],
                         //   ),
                         // ),
-
                         Container(
                           width: double.infinity,
-                          // padding: EdgeInsets.all(10.0),
+
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
 
                             children: [
 
-                              RoadmapContainerComponent(
-                                title: "Start Walking",
-                                labels: [
-                                  'Plan Creation',
-                                  'Token Concept Development',
-                                  'Community Build Plan',
-                                  'MyCoinPoll.Com Site Create.',
-                                ],
-                                // onTap:() =>DialogUtils.startWalkingDialog(context),
-
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: buildRoadmapSection(context, screenHeight),
                               ),
-
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: "Launching Lots of Project",
-
-                                labels: [
-                                  'MyCoinPoll.Com Site launched',
-                                  'MyCoinPoll.Com ETH Community Donation Program launched',
-                                  'MyCoinPoll.Com USDT Community Donation Program launched',
-                                  '1000+ MyCoinPoll.Com Community Member',
-                                ],
-                                // onTap:() =>DialogUtils.launchingProjectDialog(context),
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: "Launching ICO or Androverse",
-
-                                labels: [
-                                  'Launching ICO or Androverse',
-                                  'MyCoinPoll.Com Site Update 2.0.',
-                                  'MyCoinPoll.Com Site Update 2.0.2',
-                                  'MyCoinPoll.Com Site Update 2.0.3 (Web3 Connected)'
-
-                                ],
-                                // onTap:() =>DialogUtils.launchingIcoDialog(context),
-
-
-                              ),
-
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'ECM COIN',
-                                labels: [
-                                  'ECM COIN Public Presale (Round 03)',
-                                  'ECM COIN Public Presale (Round 04)',
-                                  'Smart Contracts Development',
-                                  'Smart Contracts Development'
-
-                                ],
-                                // onTap:() =>DialogUtils.ecmCoinDialog(context),
-
-                              ),
-
-                              SizedBox(height: screenHeight * 0.05),
-                              RoadmapContainerComponent(
-                                title: 'Update & Development',
-                                labels: [
-                                  'Community building',
-                                  ' MyCoinPoll.Com Site Update 2.0.4',
-                                  ' MyCoinPoll.Com Site Update 2.0.5',
-                                  'ECM Token Distribute Private Holder',
-
-                                ],
-                                // onTap:() =>DialogUtils.updateAndDevelopmentDialog(context),
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'ECM ICO launch',
-                                labels: [
-                                  'The founder company has done business registration as a crypto exchanger.',
-                                  'Telegram Tap to Earn Game Development Planning',
-                                  'Androverse Access & VA Selling Planning',
-                                  'ECM ICO Launch(www.mycoinpoll.com)',
-                                ],
-                                // onTap:() =>DialogUtils.ecmIcoLaunchDialog(context),
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'Launching & Listing',
-                                labels: [
-                                  'Launching Multi Trading Platform',
-                                  'CEX (Centralized Exchange) launch -bCoinMart.com',
-                                  'Tier 1 CEX listings',
-                                  'Tier 2 CEX listings (ECM COIN LISTING)',
-                                ],
-                                // onTap:() =>DialogUtils.launchingAndListingDialog(context),
-
-                              ),
-
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'More Project Launching',
-                                labels: [
-                                  'Launching Multi Copy Trading Platform',
-                                  'ECM COIN LISTING Other CEX (Binance , Bybit , Kucoin & others)',
-                                  'Staking Project Launching',
-                                  'Androverse Platform Update V0.2',
-                                ],
-                                // onTap:() =>DialogUtils.moreProjectDialog(context),
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'ECM Blockchain',
-                                labels: [
-                                  'ECM launches own BlockChain',
-                                  'ECM COIN transactions will be connected to the e-commerce sites',
-                                  'Androverse Platform Update V0.3',
-                                  'More to be announced',
-                                ],
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
-
-                              RoadmapContainerComponent(
-                                title: 'More to be announced',
-                                labels: [
-                                  'More to be announced',
-                                ],
-
-                              ),
-                              SizedBox(height: screenHeight * 0.05),
 
                             ],
                           ),
                         ),
+
 
 
                       ],

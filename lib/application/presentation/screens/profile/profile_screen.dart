@@ -76,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                            /// Profile Action Buttons =>
                            Container(
                              width: double.infinity,
+
                              decoration: BoxDecoration(
                                // color: const Color(0xFF01090B),
                                image: DecorationImage(

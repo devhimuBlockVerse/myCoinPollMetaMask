@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
+import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -118,17 +120,29 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
                           Container(
                             width: double.infinity,
+                            height: screenHeight * 0.7,
+
                             decoration: BoxDecoration(
-                              // color: const Color(0xFF01090B),
-                              image: const DecorationImage(
+                               image: const DecorationImage(
                                 image: AssetImage('assets/icons/profileFrameBg.png'),
                                 fit: BoxFit.fill,
                               ),
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: const Color(0XFFFFF5ED),
-                                width: 0.1,
+
+                              border: const Border(
+                                top: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                left: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                right: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                bottom: BorderSide.none,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
 
                             child: Padding(
@@ -287,8 +301,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                     ],
                                     onTap: () {
                                       // Update Personal Information , Save & Navigate back to Profile Screen
-
-
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => ProfileScreen(),
+                                        ),
+                                      );
                                     },
                                   ),
 

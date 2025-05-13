@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../framework/components/ListingFields.dart';
+
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
@@ -124,6 +126,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
 
+                                  ListingField(
+                                    // controller: "emailAddressController",
+                                    labelText: 'Email Address',
+                                    height: screenHeight * 0.05,
+                                    width: screenWidth* 0.88,
+                                    expandable: true,
+                                    keyboard: TextInputType.emailAddress,
+                                  ),
 
                                    SizedBox(height: screenHeight * 0.04),
 

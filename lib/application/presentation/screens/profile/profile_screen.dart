@@ -29,9 +29,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF01090B),
               image: DecorationImage(
-                image: AssetImage('assets/icons/starGradientBg.png'),
+                // image: AssetImage('assets/icons/starGradientBg.png'),
+                image: AssetImage('assets/icons/solidBackGround.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
+
               ),
             ),
 
@@ -72,11 +74,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                            SizedBox(height: screenHeight * 0.03),
 
+                           /// Profile Action Buttons =>
                            Container(
-                             // width: screenWidth,
-                             // height: screenHeight,
+                             width: double.infinity,
                              decoration: BoxDecoration(
-                               color: const Color(0xFF01090B),
+                               // color: const Color(0xFF01090B),
                                image: DecorationImage(
                                   image: AssetImage('assets/icons/profileFrameBg.png'),
                                  fit: BoxFit.fill,
@@ -96,6 +98,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                child: Column(
                                  mainAxisSize: MainAxisSize.min,
                                  children: [
+
+                                   // Personal ,
                                    ProfileOptionContainer(
                                     labelText: 'Personal Information',
                                     leadingIconPath: 'assets/icons/profile.svg',
@@ -106,6 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                    ),
                                    SizedBox(height: screenHeight * 0.02),
 
+                                   // Trade Confirmation,
                                    ProfileOptionContainer(
                                     labelText: 'Trade Confirmation',
                                     leadingIconPath: 'assets/icons/tared.svg',
@@ -116,6 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                    ),
                                    SizedBox(height: screenHeight * 0.02),
 
+                                   // Tax Statements,
                                    ProfileOptionContainer(
                                     labelText: 'Tax Statements',
                                     leadingIconPath: 'assets/icons/taxStatement.svg',
@@ -126,6 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                    ),
                                    SizedBox(height: screenHeight * 0.02),
 
+                                   // Notification Settings,
                                    ProfileOptionContainer(
                                      labelText: 'Notification Settings',
                                      leadingIconPath: 'assets/icons/notify.svg',
@@ -136,6 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                    ),
                                    SizedBox(height: screenHeight * 0.02),
 
+                                   // Settings
                                    ProfileOptionContainer(
                                      labelText: 'Settings',
                                      leadingIconPath: 'assets/icons/settings.svg',
@@ -144,6 +152,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        print("Trailing icon tapped");
                                      },
                                    ),
+
+                                   SizedBox(height: screenHeight * 0.02),
+
+                                   SizedBox(
+                                     width: screenWidth * 0.8, // Responsive width
+                                     child: Opacity(
+                                       opacity: 0.50,
+                                       child: Text(
+                                         'This service is provided by Team.',
+                                         textAlign: TextAlign.center,
+                                         style: TextStyle(
+                                           color: Colors.white,
+                                           fontSize: screenWidth * 0.028,
+                                           fontFamily: 'Poppins',
+                                           fontWeight: FontWeight.w400,
+                                           height: 1.6,
+                                         ),
+                                       ),
+                                     ),
+                                   ),
+
                                  ],
                                ),
                              ),

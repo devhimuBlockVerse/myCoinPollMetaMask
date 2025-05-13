@@ -77,6 +77,7 @@ class Assets {
   static const String iconsSettings = 'assets/icons/settings.svg';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
+  static const String iconsSolidBackGround = 'assets/icons/solidBackGround.png';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
   static const String iconsTared = 'assets/icons/tared.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';

@@ -10,86 +10,87 @@ class PersonalInformationScreen extends StatefulWidget {
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return  Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-
+      backgroundColor:  Colors.transparent,
       body: SafeArea(
-          top: false,
+        child: Container(
+          width: screenWidth,
+          height: screenHeight,
+          decoration: BoxDecoration(
+            color: const Color(0xFF01090B),
+            image: DecorationImage(
 
-          child: Container(
-            width: screenWidth,
-            height: screenHeight,
-            decoration: BoxDecoration(
-              color: const Color(0xFF01090B),
-              image: DecorationImage(
-                // image: AssetImage('assets/icons/starGradientBg.png'),
-                image: AssetImage('assets/icons/solidBackGround.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.topRight,
-
-              ),
+              image: AssetImage('assets/icons/starGradientBg.png'),
+              fit: BoxFit.cover,
+              alignment: Alignment.topRight,
             ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
 
+            children: [
+              SizedBox(height: screenHeight * 0.01),
 
-            child: Column(
-
-              children: [
-                SizedBox(height: screenHeight * 0.01),
-                Row(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                          'assets/icons/back_button.svg',
+              Row(
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: SvgPicture.asset(
+                        'assets/icons/back_button.svg',
+                        color: Colors.white,
+                        width: screenWidth * 0.04,
+                        height: screenWidth * 0.04
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Personal Information',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           color: Colors.white,
-                          width: screenWidth * 0.04,
-                          height: screenWidth * 0.04
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'Personal Information',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: screenWidth * 0.05,
-                          ),
-                          textAlign: TextAlign.center,
+                          fontWeight: FontWeight.w600,
+                          fontSize: screenWidth * 0.05,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(width: screenWidth * 0.12), // Responsive spacer for balance
-                  ],
-                ),
+                  ),
+                  SizedBox(width: screenWidth * 0.12), // Responsive spacer for balance
+                ],
+              ),
 
+              SizedBox(height: screenHeight * 0.01),
 
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.04,
-                      vertical: screenHeight * 0.01,
-                    ),
-                    child: SingleChildScrollView(
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.04,
+                    vertical: screenHeight * 0.01,
+                  ),
+                  child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: screenHeight * 0.02),
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                          // Frame1321314678(),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: screenHeight * 0.01),
+
+                          Center(child: _profileHeaderSection()),
 
                           SizedBox(height: screenHeight * 0.03),
 
-                          /// Profile Action Buttons =>
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -114,8 +115,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
 
-
-                                  SizedBox(height: screenHeight * 0.02),
 
                                   SizedBox(
                                     width: screenWidth * 0.8, // Responsive width
@@ -142,120 +141,79 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                             ),
                           ),
 
+
                         ],
-                      ),
-                    ),
+                      )
                   ),
                 ),
-              ],
-            ),
-          )
-
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
-}
 
 
 
 
-class Frame1321314678 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _profileHeaderSection(){
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // Scale factors (tweak if needed)
+    double scale = screenWidth / 375;
     return Column(
-      children: [
+       children: [
         Container(
-          width: 134,
-          height: 126,
+          width: screenWidth * 0.5,
+          padding: EdgeInsets.symmetric(vertical: 10 * scale),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 90,
-                height: 90,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      child: Container(
-                        width: 90,
-                        height: 90,
-                        decoration: ShapeDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage("https://picsum.photos/90/90"),
-                            fit: BoxFit.fill,
-                          ),
-                          shape: OvalBorder(
-                            side: BorderSide(width: 1, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 61,
-                      top: 74,
-                      child: Container(
-                        width: 15,
-                        height: 15,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: Container(
-                                width: 15,
-                                height: 15,
-                                decoration: ShapeDecoration(
-                                  color: Color(0xFF01090B),
-                                  shape: OvalBorder(
-                                    side: BorderSide(width: 0.50, color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 4.50,
-                              top: 3,
-                              child: Container(
-                                width: 6,
-                                height: 8,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
 
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+            children: [
+              // Show User Profile Image
+              Container(
+                width: screenWidth * 0.26,
+                height: screenWidth * 0.26,
+                decoration: ShapeDecoration(
+                  image: const DecorationImage(
+                    image: NetworkImage("https://picsum.photos/90/90"), // Show User Profile
+                    fit: BoxFit.fill,
+                  ),
+                  shape: OvalBorder(
+                    side: BorderSide(width: 1 * scale, color: Colors.white),
+                  ),
                 ),
               ),
-              const SizedBox(height: 10),
+
+              SizedBox(height: 10 * scale),
+
+              // Name
               Text(
                 'Abdur Salam',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 20 * scale,
                   fontFamily: 'Poppins',
-                  height: 0.07,
+                  fontWeight: FontWeight.w600,
+                  height: 1.3,
                 ),
               ),
+
+
+
             ],
           ),
         ),
       ],
     );
   }
+
+
+
 }
+
+
+
+

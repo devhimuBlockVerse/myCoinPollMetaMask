@@ -30,7 +30,7 @@ class ListingField extends StatelessWidget {
       ),
       decoration: ShapeDecoration(
         // color: const Color(0xFF12161D),
-        color: const Color(0xFF12161D),
+        color: const Color(0XFF101A29),
          shape: RoundedRectangleBorder(
           side: const BorderSide(width: 1, color: Color(0xFF141317)),
            borderRadius: BorderRadius.circular(3),
@@ -53,7 +53,7 @@ class ListingField extends StatelessWidget {
           fontWeight: FontWeight.w400,
           fontSize: screenHeight * 0.015,
           // height: 0.8,
-          height: 1.2,
+          height: 1.6,
           color: Colors.white.withOpacity(0.4),
         ),
         decoration: InputDecoration(
@@ -61,9 +61,12 @@ class ListingField extends StatelessWidget {
           border: InputBorder.none,
           hintText: labelText,
           hintStyle: TextStyle(
-            color: Colors.white70,
+            color: Color(0XFF7D8FA9),
             fontSize: screenHeight * 0.015,
             fontFamily: 'Poppins',
+            fontWeight: FontWeight.w400,
+            height: 1.6,
+
 
           ),
         ),

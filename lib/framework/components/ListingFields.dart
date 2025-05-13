@@ -29,10 +29,9 @@ class ListingField extends StatelessWidget {
         vertical: screenHeight * 0.012,
       ),
       decoration: ShapeDecoration(
-        // color: const Color(0xFF12161D),
-        color: const Color(0XFF101A29),
+         color: const Color(0XFF101A29),
          shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFF141317)),
+          side: const BorderSide(width: 1.2, color: Color(0xFF141317)),
            borderRadius: BorderRadius.circular(3),
         ),
         shadows: const [

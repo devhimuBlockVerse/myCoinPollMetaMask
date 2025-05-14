@@ -63,6 +63,7 @@ class Assets {
   static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';
   static const String iconsLearnAndEarnImg = 'assets/icons/learnAndEarnImg.png';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
+  static const String iconsLesson2 = 'assets/icons/lesson2.png';
   static const String iconsLine = 'assets/icons/line.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
@@ -93,6 +94,7 @@ class Assets {
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';
   static const String iconsXIcon = 'assets/icons/xIcon.svg';
   static const String iconsYearCircular = 'assets/icons/yearCircular.png';

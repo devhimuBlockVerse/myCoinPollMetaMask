@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/framework/components/badgeComponent_V2.dart';
 
-import '../../../../framework/components/BlockButton.dart';
+import '../../../../framework/components/LearnAndEarnComponent.dart';
 
 
 class LearnEarnScreen extends StatefulWidget {
@@ -94,7 +94,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                         children: [
 
                            _headerSection(context),
-                          SizedBox(height: screenHeight * 0.03),
+                          SizedBox(height: screenHeight * 0.04),
                           Text(
                             'Learn & Earn',
                             style: TextStyle(
@@ -107,7 +107,8 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                           ),
 
 
-                          // _learnAndEarnContainer(),
+
+                          SizedBox(height: screenHeight * 0.03),
 
                           LearnAndEarnContainer(
                             title: 'Blockchain Fundamentals & Analysis',
@@ -121,8 +122,28 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                             },
                           ),
 
+                          SizedBox(height: screenHeight * 0.02),
+
+                          LearnAndEarnContainer(
+                            title: 'Blockchain Fundamentals & Analysis',
+                            description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
+                            imagePath: 'assets/icons/lesson2.png',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LearnEarnScreen()),
+                              );
+                            },
+                          ),
+
+                          SizedBox(height: screenHeight * 0.05),
 
 
+                          // Frame1321314874(),
+
+                          _disclaimerSection(),
+
+                          SizedBox(height: screenHeight * 0.03),
 
 
                         ],
@@ -208,147 +229,123 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
     );
   }
 
-
-
-
-
-}
-
-class LearnAndEarnContainer extends StatelessWidget {
-  final String title;
-  final String description;
-  final String imagePath;
-  final VoidCallback onTap;
-
-  const LearnAndEarnContainer({
-    Key? key,
-    required this.title,
-    required this.description,
-    required this.imagePath,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    final isPortrait = screenHeight > screenWidth;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
+  Widget _disclaimerSection(){
+    final screenWidth = MediaQuery.of(context).size.width;
+    final baseSize = screenWidth / 375; // base size for scaling fonts and paddings
 
     return Container(
-      width: screenWidth,
-      height: screenHeight * 0.22,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/icons/learnAndEarnBgContainer.png'),
-          fit: BoxFit.fill,
-        ),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+        horizontal: baseSize * 15,
+        vertical: baseSize * 10,
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: baseSize * 0.02,
-          horizontal: baseSize * 0.02,
+      decoration: ShapeDecoration(
+        color: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFF2B2D40)),
+          borderRadius: BorderRadius.circular(baseSize * 8),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            /// 👇 Stack for Image and Badge
-            Container(
-              width: screenWidth * 0.39,
-              child: Stack(
+
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: baseSize * 27,
+            height: baseSize * 27,
+            child: SvgPicture.asset(
+              'assets/icons/warningIcon.svg',
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(width: baseSize * 15),
+          Expanded(
+            child: AutoSizeText.rich(
+              TextSpan(
                 children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.contain,
+                  TextSpan(
+                    text:
+                    'Disclaimer and Risk Warning: This content is for educational purposes only and not financial advice. Digital assets are volatile; invest at your own risk. Binance Academy is not liable for any losses. For more information, see our ',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: baseSize * 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Poppins',
+                      height: 1.6,
+                      letterSpacing: -0.5,
                     ),
                   ),
-                  Positioned(
-                    top: 18,
-                    left: 10,
-                    child: BadgeComponentV2(
-                      text: "Blockchain",
-                      leadingIcon: Icons.school,
-                      svgAssetPath: 'assets/icons/linkArrow.svg', // You will handle this next
-                      width: screenWidth * 0.210,
-                      height: screenHeight * 0.028,
-                      iconSize: 10,
-                      onTap: () {
-                        print("Tapped");
+                  TextSpan(
+                    text: 'Terms of Use',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: baseSize * 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Poppins',
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+
+                      height: 1.6,
+                      letterSpacing: -0.5,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO: Handle Terms of Use tap
                       },
-                      gradientColors: [
-                        Color(0xFF00C6FF),
-                        Color(0xFF0072FF),
-                      ],
+                  ),
+                  TextSpan(
+                    text: ' and ',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: baseSize * 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Poppins',
+                      height: 1.6,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  TextSpan(
+                    text: 'Risk Warning',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: baseSize * 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Poppins',
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+                      height: 1.6,
+                      letterSpacing: -0.5,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO: Handle Risk Warning tap
+                      },
+                  ),
+                  TextSpan(
+                    text: '.',
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.9),
+                      fontSize: baseSize * 11,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Poppins',
+                      height: 1.6,
+                      letterSpacing: -0.5,
                     ),
                   ),
                 ],
               ),
+              textAlign: TextAlign.justify,
+              minFontSize: 8,
+              maxFontSize: 14,
             ),
-
-            /// Right side: title, description, button
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: baseSize * 0.015,
-                  horizontal: baseSize * 0.02,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    AutoSizeText(
-                      title,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        color: const Color(0xFFFFF5ED),
-                        fontSize: baseSize * 0.040,
-                        fontWeight: FontWeight.w500,
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                    ),
-                    SizedBox(height: baseSize * 0.01),
-                    Expanded(
-                      child: AutoSizeText(
-                        description,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 5,
-                        style: TextStyle(
-                          color: const Color(0xFFFFF5ED),
-                          fontSize: baseSize * 0.030,
-                          fontWeight: FontWeight.w400,
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: baseSize * 0.03),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: BlockButton(
-                        height: baseSize * 0.08,
-                        width: screenWidth * 0.3,
-                        label: "Start Learning",
-                        textStyle: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                          fontSize: baseSize * 0.030,
-                        ),
-                        gradientColors: const [
-                          Color(0xFF2680EF),
-                          Color(0xFF1CD494),
-                        ],
-                        onTap: onTap,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+
+
+

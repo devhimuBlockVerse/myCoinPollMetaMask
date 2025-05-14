@@ -3,20 +3,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../../framework/components/LearnAndEarnComponent.dart';
-import 'lesson_screen.dart';
 
-
-class LearnEarnScreen extends StatefulWidget {
-  const LearnEarnScreen({super.key});
+class LessonScreen extends StatefulWidget {
+  const LessonScreen({super.key});
 
   @override
-  State<LearnEarnScreen> createState() => _LearnEarnScreenState();
+  State<LessonScreen> createState() => _LessonScreenState();
 }
 
-class _LearnEarnScreenState extends State<LearnEarnScreen> {
-
-
+class _LessonScreenState extends State<LessonScreen> {
   @override
   Widget build(BuildContext context) {
 
@@ -64,7 +59,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Learn & Earn',
+                        'Lesson',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -94,53 +89,8 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
 
-                           _headerSection(context),
-                          SizedBox(height: screenHeight * 0.04),
-                          Text(
-                            'Learn & Earn',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                              fontSize: baseSize * 0.045,
-                              height: 1.2,
-                              color: Colors.white,
-                            ),
-                          ),
-
-
-
+                          _headerSection(context),
                           SizedBox(height: screenHeight * 0.03),
-
-                          LearnAndEarnContainer(
-                            title: 'Blockchain Fundamentals & Analysis',
-                            description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                            imagePath: 'assets/icons/learnAndEarnImg.png',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => LessonScreen()),
-                              );
-                            },
-                          ),
-
-                          SizedBox(height: screenHeight * 0.02),
-
-                          LearnAndEarnContainer(
-                            title: 'Blockchain Fundamentals & Analysis',
-                            description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                            imagePath: 'assets/icons/lesson2.png',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => LessonScreen()),
-                              );
-                            },
-                          ),
-
-                          SizedBox(height: screenHeight * 0.05),
-
-
-                          // Frame1321314874(),
 
                           _disclaimerSection(),
 
@@ -158,7 +108,6 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
       ),
     );
   }
-
 
   Widget _headerSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -189,7 +138,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                 children: [
                   Flexible(
                     child: AutoSizeText(
-                       'Grow Your Crypto Knowledge',
+                      'Grow Your Crypto Knowledge',
                       style: TextStyle(
                         color: const Color(0xFFFFF5ED),
                         fontFamily: 'Poppins',
@@ -229,6 +178,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
       ),
     );
   }
+
 
   Widget _disclaimerSection(){
     final screenWidth = MediaQuery.of(context).size.width;
@@ -292,8 +242,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // TODO: Handle Terms of Use tap
-                      },
+                       },
                   ),
                   TextSpan(
                     text: ' and ',
@@ -320,8 +269,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // TODO: Handle Risk Warning tap
-                      },
+                       },
                   ),
                   TextSpan(
                     text: '.',
@@ -346,7 +294,3 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
     );
   }
 }
-
-
-
-

@@ -34,6 +34,7 @@ class Assets {
   static const String iconsBg = 'assets/icons/bg.png';
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
   static const String iconsBgRoadMapFrame = 'assets/icons/bgRoadMapFrame.png';
+  static const String iconsBlockChainBg = 'assets/icons/blockChainBg.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
@@ -56,11 +57,14 @@ class Assets {
   static const String iconsFrame = 'assets/icons/frame.png';
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsGradientImg = 'assets/icons/gradientImg.png';
+  static const String iconsHeaderFrameContainer = 'assets/icons/headerFrameContainer.png';
   static const String iconsHome = 'assets/icons/home.svg';
+  static const String iconsLearnAndEarnBgContainer = 'assets/icons/learnAndEarnBgContainer.png';
   static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';
   static const String iconsLearnAndEarnImg = 'assets/icons/learnAndEarnImg.png';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
   static const String iconsLine = 'assets/icons/line.png';
+  static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';

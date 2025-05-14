@@ -634,7 +634,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'MyCoinPoll IDO Launch \nApplication',
+                    'MyCoinPoll IDO Launch Application',
                     style: TextStyle(
                       color: const Color(0xFFFFF5ED),
                       fontFamily: 'Poppins',
@@ -663,7 +663,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
               flex: 1,
               child: Image.asset(
                 'assets/icons/applyForLisitngImg.png',
-                height: screenHeight * 0.09,
+                height: screenHeight * 0.9,
                 fit: BoxFit.contain,
               ),
             ),

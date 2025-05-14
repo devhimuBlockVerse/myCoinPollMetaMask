@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
@@ -293,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                    _buildBuyEcmSection(),
 
                    SizedBox(height: screenHeight * 0.05),
-                   LearnAndEarnCard(),
+                   _learnAndEarnContainer(),
 
 
                  ],
@@ -704,7 +705,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-
   /// Buy ECM Section
   Widget _buildBuyEcmSection() {
     final Size screenSize = MediaQuery.of(context).size;
@@ -1036,34 +1036,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-}
-
-class DiagonalCornerClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    const double cutSize = 20;
-
-     path.moveTo(0, cutSize);
-    path.lineTo(cutSize, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - cutSize);
-    path.lineTo(size.width - cutSize, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
-
-
-
-class LearnAndEarnCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _learnAndEarnContainer(){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -1071,11 +1044,11 @@ class LearnAndEarnCard extends StatelessWidget {
 
     return Container(
       width: screenWidth,
-       decoration: BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-           image: AssetImage('assets/icons/learnAndEarnFrame.png'),
+          image: AssetImage('assets/icons/learnAndEarnFrame.png'),
           fit: BoxFit.fill,
-         ),
+        ),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -1086,7 +1059,7 @@ class LearnAndEarnCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-             Container(
+            Container(
               width: screenWidth * 0.25,
               child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.contain,),
             ),
@@ -1141,7 +1114,11 @@ class LearnAndEarnCard extends StatelessWidget {
                           Color(0xFF1CD494),
                         ],
                         onTap: () {
-                          // Handle action
+                          print('Button tapped');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => LearnEarnScreen()),
+                          );
                         },
                       ),
                     ),
@@ -1154,7 +1131,28 @@ class LearnAndEarnCard extends StatelessWidget {
       ),
     );
   }
+
 }
 
+class DiagonalCornerClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    const double cutSize = 20;
+
+     path.moveTo(0, cutSize);
+    path.lineTo(cutSize, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height - cutSize);
+    path.lineTo(size.width - cutSize, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
+}
 
 

@@ -48,6 +48,7 @@ class BadgeComponent extends StatelessWidget {
 }
 
 
+
 class BadgetButtonClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../framework/components/SwitcherComponent.dart';
+
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -105,20 +107,143 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              "data",
+                              "Common",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                               fontFamily: 'Poppins',
                               color: Colors.white,
                                 fontWeight: FontWeight.w500,
-                              fontSize: screenWidth * 0.06,
+                              fontSize: screenWidth * 0.05,
                             ),),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+
+
+                          SwitcherComponent(
+                            title: 'General Notification',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Sound',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Vibrate',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "System & services update",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: screenWidth * 0.05,
+                              ),),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+
+                          SwitcherComponent(
+                            title: 'App updates',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Bill Reminder',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Promotion',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Discount Available',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'Payment Request',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
                           ),
 
 
                           SizedBox(height: screenHeight * 0.03),
 
-                          Component17(),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              "System & services update",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: screenWidth * 0.05,
+                              ),),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+
+                          SwitcherComponent(
+                            title: 'New Service Available',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
+                          SwitcherComponent(
+                            title: 'New Tips Available',
+                            //call the api data  apiResponseData['isNotificationEnabled'] ?? false,
+                            initialSwitchValue: false,
+                            onToggle: (value) {
+                              // Call your API to update value
+                              // updateNotificationSetting(value);
+                            },
+                          ),
 
                         ],
                       )
@@ -134,116 +259,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
 
 
-}
-
-
-
-class Component17 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 320,
-          height: 22,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 240,
-                child: Text(
-                  'General Notification',
-                  style: TextStyle(
-                    color: Color(0xFFFEFEFE),
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
-                    height: 0.11,
-                    letterSpacing: 0.25,
-                  ),
-                ),
-              ),
-
-              CustomAnimatedToggle(
-                initialValue: true,
-                onToggle: (value) {
-                  print("Switch is now: $value");
-                },
-              ),
-
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-class CustomAnimatedToggle extends StatefulWidget {
-  final bool initialValue;
-  final ValueChanged<bool> onToggle;
-
-  const CustomAnimatedToggle({
-    super.key,
-    required this.initialValue,
-    required this.onToggle,
-  });
-
-  @override
-  State<CustomAnimatedToggle> createState() => _CustomAnimatedToggleState();
-}
-
-class _CustomAnimatedToggleState extends State<CustomAnimatedToggle> {
-  late bool isOn;
-
-  @override
-  void initState() {
-    super.initState();
-    isOn = widget.initialValue;
-  }
-
-  void toggleSwitch() {
-    setState(() {
-      isOn = !isOn;
-    });
-    widget.onToggle(isOn);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: toggleSwitch,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        width: 60,
-        height: 32,
-        decoration: BoxDecoration(
-          color: isOn ? Colors.blue : Colors.white,
-          borderRadius: BorderRadius.circular(32),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: AnimatedAlign(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            alignment: isOn ? Alignment.centerRight : Alignment.centerLeft,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                color: Colors.black87,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white70, width: 1),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 

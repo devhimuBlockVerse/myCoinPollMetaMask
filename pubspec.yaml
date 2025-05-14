@@ -55,6 +55,7 @@ dependencies:
   auto_size_text:
   image_picker: ^1.0.4
   video_player: ^2.8.6
+  audio_service: ^0.18.12
 
 #  url_launcher: ^6.0.20
 

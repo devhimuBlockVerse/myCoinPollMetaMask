@@ -430,7 +430,7 @@ class LearnAndEarnContainer extends StatelessWidget {
                       child: BlockButton(
                         height: baseSize * 0.08,
                         width: screenWidth * 0.3,
-                        label: "Get Started",
+                        label: "Start Learning",
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,

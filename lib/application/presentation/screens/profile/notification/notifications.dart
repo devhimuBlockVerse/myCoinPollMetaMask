@@ -44,7 +44,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             color: Color(0xFF01090B),
             image: DecorationImage(
 
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/icons/solidBackGround.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),

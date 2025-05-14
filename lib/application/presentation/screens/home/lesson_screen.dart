@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../../framework/widgets/video_player.dart';
+
 
 class LessonScreen extends StatefulWidget {
   const LessonScreen({super.key});
@@ -93,7 +95,13 @@ class _LessonScreenState extends State<LessonScreen> {
                           _headerSection(context),
 
                           SizedBox(height: screenHeight * 0.03),
-                          Frame1321314897(),
+                          VideoPlayerService(
+                            videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
+                          ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+                          MiddleFrame(),
 
                           SizedBox(height: screenHeight * 0.03),
 
@@ -302,203 +310,62 @@ class _LessonScreenState extends State<LessonScreen> {
 }
 
 
-
-// class Frame1321314897 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Container(
-//           width: 297,
-//           height: 181.06,
-//           padding: const EdgeInsets.all(16),
-//           decoration: ShapeDecoration(
-//             color: Color(0xFF011116),
-//             shape: RoundedRectangleBorder(
-//               side: BorderSide(width: 1, color: Color(0xFF7074A6)),
-//               borderRadius: BorderRadius.circular(3),
-//             ),
-//           ),
-//           child: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Container(
-//                 width: double.infinity,
-//                 height: 149.06,
-//                 decoration: ShapeDecoration(
-//                   image: DecorationImage(
-//                     image: NetworkImage("https://picsum.photos/265/149"),
-//                     fit: BoxFit.fill,
-//                   ),
-//                   shape: RoundedRectangleBorder(
-//                     side: BorderSide(width: 1, color: Colors.white),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-
-// A good sample video URL (HTTPS)
-const String kVideoUrl = 'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
-// You can replace this with your video URL from an API or other source
-// const String kVideoUrl = "https://picsum.photos/265/149"; // This is an image URL, replace with a video URL
-
-class Frame1321314897 extends StatefulWidget {
-  final String videoUrl; // You can pass the video URL to the widget
-
-  const Frame1321314897({super.key, this.videoUrl = kVideoUrl});
-
-  @override
-  State<Frame1321314897> createState() => _Frame1321314897State();
-}
-
-class _Frame1321314897State extends State<Frame1321314897> {
-  late VideoPlayerController _controller;
-  Future<void>? _initializeVideoPlayerFuture;
-  bool _isVideoPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // Create and store the VideoPlayerController. The VideoPlayerController
-    // offers several different constructors to play videos from assets, files,
-    // or the internet.
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse(widget.videoUrl),
-    );
-
-    // Initialize the controller and store the Future for later use.
-    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
-      // Ensure the first frame is shown after the video is initialized,
-      // even before the play button has been pressed.
-      if (mounted) {
-        setState(() {});
-      }
-    }).catchError((error) {
-      // Handle initialization error
-      print("Error initializing video player: $error");
-      if (mounted) {
-        setState(() {}); // To rebuild and show error message or fallback
-      }
-    });
-
-    _controller.addListener(() {
-      if (!mounted) return;
-      if (_isVideoPlaying != _controller.value.isPlaying) {
-        setState(() {
-          _isVideoPlaying = _controller.value.isPlaying;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _togglePlayPause() {
-    if (!_controller.value.isInitialized) return;
-    setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
-    });
-  }
-
+class MiddleFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // The existing outer structure
     return Column(
       children: [
         Container(
-          width: 297,
-          height: 181.06,
-          padding: const EdgeInsets.all(16), // This padding might be too much if video fills the space
+          width: 344,
+          height: 170,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           decoration: ShapeDecoration(
-            color: const Color(0xFF011116),
+            // image: DecorationImage(
+            //   image: NetworkImage("https://picsum.photos/344/170"),
+            //   fit: BoxFit.fill,
+            // ),
             shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1, color: Color(0xFF7074A6)),
               borderRadius: BorderRadius.circular(3),
             ),
           ),
-          // We'll use a Stack to overlay play button
-          child: FutureBuilder(
-            future: _initializeVideoPlayerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done && _controller.value.isInitialized) {
-                return Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    // Use an AspectRatio to display the video.
-                    // The original height was 149.06. The container's inner height (181.06 - 32 padding) is 149.06.
-                    // The container's inner width (297 - 32 padding) is 265.
-                    SizedBox(
-                      width: 297 - 32, // Adjusting for padding
-                      height: 181.06 - 32, // Adjusting for padding
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        // Use the VideoPlayer widget to display the video.
-                        child: VideoPlayer(_controller),
-                      ),
-                    ),
-                    // Play/Pause button overlay
-                    GestureDetector(
-                      onTap: _togglePlayPause,
-                      child: Container(
-                        color: Colors.transparent, // Makes the whole area tappable
-                        child: Center(
-                          child: AnimatedOpacity(
-                            opacity: _controller.value.isPlaying ? 0.0 : 1.0,
-                            duration: const Duration(milliseconds: 300),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.5),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.play_arrow,
-                                color: Colors.white,
-                                size: 40.0,
-                              ),
-                            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 314,
+                child: Opacity(
+                  opacity: 0.80,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                          'A Deep Dive Into Blockchain Analysis and Fundamentals\n',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8999999761581421),
+                            fontSize: 12,
+                            fontFamily: 'Poppins',
+                            height: 0.13,
                           ),
                         ),
-                      ),
+                        TextSpan(
+                          text:
+                          '\nBlockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8999999761581421),
+                            fontSize: 10,
+                            fontFamily: 'Poppins',
+                            height: 0.16,
+                          ),
+                        ),
+                      ],
                     ),
-                    // You can also add a progress bar or other controls here
-                  ],
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    'Error loading video: ${snapshot.error}',
-                    style: const TextStyle(color: Colors.red),
-                    textAlign: TextAlign.center,
                   ),
-                );
-              }
-              else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
+                ),
+              ),
+            ],
           ),
         ),
       ],

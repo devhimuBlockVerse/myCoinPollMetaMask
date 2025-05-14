@@ -64,6 +64,8 @@ class Assets {
   static const String iconsLearnAndEarnImg = 'assets/icons/learnAndEarnImg.png';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
   static const String iconsLesson2 = 'assets/icons/lesson2.png';
+  static const String iconsLessonHeaderBg = 'assets/icons/lessonHeaderBg.png';
+  static const String iconsLessonHeaderImg = 'assets/icons/lessonHeaderImg.png';
   static const String iconsLine = 'assets/icons/line.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';

@@ -57,6 +57,8 @@ class Assets {
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsGradientImg = 'assets/icons/gradientImg.png';
   static const String iconsHome = 'assets/icons/home.svg';
+  static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';
+  static const String iconsLearnAndEarnImg = 'assets/icons/learnAndEarnImg.png';
   static const String iconsLearnearn = 'assets/icons/learnearn.png';
   static const String iconsLine = 'assets/icons/line.png';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';

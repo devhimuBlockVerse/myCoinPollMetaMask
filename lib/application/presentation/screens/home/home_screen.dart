@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -180,20 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                    Color(0xFF1CD494)
                                    // 1CD494
                                  ],
-                                 // onTap: () async {
-                                 //   try {
-                                 //     await model.connectWallet(context);
-                                 //   } catch (e) {
-                                 //     if (context.mounted) {
-                                 //       ScaffoldMessenger.of(context).showSnackBar(
-                                 //         SnackBar(
-                                 //           content: Text('Connection error: ${e.toString()}'),
-                                 //           backgroundColor: Colors.red,
-                                 //         ),
-                                 //       );
-                                 //     }
-                                 //   }
-                                 // },
                                  onTap: model.isLoading ? null : () { () async {
                                    try {
                                      await model.connectWallet(context);
@@ -302,6 +291,11 @@ class _HomeScreenState extends State<HomeScreen> {
                    _buildTokenCard(),
                    SizedBox(height: screenHeight * 0.05),
                    _buildBuyEcmSection(),
+
+                   SizedBox(height: screenHeight * 0.05),
+                   LearnAndEarnCard(),
+
+
                  ],
                ),
              ),
@@ -608,6 +602,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
+
+                  SizedBox(height: baseSize * 0.02),
+
+
                 ],
               ),
             ),
@@ -1046,8 +1044,7 @@ class DiagonalCornerClipper extends CustomClipper<Path> {
     final path = Path();
     const double cutSize = 20;
 
-    // Start from top left corner, move down a bit to cut the corner
-    path.moveTo(0, cutSize);
+     path.moveTo(0, cutSize);
     path.lineTo(cutSize, 0);
     path.lineTo(size.width, 0);
     path.lineTo(size.width, size.height - cutSize);
@@ -1061,3 +1058,103 @@ class DiagonalCornerClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
+
+
+
+class LearnAndEarnCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    return Container(
+      width: screenWidth,
+       decoration: BoxDecoration(
+        image: DecorationImage(
+           image: AssetImage('assets/icons/learnAndEarnFrame.png'),
+          fit: BoxFit.fill,
+         ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: baseSize * 0.02,
+          horizontal: baseSize * 0.02,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+             Container(
+              width: screenWidth * 0.25,
+              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.contain,),
+            ),
+
+            // Right Side: Text and Button
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: baseSize * 0.015,
+                  horizontal: baseSize * 0.02,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    AutoSizeText(
+                      'Earn Crypto While You Learn',
+                      textAlign: TextAlign.right,
+
+                      style: TextStyle(
+                        color: Color(0XFFFFF5ED),
+                        fontSize: baseSize * 0.040,
+                        fontWeight: FontWeight.w500,
+                        height: 1.3,
+
+                      ),
+                    ),
+                    SizedBox(height: baseSize * 0.01),
+                    AutoSizeText(
+                      'Boost your crypto knowledge and earn free tokens by learning blockchain basics.',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Color(0XFFFFF5ED),
+                        fontSize: baseSize * 0.030,
+                        fontWeight: FontWeight.w400,
+                        height: 1.6,
+                      ),
+                    ),
+                    SizedBox(height: baseSize * 0.03),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: BlockButton(
+                        height: baseSize * 0.08,
+                        width: screenWidth * 0.3,
+                        label: "Get Started",
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: baseSize * 0.030,
+                        ),
+                        gradientColors: const [
+                          Color(0xFF2680EF),
+                          Color(0xFF1CD494),
+                        ],
+                        onTap: () {
+                          // Handle action
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+

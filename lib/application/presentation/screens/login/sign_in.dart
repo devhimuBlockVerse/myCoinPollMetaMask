@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
@@ -128,7 +129,7 @@ class _SignInState extends State<SignIn> {
                                           color: Colors.white,
                                         ),
                                       ),
-                                      SizedBox(height: screenHeight * 0.02),
+                                      SizedBox(height: screenHeight * 0.01),
                                       /// Email Input Field
                                       ListingField(
                                         controller: userNameOrIdController,
@@ -154,7 +155,7 @@ class _SignInState extends State<SignIn> {
                                         ),
                                       ),
 
-                                      SizedBox(height: screenHeight * 0.02),
+                                      SizedBox(height: screenHeight * 0.01),
 
                                       /// Password Input Field
                                       ListingField(
@@ -190,10 +191,10 @@ class _SignInState extends State<SignIn> {
                                             ],
                                             onTap: () {
                                               // Check / Read the user Email and password and navigate
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(builder: (context) => ValidationScreen()),
-                                              // );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => ValidationScreen()),
+                                              );
                                             },
                                           ),
                                           SizedBox(height: screenHeight * 0.01),

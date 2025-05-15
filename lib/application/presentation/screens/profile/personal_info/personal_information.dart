@@ -279,8 +279,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                     keyboard: TextInputType.emailAddress,
                                   ),
 
-                                   SizedBox(height: screenHeight * 0.03),
 
+
+
+                                   SizedBox(height: screenHeight * 0.03),
 
 
                                   BlockButton(

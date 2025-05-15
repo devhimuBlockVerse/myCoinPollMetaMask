@@ -82,522 +82,553 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
 
-                         _headerSection(context),
+                             _headerSection(context),
 
-                        SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.02),
 
-                        /// Login Button Section
+                            /// Login Button Section
 
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Color(0x232c2e41),
-                           ),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              top: screenHeight * 0.012,
-                              left: screenWidth * 0.04,
-                              right: screenWidth * 0.04,
-                              bottom: screenHeight * 0.012,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-
-                              children: [
-                                // Smaller Image
-                                Image.asset(
-                                  'assets/icons/warningImg.png',
-                                  width: screenWidth * 0.07,
-                                  height: screenWidth * 0.07,
-                                  fit: BoxFit.contain,
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Color(0x232c2e41),
+                               ),
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: screenHeight * 0.012,
+                                  left: screenWidth * 0.04,
+                                  right: screenWidth * 0.04,
+                                  bottom: screenHeight * 0.012,
                                 ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
 
-                                SizedBox(width: screenWidth * 0.02),
+                                  children: [
+                                    // Smaller Image
+                                    Image.asset(
+                                      'assets/icons/warningImg.png',
+                                      width: screenWidth * 0.07,
+                                      height: screenWidth * 0.07,
+                                      fit: BoxFit.contain,
+                                    ),
 
-                                 Expanded(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      style: TextStyle(
+                                    SizedBox(width: screenWidth * 0.02),
+
+                                     Expanded(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: screenWidth * 0.027,
+                                            height: 1.23,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.white,
+                                          ),
+                                          children: [
+                                            const TextSpan(text: 'Connect your '),
+                                            WidgetSpan(
+                                              alignment: PlaceholderAlignment.baseline,
+                                              baseline: TextBaseline.alphabetic,
+                                              child: ShaderMask(
+                                                shaderCallback: (bounds) => const LinearGradient(
+                                                  colors: [Color(0xFF2680EF), Color(0xFF1CD494)],
+                                                ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
+                                                blendMode: BlendMode.srcIn,
+                                                child: Text(
+                                                  'Web3 wallet',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: screenWidth * 0.027,
+                                                    height: 1.23,
+                                                    color: Colors.white, // Required by ShaderMask
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const TextSpan(text: ' to apply and verify.'),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(width: screenWidth * 0.02),
+
+                                    /// Login Now Button
+                                    BlockButton(
+                                      height: screenHeight * 0.038,
+                                      width: screenWidth * 0.28,
+                                      label: 'Login Now',
+                                      textStyle: TextStyle(
                                         fontFamily: 'Poppins',
-                                        fontSize: screenWidth * 0.027,
-                                        height: 1.23,
-                                        fontWeight: FontWeight.w400,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenWidth * 0.028,
+                                        height: 0.8,
                                         color: Colors.white,
                                       ),
-                                      children: [
-                                        const TextSpan(text: 'Connect your '),
-                                        WidgetSpan(
-                                          alignment: PlaceholderAlignment.baseline,
-                                          baseline: TextBaseline.alphabetic,
-                                          child: ShaderMask(
-                                            shaderCallback: (bounds) => const LinearGradient(
-                                              colors: [Color(0xFF2680EF), Color(0xFF1CD494)],
-                                            ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height)),
-                                            blendMode: BlendMode.srcIn,
-                                            child: Text(
-                                              'Web3 wallet',
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494),
+                                      ],
+                                      onTap: () {
+                                        // Action
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => SignIn()),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: screenHeight * 0.06),
+
+
+                            /// Listing  Section Form
+
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0XFF040C16),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Color(0xff000000),
+                                    width: 1,
+
+                                  )
+                                ),
+                               
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(18.0),
+                                      child: Container(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                           mainAxisSize: MainAxisSize.min,
+                                           children: [
+                                
+                                             /// Personal Information
+                                
+                                             Text(
+                                              'Personal Information:',
+                                              textAlign: TextAlign.start,
                                               style: TextStyle(
                                                 fontFamily: 'Poppins',
                                                 fontWeight: FontWeight.w500,
-                                                fontSize: screenWidth * 0.027,
-                                                height: 1.23,
-                                                color: Colors.white, // Required by ShaderMask
+                                                fontSize: baseSize * 0.045,
+                                                height: 1.2,
+                                                color: Colors.white,
                                               ),
+                                            ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                              controller: fullNameController,
+                                               labelText: 'Full Name',
+                                               height: screenHeight * 0.05,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.name,
+                                            ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                              controller: emailAddressController,
+                                               labelText: 'Email Address',
+                                               height: screenHeight * 0.05,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.emailAddress,
+                                            ),
+                                
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             /// Project Information
+                                             Text(
+                                               'Project Information:',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               controller: projectNameController,
+                                               labelText: 'Project Name',
+                                               height: screenHeight * 0.05,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.name,
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               controller: projectDetailsController,
+                                               labelText: 'Project Details',
+                                               height: screenHeight * 0.09,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               controller: projectStatusController,
+                                               labelText: 'Project Status',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             ///Blockchain/Platform Radio Buttons
+                                             Text(
+                                               'Blockchain/Platform:',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             CustomRadioOption(
+                                               label: 'Blockchain/Platform',
+                                               value: 'Blockchain/Platform',
+                                               selectedValue: selectedOptionPlatform,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionPlatform = 'Blockchain/Platform';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             CustomRadioOption(
+                                               label: 'Solana',
+                                               value: 'Solana',
+                                               selectedValue: selectedOptionPlatform,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionPlatform = 'Solana';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             CustomRadioOption(
+                                               label: 'Ethereum',
+                                               value: 'Ethereum',
+                                               selectedValue: selectedOptionPlatform,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionPlatform = 'Ethereum';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             CustomRadioOption(
+                                               label: 'Polygon (Matic)',
+                                               value: 'Polygon (Matic)',
+                                               selectedValue: selectedOptionPlatform,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionPlatform = 'Polygon (Matic)';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                              CustomRadioOption(
+                                               label: 'Other',
+                                               value: 'Other',
+                                               selectedValue: selectedOptionPlatform,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionPlatform = 'Other';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             ///Is your team Anon or Public?
+                                             Text(
+                                               'Is your team Anon or Public?',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                             CustomRadioOption(
+                                               label: 'Anon',
+                                               value: 'Anon',
+                                               selectedValue: selectedOptionTeam,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionTeam = 'Anon';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             CustomRadioOption(
+                                               label: 'Fully Public',
+                                               value: 'Fully Public',
+                                               selectedValue: selectedOptionTeam,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionTeam = 'Fully Public';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             CustomRadioOption(
+                                               label: 'Mixed',
+                                               value: 'Mixed',
+                                               selectedValue: selectedOptionTeam,
+                                               onTap: () {
+                                                 setState(() {
+                                                   selectedOptionTeam = 'Mixed';
+                                                 });
+                                               },
+                                             ),
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             Text(
+                                               'Additional Project Details:',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Backers & Advisors',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Smart Contract Audit (with link if any)',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Litepaper/Whitepaper Link',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Website Link (if any)',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             ///Social Links:
+                                             Text(
+                                               'Social Links:',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                
+                                             SizedBox(height: screenHeight * 0.02),
+                                
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Medium Link:',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Github Link:',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Twitter Link:',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Telegram Link:',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                             SizedBox(height: screenHeight * 0.05),
+                                
+                                             ///Additional Comments:
+                                             Text(
+                                               'Additional Comments:',
+                                               textAlign: TextAlign.start,
+                                               style: TextStyle(
+                                                 fontFamily: 'Poppins',
+                                                 fontWeight: FontWeight.w500,
+                                                 fontSize: baseSize * 0.045,
+                                                 height: 1.2,
+                                                 color: Colors.white,
+                                               ),
+                                             ),
+                                             SizedBox(height: screenHeight * 0.02),
+                                             ListingField(
+                                               // controller: ,
+                                               labelText: 'Write in details',
+                                               height: screenHeight * 0.12,
+                                               width: screenWidth* 0.88,
+                                               expandable: true,
+                                               keyboard: TextInputType.multiline,
+                                             ),
+                                
+                                
+                                
+                                
+                                
+                                           ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.02),
+                                
+                                
+                                    /// Submit & Clear Button Section
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                
+                                          },
+                                          style: TextButton.styleFrom(
+                                            padding: EdgeInsets.zero,
+                                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          ),
+                                          child:  Text(
+                                            'Clear form',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w600, // SemiBold
+                                              fontSize: MediaQuery.of(context).size.height * 0.015,
+                                              height: 0.6,
+                                              decoration: TextDecoration.underline,
+                                              color: Color(0XFF1CD494),
+                                              decorationColor: Color(0XFF1CD494),
+                                              decorationThickness: 1.5,
                                             ),
                                           ),
                                         ),
-                                        const TextSpan(text: ' to apply and verify.'),
+                                        SizedBox(width: screenWidth * 0.03,),
+                                
+                                        BlockButton(
+                                          height: screenHeight * 0.039,
+                                          width: screenWidth * 0.32,
+                                          label: 'Submit For Apply',
+                                          textStyle: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: screenWidth * 0.028,
+                                            height: 0.8,
+                                            color: Colors.white,
+                                          ),
+                                          gradientColors: const [
+                                            Color(0xFF2680EF),
+                                            Color(0xFF1CD494),
+                                          ],
+                                          onTap: () {
+                                            // Action
+                                          },
+                                        ),
+                                
                                       ],
                                     ),
-                                  ),
-                                ),
-
-                                SizedBox(width: screenWidth * 0.02),
-
-                                /// Login Now Button
-                                BlockButton(
-                                  height: screenHeight * 0.038,
-                                  width: screenWidth * 0.28,
-                                  label: 'Login Now',
-                                  textStyle: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenWidth * 0.028,
-                                    height: 0.8,
-                                    color: Colors.white,
-                                  ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494),
+                                
+                                    SizedBox(height: screenHeight * 0.02),
+                                
+                                
                                   ],
-                                  onTap: () {
-                                    // Action
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => SignIn()),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight * 0.06),
-
-
-                        /// Listing  Section Form
-
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                             crossAxisAlignment: CrossAxisAlignment.start,
-                             mainAxisSize: MainAxisSize.min,
-                             children: [
-
-                               /// Personal Information
-
-                               Text(
-                                'Personal Information:',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: baseSize * 0.045,
-                                  height: 1.2,
-                                  color: Colors.white,
-                                ),
-                              ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                controller: fullNameController,
-                                 labelText: 'Full Name',
-                                 height: screenHeight * 0.05,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.name,
-                              ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                controller: emailAddressController,
-                                 labelText: 'Email Address',
-                                 height: screenHeight * 0.05,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.emailAddress,
-                              ),
-
-                               SizedBox(height: screenHeight * 0.05),
-
-                               /// Project Information
-                               Text(
-                                 'Project Information:',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 controller: projectNameController,
-                                 labelText: 'Project Name',
-                                 height: screenHeight * 0.05,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.name,
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 controller: projectDetailsController,
-                                 labelText: 'Project Details',
-                                 height: screenHeight * 0.09,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 controller: projectStatusController,
-                                 labelText: 'Project Status',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-
-                               SizedBox(height: screenHeight * 0.05),
-
-                               ///Blockchain/Platform Radio Buttons
-                               Text(
-                                 'Blockchain/Platform:',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               CustomRadioOption(
-                                 label: 'Blockchain/Platform',
-                                 value: 'Blockchain/Platform',
-                                 selectedValue: selectedOptionPlatform,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionPlatform = 'Blockchain/Platform';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-
-                               CustomRadioOption(
-                                 label: 'Solana',
-                                 value: 'Solana',
-                                 selectedValue: selectedOptionPlatform,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionPlatform = 'Solana';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-
-                               CustomRadioOption(
-                                 label: 'Ethereum',
-                                 value: 'Ethereum',
-                                 selectedValue: selectedOptionPlatform,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionPlatform = 'Ethereum';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               CustomRadioOption(
-                                 label: 'Polygon (Matic)',
-                                 value: 'Polygon (Matic)',
-                                 selectedValue: selectedOptionPlatform,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionPlatform = 'Polygon (Matic)';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                                CustomRadioOption(
-                                 label: 'Other',
-                                 value: 'Other',
-                                 selectedValue: selectedOptionPlatform,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionPlatform = 'Other';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.05),
-
-                               ///Is your team Anon or Public?
-                               Text(
-                                 'Is your team Anon or Public?',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-                               CustomRadioOption(
-                                 label: 'Anon',
-                                 value: 'Anon',
-                                 selectedValue: selectedOptionTeam,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionTeam = 'Anon';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               CustomRadioOption(
-                                 label: 'Fully Public',
-                                 value: 'Fully Public',
-                                 selectedValue: selectedOptionTeam,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionTeam = 'Fully Public';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               CustomRadioOption(
-                                 label: 'Mixed',
-                                 value: 'Mixed',
-                                 selectedValue: selectedOptionTeam,
-                                 onTap: () {
-                                   setState(() {
-                                     selectedOptionTeam = 'Mixed';
-                                   });
-                                 },
-                               ),
-                               SizedBox(height: screenHeight * 0.05),
-
-                               Text(
-                                 'Additional Project Details:',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Backers & Advisors',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Smart Contract Audit (with link if any)',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Litepaper/Whitepaper Link',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Website Link (if any)',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-                               SizedBox(height: screenHeight * 0.05),
-
-                               ///Social Links:
-                               Text(
-                                 'Social Links:',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-
-                               SizedBox(height: screenHeight * 0.02),
-
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Medium Link:',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Github Link:',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Twitter Link:',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Telegram Link:',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-                               SizedBox(height: screenHeight * 0.05),
-
-                               ///Additional Comments:
-                               Text(
-                                 'Additional Comments:',
-                                 textAlign: TextAlign.start,
-                                 style: TextStyle(
-                                   fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                   fontSize: baseSize * 0.045,
-                                   height: 1.2,
-                                   color: Colors.white,
-                                 ),
-                               ),
-                               SizedBox(height: screenHeight * 0.02),
-                               ListingField(
-                                 // controller: ,
-                                 labelText: 'Write in details',
-                                 height: screenHeight * 0.12,
-                                 width: screenWidth* 0.88,
-                                 expandable: true,
-                                 keyboard: TextInputType.multiline,
-                               ),
-
-                             ],
-                          ),
-                        ),
-
-                        SizedBox(height: screenHeight * 0.02),
-
-
-                        /// Submit & Clear Button Section
-                        Row(
-                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-
-                               },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child:  Text(
-                                'Clear form',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600, // SemiBold
-                                  fontSize: MediaQuery.of(context).size.height * 0.015,
-                                  height: 0.6,
-                                  decoration: TextDecoration.underline,
-                                  color: Color(0xFF3890FF),
-                                  decorationColor: Color(0xFF3890FF),
-                                  decorationThickness: 1.5,
+                                
                                 ),
                               ),
                             ),
-                            SizedBox(width: screenWidth * 0.03,),
 
-                            BlockButton(
-                              height: screenHeight * 0.039,
-                              width: screenWidth * 0.32,
-                              label: 'Submit For Apply',
-                              textStyle: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                fontSize: screenWidth * 0.028,
-                                height: 0.8,
-                                color: Colors.white,
-                              ),
-                              gradientColors: const [
-                                Color(0xFF2680EF),
-                                Color(0xFF1CD494),
-                              ],
-                              onTap: () {
-                                // Action
-                              },
-                            ),
 
                           ],
                         ),
-
-                        SizedBox(height: screenHeight * 0.02),
-
-
                       ],
                     ),
                   ),

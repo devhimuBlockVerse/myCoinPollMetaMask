@@ -2,15 +2,15 @@
 import 'package:video_player/video_player.dart';
 
 Future<MyAudioHandler> initAudioService(String videoUrl, String videoTitle) async {
+
   return await AudioService.init<MyAudioHandler>(
-    builder: () => MyAudioHandler(videoUrl, videoTitle),
-    config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.yourapp.channel.audio', // Replace com.yourapp
-      androidNotificationChannelName: 'Audio Playback',
+    builder: () => MyAudioHandler(videoUrl,videoTitle),
+    config: AudioServiceConfig(
+      androidNotificationChannelId: 'com.yourcompany.audio',
+      androidNotificationChannelName: 'Audio playback',
       androidNotificationOngoing: true,
-      androidStopForegroundOnPause: true,
-      // androidShowNotificationBadge: true, // if you want this
-      // androidNotificationIcon: 'drawable/ic_stat_music_note', // default is app icon
+      androidShowNotificationBadge: true,
+      androidStopForegroundOnPause: false,
     ),
   );
 }
@@ -28,75 +28,21 @@ class MyAudioHandler extends BaseAudioHandler with SeekHandler {
     _mediaItem = MediaItem(
       id: _initialVideoUrl,
       title: _initialVideoTitle,
-      artist: "Your App Name", // Optional
-      // artUri: Uri.parse('https://your-app.com/default-artwork.png'), // Optional
-    );
+      // artist: "Your App Name", // Optional
+     );
     mediaItem.add(_mediaItem);
     _initVideoPlayer(_initialVideoUrl);
   }
 
-  // Future<void> _initVideoPlayer(String url) async {
-  //   await _videoController?.dispose(); // Dispose previous controller if any
-  //
-  //   _videoController = VideoPlayerController.networkUrl(Uri.parse(url));
-  //   try {
-  //     await _videoController!.initialize();
-  //     mediaItem.add(_mediaItem?.copyWith(duration: _videoController!.value.duration));
-  //
-  //     // Listen to video player events to update playback state
-  //     _videoController!.addListener(() {
-  //       final isPlaying = _videoController!.value.isPlaying;
-  //       final position = _videoController!.value.position;
-  //       final buffered = _videoController!.value.buffered.isNotEmpty
-  //           ? _videoController!.value.buffered.last.end
-  //           : Duration.zero;
-  //
-  //       playbackState.add(playbackState.value.copyWith(
-  //         controls: [
-  //           isPlaying ? MediaControl.pause : MediaControl.play,
-  //           MediaControl.stop,
-  //         ],
-  //         systemActions: const {
-  //           MediaAction.seek,
-  //           MediaAction.seekForward,
-  //           MediaAction.seekBackward,
-  //         },
-  //         processingState: _getProcessingState(),
-  //         playing: isPlaying,
-  //         updatePosition: position,
-  //         bufferedPosition: buffered,
-  //         speed: _videoController!.value.playbackSpeed,
-  //       ));
-  //     });
-  //
-  //     // Initial state
-  //     playbackState.add(PlaybackState(
-  //       controls: [MediaControl.play, MediaControl.stop],
-  //       processingState: AudioProcessingState.ready,
-  //       playing: false,
-  //       updatePosition: Duration.zero,
-  //       bufferedPosition: Duration.zero,
-  //       speed: 1.0,
-  //       systemActions: const {
-  //         MediaAction.seek,
-  //         MediaAction.seekForward,
-  //         MediaAction.seekBackward,
-  //       },
-  //     ));
-  //   } catch (e) {
-  //     print("Error initializing video player in AudioHandler: $e");
-  //     playbackState.add(playbackState.value.copyWith(
-  //       processingState: AudioProcessingState.error,
-  //       errorMessage: e.toString(),
-  //     ));
-  //   }
-  // }
+
   Future<void> _initVideoPlayer(String url) async {
     await _videoController?.dispose();
 
     _videoController = VideoPlayerController.networkUrl(Uri.parse(url));
     try {
       await _videoController!.initialize();
+      await _videoController!.play(); // Auto-play
+      customEvent.add('initialized');
 
       // Update mediaItem with new duration
       _mediaItem = _mediaItem?.copyWith(duration: _videoController!.value.duration);
@@ -139,17 +85,13 @@ class MyAudioHandler extends BaseAudioHandler with SeekHandler {
   }
 
   AudioProcessingState _getProcessingState() {
-    if (_videoController == null || !_videoController!.value.isInitialized) {
-      return AudioProcessingState.loading;
-    }
-    if (_videoController!.value.isBuffering) {
-      return AudioProcessingState.buffering;
-    }
-    if (_videoController!.value.hasError) {
-      return AudioProcessingState.error;
-    }
+    if (_videoController == null) return AudioProcessingState.idle;
+    if (!_videoController!.value.isInitialized) return AudioProcessingState.loading;
+    if (_videoController!.value.hasError) return AudioProcessingState.error;
+    if (_videoController!.value.isBuffering) return AudioProcessingState.buffering;
     return AudioProcessingState.ready;
   }
+
 
   @override
   Future<void> play() async {
@@ -206,5 +148,4 @@ class MyAudioHandler extends BaseAudioHandler with SeekHandler {
     }
   }
 
-// You might want to override other methods like skipToNext, skipToPrevious if needed
 }

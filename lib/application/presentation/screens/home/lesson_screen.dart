@@ -101,7 +101,7 @@ class _LessonScreenState extends State<LessonScreen> {
 
                           SizedBox(height: screenHeight * 0.03),
 
-                          MiddleFrame(),
+                          _description(),
 
                           SizedBox(height: screenHeight * 0.03),
 
@@ -307,68 +307,62 @@ class _LessonScreenState extends State<LessonScreen> {
       ),
     );
   }
-}
 
 
-class MiddleFrame extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 344,
-          height: 170,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          decoration: ShapeDecoration(
-            // image: DecorationImage(
-            //   image: NetworkImage("https://picsum.photos/344/170"),
-            //   fit: BoxFit.fill,
-            // ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(3),
-            ),
+  Widget _description(){
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double titleFontSize = screenWidth * 0.032;
+    double bodyFontSize = screenWidth * 0.027;
+    double containerHeight = screenHeight * 0.22;
+
+
+    return Center(
+      child: Container(
+        width: double.infinity,
+        height: containerHeight,
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.04,
+          vertical: screenHeight * 0.014,
+        ),
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/icons/frameBg.png"),
+            fit: BoxFit.fill,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Text.rich(
+          TextSpan(
             children: [
-              SizedBox(
-                width: 314,
-                child: Opacity(
-                  opacity: 0.80,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text:
-                          'A Deep Dive Into Blockchain Analysis and Fundamentals\n',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.8999999761581421),
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            height: 0.13,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                          '\nBlockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.8999999761581421),
-                            fontSize: 10,
-                            fontFamily: 'Poppins',
-                            height: 0.16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              TextSpan(
+                text: 'A Deep Dive Into Blockchain Analysis and Fundamentals\n\n',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: titleFontSize,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500, // Poppins-Medium
+                  height: 1.6,
+                ),
+              ),
+              TextSpan(
+                text:
+                'Blockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: bodyFontSize,
+                  fontFamily: 'Poppins', // Poppins-Regular
+                  fontWeight: FontWeight.normal,
+                  height: 1.6,
                 ),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
+
+

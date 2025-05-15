@@ -13,12 +13,6 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
 
-  TextEditingController emailAddressController = TextEditingController();
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-
 
   String? selectedGender;
   String? selectedCountry;

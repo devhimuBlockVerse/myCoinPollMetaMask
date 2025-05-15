@@ -15,7 +15,7 @@ class ValidationScreen extends StatefulWidget {
 class _ValidationScreenState extends State<ValidationScreen> {
 
   final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _controllers =
+  final List<TextEditingController> _validationInputController =
   List.generate(4, (_) => TextEditingController());
 
   Timer? _timer;
@@ -50,7 +50,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
   }
   void _validateAndSubmit() {
     if (_formKey.currentState!.validate()) {
-      String code = _controllers.map((c) => c.text).join();
+      String code = _validationInputController.map((c) => c.text).join();
       print("Entered Code: $code");
       // Perform verification logic Later
     }
@@ -65,7 +65,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (var controller in _controllers) {
+    for (var controller in _validationInputController) {
       controller.dispose();
     }
     super.dispose();
@@ -74,82 +74,101 @@ class _ValidationScreenState extends State<ValidationScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
     final textScale = MediaQuery.of(context).textScaleFactor;
 
-    return Scaffold(
+    return  Scaffold(
       extendBodyBehindAppBar: true,
-
-      backgroundColor: Colors.transparent,
+      backgroundColor:  Colors.transparent,
       body: SafeArea(
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
-            // color: const Color(0xFF0B0A1E),
-            color: const Color(0xFF01090B),
+          decoration: const BoxDecoration(
+            color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/icons/gradientBgImage.png'),
-              // fit: BoxFit.contain,
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
           ),
           child: Column(
-            children: [
-              // SizedBox(height: screenHeight * 0.01),
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
 
-              ///Back Button
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                      'assets/icons/back_button.svg',
-                      color: Colors.white,
-                      width: screenWidth * 0.04,
-                      height: screenWidth * 0.04
+            children: [
+              SizedBox(height: screenHeight * 0.01),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: SvgPicture.asset(
+                        'assets/icons/back_button.svg',
+                        color: Colors.white,
+                        width: screenWidth * 0.04,
+                        height: screenWidth * 0.04
+                    ),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Verification',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: screenWidth * 0.05,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: screenWidth * 0.12),
+                ],
               ),
-              /// Main Scrollable Content
+
+              SizedBox(height: screenHeight * 0.01),
+
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.01,
-                    left: screenWidth * 0.01,
-                    right: screenWidth * 0.01,
-                    bottom: screenHeight * 0.02,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.04,
+                    vertical: screenHeight * 0.01,
                   ),
                   child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: screenHeight * 0.02),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
 
-                        SizedBox(height: screenHeight * 0.02),
+                          EmailConfirmation(),
 
-                        // _timerButton(),
+                          SizedBox(height: screenHeight * 0.02),
 
-                      Form(
+                          /// Timer and Validation Input Code
+                          Form(
                         key: _formKey,
                         child: Column(
                           children: [
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: List.generate(4,
                                     (index) => Padding(
                                   padding: EdgeInsets.only(right: index != 3 ? baseSize * 0.025 : 0),
-                                  child: _buildInputBox(index),
+                                  child: _validationInputBox(index),
                                 ),
                               ),
                             ),
-                            SizedBox(height: baseSize * 0.04),
+                            SizedBox(height: baseSize * 0.08),
 
                             // Timer and Resend Button
                             Column(
@@ -185,6 +204,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                   ),
                                 ),
 
+                                SizedBox(height: screenHeight * 0.08),
+
 
 
                                 BlockButton(
@@ -217,11 +238,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
                         ),
                       ),
 
-                        SizedBox(height: screenHeight * 0.02),
-
-
-                      ],
-                    ),
+                        ],
+                      )
                   ),
                 ),
               ),
@@ -231,8 +249,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
       ),
     );
   }
-
-   Widget _buildInputBox(int index) {
+  Widget _validationInputBox(int index) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -252,7 +269,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
         ),
       ),
       child: TextFormField(
-        controller: _controllers[index],
+        controller: _validationInputController[index],
         textAlign: TextAlign.center,
         maxLength: 1,
         style: TextStyle(
@@ -272,7 +289,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
           return null;
         },
         onChanged: (value) {
-          if (value.isNotEmpty && index < _controllers.length - 1) {
+          if (value.isNotEmpty && index < _validationInputController.length - 1) {
             FocusScope.of(context).nextFocus();
           }
         },
@@ -286,6 +303,42 @@ class _ValidationScreenState extends State<ValidationScreen> {
 }
 
 
+class EmailConfirmation extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          width: 272,
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Code have been sent to your email',
+                  style: TextStyle(
+                    color: Color(0xFF77798D),
+                    fontSize: 14,
+                    fontFamily: 'Poppins',
+                    height: 0.10,
+                  ),
+                ),
+                TextSpan(
+                  text: ' \nyourmaill@gmail.com',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontFamily: 'Poppins',
+                    height: 0.10,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 
 

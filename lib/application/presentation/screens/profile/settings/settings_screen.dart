@@ -92,23 +92,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(height: screenHeight * 0.03),
+                          SizedBox(height: screenHeight * 0.05),
 
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Common",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth * 0.05,
-                              ),),
+
+
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+
+                            child: Column(
+                              children: [
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/languageImg.svg',
+                                  text: 'Language',
+                                  onPressed: (){},
+                                ),
+
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/rateImg.svg',
+                                  text: 'Rate App',
+                                  onPressed: (){},
+                                ),
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/shareImg.svg',
+                                  text: 'Share App',
+                                  onPressed: (){},
+                                ),
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/privecyImg.svg',
+                                  text: 'Privacy Policy',
+                                  onPressed: (){},
+                                ),
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/termsImg.svg',
+                                  text: 'Terms and Conditions',
+                                  onPressed: (){},
+                                ),
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/contactImg.svg',
+                                  text: 'Contact',
+                                  onPressed: (){},
+                                ),
+
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/feedbackImg.svg',
+                                  text: 'Feedback',
+                                  onPressed: (){},
+                                ),
+
+                                CustomLogoutButton(
+                                  icon: 'assets/icons/logoutImg.svg',
+                                  text: 'Logout',
+                                  onPressed: (){},
+                                ),
+
+
+                              ],
+                            ),
                           ),
-                          SizedBox(height: screenHeight * 0.02),
-
-
 
 
                         ],
@@ -123,4 +163,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+}
+
+class CustomLogoutButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String text;
+  final String icon;
+   final Color foregroundColor;
+  final double borderRadius;
+
+  const CustomLogoutButton({
+    Key? key,
+    required this.onPressed,
+    required this.text ,
+    required this.icon , // Default icon
+     this.foregroundColor = Colors.white, // White text and icon
+    this.borderRadius = 10.0, // Default border radius
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+
+        image: DecorationImage(
+
+          image: AssetImage('assets/icons/settingActionBg.png'),
+          fit: BoxFit.fill,
+          alignment: Alignment.topRight,
+        ),
+
+      ),
+      child: InkWell(
+        onTap: onPressed,
+         child: Padding(
+           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Row(
+             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SvgPicture.asset(
+                icon,
+                color: foregroundColor,
+                height: 24,
+                width: 24,
+              ),
+               SizedBox(width: 12,),
+               Text(
+                text,
+                style: TextStyle(
+                  color: foregroundColor,
+                  fontSize: 18, // Adjust font size
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

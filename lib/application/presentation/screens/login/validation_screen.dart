@@ -6,7 +6,9 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../framework/components/BlockButton.dart';
 
 class ValidationScreen extends StatefulWidget {
-  const ValidationScreen({super.key});
+
+  final String getUserNameOrId ;
+  const ValidationScreen({super.key, required this.getUserNameOrId});
 
   @override
   State<ValidationScreen> createState() => _ValidationScreenState();
@@ -145,99 +147,97 @@ class _ValidationScreenState extends State<ValidationScreen> {
                   child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          SizedBox(height: screenHeight * 0.06),
 
-                          EmailConfirmation(),
+
+                          _userEmailSection(),
 
                           SizedBox(height: screenHeight * 0.02),
 
                           /// Timer and Validation Input Code
                           Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(4,
-                                    (index) => Padding(
-                                  padding: EdgeInsets.only(right: index != 3 ? baseSize * 0.025 : 0),
-                                  child: _validationInputBox(index),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: baseSize * 0.08),
-
-                            // Timer and Resend Button
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                            key: _formKey,
+                            child: Column(
                               children: [
-                                Text(
-                                  _formatTime(_secondsRemaining),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Color(0xFF77798D),
-                                    fontSize: baseSize * 0.035, // scalable
-                                    fontFamily: 'Poppins',
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(4,
+                                        (index) => Padding(
+                                          padding: EdgeInsets.only(right: index != 3 ? baseSize * 0.080 : 0),
+                                          child: _validationInputBox(index),
+                                        ),
                                   ),
                                 ),
-                                SizedBox(height: baseSize * 0.03),
-                                GestureDetector(
-                                  onTap: _canResend
-                                      ? () {
-                                    _startCountdown();
-                                    print("Code resent");
-                                  }
-                                      : null,
-                                  child: Text(
-                                    'Resend Code',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: _canResend ? Color(0xFFFFF5ED) : Colors.redAccent,
-                                      fontSize: baseSize * 0.04,
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w600,
-                                      decoration: _canResend ? TextDecoration.underline : null,
+                                SizedBox(height: baseSize * 0.08),
+
+                                // Timer and Resend Button
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      _formatTime(_secondsRemaining),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xFF77798D),
+                                        fontSize: baseSize * 0.035, // scalable
+                                        fontFamily: 'Poppins',
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                    SizedBox(height: baseSize * 0.03),
+                                    GestureDetector(
+                                      onTap: _canResend
+                                          ? () {
+                                        _startCountdown();
+                                        print("Code resent");
+                                      }
+                                      : null,
+                                      child: Text(
+                                        'Resend Code',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: _canResend ? Color(0xFFFFF5ED) : Colors.redAccent,
+                                          fontSize: baseSize * 0.04,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          decoration: _canResend ? TextDecoration.underline : null,
+                                        ),
+                                      ),
+                                    ),
 
-                                SizedBox(height: screenHeight * 0.08),
+                                    SizedBox(height: screenHeight * 0.05),
 
-
-
-                                BlockButton(
-                                  height: screenHeight * 0.05,
-                                  width: screenWidth * 0.88,
-                                  label: 'Verify',
-                                  textStyle: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: screenWidth * 0.040 * textScale,
-                                    height: 0.8,
-                                    color: Colors.white,
-                                  ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494),
+                                    BlockButton(
+                                      height: screenHeight * 0.05,
+                                      width: screenWidth * 0.70,
+                                      label: 'Verify',
+                                      textStyle: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: screenWidth * 0.040 * textScale,
+                                        height: 0.8,
+                                        color: Colors.white,
+                                      ),
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494),
+                                      ],
+                                      onTap: () {
+                                        // Check / Read the user Email and password and navigate
+                                        _validateAndSubmit();
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(builder: (context) => ValidationScreen()),
+                                        // );
+                                      },
+                                    ),
                                   ],
-                                  onTap: () {
-                                    // Check / Read the user Email and password and navigate
-                                    _validateAndSubmit();
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(builder: (context) => ValidationScreen()),
-                                    // );
-                                  },
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-
+                          ),
                         ],
                       )
                   ),
@@ -249,6 +249,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
       ),
     );
   }
+
+
   Widget _validationInputBox(int index) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -297,48 +299,57 @@ class _ValidationScreenState extends State<ValidationScreen> {
     );
   }
 
+  Widget _userEmailSection() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
 
-
-
-}
-
-
-class EmailConfirmation extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 272,
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: 'Code have been sent to your email',
-                  style: TextStyle(
-                    color: Color(0xFF77798D),
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
-                    height: 0.10,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: baseSize * 0.05), // Responsive horizontal padding
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: baseSize * 0.7, // Scalable width instead of fixed 272
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Code has been sent to your email',
+                    style: TextStyle(
+                      color: const Color(0xFF77798D),
+                      fontSize: baseSize * 0.035, // Scalable font size
+                      fontFamily: 'Poppins',
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                TextSpan(
-                  text: ' \nyourmaill@gmail.com',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
-                    height: 0.10,
+                  TextSpan(
+                    text: '\n${widget.getUserNameOrId}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: baseSize * 0.037, // Slightly larger for emphasis
+                      fontFamily: 'Poppins',
+                      height: 1.4,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+              textAlign: TextAlign.start,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
+
+
+
+
 }
+
 
 
 

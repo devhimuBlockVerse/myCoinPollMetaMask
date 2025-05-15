@@ -193,7 +193,9 @@ class _SignInState extends State<SignIn> {
                                               // Check / Read the user Email and password and navigate
                                               Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => ValidationScreen()),
+                                                MaterialPageRoute(builder: (context) => ValidationScreen(
+                                                  getUserNameOrId: userNameOrIdController.text,
+                                                )),
                                               );
                                             },
                                           ),

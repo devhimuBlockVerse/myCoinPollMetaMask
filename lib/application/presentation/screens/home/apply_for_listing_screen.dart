@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/login/sign_in.dart';
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/CustomRadioSelection.dart';
@@ -175,6 +176,10 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                   ],
                                   onTap: () {
                                     // Action
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => SignIn()),
+                                    );
                                   },
                                 ),
                               ],
@@ -662,7 +667,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
             Flexible(
               flex: 1,
               child: Image.asset(
-                'assets/icons/applyForLisitngImg.png',
+                // 'assets/icons/applyForLisitngImg.png',
+                'assets/icons/applyForLisitngImg1.png',
                 height: screenHeight * 0.9,
                 fit: BoxFit.contain,
               ),

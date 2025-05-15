@@ -28,6 +28,7 @@ class Assets {
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
   static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
   static const String iconsApplyForLisitngImg = 'assets/icons/applyForLisitngImg.png';
+  static const String iconsApplyForLisitngImg1 = 'assets/icons/applyForLisitngImg1.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
   static const String iconsBackButton = 'assets/icons/back_button.svg';
@@ -69,6 +70,7 @@ class Assets {
   static const String iconsLessonHeaderImg = 'assets/icons/lessonHeaderImg.png';
   static const String iconsLine = 'assets/icons/line.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
+  static const String iconsLonginContainer = 'assets/icons/longinContainer.png';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';

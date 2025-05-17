@@ -211,7 +211,7 @@ class _ContactScreenState extends State<ContactScreen> {
 }
 
 
-class ContactInfoWidget extends StatelessWidget {
+class ContactInfoWidget extends StatefulWidget {
   final String phoneNumber;
   final String emailAddress;
 
@@ -221,23 +221,26 @@ class ContactInfoWidget extends StatelessWidget {
     required this.emailAddress,
   }) : super(key: key);
 
-  // Function to launch phone dialer
+  @override
+  State<ContactInfoWidget> createState() => _ContactInfoWidgetState();
+}
+
+class _ContactInfoWidgetState extends State<ContactInfoWidget> {
   Future<void> _callPhone(String phoneNumber) async {
     final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(launchUri)) {
       await launchUrl(launchUri);
     } else {
-      debugPrint('Could not launch $launchUri');
+      print('Could not launch $launchUri');
     }
   }
 
-  // Function to launch email client
   Future<void> _sendEmail(String emailAddress) async {
     final Uri launchUri = Uri(scheme: 'mailto', path: emailAddress);
     if (await canLaunchUrl(launchUri)) {
       await launchUrl(launchUri);
     } else {
-      debugPrint('Could not launch $launchUri');
+      print('Could not launch $launchUri');
     }
   }
 
@@ -245,224 +248,108 @@ class ContactInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isTablet = screenWidth > 600;
+
+    // Responsive text scaling factor
+    double scaleFactor = screenWidth / 375.0; // 375 is a base iPhone width
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.04,
-        vertical: screenHeight * 0.02,
-      ),
+      padding: EdgeInsets.all(16.0 * scaleFactor),
       decoration: BoxDecoration(
-        color: const Color(0xFF101A29), // Dark background
-        borderRadius: BorderRadius.circular(12.0),
+        color: Colors.white24.withOpacity(0.1),
+         borderRadius: BorderRadius.circular(12.0 * scaleFactor),
       ),
-      child: Flex(
-        direction: isTablet ? Axis.horizontal : Axis.vertical,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () => _callPhone(phoneNumber),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.phone, color: Colors.tealAccent),
-                  SizedBox(width: screenWidth * 0.02),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'PHONE',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: screenWidth * 0.03,
-                            fontWeight: FontWeight.bold,
-                          ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Phone Info
+              Flexible(
+                child: InkWell(
+                  onTap: () => _callPhone(widget.phoneNumber),
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone, color: Colors.tealAccent, size: 24 * scaleFactor),
+                      SizedBox(width: 8.0 * scaleFactor),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'PHONE',
+                              style: TextStyle(
+                                color: Color(0xffFFF5ED),
+                                fontSize:getResponsiveFontSize(context, 12.3),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.02 * (12.0 * scaleFactor),
+                                height: 1.6,
+                              ),
+                            ),
+                            Text(
+                              widget.phoneNumber,
+                              style: TextStyle(
+                                color: Color(0xffDBE2FB),
+                                fontSize:getResponsiveFontSize(context, 12.3),
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 0.02 * (12.0 * scaleFactor),
+                                height: 1.6,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                        Text(
-                          phoneNumber,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenWidth * 0.04,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          SizedBox(height: isTablet ? 0 : screenHeight * 0.02, width: isTablet ? screenWidth * 0.04 : 0),
-          Expanded(
-            child: InkWell(
-              onTap: () => _sendEmail(emailAddress),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Icon(Icons.email, color: Colors.tealAccent),
-                  SizedBox(width: screenWidth * 0.02),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'EMAIL',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: screenWidth * 0.03,
-                            fontWeight: FontWeight.bold,
-                          ),
+
+               // Email Info
+              Flexible(
+                child: InkWell(
+                  onTap: () => _sendEmail(widget.emailAddress),
+                  child: Row(
+                    children: [
+                      Icon(Icons.email, color: Colors.tealAccent, size: 24 * scaleFactor),
+                      SizedBox(width: 8.0 * scaleFactor),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'EMAIL',
+                              style: TextStyle(
+                                color: Color(0xffFFF5ED),
+                                fontSize:getResponsiveFontSize(context, 12.3),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.02 * (12.0 * scaleFactor),
+                                height: 1.6,
+                              ),
+                            ),
+                            Text(
+                              widget.emailAddress,
+                              style: TextStyle(
+                                color: Color(0xffDBE2FB),
+                                fontSize:getResponsiveFontSize(context, 12.3),
+                                 fontWeight: FontWeight.w400,
+                                letterSpacing: 0.02 * (12.0 * scaleFactor),
+                                height: 1.6,
+                               ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                        Text(
-                          emailAddress,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenWidth * 0.04,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
 }
 
-// class ContactInfoWidget extends StatefulWidget {
-//   final String phoneNumber;
-//   final String emailAddress;
-//
-//   const ContactInfoWidget({
-//     Key? key,
-//     required this.phoneNumber,
-//     required this.emailAddress,
-//   }) : super(key: key);
-//
-//   @override
-//   State<ContactInfoWidget> createState() => _ContactInfoWidgetState();
-// }
-//
-// class _ContactInfoWidgetState extends State<ContactInfoWidget> {
-//   // Function to launch phone dialer
-//   Future<void> _callPhone(String phoneNumber) async {
-//     final Uri launchUri = Uri(
-//       scheme: 'tel',
-//       path: phoneNumber,
-//     );
-//     if (await canLaunchUrl(launchUri)) {
-//       await launchUrl(launchUri);
-//     } else {
-//       // Handle error, e.g., show a Snackbar
-//       print('Could not launch $launchUri');
-//     }
-//   }
-//
-//   // Function to launch email client
-//   Future<void> _sendEmail(String emailAddress) async {
-//     final Uri launchUri = Uri(
-//       scheme: 'mailto',
-//       path: emailAddress,
-//     );
-//     if (await canLaunchUrl(launchUri)) {
-//       await launchUrl(launchUri);
-//     } else {
-//       // Handle error, e.g., show a Snackbar
-//       print('Could not launch $launchUri');
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     return Container(
-//       width: screenWidth,
-//       padding: const EdgeInsets.all(16.0),
-//       decoration: BoxDecoration(
-//         color: Colors.grey[850], // Dark background color
-//         borderRadius: BorderRadius.circular(12.0),
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceAround,
-//         children: [
-//           // Phone Section
-//           Expanded(
-//             child: InkWell(
-//               onTap: () => _callPhone(widget.phoneNumber),
-//               child: Row(
-//                 children: [
-//                   const Icon(Icons.phone, color: Colors.tealAccent), // Phone icon
-//                   const SizedBox(width: 8.0),
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'PHONE',
-//                         style: TextStyle(
-//                           color: Colors.white70,
-//                           fontSize: 12.0,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                       Text(
-//                         widget.phoneNumber,
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontSize: 16.0,
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//           const SizedBox(width: 16.0), // Space between sections
-//
-//           // Email Section
-//           Expanded(
-//             child: InkWell(
-//               onTap: () => _sendEmail(widget.emailAddress),
-//               child: Row(
-//                 children: [
-//                   const Icon(Icons.email, color: Colors.tealAccent), // Email icon
-//                   const SizedBox(width: 8.0),
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'EMAIL',
-//                         style: TextStyle(
-//                           color: Colors.white70,
-//                           fontSize: 12.0,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                       Text(
-//                         widget.emailAddress,
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontSize: 16.0,
-//                         ),
-//                         overflow: TextOverflow.ellipsis, // Prevent overflow
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

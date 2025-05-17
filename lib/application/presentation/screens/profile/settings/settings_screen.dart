@@ -4,6 +4,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tra
 
 import '../tax_statement/terms_condition_screen.dart';
 import 'contact_screen.dart';
+import 'feedback_screen.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -155,7 +156,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 CustomLogoutButton(
                                   icon: 'assets/icons/feedbackImg.svg',
                                   text: 'Feedback',
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => FeedbackScreen()),
+                                    );
+                                  },
                                 ),
 
                                 CustomLogoutButton(

@@ -54,6 +54,7 @@ class Assets {
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
   static const String iconsEditIcon = 'assets/icons/editIcon.svg';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
+  static const String iconsEmail = 'assets/icons/email.svg';
   static const String iconsEth = 'assets/icons/eth.png';
   static const String iconsFeatures = 'assets/icons/features.svg';
   static const String iconsFeedbackImg = 'assets/icons/feedbackImg.svg';
@@ -81,6 +82,7 @@ class Assets {
   static const String iconsNews = 'assets/icons/news.svg';
   static const String iconsNewsFrame = 'assets/icons/newsFrame.png';
   static const String iconsNotify = 'assets/icons/notify.svg';
+  static const String iconsPhone = 'assets/icons/phone.svg';
   static const String iconsPrivecyImg = 'assets/icons/privecyImg.svg';
   static const String iconsProfile = 'assets/icons/profile.svg';
   static const String iconsProfileFrameBg = 'assets/icons/profileFrameBg.png';

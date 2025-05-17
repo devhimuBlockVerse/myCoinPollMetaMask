@@ -1,27 +1,17 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/ListingFields.dart';
-import '../../../../../framework/utils/dynamicFontSize.dart';
-import '../../../../../framework/widgets/custom_contact_info.dart';
 
-class ContactScreen extends StatefulWidget {
-  const ContactScreen({super.key});
+class FeedbackScreen extends StatefulWidget {
+  const FeedbackScreen({super.key});
 
   @override
-  State<ContactScreen> createState() => _ContactScreenState();
+  State<FeedbackScreen> createState() => _FeedbackScreenState();
 }
 
-class _ContactScreenState extends State<ContactScreen> {
+class _FeedbackScreenState extends State<FeedbackScreen> {
 
-
-  TextEditingController fullNameController = TextEditingController();
-  TextEditingController emailAddressController = TextEditingController();
-  TextEditingController subjectController = TextEditingController();
-  TextEditingController messageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +62,7 @@ class _ContactScreenState extends State<ContactScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Contact',
+                        'Feedback',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -119,50 +109,7 @@ class _ContactScreenState extends State<ContactScreen> {
                               mainAxisSize: MainAxisSize.min, // Content height
                               children: [
 
-                                ListingField(
-                                  controller: fullNameController,
-                                  labelText: 'Full Name',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.name,
-                                ),
 
-                                SizedBox(height: screenHeight * 0.02),
-
-                                ListingField(
-                                  controller: emailAddressController,
-                                  labelText: 'Email',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.emailAddress,
-                                ),
-
-
-                                SizedBox(height: screenHeight * 0.02),
-
-                                ListingField(
-                                  controller: subjectController,
-                                  labelText: 'Subject',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.multiline,
-                                ),
-
-                                SizedBox(height: screenHeight * 0.02),
-
-                                ListingField(
-                                  controller: messageController,
-                                  labelText: 'Message',
-                                  height: screenHeight * 0.3,
-                                  width: screenWidth* 0.88,
-                                  expandable: true,
-                                  keyboard: TextInputType.multiline,
-                                ),
-
-                                SizedBox(height: screenHeight * 0.03),
 
                                 BlockButton(
                                   height: screenHeight * 0.045,
@@ -191,16 +138,7 @@ class _ContactScreenState extends State<ContactScreen> {
                           ),
 
 
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).size.width * 0.02,
-                              vertical: MediaQuery.of(context).size.height * 0.02,
-                            ),
-                            child: CustomContactInfo(
-                              phoneNumber: '012 3456 789',
-                              emailAddress: 'info@mycoinpoll.com',
-                            ),
-                          ),
+
 
 
 
@@ -216,6 +154,3 @@ class _ContactScreenState extends State<ContactScreen> {
     );
   }
 }
-
-
-

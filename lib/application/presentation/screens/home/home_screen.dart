@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -845,12 +844,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     print('Error fetching stage info: ${e.toString()}');
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
 
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   SnackBar(
-                                    //     content: Text('Error fetching stage info: ${e.toString()}'),
-                                    //     backgroundColor: Colors.red,
-                                    //   ),
-                                    // );
                                   }
                                 }
 
@@ -885,12 +878,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
 
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   SnackBar(
-                                    //     content: Text('Error fetching stage info: ${e.toString()}'),
-                                    //     backgroundColor: Colors.red,
-                                    //   ),
-                                    // );
                                   }
                                 }
 
@@ -988,43 +975,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 18),
 
-                    // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                    //   isDisconnecting ? Center(child: CircularProgressIndicator())
-                    //       :
-                    //   DisconnectButton(
-                    //     label: 'Disconnect',
-                    //     color: Colors.redAccent,
-                    //     icon: Icons.visibility_off_rounded,
-                    //     onPressed: () async {
-                    //       setState(() {
-                    //         isDisconnecting = true;
-                    //       });
-                    //       try {
-                    //         await walletVM.disconnectWallet(context);
-                    //         walletVM.reset();
-                    //         if (context.mounted && !walletVM.isConnected) {
-                    //           Navigator.pushReplacementNamed(context, RoutesName.walletLogin);
-                    //         }
-                    //
-                    //       } catch (e) {
-                    //         if (context.mounted) {
-                    //           ScaffoldMessenger.of(context).showSnackBar(
-                    //             SnackBar(
-                    //               content: Text('Error disconnecting: ${e.toString()}'),
-                    //               backgroundColor: Colors.red,
-                    //             ),
-                    //           );
-                    //         }
-                    //       }finally{
-                    //         if (mounted) {
-                    //           setState(() {
-                    //             isDisconnecting = false;
-                    //           });
-                    //         }
-                    //       }
-                    //     },
-                    //
-                    //   ),
+
                   ],
                 );
               }

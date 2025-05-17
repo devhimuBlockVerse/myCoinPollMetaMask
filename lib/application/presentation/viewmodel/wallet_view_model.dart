@@ -21,8 +21,6 @@ class WalletViewModel extends ChangeNotifier {
   String? _maximumStake;
 
 
-
-
   String? get balance => _balance;
   String? get minimumStake => _minimumStake;
   String? get maximumStake => _maximumStake;
@@ -508,6 +506,11 @@ class WalletViewModel extends ChangeNotifier {
       notifyListeners();
 
 
+       if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
+        print('getCurrentStageInfo failed: appKitModal, session, or selectedChain is null.');
+         throw Exception("Wallet not fully connected or initialized.");
+      }
+
       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
       final abiData = jsonDecode(abiString);
 
@@ -516,12 +519,16 @@ class WalletViewModel extends ChangeNotifier {
           jsonEncode(abiData),
           'eCommerce Coin',
         ),
-        EthereumAddress.fromHex(
-            '0x02f2aA15675aED44A117aC0c55E795Be9908543D'),
+        EthereumAddress.fromHex('0x02f2aA15675aED44A117aC0c55E795Be9908543D'),
       );
 
       final chainID = appKitModal!.selectedChain!.chainId;
 
+      print('Attempting to read contract:');
+      print('  Chain ID: $chainID');
+      print('  Contract Address: ${stageContract.address.hex}');
+      print('  Function Name: currentStageInfo');
+      print('  Session Topic: ${appKitModal!.session!.topic}');
 
       final result = await appKitModal!.requestReadContract(
           topic: appKitModal!.session!.topic,
@@ -547,11 +554,12 @@ class WalletViewModel extends ChangeNotifier {
       'isCompleted': result[7] as bool,
       };
 
-      print("Stage info:");
 
+      print("Stage info successfully parsed:");
       stageInfo.forEach((key, value){
-        print('$key: $value');
+        print('$key: $value (Type: ${value.runtimeType})');
       });
+
 
 
       return stageInfo ;
@@ -566,7 +574,8 @@ class WalletViewModel extends ChangeNotifier {
 
   }
 
-  Future<String> buyECMWithETH( EtherAmount ethAmount, BuildContext context) async{
+
+    Future<String> buyECMWithETH( EtherAmount ethAmount, BuildContext context) async{
     if (appKitModal == null || !_isConnected || appKitModal!.session == null) {
       throw Exception("Wallet not Connected");
     }

@@ -67,8 +67,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-
-      try {
+       try {
         final stageInfo = await walletVM.getCurrentStageInfo();
         final ethPrice = stageInfo['ethPrice'];
         final usdtPrice = stageInfo['usdtPrice'];
@@ -807,6 +806,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                   }
                                 }
 
+
+
                               },
 
                             ),
@@ -840,6 +841,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
                                   }
                                 }
+
+
 
                               },
 

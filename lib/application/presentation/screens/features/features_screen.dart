@@ -72,7 +72,7 @@ class _FeaturesScreenState
                               description: 'Discover and support new cryptocurrency projects with our secure, innovative, and user-friendly platform.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),
@@ -85,7 +85,7 @@ class _FeaturesScreenState
                               description: 'Powering the ecosystem, ECM Token enhances the experience, offering exclusive access to investments.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),
@@ -97,7 +97,7 @@ class _FeaturesScreenState
                               description: 'Our platform integrates community voting to allow users to participate in deciding which projects receive funding.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),
@@ -108,7 +108,7 @@ class _FeaturesScreenState
                               description: 'Learn about blockchain, crypto, and launchpads with our comprehensive educational content.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),
@@ -119,7 +119,7 @@ class _FeaturesScreenState
                               description: 'Access Androverse, our innovative metaverse, where users can buy virtual land and enjoy exclusive experiences with ECM Tokens.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),
@@ -130,7 +130,7 @@ class _FeaturesScreenState
                               description: 'Gain early access to exclusive crypto launches and opportunities for ECM Token holders and MyCoinPoll community members.',
                               isSvg: false,
                               onTap: () {
-                                print('Card clicked!');
+                                debugPrint('Card clicked!');
                                 // Navigate or do any action here
                               },
                             ),

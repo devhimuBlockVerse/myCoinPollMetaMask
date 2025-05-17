@@ -1,7 +1,6 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
@@ -9,7 +8,6 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_t
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
-
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/badgeComponent.dart';
@@ -258,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                        // 1CD494
                                      ],
                                      onTap: () {
-                                       print('Button tapped');
+                                       debugPrint('Button tapped');
                                        Navigator.push(
                                          context,
                                          MaterialPageRoute(builder: (context) => ApplyForListingScreen()),
@@ -563,7 +561,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               'assets/icons/xIcon.svg',
                               () {
-                                print('Image button tapped!');
+                                debugPrint('Image button tapped!');
                                },
                             ),
                             SizedBox(width: baseSize * 0.02),
@@ -571,7 +569,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               'assets/icons/teleImage.svg',
                                   () {
-                                print('Image button tapped!');
+                                debugPrint('Image button tapped!');
                               },
                             )
                           ],
@@ -791,7 +789,7 @@ class _HomeScreenState extends State<HomeScreen> {
                              isReadOnly: true,
                              trailingIconAsset: 'assets/icons/copyImg.svg',
                              onTrailingIconTap: () {
-                               print('Trailing icon tapped');
+                               debugPrint('Trailing icon tapped');
                              },
                            ),
                            const SizedBox(height: 3),
@@ -841,7 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 } catch (e) {
 
                                   if (context.mounted) {
-                                    print('Error fetching stage info: ${e.toString()}');
+                                    debugPrint('Error fetching stage info: ${e.toString()}');
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
 
                                   }
@@ -870,11 +868,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     isUSDTActive = true;
                                   });
                                   _updatePayableAmount();
-                                  print("Switched to USDT mode. USDT Price: $_usdtPrice");
+                                  debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
 
                                 } catch (e) {
                                   if (context.mounted) {
-                                    print('Error fetching stage info: ${e.toString()}');
+                                    debugPrint('Error fetching stage info: ${e.toString()}');
 
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
 
@@ -928,12 +926,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
-                        print("ECM Purchase triggered");
+                        debugPrint("ECM Purchase triggered");
                         try{
                           final inputEth = ecmController.text.trim();
-                          print("User input: $inputEth");
+                          debugPrint("User input: $inputEth");
                           final ethDouble = double.tryParse(inputEth);
-                          print("Parsed double: $ethDouble");
+                          debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Enter a valid ECM amount')),
@@ -944,28 +942,28 @@ class _HomeScreenState extends State<HomeScreen> {
                           final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
                           // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                          print("ETH in Wei: $ecmAmountInWeiETH");
-                          print("USDT in smallest unit: $ecmAmountInWeiUSDT");
+                          debugPrint("ETH in Wei: $ecmAmountInWeiETH");
+                          debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 
                           final isETH = isETHActive;
                           final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                          print("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                          print("Purchase Button Pressed");
+                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                          debugPrint("Purchase Button Pressed");
 
                           if (isETH) {
-                            print("Calling buyECMWithETH with: $ecmAmountInWeiETH");
+                            debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
                           } else  {
-                            print("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
+                            debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
                             await walletVM.buyECMWithUSDT(amount,context);
                           }
-                          print("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+                          debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Purchase successful')),
                           );
                         }catch (e) {
-                          debugPrint("Buy ECM failed: $e");
+                          debugdebugPrint("Buy ECM failed: $e");
                         }
                       },
                       gradientColors: [
@@ -1065,7 +1063,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Color(0xFF1CD494),
                         ],
                         onTap: () {
-                          print('Button tapped');
+                          debugPrint('Button tapped');
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => LearnEarnScreen()),

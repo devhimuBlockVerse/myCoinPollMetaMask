@@ -109,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     leadingIconPath: 'assets/icons/profile.svg',
                                     trailingIconPath: 'assets/icons/rightArrow.svg',
                                     onTrailingIconTap: () {
-                                      print("Trailing icon tapped");
+                                      debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) => PersonalInformationScreen()),
                                       );
@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     leadingIconPath: 'assets/icons/tared.svg',
                                     trailingIconPath: 'assets/icons/rightArrow.svg',
                                     onTrailingIconTap: () {
-                                      print("Trailing icon tapped");
+                                      debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) => TradeConfirmationScreen()),
                                       );
@@ -137,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     leadingIconPath: 'assets/icons/taxStatement.svg',
                                     trailingIconPath: 'assets/icons/rightArrow.svg',
                                     onTrailingIconTap: () {
-                                      print("Trailing icon tapped");
+                                      debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(builder: (context) => TermsConditionScreen()),
                                       );
@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      leadingIconPath: 'assets/icons/notify.svg',
                                      trailingIconPath: 'assets/icons/rightArrow.svg',
                                      onTrailingIconTap: () {
-                                       print("Trailing icon tapped");
+                                       debugPrint("Trailing icon tapped");
                                        Navigator.of(context).push(
                                        MaterialPageRoute(builder: (context) => NotificationsScreen()),
                                      );
@@ -165,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      leadingIconPath: 'assets/icons/settings.svg',
                                      trailingIconPath: 'assets/icons/rightArrow.svg',
                                      onTrailingIconTap: () {
-                                       print("Trailing icon tapped");
+                                       debugPrint("Trailing icon tapped");
                                        Navigator.of(context).push(
                                          MaterialPageRoute(builder: (context) => SettingsScreen()),
                                        );

@@ -240,7 +240,7 @@ class _DashboardViewState extends State<DashboardView> {
 
                                     Utils.showToast('Error sending token: ${e.toString()}', isError: true);
 
-                                    print("Error sending token: $e");
+                                    debugPrint("Error sending token: $e");
 
                                   }finally{
                                     if (mounted) setState(() => _isloading = false);

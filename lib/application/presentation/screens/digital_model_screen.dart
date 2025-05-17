@@ -249,7 +249,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
 
                                         } catch (e) {
                                           if (context.mounted) {
-                                            print('Error fetching stage info: ${e.toString()}');
+                                            debugPrint('Error fetching stage info: ${e.toString()}');
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
                                                 content: Text('Error fetching stage info: ${e.toString()}'),
@@ -281,7 +281,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                              isUSDTActive = true;
                                           });
                                           _updatePayableAmount();
-                                          print("Switched to USDT mode. USDT Price: $_usdtPrice");
+                                          debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
 
                                         } catch (e) {
                                           if (context.mounted) {
@@ -334,12 +334,12 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 height: 40,
                                 onTap: () async {
-                                  print("ECM Purchase triggered");
+                                  debugPrint("ECM Purchase triggered");
                                   try{
                                     final inputEth = ecmController.text.trim();
-                                    print("User input: $inputEth");
+                                    debugPrint("User input: $inputEth");
                                     final ethDouble = double.tryParse(inputEth);
-                                    print("Parsed double: $ethDouble");
+                                    debugPrint("Parsed double: $ethDouble");
                                     if (ethDouble == null || ethDouble <= 0) {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(content: Text('Enter a valid ECM amount')),
@@ -350,22 +350,22 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                     final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
                                     // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
                                     final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                                    print("ETH in Wei: $ecmAmountInWeiETH");
-                                    print("USDT in smallest unit: $ecmAmountInWeiUSDT");
+                                    debugPrint("ETH in Wei: $ecmAmountInWeiETH");
+                                    debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 
                                     final isETH = isETHActive;
                                     final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                                    print("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                                    print("Purchase Button Pressed");
+                                    debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                                    debugPrint("Purchase Button Pressed");
 
                                     if (isETH) {
-                                      print("Calling buyECMWithETH with: $ecmAmountInWeiETH");
+                                      debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
                                       await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
                                     } else  {
-                                      print("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
+                                      debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
                                       await walletVM.buyECMWithUSDT(amount,context);
                                     }
-                                    print("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+                                    debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text('Purchase successful')),

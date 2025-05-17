@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
 
 import '../tax_statement/terms_condition_screen.dart';
+import 'contact_screen.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -143,7 +144,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 CustomLogoutButton(
                                   icon: 'assets/icons/contactImg.svg',
                                   text: 'Contact',
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => ContactScreen()),
+                                    );
+                                  },
                                 ),
 
                                 CustomLogoutButton(

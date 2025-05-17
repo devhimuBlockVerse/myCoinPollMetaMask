@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
 import 'notification/notifications.dart';
@@ -137,6 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     trailingIconPath: 'assets/icons/rightArrow.svg',
                                     onTrailingIconTap: () {
                                       print("Trailing icon tapped");
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+                                      );
                                     },
                                    ),
                                    SizedBox(height: screenHeight * 0.02),

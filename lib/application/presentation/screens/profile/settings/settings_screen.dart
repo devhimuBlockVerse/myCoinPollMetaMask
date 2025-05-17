@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
+
+import '../tax_statement/terms_condition_screen.dart';
 
 
 class SettingsScreen extends StatefulWidget {
@@ -120,12 +123,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 CustomLogoutButton(
                                   icon: 'assets/icons/privecyImg.svg',
                                   text: 'Privacy Policy',
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => TradeConfirmationScreen()),
+                                    );
+                                  },
                                 ),
                                 CustomLogoutButton(
                                   icon: 'assets/icons/termsImg.svg',
                                   text: 'Terms and Conditions',
-                                  onPressed: (){},
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+                                    );
+                                  },
                                 ),
                                 CustomLogoutButton(
                                   icon: 'assets/icons/contactImg.svg',

@@ -249,7 +249,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         ),
                         onPressed: () {
                           //  Add your action here
-                          print("Button Pressed!");
+                          debugPrint("Button Pressed!");
                         },
                       ),
 
@@ -261,7 +261,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, RoutesName.digitalModel);
 
-                          print('Button tapped!');
+                          debugPrint('Button tapped!');
                         },
                       ),
 
@@ -594,7 +594,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
             selectedPercentage = text;
           });
 
-          print('Selected Percentage: $selectedPercentage');
+          debugPrint('Selected Percentage: $selectedPercentage');
         }
 
       },
@@ -825,7 +825,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
           selectedDay = text;
         });
         calculateRewards();
-        print('Selected Percentage: $selectedDay');
+        debugPrint('Selected Percentage: $selectedDay');
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

@@ -53,7 +53,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
   void _validateAndSubmit() {
     if (_formKey.currentState!.validate()) {
       String code = _validationInputController.map((c) => c.text).join();
-      print("Entered Code: $code");
+      debugPrint("Entered Code: $code");
       // Perform verification logic Later
     }
   }
@@ -191,7 +191,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                       onTap: _canResend
                                           ? () {
                                         _startCountdown();
-                                        print("Code resent");
+                                        debugPrint("Code resent");
                                       }
                                       : null,
                                       child: Text(

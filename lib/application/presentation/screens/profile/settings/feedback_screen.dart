@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../../../../../framework/components/BlockButton.dart';
+import '../../../../../framework/utils/dynamicFontSize.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -12,6 +12,7 @@ class FeedbackScreen extends StatefulWidget {
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
 
+   TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +110,64 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               mainAxisSize: MainAxisSize.min, // Content height
                               children: [
 
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    'Write your Feedback!',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      color: Color(0xFFF4F4F5),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: getResponsiveFontSize(context, 16),
+                                      height: 1.6,
+                                      letterSpacing: -0.40,
+                                    ),),
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
 
+                                Container(
+                                  width: screenWidth ,
+                                  height: screenHeight * 0.25,
+                                  padding: EdgeInsets.all(screenWidth * 0.03),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF101A29),
+                                    borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Color(0x3F9C9C9C),
+                                        blurRadius: 6.4,
+                                        offset: Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                  child: TextField(
+                                    controller: controller,
+                                    maxLines: null,
+                                    expands: true,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: screenWidth * 0.035,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: 'Feel free to write what you say...',
+                                      hintStyle: TextStyle(
+                                        color: const Color(0xFF7D8FA9),
+                                        fontSize: screenWidth * 0.035,
+                                        fontFamily: 'Poppins',
+                                        letterSpacing: -0.4,
+                                        height: 1.6,
+                                      ),
+                                      border: InputBorder.none,
+                                      isCollapsed: true,
+                                    ),
+                                    cursorColor: Colors.tealAccent,
+                                  ),
+                                ),
+
+
+                                SizedBox(height: screenHeight * 0.03),
 
                                 BlockButton(
                                   height: screenHeight * 0.045,
@@ -136,12 +194,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               ],
                             ),
                           ),
-
-
-
-
-
-
                         ],
                       )
                   ),

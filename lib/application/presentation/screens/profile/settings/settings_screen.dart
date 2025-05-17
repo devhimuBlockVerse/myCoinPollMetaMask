@@ -93,35 +93,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-
-
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(height: screenHeight * 0.05),
-
-
 
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 
                             child: Column(
                               children: [
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/languageImg.svg',
                                   text: 'Language',
                                   onPressed: (){},
                                 ),
 
+                                SizedBox(height: screenHeight * 0.01),
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/rateImg.svg',
                                   text: 'Rate App',
                                   onPressed: (){},
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/shareImg.svg',
                                   text: 'Share App',
                                   onPressed: (){},
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/privecyImg.svg',
                                   text: 'Privacy Policy',
@@ -132,6 +135,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   },
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/termsImg.svg',
                                   text: 'Terms and Conditions',
@@ -142,6 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   },
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
+
                                 CustomLogoutButton(
                                   icon: 'assets/icons/contactImg.svg',
                                   text: 'Contact',
@@ -152,6 +159,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   },
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
 
                                 CustomLogoutButton(
                                   icon: 'assets/icons/feedbackImg.svg',
@@ -163,6 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     );
                                   },
                                 ),
+                                SizedBox(height: screenHeight * 0.01),
 
                                 CustomLogoutButton(
                                   icon: 'assets/icons/logoutImg.svg',

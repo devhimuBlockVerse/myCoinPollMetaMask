@@ -79,6 +79,8 @@ class Assets {
   static const String iconsLessonHeaderBg = 'assets/icons/lessonHeaderBg.png';
   static const String iconsLessonHeaderImg = 'assets/icons/lessonHeaderImg.png';
   static const String iconsLine = 'assets/icons/line.png';
+  static const String iconsLinearFrame = 'assets/icons/linearFrame.png';
+  static const String iconsLinearFrame2 = 'assets/icons/linearFrame2.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsLogoutImg = 'assets/icons/logoutImg.svg';
   static const String iconsLonginContainer = 'assets/icons/longinContainer.png';

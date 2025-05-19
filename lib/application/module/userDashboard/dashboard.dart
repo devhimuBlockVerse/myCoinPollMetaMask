@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/BlockButton.dart';
+import '../../../framework/components/buildProgressBar.dart';
 import '../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../framework/components/walletAddressComponent.dart';
 import '../../../framework/utils/dynamicFontSize.dart';
@@ -90,11 +91,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _headerSection(),
                   SizedBox(height: screenHeight * 0.02),
 
-
-
+                  /// User Graph Chart and Level
                   _EcmWithGraphChart(),
                   SizedBox(height: screenHeight * 0.03),
 
+
+                  /// Referral Link
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -117,6 +119,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     ),
                   ),
+                  SizedBox(height: screenHeight * 0.03),
+
+
+
+                  _joinPromoteEarn()
+
                 ],
               ),
             ),
@@ -342,5 +350,120 @@ class _DashboardScreenState extends State<DashboardScreen> {
         )
     );
   }
+
+
+
+  Widget _joinPromoteEarn(){
+    final Size screenSize = MediaQuery.of(context).size;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final textScale = screenWidth / 375;
+    final bool isPortrait = screenSize.height > screenSize.width;
+
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Join. Promote. Earn.',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.003,
+              horizontal: screenWidth * 0.03,
+            ),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage('assets/icons/linearFrame.png'),
+                fit: BoxFit.fill,
+              ),
+
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Left column
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+
+                      SizedBox(height: screenHeight * 0.015),
+                      Container(
+                        width: screenWidth,
+                        decoration: BoxDecoration(
+                          image: const DecorationImage(
+                            image: AssetImage('assets/icons/linearFrame2.png'),
+                            fit: BoxFit.fill,
+                          ),
+                          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.06,
+                            vertical: screenHeight * 0.03,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ProgressBarUserDashboard(
+                                title: "ECM Holding",
+                                percent: 0.9,
+                                percentText: "280/300",
+                                barColor: const Color(0xFF1CD494),
+                                textScale: textScale,
+                                screenHeight: screenHeight,
+                                screenWidth: screenWidth,
+                              ),
+                              SizedBox(height: screenHeight * 0.012),
+                              ProgressBarUserDashboard(
+                                title: "Referral Sales (ECM)",
+                                percent: 0.4,
+                                percentText: "1200/2500",
+                                barColor: const Color(0xFFF0B90B),
+                                textScale: textScale,
+                                screenHeight: screenHeight,
+                                screenWidth: screenWidth,
+                              ),
+                              SizedBox(height: screenHeight * 0.012),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
 
 }

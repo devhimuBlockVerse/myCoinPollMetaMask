@@ -46,6 +46,7 @@ class Assets {
   static const String iconsContactImg = 'assets/icons/contactImg.svg';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
+  static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
@@ -67,6 +68,7 @@ class Assets {
   static const String iconsGradientImg = 'assets/icons/gradientImg.png';
   static const String iconsHeaderFrameContainer = 'assets/icons/headerFrameContainer.png';
   static const String iconsHome = 'assets/icons/home.svg';
+  static const String iconsIco = 'assets/icons/ico.svg';
   static const String iconsLanguageImg = 'assets/icons/languageImg.svg';
   static const String iconsLearnAndEarnBgContainer = 'assets/icons/learnAndEarnBgContainer.png';
   static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';
@@ -107,6 +109,7 @@ class Assets {
   static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
   static const String iconsShareImg = 'assets/icons/shareImg.svg';
   static const String iconsSolidBackGround = 'assets/icons/solidBackGround.png';
+  static const String iconsStaking = 'assets/icons/staking.svg';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
   static const String iconsTared = 'assets/icons/tared.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
@@ -114,6 +117,7 @@ class Assets {
   static const String iconsTermsImg = 'assets/icons/termsImg.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';
+  static const String iconsTransaction = 'assets/icons/transaction.svg';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';

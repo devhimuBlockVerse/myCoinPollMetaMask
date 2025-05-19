@@ -5,6 +5,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/login/valid
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
+import '../../../module/dashboard_bottom_nav.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -275,7 +276,7 @@ class _SignInState extends State<SignIn> {
                                               // Apply the wallet connection from view model and navigate to the Dashboard
                                               Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => DashboardScreen()),
+                                                MaterialPageRoute(builder: (context) => DashboardBottomNavBar()),
                                               );
                                             },
                                           ),

@@ -15,6 +15,7 @@ import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
 import '../../../../framework/widgets/animated_blockchain_images.dart';
+import '../../../module/dashboard_bottom_nav.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -184,6 +185,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                  onTap: model.isLoading ? null : () { () async {
                                    try {
                                      await model.connectWallet(context);
+                                     if (context.mounted && model.isConnected){
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => DashboardBottomNavBar()),
+                                       );
+                                     }
 
                                    } catch (e) {
                                      if (context.mounted) {

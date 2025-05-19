@@ -3,39 +3,39 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/dashboard.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/androverse/androverse_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/features/features_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
+ import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/res/colors.dart';
 
 
-class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+class DashboardBottomNavBar extends StatefulWidget {
+  const DashboardBottomNavBar({super.key});
 
   @override
-  State<BottomNavBar> createState() => _BottomNavBarState();
+  State<DashboardBottomNavBar> createState() => _DashboardBottomNavBarState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
+class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> with TickerProviderStateMixin {
   final List<Widget> _pages = [
-    HomeScreen(),
+    DashboardScreen(),
     FeaturesScreen(),
     AndroVerseScreen(),
     NewsScreen(),
     ProfileScreen(),
   ];
 
-  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
+  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Profile'];
 
   final List<String> _imgPaths = [
-    'assets/icons/home.svg',
-    'assets/icons/features.svg',
-    'assets/icons/androverse.svg',
-    'assets/icons/news.svg',
+    'assets/icons/dasboard.svg',
+    'assets/icons/ico.svg',
+    'assets/icons/staking.svg',
+    'assets/icons/transaction.svg',
     'assets/icons/profileIcon.svg',
   ];
 
@@ -172,7 +172,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                     bool isSelected = currentIndex == index;
                     return InkWell(
                       onTap: () {
-                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
+                        Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

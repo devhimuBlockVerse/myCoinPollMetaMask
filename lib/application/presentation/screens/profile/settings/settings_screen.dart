@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../../framework/components/customSettingsActionButtonComponent.dart';
+import '../../../viewmodel/wallet_view_model.dart';
 import '../tax_statement/terms_condition_screen.dart';
 import 'contact_screen.dart';
 import 'feedback_screen.dart';
@@ -17,6 +21,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
 
 
+  bool isDisconnecting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               children: [
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/languageImg.svg',
                                   text: 'Language',
                                   onPressed: (){},
@@ -111,21 +116,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/rateImg.svg',
                                   text: 'Rate App',
                                   onPressed: (){},
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/shareImg.svg',
                                   text: 'Share App',
                                   onPressed: (){},
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/privecyImg.svg',
                                   text: 'Privacy Policy',
                                   onPressed: (){
@@ -137,7 +142,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/termsImg.svg',
                                   text: 'Terms and Conditions',
                                   onPressed: (){
@@ -149,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/contactImg.svg',
                                   text: 'Contact',
                                   onPressed: (){
@@ -161,7 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/feedbackImg.svg',
                                   text: 'Feedback',
                                   onPressed: (){
@@ -173,10 +178,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 SizedBox(height: screenHeight * 0.01),
 
-                                CustomLogoutButton(
+                                CustomSettingsActionButton(
                                   icon: 'assets/icons/logoutImg.svg',
                                   text: 'Logout',
-                                  onPressed: (){},
+                                  onPressed: ()async{
+                                    setState(() {
+                                      isDisconnecting = true;
+                                    });
+
+                                    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+                                    try{
+                                      await walletVM.disconnectWallet(context);
+                                      walletVM.reset();
+                                      if (context.mounted && !walletVM.isConnected) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => BottomNavBar()),
+                                        );
+                                      }
+                                    }catch(e){
+                                      debugPrint("Error Wallet Disconnecting : $e");
+                                    }finally{
+                                      if (mounted) {
+                                        setState(() {
+                                          isDisconnecting = false;
+                                        });
+                                      }
+                                    }
+                                    // DisConnect The User Session and Navigate Back to Home Screen .
+
+
+
+
+                                  },
                                 ),
 
 
@@ -199,61 +235,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 }
 
-class CustomLogoutButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-  final String icon;
-   final Color foregroundColor;
-  final double borderRadius;
-
-  const CustomLogoutButton({
-    Key? key,
-    required this.onPressed,
-    required this.text ,
-    required this.icon , // Default icon
-     this.foregroundColor = Colors.white, // White text and icon
-    this.borderRadius = 10.0, // Default border radius
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-
-        image: DecorationImage(
-
-          image: AssetImage('assets/icons/settingActionBg.png'),
-          fit: BoxFit.fill,
-          alignment: Alignment.topRight,
-        ),
-
-      ),
-      child: InkWell(
-        onTap: onPressed,
-         child: Padding(
-           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          child: Row(
-             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SvgPicture.asset(
-                icon,
-                color: foregroundColor,
-                height: 24,
-                width: 24,
-              ),
-               SizedBox(width: 12,),
-               Text(
-                text,
-                style: TextStyle(
-                  color: foregroundColor,
-                  fontSize: 18, // Adjust font size
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}

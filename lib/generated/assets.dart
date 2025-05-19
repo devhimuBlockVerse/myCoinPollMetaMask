@@ -111,6 +111,7 @@ class Assets {
   static const String iconsSolidBackGround = 'assets/icons/solidBackGround.png';
   static const String iconsStaking = 'assets/icons/staking.svg';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
+  static const String iconsStaticChart = 'assets/icons/staticChart.png';
   static const String iconsTared = 'assets/icons/tared.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'application/presentation/viewmodel/wallet_view_model.dart';
 
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   // Force portrait mode
   await SystemChrome.setPreferredOrientations([
@@ -29,8 +31,10 @@ void main() async {
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
+  debugPaintSizeEnabled = true; /// Remove When in Production
+
    runApp(
-    const MyApp(),
+       const MyApp(),
   );
 }
 
@@ -49,6 +53,7 @@ class MyApp extends StatelessWidget {
       ],
 
       child: MaterialApp(
+
         title: 'Reown AppKit Wallet',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 class CustomLabeledInputField extends StatelessWidget {
   final String hintText;
   final String labelText;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isReadOnly;
   final String? trailingIconAsset;
   final VoidCallback? onTrailingIconTap;
@@ -15,7 +15,7 @@ class CustomLabeledInputField extends StatelessWidget {
     super.key,
     required this.labelText,
     required this.hintText,
-    required this.controller,
+      this.controller,
     this.isReadOnly = false,
     this.trailingIconAsset,
     this.onTrailingIconTap,
@@ -128,7 +128,7 @@ class CustomLabeledInputField extends StatelessWidget {
     final Path path = Path();
     const double notchWidth = 10;
     const double notchHeight = 5;
-    const double cutSize =  10;
+    const double cutSize =  14;
 
     // Offset amounts
     const double topNotchOffset = 90; // move right

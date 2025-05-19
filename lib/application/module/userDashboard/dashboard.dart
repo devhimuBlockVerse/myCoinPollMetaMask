@@ -7,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:provider/provider.dart';
 
+import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/walletAddressComponent.dart';
 import '../../../framework/utils/dynamicFontSize.dart';
 
@@ -83,6 +84,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(height: screenHeight * 0.03),
 
 
+
+                  _EcmWithGraphChart(),
+
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Color(0xff040C16),
+                    borderRadius: BorderRadius.circular(12)
+                    ),
+
+                    child: ClipRRect(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: CustomLabeledInputField(
+                        labelText: 'Referral Link:',
+                        hintText: ' https://mycoinpoll.com?ref=125482458661',
+                         isReadOnly: true,
+                        trailingIconAsset: 'assets/icons/copyImg.svg',
+                        onTrailingIconTap: () {
+                          debugPrint('Trailing icon tapped');
+                        },
+                      ),
+                    ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -181,6 +207,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
+  Widget _EcmWithGraphChart(){
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+
+    // Dynamic multipliers
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    return Container(
+      width: screenWidth,
+      height: screenHeight * 0.16,
+      // height: screenHeight * 0.30,
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Colors.transparent
+        ),
+        image:const DecorationImage(
+          image: AssetImage('assets/icons/applyForListingBG.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
+      child: Text('data'),
+    );
+  }
 
 
 }

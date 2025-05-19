@@ -7,3 +7,10 @@ import 'package:flutter/material.dart';
     return (baseFontSize * (screenWidth / 375)) * scaleFactor;
   }
 
+
+  String formatAddress(String address) {
+    if (address.length > 10) {
+      return '${address.substring(0, 6)}...${address.substring(address.length - 4)}';
+    }
+    return address;
+  }

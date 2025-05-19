@@ -1140,6 +1140,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
   }
+
   Widget buildProgressBarRow({
     required String title,
     required double percent,

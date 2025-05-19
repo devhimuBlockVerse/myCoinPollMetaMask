@@ -46,7 +46,8 @@ class _DashboardViewState extends State<DashboardView> {
                 ),
                 centerTitle: true,
               ),
-              body:  Consumer<WalletViewModel>(builder: (context, model, _){
+              body:  Consumer<WalletViewModel>(
+                  builder: (context, model, _){
                 if(model.isLoading){
                   return const Center(
                     child: CircularProgressIndicator(),

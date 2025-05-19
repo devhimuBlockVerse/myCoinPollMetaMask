@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/dashboard.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 
 import '../../../../framework/components/BlockButton.dart';
@@ -272,10 +273,10 @@ class _SignInState extends State<SignIn> {
                                             ],
                                             onTap: () {
                                               // Apply the wallet connection from view model and navigate to the Dashboard
-                                              // Navigator.push(
-                                              //   context,
-                                              //   MaterialPageRoute(builder: (context) => Dashboard()),
-                                              // );
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => DashboardScreen()),
+                                              );
                                             },
                                           ),
                                         ],

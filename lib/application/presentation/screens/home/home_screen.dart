@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +14,7 @@ import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
+import '../../../../framework/widgets/animated_blockchain_images.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -184,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                  onTap: model.isLoading ? null : () { () async {
                                    try {
                                      await model.connectWallet(context);
+
                                    } catch (e) {
                                      if (context.mounted) {
                                        Utils.flushBarErrorMessage('Connection error', context);
@@ -203,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                    Container(
                      width: screenWidth,
                      height: screenHeight * 0.16,
+                     // height: screenHeight * 0.30,
                      decoration: BoxDecoration(
                        border: Border.all(
                            color: Colors.transparent
@@ -274,11 +276,20 @@ class _HomeScreenState extends State<HomeScreen> {
                              alignment: Alignment.centerRight,
                              child: Padding(
                                padding: EdgeInsets.only(left: screenWidth * 0.02),
-                               child: Image.asset(
-                                 'assets/icons/frame.png',
-                                 width: screenWidth * 0.4,
-                                 height: screenHeight * 0.4,
-                                 fit: BoxFit.fitWidth,
+                               // child: Image.asset(
+                               //   'assets/icons/frame.png',
+                               //   width: screenWidth * 0.4,
+                               //   height: screenHeight * 0.4,
+                               //   fit: BoxFit.fitWidth,
+                               // ),
+                               child: AnimatedBlockchainImages(
+                                 containerWidth: screenWidth * 0.4,
+                                 containerHeight: screenHeight * 0.4,
+                                 imageAssets: const [
+                                   'assets/icons/animatedImg1.png',
+                                   'assets/icons/animatedImg2.png',
+                                   'assets/icons/animatedImg3.png',
+                                 ],
                                ),
                              ),
                            ),
@@ -963,7 +974,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SnackBar(content: Text('Purchase successful')),
                           );
                         }catch (e) {
-                          debugdebugPrint("Buy ECM failed: $e");
+                          debugPrint("Buy ECM failed: $e");
                         }
                       },
                       gradientColors: [

@@ -27,6 +27,9 @@ class Assets {
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
   static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
+  static const String iconsAnimatedImg1 = 'assets/icons/animatedImg1.png';
+  static const String iconsAnimatedImg2 = 'assets/icons/animatedImg2.png';
+  static const String iconsAnimatedImg3 = 'assets/icons/animatedImg3.png';
   static const String iconsApplyForLisitngImg = 'assets/icons/applyForLisitngImg.png';
   static const String iconsApplyForLisitngImg1 = 'assets/icons/applyForLisitngImg1.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';

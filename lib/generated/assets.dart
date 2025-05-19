@@ -79,6 +79,7 @@ class Assets {
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsLogoutImg = 'assets/icons/logoutImg.svg';
   static const String iconsLonginContainer = 'assets/icons/longinContainer.png';
+  static const String iconsMedium = 'assets/icons/Medium.png';
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
@@ -113,6 +114,7 @@ class Assets {
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';
   static const String iconsXIcon = 'assets/icons/xIcon.svg';

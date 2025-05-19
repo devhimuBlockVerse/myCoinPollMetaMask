@@ -1,13 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
-
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../../../framework/components/AddressFieldComponent.dart';
+import '../../../framework/components/BlockButton.dart';
 import '../../../framework/components/walletAddressComponent.dart';
 import '../../../framework/utils/dynamicFontSize.dart';
 
@@ -26,7 +28,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _setGreeting();
+
+
   }
+
+
 
 
   String greeting = "";
@@ -229,13 +235,89 @@ class _DashboardScreenState extends State<DashboardScreen> {
           fit: BoxFit.fill,
         ),
       ),
-      child: Text('data'),
+      child: Stack(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.035,
+              vertical: screenHeight * 0.015,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Blockchain Innovation \nLaunchpad Hub',
+                  style: TextStyle(
+                    color: Color(0xFFFFF5ED),
+                    fontFamily: 'Poppins',
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 2,
+                ),
+                // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
+
+                /// Badge Icons
+                Padding(
+                  padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
+                  child:Text('Show Badge Icons',style: TextStyle(color: Colors.white),),
+                ),
+              ],
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.02),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+
+                   Text("data"),
+                   SizedBox(height: screenHeight * 0.04),
+
+
+                   Flexible(
+                    child: Image.asset(
+                      'assets/icons/staticChart.png',
+                        width: screenWidth * 0.34,
+                         // height: screenHeight * 0.08,
+                         fit: BoxFit.contain,
+                    
+                    ),
+                  ),
+                   SizedBox(height: screenHeight * 0.04),
+                   RichText(
+                    text:  TextSpan(
+                      text: 'Today up to ',
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.normal,
+                          color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '+5.34%',
+                          style: TextStyle(color: Color(0xFF29FFA5),  fontFamily: 'Poppins',
+                            fontWeight: FontWeight.normal,
+                            fontSize: getResponsiveFontSize(context, 10),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                 ],
+              )
+
+            ),
+          ),
+
+
+        ],
+      )
     );
   }
 
-
 }
-
-
-
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:mycoinpoll_metamask/application/module/dashboard_bottom_nav.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +32,7 @@ void main() async {
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
-  debugPaintSizeEnabled = true; /// Remove When in Production
+  // debugPaintSizeEnabled = true; /// Remove When in Production
 
    runApp(
        const MyApp(),
@@ -61,7 +62,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home:  FeaturesScreen(),
-        home:  BottomNavBar(),
+        // home:  BottomNavBar(),
+        home:  DashboardBottomNavBar(),
         // onGenerateRoute: Routes.generateRoute,
         // initialRoute: RoutesName.walletLogin,
 

@@ -41,6 +41,7 @@ class Assets {
   static const String iconsBlockChainBg = 'assets/icons/blockChainBg.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
+  static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsContactImg = 'assets/icons/contactImg.svg';

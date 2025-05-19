@@ -85,6 +85,7 @@ class Assets {
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
   static const String iconsNewsFrame = 'assets/icons/newsFrame.png';
+  static const String iconsNofitication = 'assets/icons/nofitication.svg';
   static const String iconsNotify = 'assets/icons/notify.svg';
   static const String iconsPhone = 'assets/icons/phone.svg';
   static const String iconsPrivecyImg = 'assets/icons/privecyImg.svg';

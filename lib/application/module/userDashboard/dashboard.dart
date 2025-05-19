@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -12,6 +16,31 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _setGreeting();
+  }
+
+
+  String greeting = "";
+
+  void _setGreeting() {
+    final hour = DateTime.now().hour;
+    greeting = hour >= 5 && hour < 12
+        ? "Good Morning"
+        : hour >= 12 && hour < 17
+        ? "Good Afternoon"
+        : hour >= 17 && hour < 21
+        ? "Good Evening"
+        : "Good Night";
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -42,39 +71,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 vertical: screenHeight * 0.02,
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
 
-                  ///MyCoinPoll & Connected Wallet Button
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
 
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: screenHeight * 0.01,
-                            right: screenWidth * 0.02
-                        ),
-                        child: Image.asset(
-                          'assets/icons/mycoinpolllogo.png',
-                          width: screenWidth * 0.40,
-                          height: screenHeight * 0.040,
-                          fit: BoxFit.contain,
+                  /// User Name Data & Wallet Address
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent.withOpacity(0.1),
+                     ),
+                    child: ClipRRect(
+                       child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.03,
+                            vertical: screenHeight * 0.015,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                             children: [
+                              /// User Info & Ro Text + Notification
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "$greeting",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: getResponsiveFontSize(context, 14),
+                                      height: 1.6,
+                                      color: Color(0xffFFF5ED),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Ro', // your Ro text
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: getResponsiveFontSize(context, 18),
+                                      height: 1.3,
+                                      color: Color(0xffFFF5ED),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+
+                                ],
+                              ),
+
+                              /// Wallet Address
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Transform.translate(
+                                    offset: Offset(screenWidth * 0.025, 0),
+                                    child: const WalletAddressComponent(
+                                      address: "0xe2...e094",
+                                    ),
+                                  ),
+
+                                  GestureDetector(
+                                    onTap: (){},
+                                    child: SvgPicture.asset(
+                                      'assets/icons/nofitication.svg',
+                                      height: getResponsiveFontSize(context, 24),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                             ],
+                          ),
                         ),
                       ),
-
-                      /// Connected Wallet Button
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: screenHeight * 0.01,
-                          right: screenWidth * 0.02,
-                        ), // Padding to Button
-                        child: const WalletAddressComponent(
-                          address: "0xe2...e094", // Show wallet address string
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
+
                   SizedBox(height: screenHeight * 0.03),
 
 

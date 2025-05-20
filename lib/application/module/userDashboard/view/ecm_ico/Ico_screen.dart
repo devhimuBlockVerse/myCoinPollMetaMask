@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/WhitePaperButtonComponent.dart';
-import '../../../../../framework/components/badgeComponent.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customInputField.dart';
 import '../../../../../framework/components/custonButton.dart';
@@ -11,13 +10,8 @@ import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/general_utls.dart';
-import '../../../../../framework/utils/routes/route_names.dart';
-import '../../../../presentation/screens/home/home_screen.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
 

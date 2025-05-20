@@ -388,7 +388,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                 DisconnectButton(
                                 label: 'Disconnect',
                                 color: Colors.redAccent,
-                                icon: Icons.visibility_off_rounded,
+                                  icon: 'assets/icons/disconnected.svg',
                                 onPressed: () async {
                                   setState(() {
                                     isDisconnecting = true;

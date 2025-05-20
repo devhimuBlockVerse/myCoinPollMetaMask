@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/pei_chart.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/components/AddressFieldComponent.dart';
@@ -29,7 +30,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
   }
-
 
 
 
@@ -119,7 +119,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 
-                  _joinPromoteEarn()
+                  _joinPromoteEarn(),
+                  SizedBox(height: screenHeight * 0.03),
+
+                  _milestoneSection(),
+                  SizedBox(height: screenHeight * 0.03),
+
+
 
                 ],
               ),
@@ -215,7 +221,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
        ),
      );
     });
-
   }
 
   Widget _EcmWithGraphChart(){
@@ -347,8 +352,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
   Widget _joinPromoteEarn(){
     final Size screenSize = MediaQuery.of(context).size;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -470,11 +473,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                        ],
                                        onTap: () {
                                          debugPrint('Button tapped');
-                                         // Navigator.push(
-                                         //   context,
-                                         //   MaterialPageRoute(builder: (context) => ViewAffiliateDetailScreen()),
-                                         // );
-                                       },
+                                        },
                                      ),
                                    ),
 
@@ -495,6 +494,123 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+
+  Widget _milestoneSection(){
+    final Size screenSize = MediaQuery.of(context).size;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final textScale = screenWidth / 375;
+    final bool isPortrait = screenSize.height > screenSize.width;
+
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Milestone',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'View All',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: baseSize * 0.038,
+                    height: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.01),
+
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.003,
+              horizontal: screenWidth * 0.03,
+            ),
+            decoration: BoxDecoration(
+              image: const DecorationImage(
+                image: AssetImage('assets/icons/linearFrame.png'),
+                fit: BoxFit.fill,
+              ),
+
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+
+                /// PetChart
+
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    height: screenHeight * 0.25, // Responsive height for the chart container
+                    constraints: BoxConstraints(
+                      maxWidth: screenHeight * 0.25, // Ensure chart doesn't get too wide relative to its height
+                    ),
+                    child: PieChartWidget(),
+                  ),
+                ),
+                SizedBox(width: screenWidth * 0.03), // Add some spacing between chart and details
+
+                /// Details - Example placeholder
+                // Option 2: Use Expanded for the "Details" section to take remaining space
+                Expanded(
+                  flex: 1, // Give less flex to details, or adjust as needed
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min, // Wrap content
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Details Title',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: getResponsiveFontSize(context, 14),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Some description here about the chart data. This text might wrap.',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: getResponsiveFontSize(context, 10),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                /// Details
+
+
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
 
 }
 

@@ -132,6 +132,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(height: screenHeight * 0.03),
 
 
+                  _transactionsReferral(),
+                  SizedBox(height: screenHeight * 0.03),
+
+
                 ],
               ),
             ),
@@ -796,6 +800,101 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
+  Widget _transactionsReferral() {
+    final Size screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+    final bool isPortrait = screenHeight > screenWidth;
+
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top Title Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Transactions & Referral',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.01),
+
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'View All',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: baseSize * 0.038,
+                    height: 1.2,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.01),
+          // Main Milestone Container
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.018,
+              horizontal: screenWidth * 0.06,
+            ),
+            decoration:const BoxDecoration(
+              image:  DecorationImage(
+                image: AssetImage('assets/icons/transactionBgContainer.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child:  Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Frame1413377261(),
+                    SizedBox(height: screenHeight * 0.005),
+
+
+                  ],
+                ),
+
+                SizedBox(width: screenWidth * 0.1),
+
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    height: screenHeight * 0.18,
+                    constraints: BoxConstraints(
+                      maxWidth: screenHeight * 0.18,
+                    ),
+                    child: PieChartWidget(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
 
 
@@ -804,3 +903,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 
+
+
+class Frame1413377261 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 136,
+          height: 51,
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+          decoration: BoxDecoration(
+            image:  DecorationImage(
+              image: AssetImage('assets/icons/referrerColorBG.png'),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Column(
+             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Referral Transactions',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.800000011920929),
+                  fontSize: 12,
+                  fontFamily: 'Poppins',
+                  height: 0.13,
+                ),
+              ),
+              const SizedBox(height: 5),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  '205',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'Poppins',
+                    height: 0.07,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

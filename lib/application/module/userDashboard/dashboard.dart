@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/BlockButton.dart';
 import '../../../framework/components/buildProgressBar.dart';
+import '../../../framework/components/milestoneLegendtemComponent.dart';
 import '../../../framework/components/statusIndicatorComponent.dart';
 import '../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../framework/components/walletAddressComponent.dart';
@@ -199,7 +200,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                    children: [
                      Transform.translate(
                        offset: Offset(screenWidth * 0.025, 0),
-                       child:  WalletAddressComponent(
+                       child: const WalletAddressComponent(
                          // address: formatAddress(model.walletAddress),
                          address: "0xe2...e094",
                        ),
@@ -547,8 +548,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               vertical: screenHeight * 0.02,
               horizontal: screenWidth * 0.03,
             ),
-            decoration: BoxDecoration(
-              image: const DecorationImage(
+            decoration:const BoxDecoration(
+              image:  DecorationImage(
                 image: AssetImage('assets/icons/linearFrame.png'),
                 fit: BoxFit.fill,
               ),
@@ -623,112 +624,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.01),
-                      Column(
+                     Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.only(right: 65),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 16,
-                                  height: 16,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF980C41),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Achieved',
-                                  style: TextStyle(
-                                    color: Color(0xFFFFF5ED),
-                                    fontSize: getResponsiveFontSize(context, 12),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.25, 
-                                    letterSpacing: -0.32,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          const MilestoneLegendItem(
+                            color: Color(0xFF980C41),
+                            label: 'Achieved',
+                            padRight: true,
                           ),
-                          const SizedBox(height: 5),
-                          Container(
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 16,
-                                  height: 16,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF2563EB),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Completed',
-                                  style: TextStyle(
-                                    color: Color(0xFFFFF5ED),
-                                    fontSize: getResponsiveFontSize(context, 12),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.25,
-                                    letterSpacing: -0.32,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          SizedBox(height: screenHeight * 0.005),
+                          const MilestoneLegendItem(
+                            color: Color(0xFF2563EB),
+                            label: 'Completed',
                           ),
-                          const SizedBox(height: 5),
-                          Container(
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 16,
-                                  height: 16,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFF4F378A),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Couldn’t Achieved',
-                                  style: TextStyle(
-                                    color: Color(0xFFFFF5ED),
-                                    fontSize: getResponsiveFontSize(context, 12),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.25,
-                                    letterSpacing: -0.32,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          SizedBox(height: screenHeight * 0.005),
+
+                          const MilestoneLegendItem(
+                            color: Color(0xFF4F378A),
+                            label: 'Couldn’t Achieved',
                           ),
+
                         ],
                       ),
 

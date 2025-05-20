@@ -1,16 +1,12 @@
-import 'dart:async';
-import 'dart:math';
 import 'dart:ui';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:provider/provider.dart';
-
 import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/BlockButton.dart';
 import '../../../framework/components/buildProgressBar.dart';
+import '../../../framework/components/statusIndicatorComponent.dart';
 import '../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../framework/components/walletAddressComponent.dart';
 import '../../../framework/utils/dynamicFontSize.dart';
@@ -176,7 +172,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                        ),
                      ),
                      Text(
-                       'Ro', // your Ro text
+                       'User Name', // your Ro text
                        style: TextStyle(
                          fontFamily: 'Poppins',
                          fontWeight: FontWeight.w600,
@@ -355,7 +351,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _joinPromoteEarn(){
     final Size screenSize = MediaQuery.of(context).size;
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final textScale = screenWidth / 375;
@@ -401,8 +396,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Left column
-                Expanded(
+                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -446,7 +440,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 screenHeight: screenHeight,
                                 screenWidth: screenWidth,
                               ),
-                              SizedBox(height: screenHeight * 0.012),
+                              SizedBox(height: screenHeight * 0.016),
+
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                 children: [
+
+                                   /// Refactor This Component Later with status Active or Inactive Variation.
+                                   StatusIndicator(
+                                    statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
+                                    statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
+                                    iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
+                                   ),
+
+                                   Align(
+                                     alignment: Alignment.centerRight,
+                                     child: BlockButton(
+                                       height: baseSize * 0.08,
+                                       width: screenWidth * 0.3,
+                                       label: "View Details",
+                                       textStyle: TextStyle(
+                                         fontWeight: FontWeight.w700,
+                                         color: Colors.white,
+                                         fontSize: baseSize * 0.030,
+                                       ),
+                                       gradientColors: const [
+                                         Color(0xFF2680EF),
+                                         Color(0xFF1CD494),
+                                       ],
+                                       onTap: () {
+                                         debugPrint('Button tapped');
+                                         // Navigator.push(
+                                         //   context,
+                                         //   MaterialPageRoute(builder: (context) => ViewAffiliateDetailScreen()),
+                                         // );
+                                       },
+                                     ),
+                                   ),
+
+                                 ],
+                               ),
 
                             ],
                           ),
@@ -463,7 +496,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
-
 }
+
+

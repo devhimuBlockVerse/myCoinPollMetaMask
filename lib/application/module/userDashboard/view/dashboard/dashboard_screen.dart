@@ -5,15 +5,15 @@ import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
-import '../../../framework/components/AddressFieldComponent.dart';
-import '../../../framework/components/BlockButton.dart';
-import '../../../framework/components/buildProgressBar.dart';
-import '../../../framework/components/milestoneLegendtemComponent.dart';
-import '../../../framework/components/statusChipComponent.dart';
-import '../../../framework/components/statusIndicatorComponent.dart';
-import '../../../framework/components/userBadgeLevelCompoenet.dart';
-import '../../../framework/components/walletAddressComponent.dart';
-import '../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/components/AddressFieldComponent.dart';
+import '../../../../../framework/components/BlockButton.dart';
+import '../../../../../framework/components/buildProgressBar.dart';
+import '../../../../../framework/components/milestoneLegendtemComponent.dart';
+import '../../../../../framework/components/statusChipComponent.dart';
+import '../../../../../framework/components/statusIndicatorComponent.dart';
+import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
+import '../../../../../framework/components/walletAddressComponent.dart';
+import '../../../../../framework/utils/dynamicFontSize.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

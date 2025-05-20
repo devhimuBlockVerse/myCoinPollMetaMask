@@ -72,6 +72,7 @@ class Assets {
   static const String iconsHeaderFrameContainer = 'assets/icons/headerFrameContainer.png';
   static const String iconsHome = 'assets/icons/home.svg';
   static const String iconsIco = 'assets/icons/ico.svg';
+  static const String iconsKycStatusBgFrame = 'assets/icons/kycStatusBgFrame.png';
   static const String iconsLanguageImg = 'assets/icons/languageImg.svg';
   static const String iconsLearnAndEarnBgContainer = 'assets/icons/learnAndEarnBgContainer.png';
   static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';
@@ -117,6 +118,7 @@ class Assets {
   static const String iconsStaking = 'assets/icons/staking.svg';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
   static const String iconsStaticChart = 'assets/icons/staticChart.png';
+  static const String iconsSubmissionCheck = 'assets/icons/submissionCheck.svg';
   static const String iconsTared = 'assets/icons/tared.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';

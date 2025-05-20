@@ -8,6 +8,7 @@ import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/BlockButton.dart';
 import '../../../framework/components/buildProgressBar.dart';
 import '../../../framework/components/milestoneLegendtemComponent.dart';
+import '../../../framework/components/statusChipComponent.dart';
 import '../../../framework/components/statusIndicatorComponent.dart';
 import '../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../framework/components/walletAddressComponent.dart';
@@ -663,8 +664,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
-
   Widget _kycStatus() {
     final Size screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
@@ -680,7 +679,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           // Top Title Row
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 'KYC Status',
@@ -692,122 +691,94 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: Colors.white,
                 ),
               ),
-              Frame1413372135(),
+              SizedBox(width: screenWidth * 0.01),
+
+              ///  Update the Status Dynamically Based on User Status
+              StatusChip.approved(),
             ],
           ),
-          SizedBox(height: screenHeight * 0.01),
+          SizedBox(height: screenHeight * 0.02),
 
           // Main Milestone Container
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.02,
-              horizontal: screenWidth * 0.03,
+              vertical: screenHeight * 0.018,
+              horizontal: screenWidth * 0.06,
             ),
             decoration:const BoxDecoration(
               image:  DecorationImage(
-                image: AssetImage('assets/icons/linearFrame.png'),
+                image: AssetImage('assets/icons/kycStatusBgFrame.png'),
                 fit: BoxFit.fill,
               ),
             ),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// PieChart on the left
-                Flexible(
-                  flex: 2,
-                  child: Container(
-                    height: screenHeight * 0.18,
-                    constraints: BoxConstraints(
-                      maxWidth: screenHeight * 0.18,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/submissionCheck.svg',
+                      height: screenWidth * 0.06,
+                      fit: BoxFit.contain,
                     ),
-                    child: PieChartWidget(),
+                    SizedBox(width: screenWidth * 0.02),
+                    Text(
+                      'Submission Received!',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                        height: 1.6,
+                        color: Color(0xffFFF5ED),
+                        fontSize: getResponsiveFontSize(context, 16),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+
+                Text(
+                  "Once your request is processed, you'll receive a notification. "
+                      "We ensure prompt communication to keep you updated on the status "
+                      "and provide timely updates.",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: getResponsiveFontSize(context, 12),
+                    height: 1.6,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.01),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: BlockButton(
+                    height: baseSize * 0.08,
+                    width: screenWidth * 0.3,
+                    label: "View Details",
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      fontSize: baseSize * 0.030,
+                    ),
+                    gradientColors: const [
+                      Color(0xFF2680EF),
+                      Color(0xFF1CD494),
+                    ],
+                    onTap: () {
+                      debugPrint('Button tapped');
+                    },
                   ),
                 ),
 
-                SizedBox(width: screenWidth * 0.1),
+                SizedBox(height: screenHeight * 0.01),
 
                 /// Details Column on the right
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      // Details Title Container
-                      Container(
-                        height: screenHeight * 0.09,
-                        width: screenWidth * 0.4,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.028,
-                          vertical: screenHeight * 0.015,
-                        ),
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/icons/totalMilestoneFrame.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        // alignment: Alignment.topRight,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Total Milestone',
-                               style: TextStyle(
-                                 fontFamily: 'Poppins',
-                                 fontWeight: FontWeight.w400,
-                                 fontSize: getResponsiveFontSize(context, 14),
-                                 color: Color(0xffFFF5ED),
-                                 height: 1.10,
 
-                               ),
-                            ),
-
-                            SizedBox(height: screenHeight * 0.008),
-                            Text(
-                              '100', /// Get the Value From API
-                               style: TextStyle(
-                                 fontFamily: 'Poppins',
-                                 fontWeight: FontWeight.w700,
-                                 color: Colors.white,
-                                 fontSize: getResponsiveFontSize(context, 24),
-                                 height: 1.10,
-                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.01),
-                     Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const MilestoneLegendItem(
-                            color: Color(0xFF980C41),
-                            label: 'Achieved',
-                            padRight: true,
-                          ),
-                          SizedBox(height: screenHeight * 0.005),
-                          const MilestoneLegendItem(
-                            color: Color(0xFF2563EB),
-                            label: 'Completed',
-                          ),
-                          SizedBox(height: screenHeight * 0.005),
-
-                          const MilestoneLegendItem(
-                            color: Color(0xFF4F378A),
-                            label: 'Couldn’t Achieved',
-                          ),
-
-                        ],
-                      ),
-
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
@@ -825,41 +796,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 
-class Frame1413372135 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 26,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: ShapeDecoration(
-            color: Color(0x19359846),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Color(0x66359846)),
-              borderRadius: BorderRadius.circular(50),
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Approved',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF1CD494),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  height: 0.11,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

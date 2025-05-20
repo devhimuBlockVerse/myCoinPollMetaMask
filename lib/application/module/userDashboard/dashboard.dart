@@ -400,101 +400,109 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
 
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Column(
               children: [
-                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                     Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
 
-                      SizedBox(height: screenHeight * 0.015),
-                      Container(
-                        width: screenWidth,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/linearFrame2.png'),
-                            fit: BoxFit.fill,
-                          ),
-                          borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.06,
-                            vertical: screenHeight * 0.03,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ProgressBarUserDashboard(
-                                title: "ECM Holding",
-                                percent: 0.9,
-                                percentText: "280/300",
-                                barColor: const Color(0xFF1CD494),
-                                textScale: textScale,
-                                screenHeight: screenHeight,
-                                screenWidth: screenWidth,
+                          SizedBox(height: screenHeight * 0.015),
+                          Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage('assets/icons/linearFrame2.png'),
+                                fit: BoxFit.fill,
                               ),
-                              SizedBox(height: screenHeight * 0.012),
-                              ProgressBarUserDashboard(
-                                title: "Referral Sales (ECM)",
-                                percent: 0.4,
-                                percentText: "1200/2500",
-                                barColor: const Color(0xFFF0B90B),
-                                textScale: textScale,
-                                screenHeight: screenHeight,
-                                screenWidth: screenWidth,
+                              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.06,
+                                vertical: screenHeight * 0.03,
                               ),
-                              SizedBox(height: screenHeight * 0.016),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ProgressBarUserDashboard(
+                                    title: "ECM Holding",
+                                    percent: 0.9,
+                                    percentText: "280/300",
+                                    barColor: const Color(0xFF1CD494),
+                                    textScale: textScale,
+                                    screenHeight: screenHeight,
+                                    screenWidth: screenWidth,
+                                  ),
+                                  SizedBox(height: screenHeight * 0.012),
+                                  ProgressBarUserDashboard(
+                                    title: "Referral Sales (ECM)",
+                                    percent: 0.4,
+                                    percentText: "1200/2500",
+                                    barColor: const Color(0xFFF0B90B),
+                                    textScale: textScale,
+                                    screenHeight: screenHeight,
+                                    screenWidth: screenWidth,
+                                  ),
+                                  SizedBox(height: screenHeight * 0.016),
 
-                               Row(
-                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                 children: [
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: [
 
-                                   /// Refactor This Component Later with status Active or Inactive Variation.
-                                   StatusIndicator(
-                                    statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
-                                    statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
-                                    iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
-                                   ),
-
-                                   Align(
-                                     alignment: Alignment.centerRight,
-                                     child: BlockButton(
-                                       height: baseSize * 0.08,
-                                       width: screenWidth * 0.3,
-                                       label: "View Details",
-                                       textStyle: TextStyle(
-                                         fontWeight: FontWeight.w700,
-                                         color: Colors.white,
-                                         fontSize: baseSize * 0.030,
+                                       /// Refactor This Component Later with status Active or Inactive Variation.
+                                       StatusIndicator(
+                                        statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
+                                        statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
+                                        iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
                                        ),
-                                       gradientColors: const [
-                                         Color(0xFF2680EF),
-                                         Color(0xFF1CD494),
-                                       ],
-                                       onTap: () {
-                                         debugPrint('Button tapped');
-                                        },
-                                     ),
+
+                                       Align(
+                                         alignment: Alignment.centerRight,
+                                         child: BlockButton(
+                                           height: baseSize * 0.08,
+                                           width: screenWidth * 0.3,
+                                           label: "View Details",
+                                           textStyle: TextStyle(
+                                             fontWeight: FontWeight.w700,
+                                             color: Colors.white,
+                                             fontSize: baseSize * 0.030,
+                                           ),
+                                           gradientColors: const [
+                                             Color(0xFF2680EF),
+                                             Color(0xFF1CD494),
+                                           ],
+                                           onTap: () {
+                                             debugPrint('Button tapped');
+                                            },
+                                         ),
+                                       ),
+
+                                     ],
                                    ),
 
-                                 ],
-                               ),
-
-                            ],
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                  ],
                 ),
+                SizedBox(height: screenHeight * 0.01),
+
               ],
             ),
           ),
+
         ],
       ),
     );

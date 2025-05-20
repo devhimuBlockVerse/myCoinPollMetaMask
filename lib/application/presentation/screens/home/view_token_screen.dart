@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../framework/components/AddressFieldComponent.dart';
-import '../../../../framework/components/CustomDialog.dart';
 import '../../../../framework/components/InfoCard.dart';
 import '../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../framework/components/badgeComponent.dart';
@@ -15,11 +14,8 @@ import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart';
-import '../../../../framework/components/roadMapContainerComponent.dart';
-import '../../../../framework/utils/dialog_utils.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
-import '../../../domain/model/DialogModel.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'home_screen.dart';
 

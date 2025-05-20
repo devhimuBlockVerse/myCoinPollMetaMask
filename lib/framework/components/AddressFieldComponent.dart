@@ -41,13 +41,13 @@ class CustomLabeledInputField extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: screenWidth * 0.030,
-            vertical: screenHeight * 0.008,
+            vertical: screenHeight * 0.006,
           ),
           color: Colors.white12,
-          child: IntrinsicHeight( // Ensures row content defines its own height
+          child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min, // Wrap content height
+              mainAxisSize: MainAxisSize.min,
               children: [
                 ShaderMask(
                   shaderCallback: (bounds) => const LinearGradient(

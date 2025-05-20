@@ -496,19 +496,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
 
-  Widget _milestoneSection(){
+  Widget _milestoneSection() {
     final Size screenSize = MediaQuery.of(context).size;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final textScale = screenWidth / 375;
-    final bool isPortrait = screenSize.height > screenSize.width;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+    final bool isPortrait = screenHeight > screenWidth;
 
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Top Title Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -539,10 +540,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           SizedBox(height: screenHeight * 0.01),
 
+          // Main Milestone Container
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.003,
+              vertical: screenHeight * 0.02,
               horizontal: screenWidth * 0.03,
             ),
             decoration: BoxDecoration(
@@ -550,56 +552,189 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 image: AssetImage('assets/icons/linearFrame.png'),
                 fit: BoxFit.fill,
               ),
-
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                /// PetChart
-
+                /// PieChart on the left
                 Flexible(
                   flex: 2,
                   child: Container(
-                    height: screenHeight * 0.25, // Responsive height for the chart container
+                    height: screenHeight * 0.18,
                     constraints: BoxConstraints(
-                      maxWidth: screenHeight * 0.25, // Ensure chart doesn't get too wide relative to its height
+                      maxWidth: screenHeight * 0.18,
                     ),
                     child: PieChartWidget(),
                   ),
                 ),
-                SizedBox(width: screenWidth * 0.03), // Add some spacing between chart and details
 
-                /// Details - Example placeholder
-                // Option 2: Use Expanded for the "Details" section to take remaining space
+                SizedBox(width: screenWidth * 0.1),
+
+                /// Details Column on the right
                 Expanded(
-                  flex: 1, // Give less flex to details, or adjust as needed
+                  flex: 2,
                   child: Column(
-                    mainAxisSize: MainAxisSize.min, // Wrap content
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Details Title',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: getResponsiveFontSize(context, 14),
-                          fontWeight: FontWeight.bold,
+                      // Details Title Container
+                      Container(
+                        height: screenHeight * 0.09,
+                        width: screenWidth * 0.4,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.028,
+                          vertical: screenHeight * 0.015,
+                        ),
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/icons/totalMilestoneFrame.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        // alignment: Alignment.topRight,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Total Milestone',
+                               style: TextStyle(
+                                 fontFamily: 'Poppins',
+                                 fontWeight: FontWeight.w400,
+                                 fontSize: getResponsiveFontSize(context, 14),
+                                 color: Color(0xffFFF5ED),
+                                 height: 1.10,
+
+                               ),
+                            ),
+
+                            SizedBox(height: screenHeight * 0.008),
+                            Text(
+                              '100', /// Get the Value From API
+                               style: TextStyle(
+                                 fontFamily: 'Poppins',
+                                 fontWeight: FontWeight.w700,
+                                 color: Colors.white,
+                                 fontSize: getResponsiveFontSize(context, 24),
+                                 height: 1.10,
+                               ),
+                            ),
+                          ],
                         ),
                       ),
-                      Text(
-                        'Some description here about the chart data. This text might wrap.',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: getResponsiveFontSize(context, 10),
-                        ),
+                      SizedBox(height: screenHeight * 0.01),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(right: 65),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFF980C41),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Achieved',
+                                  style: TextStyle(
+                                    color: Color(0xFFFFF5ED),
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.25, 
+                                    letterSpacing: -0.32,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFF2563EB),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Completed',
+                                  style: TextStyle(
+                                    color: Color(0xFFFFF5ED),
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.25,
+                                    letterSpacing: -0.32,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: ShapeDecoration(
+                                    color: Color(0xFF4F378A),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  'Couldn’t Achieved',
+                                  style: TextStyle(
+                                    color: Color(0xFFFFF5ED),
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.25,
+                                    letterSpacing: -0.32,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
+
                     ],
                   ),
                 ),
-                /// Details
-
-
               ],
             ),
           ),
@@ -613,5 +748,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 }
+
 
 

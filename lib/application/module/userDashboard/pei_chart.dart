@@ -15,17 +15,18 @@ class _PieChartWidgetState extends State {
   @override
   void initState() {
     super.initState();
-    _fetchData(); // This will now fetch dummy data
+    _fetchData();
   }
 
+  /// Dummy data for pie chart
   Future<void> _fetchData() async {
      await Future.delayed(const Duration(seconds: 1));
 
     // Dummy data structure
     final List<Map<String, dynamic>> dummyRawData = [
-      {'name': 'Milestone 1', 'value': 90},
-      {'name': 'Milestone 2', 'value': 65},
-      {'name': 'Milestone 3', 'value': 15},
+      {'name': 'Achieved', 'value': 90},
+      {'name': 'Completed', 'value': 65},
+      {'name': 'Couldn’t Achieved', 'value': 15},
      ];
 
     try {
@@ -56,8 +57,12 @@ class _PieChartWidgetState extends State {
         PieChartSectionData(
           color: color,
           value: percentage,
-          title: '${percentage.toStringAsFixed(0)}%',
-          radius: 50, // Keep this relatively small for responsive circles
+          title: '${value.toStringAsFixed(0)}',
+          radius: 30,
+          borderSide: const BorderSide(
+            color: Colors.white,
+            width: 1,
+          ),
           titleStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -70,15 +75,13 @@ class _PieChartWidgetState extends State {
   }
 
   Color _getColor(String category) {
-    // You can extend this with more colors if you have more categories
-    switch (category) {
-      case 'Milestone 1':
-        return Colors.red.shade400;
-      case 'Milestone 2':
-        return Colors.blue.shade600;
-      case 'Milestone 3':
-        return Colors.purple.shade400;
-
+     switch (category) {
+      case 'Achieved':
+        return Color(0xff980C41);
+      case 'Completed':
+        return Color(0xff2563EB);
+      case 'Couldn’t Achieved':
+        return Color(0xff4F378A);
       default:
         return Colors.grey;
     }
@@ -94,9 +97,9 @@ class _PieChartWidgetState extends State {
         PieChartData(
           sections: _pieChartData,
           borderData: FlBorderData(show: false),
-          centerSpaceRadius: 40, // Adjust this for the center hole size
-          sectionsSpace: 2, // Space between slices
-         ),
+          centerSpaceRadius: 46,
+            sectionsSpace: 0,
+          ),
       ),
     );
   }

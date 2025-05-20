@@ -46,7 +46,7 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double chipHeight = screenWidth * 0.06;
+    double chipHeight = screenWidth * 0.08;
     double fontSize = screenWidth * 0.03;
 
     return Container(

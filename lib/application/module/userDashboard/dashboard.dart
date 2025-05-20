@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/pei_chart.dart';
+import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/components/AddressFieldComponent.dart';
@@ -126,6 +126,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _milestoneSection(),
                   SizedBox(height: screenHeight * 0.03),
 
+
+                  _kycStatus(),
+                  SizedBox(height: screenHeight * 0.03),
 
 
                 ],
@@ -662,9 +665,201 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 
+  Widget _kycStatus() {
+    final Size screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
+    final bool isPortrait = screenHeight > screenWidth;
+
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top Title Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'KYC Status',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  fontSize: baseSize * 0.045,
+                  height: 1.2,
+                  color: Colors.white,
+                ),
+              ),
+              Frame1413372135(),
+            ],
+          ),
+          SizedBox(height: screenHeight * 0.01),
+
+          // Main Milestone Container
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.02,
+              horizontal: screenWidth * 0.03,
+            ),
+            decoration:const BoxDecoration(
+              image:  DecorationImage(
+                image: AssetImage('assets/icons/linearFrame.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// PieChart on the left
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    height: screenHeight * 0.18,
+                    constraints: BoxConstraints(
+                      maxWidth: screenHeight * 0.18,
+                    ),
+                    child: PieChartWidget(),
+                  ),
+                ),
+
+                SizedBox(width: screenWidth * 0.1),
+
+                /// Details Column on the right
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // Details Title Container
+                      Container(
+                        height: screenHeight * 0.09,
+                        width: screenWidth * 0.4,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.028,
+                          vertical: screenHeight * 0.015,
+                        ),
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/icons/totalMilestoneFrame.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        // alignment: Alignment.topRight,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Total Milestone',
+                               style: TextStyle(
+                                 fontFamily: 'Poppins',
+                                 fontWeight: FontWeight.w400,
+                                 fontSize: getResponsiveFontSize(context, 14),
+                                 color: Color(0xffFFF5ED),
+                                 height: 1.10,
+
+                               ),
+                            ),
+
+                            SizedBox(height: screenHeight * 0.008),
+                            Text(
+                              '100', /// Get the Value From API
+                               style: TextStyle(
+                                 fontFamily: 'Poppins',
+                                 fontWeight: FontWeight.w700,
+                                 color: Colors.white,
+                                 fontSize: getResponsiveFontSize(context, 24),
+                                 height: 1.10,
+                               ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.01),
+                     Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const MilestoneLegendItem(
+                            color: Color(0xFF980C41),
+                            label: 'Achieved',
+                            padRight: true,
+                          ),
+                          SizedBox(height: screenHeight * 0.005),
+                          const MilestoneLegendItem(
+                            color: Color(0xFF2563EB),
+                            label: 'Completed',
+                          ),
+                          SizedBox(height: screenHeight * 0.005),
+
+                          const MilestoneLegendItem(
+                            color: Color(0xFF4F378A),
+                            label: 'Couldn’t Achieved',
+                          ),
+
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
+
 
 
 }
 
 
-
+class Frame1413372135 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 80,
+          height: 26,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: ShapeDecoration(
+            color: Color(0x19359846),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: Color(0x66359846)),
+              borderRadius: BorderRadius.circular(50),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Approved',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF1CD494),
+                  fontSize: 12,
+                  fontFamily: 'Poppins',
+                  height: 0.11,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

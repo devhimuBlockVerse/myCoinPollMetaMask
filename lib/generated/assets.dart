@@ -44,6 +44,7 @@ class Assets {
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';
+  static const String iconsColorYellow = 'assets/icons/colorYellow.png';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsContactImg = 'assets/icons/contactImg.svg';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
@@ -103,7 +104,7 @@ class Assets {
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsRateImg = 'assets/icons/rateImg.svg';
-  static const String iconsReferrerColorBG = 'assets/icons/referrerColorBG.png';
+  static const String iconsReferrerColorBG = 'assets/icons/colorPurple.png';
   static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';
   static const String iconsRoadMapBox = 'assets/icons/roadMapBox.png';

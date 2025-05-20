@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
+import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/components/AddressFieldComponent.dart';
 import '../../../framework/components/BlockButton.dart';
@@ -133,7 +134,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
                   _transactionsReferral(),
-                  SizedBox(height: screenHeight * 0.03),
+                  // SizedBox(height: screenHeight * 0.03),
 
 
                 ],
@@ -512,7 +513,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget _milestoneSection() {
     final Size screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
@@ -799,7 +799,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   Widget _transactionsReferral() {
     final Size screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
@@ -844,13 +843,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ],
           ),
-          SizedBox(height: screenHeight * 0.01),
+          SizedBox(height: screenHeight * 0.001),
           // Main Milestone Container
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(
               vertical: screenHeight * 0.018,
-              horizontal: screenWidth * 0.06,
+              horizontal: screenWidth * 0.05,
             ),
             decoration:const BoxDecoration(
               image:  DecorationImage(
@@ -860,6 +859,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child:  Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
 
                 Column(
@@ -867,9 +867,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Frame1413377261(),
-                    SizedBox(height: screenHeight * 0.005),
 
+
+                    TransactionStatCard(
+                      bgImagePath: 'assets/icons/colorYellow.png',
+                      title: 'Your Transactions',
+                      value: '205',
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+
+                    TransactionStatCard(
+                      bgImagePath: 'assets/icons/colorPurple.png',
+                      title: 'Referral User',
+                      value: '205',
+                    ),
+
+
+                     SizedBox(height: screenHeight * 0.01),
+                     TransactionStatCard(
+                      bgImagePath: 'assets/icons/colorYellow.png',
+                      title: 'Referral Transactions',
+                      value: '205',
+                    ),
+
+                    SizedBox(height: screenHeight * 0.001),
 
                   ],
                 ),
@@ -877,14 +898,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(width: screenWidth * 0.1),
 
                 Flexible(
-                  flex: 2,
-                  child: Container(
-                    height: screenHeight * 0.18,
-                    constraints: BoxConstraints(
-                      maxWidth: screenHeight * 0.18,
-                    ),
-                    child: PieChartWidget(),
-                  ),
+                  flex: 1,
+                  child: Image.asset('assets/icons/transactionLoading.png',fit: BoxFit.contain,),
                 ),
               ],
             ),
@@ -905,51 +920,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
 
-class Frame1413377261 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 136,
-          height: 51,
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-          decoration: BoxDecoration(
-            image:  DecorationImage(
-              image: AssetImage('assets/icons/referrerColorBG.png'),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Column(
-             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Referral Transactions',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.800000011920929),
-                  fontSize: 12,
-                  fontFamily: 'Poppins',
-                  height: 0.13,
-                ),
-              ),
-              const SizedBox(height: 5),
-              SizedBox(
-                width: double.infinity,
-                child: Text(
-                  '205',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: 'Poppins',
-                    height: 0.07,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

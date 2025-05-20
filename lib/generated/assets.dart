@@ -103,6 +103,7 @@ class Assets {
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsRateImg = 'assets/icons/rateImg.svg';
+  static const String iconsReferrerColorBG = 'assets/icons/referrerColorBG.png';
   static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';
   static const String iconsRoadMapBox = 'assets/icons/roadMapBox.png';
@@ -127,6 +128,8 @@ class Assets {
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsTotalMilestoneFrame = 'assets/icons/totalMilestoneFrame.png';
   static const String iconsTransaction = 'assets/icons/transaction.svg';
+  static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
+  static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';

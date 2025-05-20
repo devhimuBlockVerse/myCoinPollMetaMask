@@ -123,6 +123,7 @@ class Assets {
   static const String iconsTermsImg = 'assets/icons/termsImg.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTokens = 'assets/icons/tokens.png';
+  static const String iconsTotalMilestoneFrame = 'assets/icons/totalMilestoneFrame.png';
   static const String iconsTransaction = 'assets/icons/transaction.svg';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';

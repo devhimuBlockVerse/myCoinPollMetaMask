@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 class ProgressBarUserDashboard extends StatelessWidget {
   final String? title;
@@ -23,8 +24,8 @@ class ProgressBarUserDashboard extends StatelessWidget {
                   color: Colors.white,
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
-                  fontSize: 12 * textScale!,
-                  height: 1.23,
+                  fontSize: getResponsiveFontSize(context, 10),
+                  height: 1.6,
                 ),
               ),
             ),
@@ -34,8 +35,8 @@ class ProgressBarUserDashboard extends StatelessWidget {
                 color: Colors.white,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
-                fontSize: 12 * textScale!,
-                height: 1.23,
+                fontSize: getResponsiveFontSize(context, 10),
+                height: 1.6,
               ),
             ),
           ],

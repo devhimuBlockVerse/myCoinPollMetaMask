@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 
 
 class DisconnectButton extends StatefulWidget {
   final String label;
-  final IconData icon;
+  final String icon;
   final VoidCallback onPressed;
   final Color color;
 
@@ -42,8 +44,8 @@ class _DisconnectButtonState extends State<DisconnectButton> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double scaleFactor = MediaQuery.of(context).textScaleFactor;
 
-    double buttonWidth = screenWidth * 0.8;
-    double buttonHeight = screenHeight * 0.040;
+    double buttonWidth = screenWidth * 0.7;
+    double buttonHeight = screenHeight * 0.050;
     double fontSize = screenWidth * 0.045;
 
     return GestureDetector(
@@ -75,6 +77,13 @@ class _DisconnectButtonState extends State<DisconnectButton> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SvgPicture.asset(
+                      widget.icon,
+                      color: _isPressed ? Colors.white : widget.color,
+                      // size: fontSize * 1.1,
+                    ),
+                    SizedBox(width: screenWidth * 0.02),
+
                     AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
                       style: TextStyle(
@@ -82,14 +91,17 @@ class _DisconnectButtonState extends State<DisconnectButton> {
                         color: _isPressed ? Colors.white : widget.color,
                         fontSize: fontSize * scaleFactor,
                       ),
-                      child: Text(widget.label, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      child: Text(
+                          widget.label,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            height: 1.6,
+                            fontSize: getResponsiveFontSize(context, 16),
+                          ),
+                      ),
                     ),
-                    SizedBox(width: screenWidth * 0.02),
-                    Icon(
-                      widget.icon,
-                      color: _isPressed ? Colors.white : widget.color,
-                      size: fontSize * 1.1,
-                    ),
+
                   ],
                 ),
               ),
@@ -117,18 +129,18 @@ class DisconnectButtonClipper extends CustomPainter {
     final paint = Paint()
       ..color = Colors.redAccent
       // ..shader = gradient
-      ..strokeWidth = .2
+      ..strokeWidth = .9
       ..style = PaintingStyle.stroke;
 
     final path = Path();
 
-    const double notchWidth = 35;
-    const double notchHeight = 5;
+    const double notchWidth = 24;
+    const double notchHeight = 4;
     const double cutSize = 10;
 
     // Offset amounts
-    const double topNotchOffset = 80; // move right
-    const double bottomNotchOffset = -80; // move left
+    const double topNotchOffset = 95; // move right
+    const double bottomNotchOffset = -95; // move left
 
     // Top-left angled start
     path.moveTo(cutSize, 0);

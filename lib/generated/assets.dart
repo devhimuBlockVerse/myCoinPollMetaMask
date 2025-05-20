@@ -44,6 +44,7 @@ class Assets {
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';
+  static const String iconsColorPurple = 'assets/icons/colorPurple.png';
   static const String iconsColorYellow = 'assets/icons/colorYellow.png';
   static const String iconsCommunityVoting = 'assets/icons/communityVoting.png';
   static const String iconsContactImg = 'assets/icons/contactImg.svg';
@@ -52,6 +53,7 @@ class Assets {
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
+  static const String iconsDisconnected = 'assets/icons/disconnected.svg';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
@@ -104,7 +106,6 @@ class Assets {
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsRateImg = 'assets/icons/rateImg.svg';
-  static const String iconsReferrerColorBG = 'assets/icons/colorPurple.png';
   static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';
   static const String iconsRoadMapBox = 'assets/icons/roadMapBox.png';

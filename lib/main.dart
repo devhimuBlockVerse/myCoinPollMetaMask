@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
 
       child: MaterialApp(
 
-        title: 'Reown AppKit Wallet',
+        title: 'MyCoinPoll',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),

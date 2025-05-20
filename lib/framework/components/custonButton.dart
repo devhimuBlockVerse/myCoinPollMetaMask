@@ -91,11 +91,7 @@ class CustomButton extends StatelessWidget {
                     ),
                     if (isActive) ...[
                       const SizedBox(width: 8),
-                      // const Icon(
-                      //   Icons.check_circle,
-                      //   color: Colors.white,
-                      //   size: 12,
-                      // ),
+
                       Center(
                         child: SvgPicture.asset(
                           'assets/icons/checkIcon.svg',

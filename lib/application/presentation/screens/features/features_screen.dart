@@ -11,8 +11,7 @@ class FeaturesScreen extends StatefulWidget {
       _FeaturesScreenState();
 }
 
-class _FeaturesScreenState
-    extends State<FeaturesScreen> {
+class _FeaturesScreenState extends State<FeaturesScreen> {
    @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;

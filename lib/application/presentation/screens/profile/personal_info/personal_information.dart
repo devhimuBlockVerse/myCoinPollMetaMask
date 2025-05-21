@@ -148,7 +148,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 vertical: screenHeight * 0.02,
                               ),
                               child: Column(
-                                mainAxisSize: MainAxisSize.min,
+                                // mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
 
                                   /// First & last Name

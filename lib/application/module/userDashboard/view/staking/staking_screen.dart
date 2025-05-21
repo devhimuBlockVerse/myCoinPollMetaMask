@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
+
+import '../../../../../framework/components/ListingFields.dart';
 class StakingScreen extends StatefulWidget {
   const StakingScreen({super.key});
 
@@ -8,6 +11,17 @@ class StakingScreen extends StatefulWidget {
 
 class _StakingScreenState extends State<StakingScreen> {
 
+
+  TextEditingController inputController = TextEditingController();
+  String? _selectedDuration; // State for the selected dropdown item
+
+
+
+  @override
+  void dispose() {
+    inputController.dispose();
+     super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +73,39 @@ class _StakingScreenState extends State<StakingScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.01),
 
-                            Frame1413377297(),
+                            _header(),
 
                             SizedBox(height: screenHeight * 0.04),
+
+
+                            ListingField(
+                              labelText: 'Input Amounts',
+                              controller: inputController,
+                              prefixIcon: Icons.person,
+                            ),
+
+
+                            SizedBox(height: 20),
+
+                            // Dropdown field
+                            ListingField(
+                              isDropdown: true,
+                              labelText: 'Select Duration',
+                              prefixIcon: Icons.calendar_today,
+                              dropdownItems: const ['7D', '30D', '90D', '180D', '365D'],
+                              selectedDropdownItem: _selectedDuration, // Pass the current selected item
+                              onDropdownChanged: (newValue) {
+                                setState(() {
+                                  _selectedDuration = newValue;
+                                });
+                                print('Selected duration: $newValue');
+                              },
+                            ),
+                            SizedBox(height: 20),
+
+
 
                           ],
                         ),
@@ -77,71 +119,61 @@ class _StakingScreenState extends State<StakingScreen> {
     );
   }
 
-}
 
+  Widget _header(){
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-
-class Frame1413377297 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+     final containerWidth = screenWidth * 0.9;
+    final containerHeight = screenHeight * 0.05;
+    final imageSize = screenWidth * 0.04;
     return Column(
       children: [
         Container(
-          width: 342,
-          height: 31,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(1.00, 0.00),
-              end: Alignment(-1, 0),
-              colors: [
-                Color(0x00277BF5),
-                Color(0xFF277BF5),
-                Color(0xFF1CD691),
-                Color(0x001CD691),
+          width: screenWidth,
+          height: containerHeight,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/icons/headerbg.png'),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Center(
+            child: Row(
+               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: imageSize,
+                  height: imageSize,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/icons/ecmSmall.png'),
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.low
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                Text(
+                  'My 0 ECM Stack for 180 Days',
+                  style: TextStyle(
+                    color: Color(0xffFFFFFF),
+                    fontSize: getResponsiveFontSize(context, 12),
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    height: 1.1,
+                  ),
+                ),
               ],
             ),
-            borderRadius: BorderRadius.circular(3),
-
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 15,
-                      height: 15,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage("https://picsum.photos/15/15"),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      'My 0 ECM Stack for 180 Days',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontFamily: 'Poppins',
-                        height: 0.09,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ],
     );
   }
+
 }
+
+
+

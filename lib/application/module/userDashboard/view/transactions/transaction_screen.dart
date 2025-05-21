@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/components/buy_Ecm.dart';
 import 'package:provider/provider.dart';
 
-import '../../../framework/components/statke_now_animation_button.dart';
-import 'package:intl/intl.dart';
+ import 'package:intl/intl.dart';
 
-import '../../../framework/utils/routes/route_names.dart';
-import '../viewmodel/wallet_view_model.dart';
+import '../../../../../framework/components/statke_now_animation_button.dart';
+import '../../../../../framework/utils/routes/route_names.dart';
+import '../../../../presentation/viewmodel/wallet_view_model.dart';
 
-class EcmStakingScreen extends StatefulWidget {
-  const EcmStakingScreen({super.key});
+
+class TransactionScreen extends StatefulWidget {
+  const TransactionScreen({super.key});
 
   @override
-  State<EcmStakingScreen> createState() => _EcmStakingScreenState();
+  State<TransactionScreen> createState() => _TransactionScreenState();
 }
-class _EcmStakingScreenState extends State<EcmStakingScreen> {
+
+class _TransactionScreenState extends State<TransactionScreen> {
+
+
 
   String selectedPercentage = ''; // Default selected
   // String selectedDay = '7D'; // Default selected
@@ -35,7 +40,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   List<Map<String, String>> _stakingData = [];
   List<Map<String, String>> _filteredData = [];
 
-   final Map<String, double> annualReturnRates = {
+  final Map<String, double> annualReturnRates = {
     '7D': 0.05,
     '30D': 0.08,
     '90D': 0.11,
@@ -48,7 +53,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
 
     if (ecmAmount <= 0) {
-       estimatedProfit = 0.0;
+      estimatedProfit = 0.0;
       totalWithReward = 0.0;
       unlockDate = null;
       lockOverviewText = '';
@@ -69,7 +74,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     setState(() {});
   }
 
-   void selectDuration(String duration) {
+  void selectDuration(String duration) {
     setState(() {
       selectedDay = duration;
     });
@@ -108,7 +113,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     _filteredData = List.from(_stakingData);
     ecmAmountController.addListener(calculateRewards);
     calculateRewards();
-     final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+    final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
     walletProvider.getBalance();
     walletProvider.getMinimunStake();
     walletProvider.getMaximumStake();
@@ -179,8 +184,8 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 /// Stack Amount , Profile , Total Reward Section
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                   decoration: BoxDecoration(
-                     color: Colors.transparent,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
                       color: Colors.blueGrey.withOpacity(0.2),
@@ -188,19 +193,19 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                     children: [
+                    children: [
                       // _ecmAmountRow("Stack amount", "100 ECM"),
-                       _ecmAmountRow("Stack amount", "${ecmAmountController.text} ECM"),
+                      _ecmAmountRow("Stack amount", "${ecmAmountController.text} ECM"),
 
-                       const Divider(color: Colors.white24,thickness: 1,),
+                      const Divider(color: Colors.white24,thickness: 1,),
                       // _ecmAmountRow("Estimated Profit", "0.658 ECM", highlight: true),
-                       _ecmAmountRow("Estimated Profit", "${estimatedProfit.toStringAsFixed(3)} ECM", highlight: true),
+                      _ecmAmountRow("Estimated Profit", "${estimatedProfit.toStringAsFixed(3)} ECM", highlight: true),
 
-                       const Divider(color: Colors.white24),
+                      const Divider(color: Colors.white24),
                       // _ecmAmountRow("Total with Reward", "100.658 ECM"),
-                       _ecmAmountRow("Total with Reward", "${totalWithReward.toStringAsFixed(3)} ECM"),
+                      _ecmAmountRow("Total with Reward", "${totalWithReward.toStringAsFixed(3)} ECM"),
 
-                     ],
+                    ],
                   ),
                 ),
                 SizedBox(height: 8),
@@ -260,9 +265,9 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                         text: 'Buy ECM',
                         trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                         onPressed: () {
-                          Navigator.pushNamed(context, RoutesName.digitalModel);
-
-                          debugPrint('Button tapped!');
+                          // Navigator.pushNamed(context, RoutesName.digitalModel);
+                          //
+                          // debugPrint('Button tapped!');
                         },
                       ),
 
@@ -330,78 +335,78 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                           ),
                         ),
                         // const SizedBox(height: 16),
-                         SizedBox(height: screenHeight * 0.03),
+                        SizedBox(height: screenHeight * 0.03),
 
                         LayoutBuilder(
-                          builder: (context, constraints){
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            builder: (context, constraints){
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
 
-                                  children: [
-                                    Container(
-                                      color: const Color(0xFF151A30),
-                                      child: Row(
-                                        children: [
-                                          _stakingHistoryTableCell('SL', isHeader: true),
-                                          _stakingHistoryTableCell('Date', isHeader: true),
-                                          _stakingHistoryTableCell('Amount', isHeader: true),
-                                          _stakingHistoryTableCell('ARR - Duration', isHeader: true),
-                                          _stakingHistoryTableCell('Reward', isHeader: true),
-                                          _stakingHistoryTableCell('Total Receive', isHeader: true),
-                                          _stakingHistoryTableCell('Remaining?', isHeader: true),
-                                          _stakingHistoryTableCell('Status', isHeader: true),
-                                        ],
-                                      ),
-                                    ),
-                                    if (_filteredData.isEmpty)
+                                    children: [
                                       Container(
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(20),
-                                        child: const Text(
-                                          'No data found',
-                                          style: TextStyle(color: Colors.white70),
-                                        ),
-                                      )
-                                    else
-                                      ..._filteredData.asMap().entries.map((entry) {
-                                        final index = entry.key;
-                                        final data = entry.value;
-                                        return Column(
+                                        color: const Color(0xFF151A30),
+                                        child: Row(
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(color: Colors.white10),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  _stakingHistoryTableCell('${index + 1}'),
-                                                  _stakingHistoryTableCell(data['date'] ?? ''),
-                                                  _stakingHistoryTableCell(data['amount'] ?? ''),
-                                                  _stakingHistoryTableCell(data['arrDuration'] ?? ''),
-                                                  _stakingHistoryTableCell(data['reward'] ?? ''),
-                                                  _stakingHistoryTableCell(data['totalReceive'] ?? ''),
-                                                  _stakingHistoryTableCell(data['remaining'] ?? ''),
-                                                  _stakingHistoryTableCell(data['status'] ?? ''),
-                                                ],
-                                              ),
-
-                                            ),
-
+                                            _stakingHistoryTableCell('SL', isHeader: true),
+                                            _stakingHistoryTableCell('Date', isHeader: true),
+                                            _stakingHistoryTableCell('Amount', isHeader: true),
+                                            _stakingHistoryTableCell('ARR - Duration', isHeader: true),
+                                            _stakingHistoryTableCell('Reward', isHeader: true),
+                                            _stakingHistoryTableCell('Total Receive', isHeader: true),
+                                            _stakingHistoryTableCell('Remaining?', isHeader: true),
+                                            _stakingHistoryTableCell('Status', isHeader: true),
                                           ],
-                                        );
-                                      }).toList(),
-                                  ],
-                                ),
-                              ),
-                            );
+                                        ),
+                                      ),
+                                      if (_filteredData.isEmpty)
+                                        Container(
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(20),
+                                          child: const Text(
+                                            'No data found',
+                                            style: TextStyle(color: Colors.white70),
+                                          ),
+                                        )
+                                      else
+                                        ..._filteredData.asMap().entries.map((entry) {
+                                          final index = entry.key;
+                                          final data = entry.value;
+                                          return Column(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(color: Colors.white10),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    _stakingHistoryTableCell('${index + 1}'),
+                                                    _stakingHistoryTableCell(data['date'] ?? ''),
+                                                    _stakingHistoryTableCell(data['amount'] ?? ''),
+                                                    _stakingHistoryTableCell(data['arrDuration'] ?? ''),
+                                                    _stakingHistoryTableCell(data['reward'] ?? ''),
+                                                    _stakingHistoryTableCell(data['totalReceive'] ?? ''),
+                                                    _stakingHistoryTableCell(data['remaining'] ?? ''),
+                                                    _stakingHistoryTableCell(data['status'] ?? ''),
+                                                  ],
+                                                ),
 
-                          }
+                                              ),
+
+                                            ],
+                                          );
+                                        }).toList(),
+                                    ],
+                                  ),
+                                ),
+                              );
+
+                            }
                         ),
 
                       ],
@@ -423,151 +428,151 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
       return Text('Error: $error', style: TextStyle(color: Colors.red));
     }
 
-        return  Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Consumer<WalletViewModel>(
-                    builder: (context, model, child){
+    return  Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Consumer<WalletViewModel>(
+                  builder: (context, model, child){
 
-                      return Text(
-                        'Min: ${model.minimumStake ?? '...'} ECM',
+                    return Text(
+                      'Min: ${model.minimumStake ?? '...'} ECM',
 
-                        style: TextStyle(
-                          fontSize: 12 * textScale,
-                          color: Colors.white60,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Montserrat',
-                        ),
-                      );
-                    }
-                  ),
-
-                  Consumer<WalletViewModel>(
-                    builder: (context, model, child){
-
-                      return  Text(
-                        'Max: ${model.maximumStake ?? '...'} ECM',
-                        style: TextStyle(
+                      style: TextStyle(
                         fontSize: 12 * textScale,
                         color: Colors.white60,
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Montserrat',
                       ),
-                      );
-                    }
+                    );
+                  }
+              ),
 
+              Consumer<WalletViewModel>(
+                  builder: (context, model, child){
+
+                    return  Text(
+                      'Max: ${model.maximumStake ?? '...'} ECM',
+                      style: TextStyle(
+                        fontSize: 12 * textScale,
+                        color: Colors.white60,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Montserrat',
+                      ),
+                    );
+                  }
+
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.003),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white24),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.transparent,
+          ),
+          child: Row(
+            children: [
+              // Leading icon
+              Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Image.asset(
+                    'assets/icons/ecm.png',
+                    width: 20,
+                    height: 20,
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.003),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.white24),
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.transparent,
+              const SizedBox(width: 8),
+
+              // Input field
+              Expanded(
+                child: TextField(
+                  controller: ecmAmountController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    hintText: '0',
+                    hintStyle: TextStyle(color: Colors.white54),
+                    border: InputBorder.none,
+                  ),
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPercentage = '';
+                    });
+                  },
+                ),
               ),
-              child: Row(
+
+              // Trailing balance
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // Leading icon
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/icons/ecm.png',
-                        width: 20,
-                        height: 20,
-                      ),
+
+                  Text(
+                    'Balance',
+                    style: TextStyle(
+                      fontSize: 12 * textScale,
+                      color: Colors.white60,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  Consumer<WalletViewModel>(
+                      builder: (context, model, child){
 
-                  // Input field
-                  Expanded(
-                    child: TextField(
-                      controller: ecmAmountController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        hintText: '0',
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        setState(() {
-                           selectedPercentage = '';
-                        });
-                      },
-                    ),
-                  ),
-
-                  // Trailing balance
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-
-                      Text(
-                        'Balance',
-                        style: TextStyle(
-                          fontSize: 12 * textScale,
-                          color: Colors.white60,
-                        ),
-                      ),
-                      Consumer<WalletViewModel>(
-                        builder: (context, model, child){
-
-                          if(model.isLoading || model.balance == null){
-                            return  SizedBox(
-                              width:  screenWidth * 0.055,
-                              height:  screenHeight * 0.015,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2, color: Colors.white,
-                              ),
-                            );
-                          }
-
-                          return Text(
-                            '${model.balance} ECM',
-                            style: TextStyle(
-                              fontSize: 12 * textScale,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
+                        if(model.isLoading || model.balance == null){
+                          return  SizedBox(
+                            width:  screenWidth * 0.055,
+                            height:  screenHeight * 0.015,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white,
                             ),
                           );
                         }
-                      ),
-                    ],
+
+                        return Text(
+                          '${model.balance} ECM',
+                          style: TextStyle(
+                            fontSize: 12 * textScale,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
+                      }
                   ),
                 ],
               ),
-            ),
+            ],
+          ),
+        ),
 
-            const SizedBox(height: 3),
-            // Percentage Buttons Row
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _percentageButton('25%', textScale),
-                  _percentageButton('50%', textScale),
-                  _percentageButton('75%', textScale),
-                  _percentageButton('Max', textScale),
-                ],
-              ),
-            ),
-          ],
-        );
+        const SizedBox(height: 3),
+        // Percentage Buttons Row
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _percentageButton('25%', textScale),
+              _percentageButton('50%', textScale),
+              _percentageButton('75%', textScale),
+              _percentageButton('Max', textScale),
+            ],
+          ),
+        ),
+      ],
+    );
 
   }
   Widget _percentageButton(String text, double textScale) {
@@ -611,7 +616,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
           padding: const EdgeInsets.all(2), // Creates space for the border effect
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white24),
+            border: Border.all(color: Colors.white24),
           ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -763,8 +768,8 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   controller: _dayController,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                     hintText: _dayController.text.isEmpty ? (selectedDay.replaceAll('D', '')) : null,
-                      hintStyle: const TextStyle(color: Colors.white),
+                    hintText: _dayController.text.isEmpty ? (selectedDay.replaceAll('D', '')) : null,
+                    hintStyle: const TextStyle(color: Colors.white),
                     border: InputBorder.none,
                   ),
                   keyboardType: TextInputType.number,
@@ -789,7 +794,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                       color: Colors.white,
                     ),
                   ),
-                 ],
+                ],
               ),
             ],
           ),
@@ -993,10 +998,10 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 Text(
                   lockOverviewText.isNotEmpty ? lockOverviewText : "Enter ECM to Stake",
                   style: TextStyle(
-                    fontSize: 18 * textScale, // Responsive text size
-                    color: Colors.white,
-                    // fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold
+                      fontSize: 18 * textScale, // Responsive text size
+                      color: Colors.white,
+                      // fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.bold
                   ),
                 ),
               ],
@@ -1078,4 +1083,6 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
     ];
   }
+
+
 }

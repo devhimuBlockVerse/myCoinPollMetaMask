@@ -61,6 +61,7 @@ class Assets {
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLarge = 'assets/icons/ecmLarge.png';
   static const String iconsEcmLogo = 'assets/icons/ecmLogo.png';
+  static const String iconsEcmSmall = 'assets/icons/ecmSmall.png';
   static const String iconsEcmToken = 'assets/icons/ecmToken.png';
   static const String iconsEditIcon = 'assets/icons/editIcon.svg';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
@@ -73,6 +74,7 @@ class Assets {
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsGradientImg = 'assets/icons/gradientImg.png';
   static const String iconsHeaderFrameContainer = 'assets/icons/headerFrameContainer.png';
+  static const String iconsHeaderbg = 'assets/icons/headerbg.png';
   static const String iconsHome = 'assets/icons/home.svg';
   static const String iconsIco = 'assets/icons/ico.svg';
   static const String iconsKycStatusBgFrame = 'assets/icons/kycStatusBgFrame.png';

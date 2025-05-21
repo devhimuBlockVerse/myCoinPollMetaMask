@@ -6,9 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashboard/dashboard_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/ecm_ico/Ico_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/staking/staking_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/androverse/androverse_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/features/features_screen.dart';
- import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/transaction_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +25,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> with Tick
     DashboardScreen(),
     ECMIcoScreen(),
     StakingScreen(),
-    NewsScreen(),
+    TransactionScreen(),
     ProfileScreen(),
   ];
 

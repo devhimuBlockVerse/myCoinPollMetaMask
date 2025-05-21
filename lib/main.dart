@@ -62,8 +62,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home:  FeaturesScreen(),
-        // home:  BottomNavBar(),
-        home:  DashboardBottomNavBar(),
+        home:  BottomNavBar(),
+        // home:  DashboardBottomNavBar(),
         // onGenerateRoute: Routes.generateRoute,
         // initialRoute: RoutesName.walletLogin,
 

@@ -92,20 +92,8 @@ class _StakingScreenState extends State<StakingScreen> {
 
                             SizedBox(height: screenHeight * 0.04),
 
-
-
-
                             _stakingDetails(),
                             SizedBox(height: screenHeight * 0.04),
-
-
-
-
-
-
-
-
-
 
 
                           ],
@@ -261,7 +249,7 @@ class _StakingScreenState extends State<StakingScreen> {
               SizedBox(height: screenHeight * 0.02),
 
               /// Percentage Section
-              PercentageSelector(
+              PercentageSelectorComponent(
                 options: dummyPercentageOptions,
                 initialSelection: _currentSelectedPercentage,
                 onSelected: (selected) {
@@ -271,7 +259,20 @@ class _StakingScreenState extends State<StakingScreen> {
                   print('Selected: $_currentSelectedPercentage');
                 },
               ),
-              SizedBox(height: screenHeight * 0.04),
+              SizedBox(height: screenHeight * 0.02),
+
+              Center(
+                child: SizedBox(
+                  width: screenWidth * 0.4,
+                  child: Divider(
+                    color: Color(0xff2C2E41),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.02),
+
               /// Detail Table Section
               Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -289,6 +290,7 @@ class _StakingScreenState extends State<StakingScreen> {
       ],
     );
   }
+
   Widget _detailsFrame(){
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -384,12 +386,12 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
 /// Reusable Component
-class PercentageSelector extends StatefulWidget {
+class PercentageSelectorComponent extends StatefulWidget {
   final List<String> options;
   final ValueChanged<String> onSelected;
   final String initialSelection;
 
-  const PercentageSelector({
+  const PercentageSelectorComponent({
     Key? key,
     required this.options,
     required this.onSelected,
@@ -397,10 +399,10 @@ class PercentageSelector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<PercentageSelector> createState() => _PercentageSelectorState();
+  State<PercentageSelectorComponent> createState() => _PercentageSelectorComponentState();
 }
 
-class _PercentageSelectorState extends State<PercentageSelector> {
+class _PercentageSelectorComponentState extends State<PercentageSelectorComponent> {
   String? _selectedOption;
 
   @override

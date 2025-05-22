@@ -114,13 +114,16 @@ class Assets {
   static const String iconsRoadMapLineXX = 'assets/icons/roadMapLineXX.png';
   static const String iconsRoadMapLiner = 'assets/icons/roadMapLiner.png';
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
+  static const String iconsSearch = 'assets/icons/search.svg';
   static const String iconsSettingActionBg = 'assets/icons/settingActionBg.png';
   static const String iconsSettings = 'assets/icons/settings.svg';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';
   static const String iconsShareIcon = 'assets/icons/shareIcon.svg';
   static const String iconsShareImg = 'assets/icons/shareImg.svg';
   static const String iconsSolidBackGround = 'assets/icons/solidBackGround.png';
+  static const String iconsSortingList = 'assets/icons/sortingList.svg';
   static const String iconsStaking = 'assets/icons/staking.svg';
+  static const String iconsStakingFrame = 'assets/icons/stakingFrame.png';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
   static const String iconsStaticChart = 'assets/icons/staticChart.png';
   static const String iconsSubmissionCheck = 'assets/icons/submissionCheck.svg';

@@ -1,5 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
@@ -156,44 +157,44 @@ class _StakingScreenState extends State<StakingScreen> {
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: Color(0xff040C16)
+                                  color: Color(0xff040C16),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenWidth * 0.02,
                                   vertical:  screenHeight * 0.01
                               ),
 
-                              child: ListingField(
-                                labelText: 'Search...',
-                                controller: _searchController,
-                                height: screenHeight * 0.048,
-                                width: screenWidth * 0.016,
-                                prefixPngPath: 'assets/icons/ecm.png',
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: ResponsiveSearchField(
+                                      controller: _searchController,
+                                      onChanged:  (value) => _onSearchChanged(),
+                                      svgAssetPath: 'assets/icons/search.svg',
+
+                                    ),
+                                  ),
+
+
+                                  Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: GestureDetector(
+
+                                          child: SvgPicture.asset('assets/icons/sortingList.svg',fit: BoxFit.contain,),
+
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
 
-                            // Container(
-                            //   width: double.infinity,
-                            //   decoration: BoxDecoration(
-                            //     color: Color(0xff040C16)
-                            //   ),
-                            //   child: TextField(
-                            //     controller: _searchController,
-                            //     onChanged: (_) => _onSearchChanged(),
-                            //     style: const TextStyle(color: Colors.white),
-                            //     decoration: const InputDecoration(
-                            //       hintText: 'Search here...',
-                            //       hintStyle: TextStyle(color: Colors.white60),
-                            //       border: InputBorder.none,
-                            //       prefixIcon: Icon(Icons.search, color: Colors.white60),
-                            //       contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
-                            //
-                            //     ),
-                            //     textAlign: TextAlign.start,
-                            //   ),
-                            // ),
-
-                      // buildStakingTable(stakingData,screenWidth,context),
+                             SizedBox(height: screenHeight * 0.016),
 
                             ...[
                               _filteredData.isNotEmpty
@@ -500,19 +501,176 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
 
-
-
-
-
-
-
 }
 
 
 
 
+class Frame1413377274 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 229,
+          height: 30,
+          padding: const EdgeInsets.all(10),
+          decoration: ShapeDecoration(
+            color: Color(0xFF101A29),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 1, color: Color(0xFF141317)),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            shadows: [
+              BoxShadow(
+                color: Color(0xFFC7E0FF),
+                blurRadius: 0,
+                offset: Offset(0.10, 0.50),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Opacity(
+                opacity: 0.80,
+                child: Container(
+                  width: 9.36,
+                  height: 9.59,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        child: Container(
+                          width: 8.97,
+                          height: 8.97,
+                          decoration: ShapeDecoration(
+                            shape: OvalBorder(
+                              side: BorderSide(
+                                width: 1.20,
+                                strokeAlign: BorderSide.strokeAlignCenter,
+                                color: Color(0xFF7D8FA9),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              Opacity(
+                opacity: 0.80,
+                child: Text(
+                  'search...',
+                  style: TextStyle(
+                    color: Color(0xFF7D8FA9),
+                    fontSize: 12,
+                    fontFamily: 'Poppins',
+                    height: 0.13,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 
+
+class ResponsiveSearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String>? onChanged;
+  final String hintText;
+  final String? svgAssetPath;
+
+  const ResponsiveSearchField({
+    Key? key,
+    required this.controller,
+    this.onChanged,
+    this.hintText = 'search...',this.svgAssetPath,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double containerWidth = screenWidth * 0.55;
+    double containerHeight = screenHeight * 0.040;
+    double iconSize = screenHeight * 0.0135;
+    double fontSize = screenHeight * 0.014;
+
+    return Container(
+      width: containerWidth,
+      height: containerHeight,
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+      decoration: ShapeDecoration(
+        color: const Color(0xFF101A29),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFF141317)),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        shadows: const [
+          BoxShadow(
+            color: Color(0xFFC7E0FF),
+            blurRadius: 0,
+            offset: Offset(0.10, 0.50),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // SvgPicture.asset('assets/icons/search.svg',fit:BoxFit.contain,),
+
+          Opacity(
+            opacity: 0.80,
+            child: SvgPicture.asset(
+              svgAssetPath!,
+              width: iconSize,
+              height: iconSize,
+              colorFilter: const ColorFilter.mode(
+                Color(0xFF7D8FA9),
+                BlendMode.srcIn,
+              ),
+            ),
+          ),          SizedBox(width: screenWidth * 0.015),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
+              style: TextStyle(
+                color: const Color(0xFF7D8FA9),
+                fontSize: fontSize,
+                fontFamily: 'Poppins',
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                isCollapsed: true,
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  color: const Color(0xFF7D8FA9).withOpacity(0.8),
+                  fontSize: fontSize,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              cursorColor: const Color(0xFF7D8FA9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 
 

@@ -5,12 +5,15 @@ class BuyEcm extends StatefulWidget {
   final String text;
   final Widget? trailingIcon;
   final VoidCallback? onPressed;
+  final double? height;
+  final double? width;
+
 
   const BuyEcm({
     Key? key,
     required this.text,
     this.trailingIcon,
-    this.onPressed,
+    this.onPressed, this.height, this.width,
   }) : super(key: key);
 
   @override
@@ -36,18 +39,23 @@ class _BuyEcmState extends State<BuyEcm> {
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width * 0.4;
-    final h = MediaQuery.of(context).size.height * 0.05;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final buttonWidth = widget.width ?? screenWidth * 0.8;
+    final buttonHeight = widget.height ?? screenHeight * 0.065 ;
+
+
 
     return GestureDetector(
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
       child: Container(
-        width: w,
-        height: h,
+        width: buttonWidth,
+        height: buttonHeight,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Stack(
           children: [
@@ -66,7 +74,7 @@ class _BuyEcmState extends State<BuyEcm> {
               blendMode: BlendMode.srcATop,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Colors.white,
                     width: 0.8,

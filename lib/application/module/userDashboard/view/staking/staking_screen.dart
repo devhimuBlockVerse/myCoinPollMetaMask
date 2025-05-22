@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
+import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
+import '../../../../../framework/components/buy_Ecm.dart';
+import '../../../../../framework/components/percentageSelectorComponent.dart';
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
 
 class StakingScreen extends StatefulWidget {
@@ -15,11 +18,10 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
   TextEditingController inputController = TextEditingController();
-  String? _selectedDuration; // State for the selected dropdown item
+  String? _selectedDuration;
 
 
-  // String _currentSelectedPercentage = '25%'; // Initial selected value
-  String _currentSelectedPercentage = dummyPercentageOptions[0]; // Initial selected value from dummy data
+   String _currentSelectedPercentage = dummyPercentageOptions[0];
 
 
   @override
@@ -39,6 +41,8 @@ class _StakingScreenState extends State<StakingScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final bool isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
 
     return  Scaffold(
         extendBodyBehindAppBar: true,
@@ -95,7 +99,35 @@ class _StakingScreenState extends State<StakingScreen> {
                             _stakingDetails(),
                             SizedBox(height: screenHeight * 0.04),
 
+                            BlockButton(
+                              height: baseSize * 0.12,
+                              width: screenWidth * 0.7,
+                              label: "Stake Now",
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                fontSize: baseSize * 0.048,
+                              ),
+                              gradientColors: const [
+                                Color(0xFF2680EF),
+                                Color(0xFF1CD494),
+                              ],
+                              onTap: () {
+                                debugPrint('Button tapped');
+                              },
+                            ),
 
+                            SizedBox(height: screenHeight * 0.02),
+
+                            BuyEcm(
+                              text: 'Buy ECM',
+                              trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
+                              onPressed: () {
+                                debugPrint('Button tapped!');
+                              },
+                              height: baseSize * 0.12,
+                              width: screenWidth * 0.7,
+                            ),
                           ],
                         ),
                       ),
@@ -274,15 +306,13 @@ class _StakingScreenState extends State<StakingScreen> {
               SizedBox(height: screenHeight * 0.02),
 
               /// Detail Table Section
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      color: Colors.black.withOpacity(0.2),
-                      child: _detailsFrame(),
-                    ),
-                  ]
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: _detailsFrame(),
               )
             ],
           ),
@@ -295,7 +325,7 @@ class _StakingScreenState extends State<StakingScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.03),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01, vertical: screenHeight * 0.008),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,35 +334,38 @@ class _StakingScreenState extends State<StakingScreen> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildInfoRow("Stack amount", "0.0000 ECM"),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Estimated Profit", "0 ECM", valueColor: Color(0xFF1CD494)),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Total with Reward", "0 ECM"),
                 ],
               ),
             ),
 
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.03),
 
             // Vertical Divider
             Container(
               width: 1,
               color: Color(0xCC2C2E41),
+              height: null,
             ),
 
-            SizedBox(width: 10),
+            SizedBox(width: screenWidth * 0.03),
 
             // Right Column
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildInfoRow("Annual Return Rate", "0 %"),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Duration", "0 days", valueColor: Color(0xFF1CD494)),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Unlocked on", "20th, May 2025"),
                 ],
               ),
@@ -343,24 +376,27 @@ class _StakingScreenState extends State<StakingScreen> {
     );
 
   }
+
   Widget _buildInfoRow(String label, String value, {Color valueColor = Colors.white}) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
+        Flexible(
           child: Text(
             label,
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400,
-              fontSize: getResponsiveFontSize(context, 10),
+              fontSize: getResponsiveFontSize(context, 12),
             ),
-            overflow: TextOverflow.ellipsis,
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
+         SizedBox(width: screenWidth * 0.01),
+        Flexible(
           child: Text(
             value,
             textAlign: TextAlign.right,
@@ -368,9 +404,8 @@ class _StakingScreenState extends State<StakingScreen> {
               color: valueColor,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w400,
-              fontSize: getResponsiveFontSize(context, 10),
+              fontSize: getResponsiveFontSize(context, 12),
             ),
-            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -378,141 +413,29 @@ class _StakingScreenState extends State<StakingScreen> {
   }
 
 
-}
-
-
-
-
-
-
-/// Reusable Component
-class PercentageSelectorComponent extends StatefulWidget {
-  final List<String> options;
-  final ValueChanged<String> onSelected;
-  final String initialSelection;
-
-  const PercentageSelectorComponent({
-    Key? key,
-    required this.options,
-    required this.onSelected,
-    required this.initialSelection,
-  }) : super(key: key);
-
-  @override
-  State<PercentageSelectorComponent> createState() => _PercentageSelectorComponentState();
-}
-
-class _PercentageSelectorComponentState extends State<PercentageSelectorComponent> {
-  String? _selectedOption;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedOption = widget.initialSelection;
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Unstack Now':
+        return Colors.red[700]!;
+      case 'Completed':
+        return Colors.green[700]!;
+      case 'Pending':
+        return Colors.orange[700]!;
+      default:
+        return Colors.grey;
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final screenWidth = mediaQuery.size.width;
-    final screenHeight = mediaQuery.size.height;
-    final orientation = mediaQuery.orientation;
-
-    double baseFontSize = (orientation == Orientation.portrait)
-        ? screenWidth * 0.045
-        : screenHeight * 0.045;
-
-    double baseIconSize = (orientation == Orientation.portrait)
-        ? screenWidth * 0.01
-        : screenHeight * 0.01;
-
-    double horizontalPadding = screenWidth * 0.02;
-    double spacing = screenWidth * 0.006;
-
-    baseFontSize = baseFontSize.clamp(14.0, 24.0);
-    baseIconSize = baseIconSize.clamp(20.0, 35.0);
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List.generate(widget.options.length, (index) {
-          final option = widget.options[index];
-          final isSelected = (_selectedOption == option);
-
-          final gestureWidget = GestureDetector(
-            onTap: () {
-              setState(() {
-                _selectedOption = option;
-              });
-              widget.onSelected(option);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ShaderMask(
-                  shaderCallback: (bounds) {
-                    return const LinearGradient(
-                      colors: [Color(0xFF2AFFED), Color(0xFF3893FF)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(bounds);
-                  },
-                  child: Container(
-                    width: baseIconSize,
-                    height: baseIconSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 2.0 * (baseIconSize / 20),
-                      ),
-                    ),
-                    child: Center(
-                      child: isSelected
-                          ? Container(
-                        width: baseIconSize * 0.5,
-                        height: baseIconSize * 0.5,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [Color(0xFF2AFFED), Color(0xFF3893FF)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                      )
-                          : null,
-                    ),
-                  ),
-                ),
-                SizedBox(width: spacing),
-                Text(
-                  option,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
-                    fontSize: getResponsiveFontSize(context, 12),
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          );
-
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              gestureWidget,
-              if (index < widget.options.length - 1) SizedBox(width: screenWidth * 0.015), // spacing between GestureDetectors
-            ],
-          );
-        }),
-      ),
-    );
+  Widget _tableView(){
+    return Container();
   }
 
+
 }
+
+
+
+
+
 
 

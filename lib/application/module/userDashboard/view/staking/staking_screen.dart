@@ -135,98 +135,6 @@ class _StakingScreenState extends State<StakingScreen> {
 
                             SizedBox(height: screenHeight * 0.02),
 
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: IntrinsicWidth(
-                                  child: IntrinsicHeight(
-                                    child: DataTable2(
-                                      columnSpacing: baseSize * 0.01,
-                                      horizontalMargin: baseSize * 0.01,
-                                      dataRowHeight: baseSize * 0.07,
-                                      headingRowHeight: baseSize * 0.06,
-                                      dividerThickness: 0,
-
-                                      columns: [
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('SL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.S,
-                                        ),
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('Date', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.L,
-                                        ),
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('Duration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.M,
-                                        ),
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('Reward', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.S,
-                                          numeric: true,
-                                        ),
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('Amount', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.S,
-                                          numeric: true,
-                                        ),
-                                        DataColumn2(
-                                          label: FittedBox(
-                                            child: Text('Status', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
-                                          ),
-                                          size: ColumnSize.M,
-                                        ),
-                                      ],
-                                      rows: stakingData.map((data) {
-                                        return DataRow2(
-                                          cells: [
-                                            DataCell(FittedBox(child: Text(data['SL'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
-                                            DataCell(FittedBox(child: Text(data['Date'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
-                                            DataCell(FittedBox(child: Text(data['Duration'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
-                                            DataCell(FittedBox(child: Text(data['Reward'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
-                                            DataCell(FittedBox(child: Text(data['Amount'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
-                                            DataCell(
-                                              Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: baseSize * 0.02,
-                                                  vertical: baseSize * 0.01,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: _getStatusColor(data['Status'] ?? ''),
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: FittedBox(
-                                                  child: Text(
-                                                    data['Status'] ?? '',
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: baseSize * 0.03,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-
 
                             // Padding(
                             //   padding: EdgeInsets.symmetric(
@@ -315,6 +223,112 @@ class _StakingScreenState extends State<StakingScreen> {
                             //     ),
                             //   ),
                             // )
+
+
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
+                              child: Container(
+                                child: Column(
+                                  children: [
+                                    LayoutBuilder(builder: (context, constraints) {
+                                      return SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: SizedBox(
+                                          height: stakingData.length * (baseSize * 0.07) + (baseSize * 0.06),
+                                          width: constraints.maxWidth * 1.5,
+                                          child: DataTable2(
+                                            columnSpacing: baseSize * 0.09,
+                                            horizontalMargin: baseSize * 0.001,
+                                            dataRowHeight: baseSize * 0.07,
+                                            headingRowHeight: baseSize * 0.06,
+                                            dividerThickness: 0,
+                                            columns: [
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('SL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.S,
+                                              ),
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('Date', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.M,
+                                              ),
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('Duration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.M,
+                                              ),
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('Reward', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.M,
+                                              ),
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('Amount', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.L,
+                                              ),
+                                              DataColumn2(
+                                                label: Center(
+                                                  child: Text('Status', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                                ),
+                                                size: ColumnSize.M,
+                                              ),
+                                            ],
+                                            rows: stakingData.map((data) {
+                                              return DataRow2(
+                                                cells: [
+                                                  DataCell(Center(
+                                                    child: Text(data['SL'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: Text(data['Date'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: Text(data['Duration'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: Text(data['Reward'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: Text(data['Amount'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)),
+                                                  )),
+                                                  DataCell(Center(
+                                                    child: Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                        horizontal: baseSize * 0.02,
+                                                        vertical: baseSize * 0.01,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: _getStatusColor(data['Status'] ?? ''),
+                                                        borderRadius: BorderRadius.circular(4),
+                                                      ),
+                                                      child: Text(
+                                                        data['Status'] ?? '',
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: baseSize * 0.03,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )),
+                                                ],
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            )
 
 
 

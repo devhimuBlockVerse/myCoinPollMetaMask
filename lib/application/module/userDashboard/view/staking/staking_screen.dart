@@ -22,7 +22,10 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
   TextEditingController inputController = TextEditingController();
+   TextEditingController _searchController = TextEditingController();
+
   String? _selectedDuration;
+  List<Map<String, String>> _filteredData = [];
 
 
    String _currentSelectedPercentage = dummyPercentageOptions[0];
@@ -30,14 +33,25 @@ class _StakingScreenState extends State<StakingScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+     super.initState();
+     _filteredData = List.from(stakingData);
 
+  }
+
+  void _onSearchChanged() {
+
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredData = stakingData.where((row){
+        return row.values.any((value) => value.toLowerCase().contains(query));
+      }).toList();
+    });
   }
 
   @override
   void dispose() {
     inputController.dispose();
+    _searchController.dispose();
      super.dispose();
   }
 
@@ -139,8 +153,60 @@ class _StakingScreenState extends State<StakingScreen> {
 
                             SizedBox(height: screenHeight * 0.02),
 
-                            buildStakingTable(stakingData,screenWidth,context),
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: Color(0xff040C16)
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.02,
+                                  vertical:  screenHeight * 0.01
+                              ),
 
+                              child: ListingField(
+                                labelText: 'Search...',
+                                controller: _searchController,
+                                height: screenHeight * 0.048,
+                                width: screenWidth * 0.016,
+                                prefixPngPath: 'assets/icons/ecm.png',
+                              ),
+                            ),
+
+                            // Container(
+                            //   width: double.infinity,
+                            //   decoration: BoxDecoration(
+                            //     color: Color(0xff040C16)
+                            //   ),
+                            //   child: TextField(
+                            //     controller: _searchController,
+                            //     onChanged: (_) => _onSearchChanged(),
+                            //     style: const TextStyle(color: Colors.white),
+                            //     decoration: const InputDecoration(
+                            //       hintText: 'Search here...',
+                            //       hintStyle: TextStyle(color: Colors.white60),
+                            //       border: InputBorder.none,
+                            //       prefixIcon: Icon(Icons.search, color: Colors.white60),
+                            //       contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                            //
+                            //     ),
+                            //     textAlign: TextAlign.start,
+                            //   ),
+                            // ),
+
+                      // buildStakingTable(stakingData,screenWidth,context),
+
+                            ...[
+                              _filteredData.isNotEmpty
+                                  ? buildStakingTable(_filteredData, screenWidth, context)
+                                  : Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(20),
+                                child: const Text(
+                                  'No data found',
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                              ),
+                            ],
 
 
 
@@ -261,6 +327,7 @@ class _StakingScreenState extends State<StakingScreen> {
                           labelText: 'Input Amounts',
                           controller: inputController,
                           height: listingFieldHeight,
+
                           width: double.infinity,
                           prefixPngPath: 'assets/icons/ecm.png',
                         ),

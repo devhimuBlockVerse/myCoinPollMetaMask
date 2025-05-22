@@ -1,10 +1,13 @@
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/percentageSelectorComponent.dart';
+
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
 
 class StakingScreen extends StatefulWidget {
@@ -128,6 +131,199 @@ class _StakingScreenState extends State<StakingScreen> {
                               height: baseSize * 0.12,
                               width: screenWidth * 0.7,
                             ),
+
+
+                            SizedBox(height: screenHeight * 0.02),
+
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: IntrinsicWidth(
+                                  child: IntrinsicHeight(
+                                    child: DataTable2(
+                                      columnSpacing: baseSize * 0.01,
+                                      horizontalMargin: baseSize * 0.01,
+                                      dataRowHeight: baseSize * 0.07,
+                                      headingRowHeight: baseSize * 0.06,
+                                      dividerThickness: 0,
+
+                                      columns: [
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('SL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.S,
+                                        ),
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('Date', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.L,
+                                        ),
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('Duration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.M,
+                                        ),
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('Reward', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.S,
+                                          numeric: true,
+                                        ),
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('Amount', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.S,
+                                          numeric: true,
+                                        ),
+                                        DataColumn2(
+                                          label: FittedBox(
+                                            child: Text('Status', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                                          ),
+                                          size: ColumnSize.M,
+                                        ),
+                                      ],
+                                      rows: stakingData.map((data) {
+                                        return DataRow2(
+                                          cells: [
+                                            DataCell(FittedBox(child: Text(data['SL'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
+                                            DataCell(FittedBox(child: Text(data['Date'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
+                                            DataCell(FittedBox(child: Text(data['Duration'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
+                                            DataCell(FittedBox(child: Text(data['Reward'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
+                                            DataCell(FittedBox(child: Text(data['Amount'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03)))),
+                                            DataCell(
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: baseSize * 0.02,
+                                                  vertical: baseSize * 0.01,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: _getStatusColor(data['Status'] ?? ''),
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: FittedBox(
+                                                  child: Text(
+                                                    data['Status'] ?? '',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: baseSize * 0.03,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+
+
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(
+                            //       horizontal: screenWidth * 0.001),
+                            //   child: Container(
+                            //     child: Column(
+                            //       children: [
+                            //         LayoutBuilder(
+                            //             builder: (context, constraints){
+                            //               return SingleChildScrollView(
+                            //                 scrollDirection: Axis.horizontal,
+                            //                 child: SizedBox(
+                            //                   height: stakingData.length * (baseSize * 0.07) + (baseSize * 0.06), // Row heights + header height
+                            //                   width: constraints.maxWidth * 1.5,
+                            //                   child: DataTable2(
+                            //                     columnSpacing: baseSize * 0.09,
+                            //                     horizontalMargin: baseSize * 0.002,
+                            //                     dataRowHeight: baseSize * 0.07,
+                            //                     headingRowHeight: baseSize * 0.06,
+                            //                     dividerThickness: 0,
+                            //                     columns: [
+                            //                       DataColumn2(
+                            //                         label: Text('SL', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         fixedWidth: baseSize * 0.1, // Adjusted for responsiveness
+                            //                       ),
+                            //                       DataColumn2(
+                            //                         label: Text('Date', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         size: ColumnSize.L,
+                            //                       ),
+                            //                       DataColumn2(
+                            //                         label: Text('Duration', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         size: ColumnSize.M,
+                            //                       ),
+                            //                       DataColumn2(
+                            //                         label: Text('Reward', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         size: ColumnSize.M,
+                            //                         numeric: true,
+                            //                       ),
+                            //                       DataColumn2(
+                            //                         label: Text('Amount', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         size: ColumnSize.M,
+                            //                         numeric: true,
+                            //                       ),
+                            //                       DataColumn2(
+                            //                         label: Text('Status', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: baseSize * 0.035)),
+                            //                         size: ColumnSize.M,
+                            //                       ),
+                            //                     ],
+                            //                     rows: stakingData.map((data) {
+                            //                       return DataRow2(
+                            //                         cells: [
+                            //                           DataCell(Text(data['SL'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03))),
+                            //                           DataCell(Text(data['Date'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03))),
+                            //                           DataCell(Text(data['Duration'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03))),
+                            //                           DataCell(Text(data['Reward'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03))),
+                            //                           DataCell(Text(data['Amount'] ?? '', style: TextStyle(color: Colors.white, fontSize: baseSize * 0.03))),
+                            //                           DataCell(
+                            //                             Container(
+                            //                               padding: EdgeInsets.symmetric(
+                            //                                 horizontal: baseSize * 0.02,
+                            //                                 vertical: baseSize * 0.01,
+                            //                               ),
+                            //                               decoration: BoxDecoration(
+                            //                                 color: _getStatusColor(data['Status'] ?? ''),
+                            //                                 borderRadius: BorderRadius.circular(4),
+                            //                               ),
+                            //                               child: Text(
+                            //                                 data['Status'] ?? '',
+                            //                                 style: TextStyle(
+                            //                                   color: Colors.white,
+                            //                                   fontWeight: FontWeight.bold,
+                            //                                   fontSize: baseSize * 0.03,
+                            //                                 ),
+                            //                               ),
+                            //                             ),
+                            //                           ),
+                            //                         ],
+                            //                       );
+                            //                     }).toList(),
+                            //                   ),
+                            //                 ),
+                            //               );
+                            //             }
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // )
+
+
+
+
+
+
+
+
+
                           ],
                         ),
                       ),
@@ -426,12 +622,105 @@ class _StakingScreenState extends State<StakingScreen> {
     }
   }
 
-  Widget _tableView(){
-    return Container();
-  }
+  // Widget _tableView(){
+  //   return Padding(
+  //     padding: const EdgeInsets.all(16.0),
+  //     child: DataTable2(
+  //
+  //         columnSpacing: 12,
+  //         horizontalMargin: 12,
+  //         minWidth: 600,
+  //         dataRowHeight: 50,
+  //         headingRowHeight: 40,
+  //         dividerThickness: 0,
+  //         columns: const[
+  //           DataColumn2(
+  //               label: Text('SL',
+  //                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //               ), fixedWidth: 50,
+  //           ),
+  //           DataColumn2(
+  //             label: Text('Date',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //             ), size: ColumnSize.L,
+  //           ),
+  //           DataColumn2(
+  //             label: Text('Duration',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //             ), size: ColumnSize.M,
+  //           ),
+  //           DataColumn2(
+  //             label: Text('Reward',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //             ), size: ColumnSize.S, numeric: true,
+  //           ),
+  //           DataColumn2(
+  //             label: Text('Amount',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //             ), size: ColumnSize.S, numeric: true,
+  //           ),
+  //           DataColumn2(
+  //             label: Text('Status',
+  //               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //             ), size: ColumnSize.M,
+  //           ),
+  //         ],
+  //         rows: stakingData.map((data){
+  //           return DataRow2(
+  //               cells: [
+  //                 DataCell(
+  //                   Text( data['SL'] ?? '', style: TextStyle(color: Colors.white))
+  //                 ),
+  //                 DataCell(
+  //                   Text( data['Data'] ?? '', style: TextStyle(color: Colors.white),)
+  //                 ),
+  //                 DataCell(
+  //                   Text( data['Duration'] ?? '', style: TextStyle(color: Colors.white),)
+  //                 ),
+  //                 DataCell(
+  //                   Text( data['Reward'] ?? '', style: TextStyle(color: Colors.white),)
+  //                 ),
+  //                 DataCell(
+  //                   Text( data['Amount'] ?? '', style: TextStyle(color: Colors.white),)
+  //                 ),
+  //
+  //                 DataCell(
+  //                   Container(
+  //                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  //                     decoration: BoxDecoration(
+  //                       color:  _getStatusColor(data['Status'] ?? ''),
+  //                       borderRadius: BorderRadius.circular(4),
+  //                     ),
+  //                     child: Text(
+  //                       data['Status'] ?? '',
+  //                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+  //                     ),
+  //                   )
+  //                 )
+  //               ]
+  //           );
+  //         }).toList(),
+  //
+  //
+  //     ),
+  //   );
+  // }
 
+
+
+  // Widget _tableView(BuildContext context) {
+  //   final screenWidth = MediaQuery.of(context).size.width;
+  //   final screenHeight = MediaQuery.of(context).size.height;
+  //   final isPortrait = screenHeight > screenWidth;
+  //   final baseSize = isPortrait ? screenWidth : screenHeight;
+  //
+  //   return ;
+  // }
 
 }
+
+
+
 
 
 

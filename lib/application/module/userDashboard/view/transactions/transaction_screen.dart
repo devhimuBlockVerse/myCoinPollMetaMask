@@ -209,6 +209,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
                             SizedBox(height: screenHeight * 0.016),
 
+
                             ...[
                               _filteredData.isNotEmpty
                                   ? buildStakingTable(_filteredData, screenWidth, context)

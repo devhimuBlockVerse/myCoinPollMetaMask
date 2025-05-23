@@ -1,4 +1,4 @@
-import 'package:data_table_2/data_table_2.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
@@ -8,9 +8,17 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/percentageSelectorComponent.dart';
+import '../../../../../framework/components/searchControllerComponent.dart';
 import 'widgets/staking_table.dart';
 
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
+
+// enum SortOption { dateDesc, statusAsc }
+// SortOption _currentSortOption = SortOption.dateDesc;
+
+enum SortOption { dateLatest, dateOldest, statusAsc, statusDesc }
+
+SortOption? _currentSort;
 
 class StakingScreen extends StatefulWidget {
   const StakingScreen({super.key});
@@ -48,7 +56,28 @@ class _StakingScreenState extends State<StakingScreen> {
       }).toList();
     });
   }
+  DateTime _parseDate(String dateStr) {
+    // Example: "May 10, 2025"
+    return DateFormat('MMMM d, yyyy').parse(dateStr);
+  }
+  void _sortData(SortOption option) {
+    setState(() {
+      _currentSort = option;
 
+      _filteredData.sort((a, b) {
+        switch (option) {
+          case SortOption.dateLatest:
+            return _parseDate(b['Date']!).compareTo(_parseDate(a['Date']!));
+          case SortOption.dateOldest:
+            return _parseDate(a['Date']!).compareTo(_parseDate(b['Date']!));
+          case SortOption.statusAsc:
+            return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
+          case SortOption.statusDesc:
+            return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
+        }
+      });
+    });
+  }
   @override
   void dispose() {
     inputController.dispose();
@@ -110,7 +139,8 @@ class _StakingScreenState extends State<StakingScreen> {
                       ),
                       child: SingleChildScrollView(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: screenHeight * 0.01),
 
@@ -121,38 +151,54 @@ class _StakingScreenState extends State<StakingScreen> {
                             _stakingDetails(),
                             SizedBox(height: screenHeight * 0.04),
 
-                            BlockButton(
-                              height: baseSize * 0.12,
-                              width: screenWidth * 0.7,
-                              label: "Stake Now",
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                fontSize: baseSize * 0.048,
+                            Center(
+                              child: BlockButton(
+                                height: baseSize * 0.12,
+                                width: screenWidth * 0.7,
+                                label: "Stake Now",
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                  fontSize: baseSize * 0.048,
+                                ),
+                                gradientColors: const [
+                                  Color(0xFF2680EF),
+                                  Color(0xFF1CD494),
+                                ],
+                                onTap: () {
+                                  debugPrint('Button tapped');
+                                },
                               ),
-                              gradientColors: const [
-                                Color(0xFF2680EF),
-                                Color(0xFF1CD494),
-                              ],
-                              onTap: () {
-                                debugPrint('Button tapped');
-                              },
                             ),
 
                             SizedBox(height: screenHeight * 0.02),
 
-                            BuyEcm(
-                              text: 'Buy ECM',
-                              trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
-                              onPressed: () {
-                                debugPrint('Button tapped!');
-                              },
-                              height: baseSize * 0.12,
-                              width: screenWidth * 0.7,
+                            Center(
+                              child: BuyEcm(
+                                text: 'Buy ECM',
+                                trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
+                                onPressed: () {
+                                  debugPrint('Button tapped!');
+                                },
+                                height: baseSize * 0.12,
+                                width: screenWidth * 0.7,
+                              ),
                             ),
 
 
-                            SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.030),
+                            Text(
+                              'Staking History',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
+                                fontSize: getResponsiveFontSize(context, 18),
+                                height: 1.6,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * 0.030),
 
                             Container(
                               width: double.infinity,
@@ -167,6 +213,7 @@ class _StakingScreenState extends State<StakingScreen> {
 
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Expanded(
                                     flex: 2,
@@ -183,11 +230,38 @@ class _StakingScreenState extends State<StakingScreen> {
                                     flex: 1,
                                     child: Align(
                                       alignment: Alignment.centerRight,
-                                      child: GestureDetector(
-
-                                          child: SvgPicture.asset('assets/icons/sortingList.svg',fit: BoxFit.contain,),
-
-                                      ),
+                                      child: PopupMenuButton<SortOption>(
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/sortingList.svg',
+                                          fit: BoxFit.contain,
+                                        ),
+                                        onSelected: (SortOption option) {
+                                          _sortData(option);
+                                        },
+                                        itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
+                                          const PopupMenuItem<SortOption>(
+                                            value: SortOption.dateLatest,
+                                            child: Text('Date: Latest First'),
+                                          ),
+                                          const PopupMenuItem<SortOption>(
+                                            value: SortOption.dateOldest,
+                                            child: Text('Date: Oldest First'),
+                                          ),
+                                          const PopupMenuItem<SortOption>(
+                                            value: SortOption.statusAsc,
+                                            child: Text('Status: A-Z'),
+                                          ),
+                                          const PopupMenuItem<SortOption>(
+                                            value: SortOption.statusDesc,
+                                            child: Text('Status: Z-A'),
+                                          ),
+                                        ],
+                                      )
+                                      //   (
+                                      //
+                                      //     child: SvgPicture.asset('assets/icons/sortingList.svg',fit: BoxFit.contain,),
+                                      //
+                                      // ),
                                     ),
                                   ),
                                 ],
@@ -504,173 +578,6 @@ class _StakingScreenState extends State<StakingScreen> {
 }
 
 
-
-
-class Frame1413377274 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 229,
-          height: 30,
-          padding: const EdgeInsets.all(10),
-          decoration: ShapeDecoration(
-            color: Color(0xFF101A29),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Color(0xFF141317)),
-              borderRadius: BorderRadius.circular(3),
-            ),
-            shadows: [
-              BoxShadow(
-                color: Color(0xFFC7E0FF),
-                blurRadius: 0,
-                offset: Offset(0.10, 0.50),
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Opacity(
-                opacity: 0.80,
-                child: Container(
-                  width: 9.36,
-                  height: 9.59,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 8.97,
-                          height: 8.97,
-                          decoration: ShapeDecoration(
-                            shape: OvalBorder(
-                              side: BorderSide(
-                                width: 1.20,
-                                strokeAlign: BorderSide.strokeAlignCenter,
-                                color: Color(0xFF7D8FA9),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 5),
-              Opacity(
-                opacity: 0.80,
-                child: Text(
-                  'search...',
-                  style: TextStyle(
-                    color: Color(0xFF7D8FA9),
-                    fontSize: 12,
-                    fontFamily: 'Poppins',
-                    height: 0.13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-
-class ResponsiveSearchField extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String>? onChanged;
-  final String hintText;
-  final String? svgAssetPath;
-
-  const ResponsiveSearchField({
-    Key? key,
-    required this.controller,
-    this.onChanged,
-    this.hintText = 'search...',this.svgAssetPath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    double containerWidth = screenWidth * 0.55;
-    double containerHeight = screenHeight * 0.040;
-    double iconSize = screenHeight * 0.0135;
-    double fontSize = screenHeight * 0.014;
-
-    return Container(
-      width: containerWidth,
-      height: containerHeight,
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-      decoration: ShapeDecoration(
-        color: const Color(0xFF101A29),
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFF141317)),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        shadows: const [
-          BoxShadow(
-            color: Color(0xFFC7E0FF),
-            blurRadius: 0,
-            offset: Offset(0.10, 0.50),
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // SvgPicture.asset('assets/icons/search.svg',fit:BoxFit.contain,),
-
-          Opacity(
-            opacity: 0.80,
-            child: SvgPicture.asset(
-              svgAssetPath!,
-              width: iconSize,
-              height: iconSize,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFF7D8FA9),
-                BlendMode.srcIn,
-              ),
-            ),
-          ),          SizedBox(width: screenWidth * 0.015),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              style: TextStyle(
-                color: const Color(0xFF7D8FA9),
-                fontSize: fontSize,
-                fontFamily: 'Poppins',
-              ),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                isCollapsed: true,
-                hintText: hintText,
-                hintStyle: TextStyle(
-                  color: const Color(0xFF7D8FA9).withOpacity(0.8),
-                  fontSize: fontSize,
-                  fontFamily: 'Poppins',
-                ),
-              ),
-              cursorColor: const Color(0xFF7D8FA9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 
 

@@ -96,7 +96,7 @@ class _BuyEcmState extends State<BuyEcm> {
                 )
                     : null,
                 color: _isPressed ? null : Colors.transparent,
-                borderRadius: BorderRadius.circular(24 - (_isPressed ? 0 : borderWidth)),
+                borderRadius: BorderRadius.circular(12 - (_isPressed ? 0 : borderWidth)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

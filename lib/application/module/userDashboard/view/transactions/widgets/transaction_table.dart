@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
+import '../../staking/widgets/transaction_details.dart';
 
  Widget buildTransactionTable(List<Map<String, dynamic>> transactionData, double screenWidth, BuildContext context) {
   double baseSize = screenWidth * 0.9;
@@ -131,8 +132,17 @@ import '../../../../../../framework/utils/status_styling_utils.dart';
                         child: IconButton(
                           icon: Icon(Icons.visibility_outlined, color: const Color(0xFF7EE4C2), size: getResponsiveFontSize(context, 18)),
                           onPressed: () {
+
+                            showDialog(
+                              context: context,
+                              builder: (_) => const TransactionDetailsDialog(),
+                            );
+
+
                             // Handle view details action
                             print('View details for ${data['TxnHash']}');
+
+
                           },
                           tooltip: 'View Details',
                         ),

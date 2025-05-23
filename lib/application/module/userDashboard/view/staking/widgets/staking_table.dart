@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
 
-Widget buildStakingTable(List<Map<String, String>> stakingData, double screenWidth, BuildContext context) {
+Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWidth, BuildContext context) {
   double baseSize = screenWidth * 0.9;
   double screenHeight = MediaQuery.of(context).size.height;
 

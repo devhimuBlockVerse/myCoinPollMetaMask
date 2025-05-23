@@ -1,24 +1,21 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
-
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/percentageSelectorComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
+import '../../../../../framework/utils/date_parser.dart';
+import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../domain/usecases/sort_data.dart';
 import 'widgets/staking_table.dart';
 
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
 
-// enum SortOption { dateDesc, statusAsc }
-// SortOption _currentSortOption = SortOption.dateDesc;
 
-enum SortOption { dateLatest, dateOldest, statusAsc, statusDesc }
 
-SortOption? _currentSort;
 
 class StakingScreen extends StatefulWidget {
   const StakingScreen({super.key});
@@ -29,12 +26,16 @@ class StakingScreen extends StatefulWidget {
 
 class _StakingScreenState extends State<StakingScreen> {
 
+  SortOption? _currentSort;
+  final SortDataUseCase _sortDataUseCase = SortDataUseCase();
+
 
   TextEditingController inputController = TextEditingController();
    TextEditingController _searchController = TextEditingController();
 
   String? _selectedDuration;
-  List<Map<String, String>> _filteredData = [];
+  // List<Map<String, String>> _filteredData = [];
+  List<Map<String, dynamic>> _filteredData = [];
 
 
    String _currentSelectedPercentage = dummyPercentageOptions[0];
@@ -56,26 +57,11 @@ class _StakingScreenState extends State<StakingScreen> {
       }).toList();
     });
   }
-  DateTime _parseDate(String dateStr) {
-    // Example: "May 10, 2025"
-    return DateFormat('MMMM d, yyyy').parse(dateStr);
-  }
+
   void _sortData(SortOption option) {
     setState(() {
       _currentSort = option;
-
-      _filteredData.sort((a, b) {
-        switch (option) {
-          case SortOption.dateLatest:
-            return _parseDate(b['Date']!).compareTo(_parseDate(a['Date']!));
-          case SortOption.dateOldest:
-            return _parseDate(a['Date']!).compareTo(_parseDate(b['Date']!));
-          case SortOption.statusAsc:
-            return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
-          case SortOption.statusDesc:
-            return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
-        }
-      });
+      _filteredData = _sortDataUseCase(_filteredData, option);
     });
   }
   @override
@@ -257,12 +243,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                           ),
                                         ],
                                       )
-                                      //   (
-                                      //
-                                      //     child: SvgPicture.asset('assets/icons/sortingList.svg',fit: BoxFit.contain,),
-                                      //
-                                      // ),
-                                    ),
+                                     ),
                                   ),
                                 ],
                               ),

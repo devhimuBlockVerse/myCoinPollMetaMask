@@ -15,8 +15,6 @@ import 'widgets/staking_table.dart';
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
 
 
-
-
 class StakingScreen extends StatefulWidget {
   const StakingScreen({super.key});
 

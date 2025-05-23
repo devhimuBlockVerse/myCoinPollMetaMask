@@ -22,10 +22,32 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
   SortTransactionHistoryOption? _currentSort;
   final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
-
   TextEditingController inputController = TextEditingController();
   TextEditingController _searchController = TextEditingController();
-    List<Map<String, dynamic>> _displayData = [];
+  List<Map<String, dynamic>> _displayData = [];
+
+
+
+  int selectedCard = 0;
+
+  final List<Map<String, dynamic>> cards = [
+    {
+      'title': 'Total\nTransactions',
+      'value': '125',
+      'colors': [Color(0xFF040C16), Color(0xFF172C4B)],
+    },
+    {
+      'title': 'Total\nEthereum',
+      'value': '125',
+      'colors': [Color(0xFF040C16), Color(0xFF172C4B)],
+    },
+    {
+      'title': 'Total\neCommerce',
+      'value': '100',
+      'colors': [Color(0xFF101A29), Color(0xFF172C4B)],
+    },
+  ];
+
 
 
   @override
@@ -35,7 +57,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
     _searchController.addListener(_applyFiltersAndSort);
 
   }
-
 
 
   void _applyFiltersAndSort() {
@@ -65,7 +86,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
 
 
-
   void _sortData(SortTransactionHistoryOption option) {
     setState(() {
       _currentSort = option;
@@ -91,6 +111,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     final bool isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
+
+
+
 
     return  Scaffold(
         extendBodyBehindAppBar: true,
@@ -142,6 +166,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             SizedBox(height: screenHeight * 0.01),
 
 
+                            Frame1413377275(),
+
+
+
+
+
+
+
                             SizedBox(height: screenHeight * 0.030),
                             Text(
                               'Recent Transactions',
@@ -156,6 +188,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             ),
                             SizedBox(height: screenHeight * 0.030),
 
+
+                            /// Search Controller with Data Sorting Button
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
@@ -183,6 +217,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                   ),
 
 
+                                  /// Data Sorting  Button
                                   Expanded(
                                     flex: 1,
                                     child: Align(
@@ -231,6 +266,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                             SizedBox(height: screenHeight * 0.016),
 
 
+                            /// Table View
                             ...[
 
                               _displayData.isNotEmpty
@@ -259,4 +295,177 @@ class _TransactionScreenState extends State<TransactionScreen> {
     );
   }
 
+
+
 }
+
+
+
+class Frame1413377275 extends StatelessWidget {
+  const Frame1413377275({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final containerWidth = screenWidth * 0.9;
+    final containerHeight = screenHeight * 0.1;
+    final minContainerHeight = screenHeight * 0.11;
+
+    final horizontalPadding = containerWidth * 0.04;
+    final itemSpacing = screenWidth * 0.02;
+    final itemWidth = (containerWidth - 2 * horizontalPadding - 2 * itemSpacing) / 3;
+    final itemHeight = containerHeight * 0.8;
+    final minItemHeight = screenHeight * 0.08;
+
+    double getResponsiveSize(double size) => size * (screenWidth / 360);
+    double getResponsiveRadius(double base) => base * (screenWidth / 360);
+
+    Widget _buildStatCard({
+      required String title,
+      required String value,
+      required LinearGradient gradient,
+      String? imageUrl,
+      Color? borderColor,
+    }) {
+      return Flexible(
+        fit: FlexFit.tight,
+        child: Container(
+          width: itemWidth,
+          height: itemHeight < minItemHeight ? minItemHeight : itemHeight,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+            ),
+          ),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  decoration: ShapeDecoration(
+                    gradient: gradient,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: borderColor ?? const Color(0xFF2B2D40),
+                      ),
+                      borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+                    ),
+                  ),
+                ),
+              ),
+              if (imageUrl != null)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+                    ),
+                  ),
+                ),
+              Positioned(
+                left: getResponsiveSize(6),
+                top: getResponsiveSize(5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: getResponsiveSize(12),
+                        fontFamily: 'Poppins',
+                        height: 1.2,
+                      ),
+                    ),
+                    SizedBox(height: getResponsiveSize(4)),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getResponsiveSize(16),
+                        fontFamily: 'Poppins',
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Container(
+          width: containerWidth,
+          height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: screenHeight * 0.015,
+          ),
+          decoration: ShapeDecoration(
+            color: const Color(0x66040C16),
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(width: 0.75, color: Color(0xFF277BF5)),
+              borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+            ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x7F010227),
+                blurRadius: 0,
+                offset: Offset(0, 0.75),
+                spreadRadius: 0,
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatCard(
+                title: 'Total \nTransactions',
+                value: '125',
+                gradient: const LinearGradient(
+                  begin: Alignment(0.99, 0.14),
+                  end: Alignment(-0.99, -0.14),
+                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                ),
+                imageUrl: "assets/icons/totalTransactionBg.png",
+              ),
+              SizedBox(width: itemSpacing),
+              _buildStatCard(
+                title: 'Total \nEthereum',
+                value: '125',
+                gradient: const LinearGradient(
+                  begin: Alignment(0.99, 0.14),
+                  end: Alignment(-0.99, -0.14),
+                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                ),
+                  imageUrl: "assets/icons/totalEthereumBG.png",
+              ),
+              SizedBox(width: itemSpacing),
+              _buildStatCard(
+                title: 'Total \neCommerce',
+                value: '100',
+                gradient: const LinearGradient(
+                  begin: Alignment(0.99, 0.14),
+                  end: Alignment(-0.99, -0.14),
+                  colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                ),
+                imageUrl: "assets/icons/totalEcommerceBG.png",
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+

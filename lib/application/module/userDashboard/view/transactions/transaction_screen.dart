@@ -132,7 +132,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
                             SizedBox(height: screenHeight * 0.030),
                             Text(
-                              'Staking History',
+                              'Recent Transactions',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',

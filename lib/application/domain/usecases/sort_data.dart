@@ -20,6 +20,8 @@ class SortDataUseCase {
           return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
         case SortOption.statusDesc:
           return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
+
+
       }
     });
     return sorted;

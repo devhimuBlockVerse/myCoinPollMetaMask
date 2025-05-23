@@ -42,3 +42,25 @@ StatusStyling getStatusStyling(String status) {
   }
 }
 
+
+ StatusStyling getTransactionStatusStyling(String status) {
+  if (status == 'In') {
+    return StatusStyling(
+      backgroundColor: const Color(0xFF1A3E39), // Dark green background
+      textColor: const Color(0xFF7EE4C2),       // Light green text
+      borderColor: const Color(0xFF7EE4C2).withOpacity(0.5),
+    );
+  } else if (status == 'Out') {
+    return StatusStyling(
+      backgroundColor: const Color(0xFF402B2B), // Dark red background
+      textColor: const Color(0xFFE47E7E),       // Light red text
+      borderColor: const Color(0xFFE47E7E).withOpacity(0.5),
+    );
+  }
+   return StatusStyling(
+    backgroundColor: Colors.grey.shade800,
+    textColor: Colors.white70,
+    borderColor: Colors.grey.shade600,
+  );
+}
+

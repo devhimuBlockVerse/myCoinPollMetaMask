@@ -123,11 +123,11 @@ class _StakingScreenState extends State<StakingScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            SizedBox(height: screenHeight * 0.01),
+                            // SizedBox(height: screenHeight * 0.01),
 
                             _header(),
 
-                            SizedBox(height: screenHeight * 0.04),
+                            SizedBox(height: screenHeight * 0.02),
 
                             _stakingDetails(),
                             SizedBox(height: screenHeight * 0.04),

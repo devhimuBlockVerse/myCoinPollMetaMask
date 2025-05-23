@@ -29,22 +29,18 @@ class _StakingScreenState extends State<StakingScreen> {
   SortOption? _currentSort;
   final SortDataUseCase _sortDataUseCase = SortDataUseCase();
 
-
   TextEditingController inputController = TextEditingController();
-   TextEditingController _searchController = TextEditingController();
-
+  TextEditingController _searchController = TextEditingController();
   String? _selectedDuration;
-  // List<Map<String, String>> _filteredData = [];
   List<Map<String, dynamic>> _filteredData = [];
-
-
-   String _currentSelectedPercentage = dummyPercentageOptions[0];
+  String _currentSelectedPercentage = dummyPercentageOptions[0];
 
 
   @override
   void initState() {
      super.initState();
      _filteredData = List.from(stakingData);
+     _searchController.addListener(_onSearchChanged);
 
   }
 
@@ -64,6 +60,7 @@ class _StakingScreenState extends State<StakingScreen> {
       _filteredData = _sortDataUseCase(_filteredData, option);
     });
   }
+
   @override
   void dispose() {
     inputController.dispose();

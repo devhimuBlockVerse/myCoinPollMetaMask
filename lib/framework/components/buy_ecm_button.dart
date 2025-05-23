@@ -61,6 +61,8 @@ class CustomGradientButton extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: gradientColors,
                 ),
+                borderRadius: BorderRadius.circular(12),
+
               ),
               child: Center(
 
@@ -105,9 +107,9 @@ class BuyEcmClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final Path path = Path();
-    const double notchWidth = 18;
-    const double notchHeight = 3;
-    const double cutSize = 8;
+    const double notchWidth = 0;
+    const double notchHeight = 0;
+    const double cutSize = 0;
 
     // Offset amounts
     const double topNotchOffset = 90; // move right

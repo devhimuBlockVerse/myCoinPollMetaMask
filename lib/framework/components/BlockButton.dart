@@ -54,6 +54,8 @@ class BlockButton extends StatelessWidget {
             gradient: LinearGradient(
               colors: gradientColors,
             ),
+            borderRadius: BorderRadius.circular(12),
+
           ),
           child: Center(
             child: Row(
@@ -98,9 +100,9 @@ class BlockButtonClipper extends CustomClipper<Path> {
     final Path path = Path();
 
     // Scaled based on size
-    final double cutSize = size.height * 0.25;
-    final double notchWidth = size.width * 0.1;
-    final double notchHeight = size.height * 0.08;
+    final double cutSize = size.height * 0.0;
+    final double notchWidth = size.width * 0.0;
+    final double notchHeight = size.height * 0.0;
 
     // Notch offsets
     final double topNotchOffset = size.width * 0.15;

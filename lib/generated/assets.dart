@@ -39,6 +39,7 @@ class Assets {
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
   static const String iconsBgRoadMapFrame = 'assets/icons/bgRoadMapFrame.png';
   static const String iconsBlockChainBg = 'assets/icons/blockChainBg.png';
+  static const String iconsBuildStatCardBG = 'assets/icons/buildStatCardBG.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCheck = 'assets/icons/check.svg';

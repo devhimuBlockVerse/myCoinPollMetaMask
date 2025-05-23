@@ -112,8 +112,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final bool isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
+    final containerWidth = screenWidth;
+    final containerHeight = screenHeight * 0.12;
+    final minContainerHeight = screenHeight * 0.13;
 
+    final horizontalPadding = containerWidth * 0.03;
+    final itemSpacing = screenWidth * 0.03;
 
+    double getResponsiveRadius(double base) => base * (screenWidth / 360);
 
 
     return  Scaffold(
@@ -140,7 +146,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   Align(
                     alignment: Alignment.topCenter,
                     child:  Text(
-                      'ECM Staking',
+                      'Transactions',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         color: Colors.white,
@@ -159,131 +165,201 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         vertical: screenHeight * 0.02,
                       ),
                       child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(height: screenHeight * 0.01),
+
+                        child: ConstrainedBox(
+
+                          constraints: BoxConstraints(
+                            minHeight: screenHeight - kToolbarHeight, // or screenHeight * 0.9
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(height: screenHeight * 0.01),
 
 
-                            Frame1413377275(),
 
+                              Container(
+                                width: double.infinity,
+                                height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-
-
-
-
-
-                            SizedBox(height: screenHeight * 0.030),
-                            Text(
-                              'Recent Transactions',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                                fontSize: getResponsiveFontSize(context, 18),
-                                height: 1.6,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: screenHeight * 0.030),
-
-
-                            /// Search Controller with Data Sorting Button
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Color(0xff040C16),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.02,
-                                  vertical:  screenHeight * 0.01
-                              ),
-
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: ResponsiveSearchField(
-                                      controller: _searchController,
-                                      // onChanged:  (value) => _onSearchChanged(),
-                                      onChanged:  (value) => _applyFiltersAndSort(),
-                                      svgAssetPath: 'assets/icons/search.svg',
-
-                                    ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF01090B),
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                    fit: BoxFit.fill,
+                                   ),
+                                  borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding,
+                                    vertical: screenHeight * 0.014,
                                   ),
-
-
-                                  /// Data Sorting  Button
-                                  Expanded(
-                                    flex: 1,
-                                    child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: PopupMenuButton<SortTransactionHistoryOption>(
-                                          icon: SvgPicture.asset(
-                                            'assets/icons/sortingList.svg',
-                                            fit: BoxFit.contain,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: _buildStatCard(
+                                          title: 'Total \nTransactions',
+                                          value: '125',
+                                          gradient: const LinearGradient(
+                                            begin: Alignment(0.99, 0.14),
+                                            end: Alignment(-0.99, -0.14),
+                                            colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                           ),
-                                          onSelected: (SortTransactionHistoryOption option) {
-                                            _sortData(option);
-                                          },
-                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.dateLatest,
-                                              child: Text('Date: Latest First'),
-                                            ),
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.dateOldest,
-                                              child: Text('Date: Oldest First'),
-                                            ),
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.statusAsc,
-                                              child: Text('Status: A-Z'),
-                                            ),
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.statusDesc,
-                                              child: Text('Status: Z-A'),
-                                            ),
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.amountAsc,
-                                              child: Text('Amount: Low to High'),
-                                            ),
-                                            const PopupMenuItem<SortTransactionHistoryOption>(
-                                              value: SortTransactionHistoryOption.amountDesc,
-                                              child: Text('Amount: High to Low'),
-                                            ),
-                                          ],
-                                        )
-                                    ),
+                                          imageUrl: "assets/icons/totalTransactionBg.png",
+                                        ),
+                                      ),
+                                      SizedBox(width: itemSpacing),
+                                      Expanded(
+                                        child: _buildStatCard(
+                                          title: 'Total \nEthereum',
+                                          value: '125',
+                                          gradient: const LinearGradient(
+                                            begin: Alignment(0.99, 0.14),
+                                            end: Alignment(-0.99, -0.14),
+                                            colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                          ),
+                                          imageUrl: "assets/icons/totalEthereumBG.png",
+                                        ),
+                                      ),
+                                      SizedBox(width: itemSpacing),
+                                      Expanded(
+                                        child: _buildStatCard(
+                                          title: 'Total \neCommerce',
+                                          value: '100',
+                                          gradient: const LinearGradient(
+                                            begin: Alignment(0.99, 0.14),
+                                            end: Alignment(-0.99, -0.14),
+                                            colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                          ),
+                                          imageUrl: "assets/icons/totalEcommerceBG.png",
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: screenHeight * 0.016),
-
-
-                            /// Table View
-                            ...[
-
-                              _displayData.isNotEmpty
-                                  ? buildTransactionTable(_displayData, screenWidth, context)
-                                  : Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(20),
-                                child: const Text(
-                                  'No data found',
-                                  style: TextStyle(color: Colors.white70),
                                 ),
                               ),
+
+
+
+
+
+
+                              SizedBox(height: screenHeight * 0.030),
+                              Text(
+                                'Recent Transactions',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: getResponsiveFontSize(context, 18),
+                                  height: 1.6,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight * 0.030),
+
+
+                              /// Search Controller with Data Sorting Button
+                              Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff040C16),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.02,
+                                    vertical:  screenHeight * 0.01
+                                ),
+
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: ResponsiveSearchField(
+                                        controller: _searchController,
+                                        // onChanged:  (value) => _onSearchChanged(),
+                                        onChanged:  (value) => _applyFiltersAndSort(),
+                                        svgAssetPath: 'assets/icons/search.svg',
+
+                                      ),
+                                    ),
+
+
+                                    /// Data Sorting  Button
+                                    Expanded(
+                                      flex: 1,
+                                      child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: PopupMenuButton<SortTransactionHistoryOption>(
+                                            icon: SvgPicture.asset(
+                                              'assets/icons/sortingList.svg',
+                                              fit: BoxFit.contain,
+                                            ),
+                                            onSelected: (SortTransactionHistoryOption option) {
+                                              _sortData(option);
+                                            },
+                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.dateLatest,
+                                                child: Text('Date: Latest First'),
+                                              ),
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.dateOldest,
+                                                child: Text('Date: Oldest First'),
+                                              ),
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.statusAsc,
+                                                child: Text('Status: A-Z'),
+                                              ),
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.statusDesc,
+                                                child: Text('Status: Z-A'),
+                                              ),
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.amountAsc,
+                                                child: Text('Amount: Low to High'),
+                                              ),
+                                              const PopupMenuItem<SortTransactionHistoryOption>(
+                                                value: SortTransactionHistoryOption.amountDesc,
+                                                child: Text('Amount: High to Low'),
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              SizedBox(height: screenHeight * 0.016),
+
+
+                              /// Table View
+                              ...[
+
+                                _displayData.isNotEmpty
+                                    ? buildTransactionTable(_displayData, screenWidth, context)
+                                    : Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(20),
+                                  child: const Text(
+                                    'No data found',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                ),
+                              ],
+
+
+
                             ],
-
-
-
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -296,176 +372,187 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
 
+  //
+  // Widget _buildStatCard({
+  //   required String title,
+  //   required String value,
+  //   required LinearGradient gradient,
+  //   String? imageUrl,
+  //   Color? borderColor,
+  // }) {
+  //   final screenWidth = MediaQuery.of(context).size.width;
+  //   final screenHeight = MediaQuery.of(context).size.height;
+  //
+  //   final containerWidth = screenWidth * 0.9;
+  //   final containerHeight = screenHeight * 0.1;
+  //   final minContainerHeight = screenHeight * 0.11;
+  //
+  //   final horizontalPadding = containerWidth * 0.04;
+  //   final itemSpacing = screenWidth * 0.02;
+  //   final itemWidth = (containerWidth - 2 * horizontalPadding - 2 * itemSpacing) / 3;
+  //   final itemHeight = containerHeight * 0.8;
+  //   final minItemHeight = screenHeight * 0.10;
+  //
+  //   double getResponsiveSize(double size) => size * (screenWidth / 360);
+  //   double getResponsiveRadius(double base) => base * (screenWidth / 360);
+  //
+  //
+  //   return Column(
+  //     children: [
+  //       Container(
+  //         width: itemWidth,
+  //         height: itemHeight < minItemHeight ? minItemHeight : itemHeight,
+  //         clipBehavior: Clip.antiAliasWithSaveLayer,
+  //         decoration: ShapeDecoration(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+  //           ),
+  //         ),
+  //
+  //         child: Stack(
+  //           children: [
+  //             Positioned.fill(
+  //               child: Container(
+  //                 decoration: ShapeDecoration(
+  //                   gradient: gradient,
+  //                   shape: RoundedRectangleBorder(
+  //                     side: BorderSide(
+  //                       width: 1,
+  //                       color: borderColor ?? const Color(0xFF2B2D40),
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             if (imageUrl != null)
+  //               Positioned.fill(
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     image: DecorationImage(
+  //                       image: AssetImage(imageUrl),
+  //                       fit: BoxFit.fill,
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+  //                   ),
+  //                 ),
+  //               ),
+  //             Positioned(
+  //               left: getResponsiveSize(6),
+  //               top: getResponsiveSize(5),
+  //               child: Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Text(
+  //                     title,
+  //                     style: TextStyle(
+  //                       color: Colors.white.withOpacity(0.6),
+  //                       // fontSize: getResponsiveSize(12),
+  //                       fontSize: getResponsiveFontSize(context,12),
+  //                       fontFamily: 'Poppins',
+  //                       fontWeight: FontWeight.w400,
+  //                       height: 1.6,
+  //                     ),
+  //                   ),
+  //                   SizedBox(height: getResponsiveSize(4)),
+  //                   Text(
+  //                     value,
+  //                     style: TextStyle(
+  //                       color: Colors.white,
+  //                       fontSize: getResponsiveFontSize(context,16),
+  //                       fontFamily: 'Poppins',
+  //                       fontWeight: FontWeight.w600,
+  //                       height: 1.3,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-}
-
-
-
-class Frame1413377275 extends StatelessWidget {
-  const Frame1413377275({super.key});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStatCard({
+    required String title,
+    required String value,
+    required LinearGradient gradient,
+    String? imageUrl,
+    Color? borderColor,
+  }) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final containerWidth = screenWidth * 0.9;
-    final containerHeight = screenHeight * 0.1;
-    final minContainerHeight = screenHeight * 0.11;
+     final cardWidth = screenWidth / 3.5;
+    final cardHeight = screenHeight * 0.13;
+    final borderRadius = screenWidth * 0.02;
+    final padding = screenWidth * 0.025;
 
-    final horizontalPadding = containerWidth * 0.04;
-    final itemSpacing = screenWidth * 0.02;
-    final itemWidth = (containerWidth - 2 * horizontalPadding - 2 * itemSpacing) / 3;
-    final itemHeight = containerHeight * 0.8;
-    final minItemHeight = screenHeight * 0.08;
-
-    double getResponsiveSize(double size) => size * (screenWidth / 360);
-    double getResponsiveRadius(double base) => base * (screenWidth / 360);
-
-    Widget _buildStatCard({
-      required String title,
-      required String value,
-      required LinearGradient gradient,
-      String? imageUrl,
-      Color? borderColor,
-    }) {
-      return Flexible(
-        fit: FlexFit.tight,
-        child: Container(
-          width: itemWidth,
-          height: itemHeight < minItemHeight ? minItemHeight : itemHeight,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
+    return Container(
+      width: cardWidth,
+      height: cardHeight,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        gradient: gradient,
+        border: Border.all(
+          color: borderColor ?? const Color(0xFF2B2D40),
+          width: 1,
+        ),
+        image: imageUrl != null
+            ? DecorationImage(
+          image: AssetImage(imageUrl),
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        )
+            : null,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              flex: 3,
+              child: Text(
+                title,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontSize:getResponsiveFontSize(context, 12),
+                  color: Colors.white.withOpacity(0.8),
+                  fontWeight: FontWeight.w500,
+                  height: 1.3,
+                ),
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Container(
-                  decoration: ShapeDecoration(
-                    gradient: gradient,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: borderColor ?? const Color(0xFF2B2D40),
-                      ),
-                      borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
-                    ),
+            SizedBox(height: screenHeight * 0.003),
+            Flexible(
+              flex: 2,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  value,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize:getResponsiveFontSize(context, 16),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ),
-              if (imageUrl != null)
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(imageUrl),
-                        fit: BoxFit.cover,
-                      ),
-                      borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
-                    ),
-                  ),
-                ),
-              Positioned(
-                left: getResponsiveSize(6),
-                top: getResponsiveSize(5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: getResponsiveSize(12),
-                        fontFamily: 'Poppins',
-                        height: 1.2,
-                      ),
-                    ),
-                    SizedBox(height: getResponsiveSize(4)),
-                    Text(
-                      value,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: getResponsiveSize(16),
-                        fontFamily: 'Poppins',
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      children: [
-        Container(
-          width: containerWidth,
-          height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
-          padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding,
-            vertical: screenHeight * 0.015,
-          ),
-          decoration: ShapeDecoration(
-            color: const Color(0x66040C16),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 0.75, color: Color(0xFF277BF5)),
-              borderRadius: BorderRadius.circular(getResponsiveRadius(3)),
             ),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x7F010227),
-                blurRadius: 0,
-                offset: Offset(0, 0.75),
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildStatCard(
-                title: 'Total \nTransactions',
-                value: '125',
-                gradient: const LinearGradient(
-                  begin: Alignment(0.99, 0.14),
-                  end: Alignment(-0.99, -0.14),
-                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                ),
-                imageUrl: "assets/icons/totalTransactionBg.png",
-              ),
-              SizedBox(width: itemSpacing),
-              _buildStatCard(
-                title: 'Total \nEthereum',
-                value: '125',
-                gradient: const LinearGradient(
-                  begin: Alignment(0.99, 0.14),
-                  end: Alignment(-0.99, -0.14),
-                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                ),
-                  imageUrl: "assets/icons/totalEthereumBG.png",
-              ),
-              SizedBox(width: itemSpacing),
-              _buildStatCard(
-                title: 'Total \neCommerce',
-                value: '100',
-                gradient: const LinearGradient(
-                  begin: Alignment(0.99, 0.14),
-                  end: Alignment(-0.99, -0.14),
-                  colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                ),
-                imageUrl: "assets/icons/totalEcommerceBG.png",
-              ),
-            ],
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
+
+
+
+
 }
+
+
 

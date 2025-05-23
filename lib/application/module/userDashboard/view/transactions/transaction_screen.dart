@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/framework/components/buy_Ecm.dart';
-import 'package:provider/provider.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/widgets/transaction_table.dart';
 
- import 'package:intl/intl.dart';
-
-import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
-import '../../../../../framework/components/statke_now_animation_button.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../../framework/utils/routes/route_names.dart';
 import '../../../../data/staking_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
-import '../../../../presentation/viewmodel/wallet_view_model.dart';
-import '../staking/widgets/staking_table.dart';
 
 
 class TransactionScreen extends StatefulWidget {
@@ -29,44 +20,65 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
 
 
-  SortOption? _currentSort;
-  final SortDataUseCase _sortDataUseCase = SortDataUseCase();
+  SortTransactionHistoryOption? _currentSort;
+  final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
 
   TextEditingController inputController = TextEditingController();
   TextEditingController _searchController = TextEditingController();
-  String? _selectedDuration;
-  List<Map<String, dynamic>> _filteredData = [];
+    List<Map<String, dynamic>> _displayData = [];
 
 
   @override
   void initState() {
     super.initState();
-    _filteredData = List.from(stakingData);
-    _searchController.addListener(_onSearchChanged);
+     _displayData = List.from(transactionData);
+    _searchController.addListener(_applyFiltersAndSort);
 
   }
 
-  void _onSearchChanged() {
 
+
+  void _applyFiltersAndSort() {
+    List<Map<String, dynamic>> currentFilteredData = List.from(transactionData);
     String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredData = stakingData.where((row){
-        return row.values.any((value) => value.toLowerCase().contains(query));
+
+    //  search filter
+    if (query.isNotEmpty) {
+      currentFilteredData = currentFilteredData.where((row) {
+        return (row['TxnHash']?.toLowerCase().contains(query) ?? false) ||
+            (row['Status']?.toLowerCase().contains(query) ?? false) ||
+            (row['Amount']?.toLowerCase().contains(query) ?? false) ||
+            (row['DateTime']?.toLowerCase().contains(query) ?? false) ||
+            (row['SL']?.toLowerCase().contains(query) ?? false);
       }).toList();
+    }
+
+    //  sorting if a sort option is selected
+    if (_currentSort != null) {
+      currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
+    }
+
+    setState(() {
+      _displayData = currentFilteredData;
     });
   }
 
-  void _sortData(SortOption option) {
+
+
+
+  void _sortData(SortTransactionHistoryOption option) {
     setState(() {
       _currentSort = option;
-      _filteredData = _sortDataUseCase(_filteredData, option);
-    });
+      _applyFiltersAndSort();
+     });
   }
 
   @override
   void dispose() {
     inputController.dispose();
     _searchController.dispose();
+    _searchController.removeListener(_applyFiltersAndSort);
+
     super.dispose();
   }
 
@@ -163,7 +175,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     flex: 2,
                                     child: ResponsiveSearchField(
                                       controller: _searchController,
-                                      onChanged:  (value) => _onSearchChanged(),
+                                      // onChanged:  (value) => _onSearchChanged(),
+                                      onChanged:  (value) => _applyFiltersAndSort(),
                                       svgAssetPath: 'assets/icons/search.svg',
 
                                     ),
@@ -174,30 +187,38 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                     flex: 1,
                                     child: Align(
                                         alignment: Alignment.centerRight,
-                                        child: PopupMenuButton<SortOption>(
+                                        child: PopupMenuButton<SortTransactionHistoryOption>(
                                           icon: SvgPicture.asset(
                                             'assets/icons/sortingList.svg',
                                             fit: BoxFit.contain,
                                           ),
-                                          onSelected: (SortOption option) {
+                                          onSelected: (SortTransactionHistoryOption option) {
                                             _sortData(option);
                                           },
-                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.dateLatest,
+                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.dateLatest,
                                               child: Text('Date: Latest First'),
                                             ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.dateOldest,
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.dateOldest,
                                               child: Text('Date: Oldest First'),
                                             ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.statusAsc,
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.statusAsc,
                                               child: Text('Status: A-Z'),
                                             ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.statusDesc,
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.statusDesc,
                                               child: Text('Status: Z-A'),
+                                            ),
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.amountAsc,
+                                              child: Text('Amount: Low to High'),
+                                            ),
+                                            const PopupMenuItem<SortTransactionHistoryOption>(
+                                              value: SortTransactionHistoryOption.amountDesc,
+                                              child: Text('Amount: High to Low'),
                                             ),
                                           ],
                                         )
@@ -211,8 +232,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
 
                             ...[
-                              _filteredData.isNotEmpty
-                                  ? buildStakingTable(_filteredData, screenWidth, context)
+
+                              _displayData.isNotEmpty
+                                  ? buildTransactionTable(_displayData, screenWidth, context)
                                   : Container(
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.all(20),

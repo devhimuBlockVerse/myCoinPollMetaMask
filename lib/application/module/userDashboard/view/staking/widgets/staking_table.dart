@@ -47,7 +47,7 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
             child: DataTable2(
               columnSpacing: baseSize * 0.09,
               horizontalMargin: baseSize * 0.002,
-              dataRowHeight: baseSize * 0.08,
+              dataRowHeight: baseSize * 0.12,
               headingRowHeight: baseSize * 0.06,
               dividerThickness: 0,
               headingRowDecoration: const BoxDecoration(

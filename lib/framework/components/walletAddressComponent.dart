@@ -6,16 +6,16 @@ class WalletAddressComponent extends StatelessWidget {
   final String address;
 
   const WalletAddressComponent({
-    Key? key,
+    super.key,
     required this.address,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     const Color textColor = Colors.white;
 
     final Size screenSize = MediaQuery.of(context).size;
-    final double baseWidth = 375.0;
+    const double baseWidth = 375.0;
     final double scaleFactor = screenSize.width / baseWidth;
 
     final double iconSize = 15.0 * scaleFactor.clamp(0.85, 1.4);
@@ -23,8 +23,8 @@ class WalletAddressComponent extends StatelessWidget {
     final double verticalPadding = 14.0 * scaleFactor.clamp(0.85, 1.4); // reduced
 
     return Container(
-      decoration: BoxDecoration(
-        image: const DecorationImage(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
           image: AssetImage('assets/icons/Medium.png'),
           fit: BoxFit.fill,
         ),

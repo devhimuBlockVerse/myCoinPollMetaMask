@@ -11,12 +11,12 @@ class LearnAndEarnContainer extends StatelessWidget {
   final VoidCallback onTap;
 
   const LearnAndEarnContainer({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.imagePath,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +66,9 @@ class LearnAndEarnContainer extends StatelessWidget {
                       iconSize: baseSize * 0.020,
                       iconColor: Colors.white,
                       onTap: () => print("Badge tapped"),
-                      gradientColors: [
-                        const Color(0xFF00C6FF),
-                        const Color(0xFF0072FF),
+                      gradientColors: const [
+                        Color(0xFF00C6FF),
+                        Color(0xFF0072FF),
                       ],
                     ),
                   ),

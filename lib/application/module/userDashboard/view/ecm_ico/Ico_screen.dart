@@ -100,8 +100,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           child: Container(
               width: screenWidth,
               height: screenHeight,
-              decoration: BoxDecoration(
-                color: const Color(0xFF01090B),
+              decoration: const BoxDecoration(
+                color: Color(0xFF01090B),
                 image: DecorationImage(
                   image: AssetImage('assets/icons/starGradientBg.png'),
                   fit: BoxFit.cover,
@@ -178,7 +178,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
             width: screenWidth,
              decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
+              gradient: const LinearGradient(
                 colors: [
                   Color(0xff010219),
                   Color(0xff050A7F)],
@@ -186,7 +186,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                 end: Alignment(1.0, 1.0),
                 stops: [0.68, 1.0],
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Color(0x80FFFFFF),
                   offset: Offset(0, 1),
@@ -399,7 +399,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                           CustomLabeledInputField(
                             labelText: 'Your Address:',
-                            hintText: '${walletVM.walletAddress}',
+                            hintText: walletVM.walletAddress,
                             controller: readingMoreController,
                             isReadOnly: true,
                           ),
@@ -548,7 +548,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Enter a valid ECM amount')),
+                              const SnackBar(content: Text('Enter a valid ECM amount')),
                             );
                             return;
                           }
@@ -574,13 +574,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Purchase successful')),
+                            const SnackBar(content: Text('Purchase successful')),
                           );
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
                         }
                       },
-                      gradientColors: [
+                      gradientColors: const [
                         Color(0xFF2D8EFF),
                         Color(0xFF2EE4A4)
                       ],
@@ -592,7 +592,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     //       :
                       DisconnectButton(
                         label: 'Disconnect',
-                        color: Color(0xffE04043),
+                        color: const Color(0xffE04043),
                         icon: 'assets/icons/disconnected.svg',
                         onPressed: () async {
                           setState(() {

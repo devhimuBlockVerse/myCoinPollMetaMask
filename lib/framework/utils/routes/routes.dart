@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/wallet_login_screen.dart';
@@ -32,7 +31,7 @@ class Routes {
 
       case RoutesName.applyForListing:
             return MaterialPageRoute(
-                builder: (BuildContext context) =>  ApplyForListingScreen());
+                builder: (BuildContext context) =>  const ApplyForListingScreen());
 
 
       default:

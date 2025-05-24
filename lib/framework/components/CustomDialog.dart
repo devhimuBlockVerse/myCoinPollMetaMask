@@ -77,7 +77,7 @@ class CustomDialog extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         // Dynamic Items
-                        ...items.map((item) => _buildItem(context, item.icon, item.text)).toList(),
+                        ...items.map((item) => _buildItem(context, item.icon, item.text)),
                       ],
                     ),
                   ),

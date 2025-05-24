@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 
 class BlockButton extends StatelessWidget {
@@ -38,7 +40,7 @@ class BlockButton extends StatelessWidget {
      final calculatedIconSize = iconSize ?? buttonHeight * 0.6;
 
      final calculatedFontSize = buttonHeight * 0.4;
-    final effectiveTextStyle = (textStyle ?? TextStyle())
+    final effectiveTextStyle = (textStyle ?? const TextStyle())
         .copyWith(
       fontSize: textStyle?.fontSize ?? calculatedFontSize,
       color: textStyle?.color ?? Colors.white,
@@ -54,7 +56,7 @@ class BlockButton extends StatelessWidget {
             gradient: LinearGradient(
               colors: gradientColors,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(9),
 
           ),
           child: Center(
@@ -74,11 +76,12 @@ class BlockButton extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                SizedBox(width: buttonWidth * 0.03),
 
                 if (iconPath != null)
                   Transform.rotate(
                     angle: iconRotation * math.pi / 180,
-                    child: Image.asset(
+                    child: SvgPicture.asset(
                       iconPath!,
                       width: calculatedIconSize,
                       height: calculatedIconSize,

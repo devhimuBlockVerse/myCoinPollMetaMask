@@ -84,7 +84,7 @@ import 'transaction_details.dart';
                             onTap: () {
                               Clipboard.setData(ClipboardData(text: data['TxnHash']));
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                                const SnackBar(
                                   content: Text('TxnHash copied to clipboard'),
                                   duration: Duration(seconds: 1),
                                 ),

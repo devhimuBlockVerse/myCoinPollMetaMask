@@ -5,10 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web3dart/web3dart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../framework/utils/routes/route_names.dart';
 
 class WalletViewModel extends ChangeNotifier {
    ReownAppKitModal? appKitModal;
@@ -92,13 +90,13 @@ class WalletViewModel extends ChangeNotifier {
       appKitModal!.onModalUpdate.subscribe((ModalConnect? event){
         print("Modal Update ; ${event.toString()}");
 
-        if(event != null && event.session != null){
+        if(event != null){
           _isConnected = true;
 
           final chainId =  appKitModal!.selectedChain?.chainId;
           if(chainId != null){
             final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-            final updatedAddress = event.session!.getAddress(namespace);
+            final updatedAddress = event.session.getAddress(namespace);
 
             if(updatedAddress != null && updatedAddress != _walletAddress){
               _walletAddress = updatedAddress;
@@ -124,14 +122,14 @@ class WalletViewModel extends ChangeNotifier {
         notifyListeners();
       });
       appKitModal!.onSessionExpireEvent.subscribe((event)async{
-        print("Session expired: ${event?.topic}");
+        print("Session expired: ${event.topic}");
         _isConnected = false;
         _walletAddress = '';
         await reset();
         notifyListeners();
       });
       appKitModal!.onSessionUpdateEvent.subscribe((event)async{
-        print("Session Update : ${event?.topic}");
+        print("Session Update : ${event.topic}");
 
         final chainId = appKitModal!.selectedChain!.chainId;
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
@@ -459,7 +457,7 @@ class WalletViewModel extends ChangeNotifier {
        );
        await launchUrl(metaMaskUrl,);
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
       final result = await appKitModal!.requestWriteContract(
           topic: appKitModal!.session!.topic,
@@ -600,14 +598,14 @@ class WalletViewModel extends ChangeNotifier {
       final chainID = appKitModal!.selectedChain!.chainId;
       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
 
-      final referrerAddress = "0x0000000000000000000000000000000000000000";
+      const referrerAddress = "0x0000000000000000000000000000000000000000";
 
 
       final metaMaskUrl = Uri.parse('metamask://dapp/exampleapp',);
       await launchUrl(metaMaskUrl,);
 
 
-       await Future.delayed(Duration(seconds: 3));
+       await Future.delayed(const Duration(seconds: 3));
 
       final result = await appKitModal!.requestWriteContract(
           topic: appKitModal!.session!.topic,
@@ -669,7 +667,7 @@ class WalletViewModel extends ChangeNotifier {
       final chainID = appKitModal!.selectedChain!.chainId;
       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
 
-      final referrerAddress = "0x0000000000000000000000000000000000000000";
+      const referrerAddress = "0x0000000000000000000000000000000000000000";
 
 
       final metaMaskUrl = Uri.parse(
@@ -677,7 +675,7 @@ class WalletViewModel extends ChangeNotifier {
       );
       await launchUrl(metaMaskUrl,);
 
-      await Future.delayed(Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 3));
 
       final result = await appKitModal!.requestWriteContract(
           topic: appKitModal!.session!.topic,

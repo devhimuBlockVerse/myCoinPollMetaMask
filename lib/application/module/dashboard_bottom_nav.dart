@@ -22,11 +22,11 @@ class DashboardBottomNavBar extends StatefulWidget {
 
 class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> with TickerProviderStateMixin {
   final List<Widget> _pages = [
-    DashboardScreen(),
-    ECMIcoScreen(),
-    StakingScreen(),
-    TransactionScreen(),
-    ProfileScreen(),
+    const DashboardScreen(),
+    const ECMIcoScreen(),
+    const StakingScreen(),
+    const TransactionScreen(),
+    const ProfileScreen(),
   ];
 
   final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Profile'];
@@ -44,7 +44,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> with Tick
       context: context,
       builder: (context) {
         return Theme(
-          data: ThemeData(dialogBackgroundColor: Colors.transparent),
+          data: ThemeData(dialogTheme: const DialogThemeData(backgroundColor: Colors.transparent)),
           child: AlertDialog(
             contentPadding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.02,

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/news/trending_screen.dart';
 
 import '../../../../framework/components/BlogCompoment.dart';
 import '../../../../framework/components/CardNewsComponent.dart';
-import '../../../data/services/BlogServices.dart';
- import 'package:http/http.dart' as http;
-import 'package:xml/xml.dart' as xml;
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -62,8 +58,8 @@ class _NewsScreenState extends State<NewsScreen> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
-            color: const Color(0xFF01090B),
+          decoration: const BoxDecoration(
+            color: Color(0xFF01090B),
             image: DecorationImage(
               // image: AssetImage('assets/icons/gradientBgImage.png'),
               // fit: BoxFit.contain,
@@ -365,7 +361,7 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
                 onPressed: () {},
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  minimumSize: Size(0, 0),
+                  minimumSize: const Size(0, 0),
                   tapTargetSize:
                       MaterialTapTargetSize
                           .shrinkWrap,
@@ -392,7 +388,7 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
       /// ✅ Add a tiny spacing to control vertical gap
 
         // GridView section
-        Container(
+        SizedBox(
           width: double.infinity,
           child: GridView.builder(
             itemCount: blogList.length,

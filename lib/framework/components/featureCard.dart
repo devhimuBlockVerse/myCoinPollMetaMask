@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 class FeatureCard extends StatelessWidget {
   final String iconPath;
@@ -9,13 +10,13 @@ class FeatureCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const FeatureCard({
-    Key? key,
+    super.key,
     required this.iconPath,
     required this.title,
     required this.description,
     this.isSvg = false,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +39,10 @@ class FeatureCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Color(0x33FFFFFF),
+            color: const Color(0x33FFFFFF),
             width: 1,
           ),
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
               Color(0x22FFFFFF),
               Colors.transparent,
@@ -50,7 +51,7 @@ class FeatureCard extends StatelessWidget {
             end: Alignment.centerRight,
             stops: [0.0, 0.09],
           ),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Color(0x33000000),
               blurRadius: 2,
@@ -60,7 +61,8 @@ class FeatureCard extends StatelessWidget {
           ],
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
              isSvg
@@ -85,10 +87,11 @@ class FeatureCard extends StatelessWidget {
                     title,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: titleFontSize,
+                      // fontSize: titleFontSize,
+                      fontSize: getResponsiveFontSize(context, 14),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w500,
-                      height: 1.2, // Less vertical gap
+                      height: 1.6, // Less vertical gap
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
@@ -98,10 +101,11 @@ class FeatureCard extends StatelessWidget {
                       description,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: descFontSize,
+                        // fontSize: descFontSize,
+                        fontSize: getResponsiveFontSize(context, 12),
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
-                        height: 1.2,
+                        height: 1.6,
                       ),
                     ),
                   ),

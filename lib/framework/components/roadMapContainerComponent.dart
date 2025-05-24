@@ -19,7 +19,7 @@ class RoadmapContainerComponent extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final baseSize = MediaQuery.of(context).size.shortestSide;
 
-    final double widthRatio = 0.85;
+    const double widthRatio = 0.85;
     final double imageWidth = screenWidth * widthRatio;
     final double yearImageWidth = baseSize * 0.21;
     final double yearImageHeight = baseSize * 0.21;
@@ -49,7 +49,7 @@ class RoadmapContainerComponent extends StatelessWidget {
                 child: Container(
                         width: yearImageWidth,
                         height: yearImageHeight,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/icons/yearCircular.png'),
                       fit: BoxFit.fitWidth,
@@ -161,12 +161,12 @@ class CheckboxWithLabel extends StatelessWidget {
   final double containerHeight;
 
   const CheckboxWithLabel({
-    Key? key,
+    super.key,
     required this.labelText,
     required this.isChecked,
     required this.onChanged,
     required this.containerHeight,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

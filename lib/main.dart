@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:mycoinpoll_metamask/application/module/dashboard_bottom_nav.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'application/data/services/my_audio_handler.dart';
 import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -26,7 +23,7 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Set system bar style globally (transparent + white icons)
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
@@ -62,8 +59,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home:  FeaturesScreen(),
-        // home:  BottomNavBar(),
-        home:  DashboardBottomNavBar(),
+        home:  const BottomNavBar(),
+        // home:  DashboardBottomNavBar(),
         // onGenerateRoute: Routes.generateRoute,
         // initialRoute: RoutesName.walletLogin,
 

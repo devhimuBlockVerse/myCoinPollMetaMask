@@ -9,11 +9,11 @@ class PercentageSelectorComponent extends StatefulWidget {
   final String initialSelection;
 
   const PercentageSelectorComponent({
-    Key? key,
+    super.key,
     required this.options,
     required this.onSelected,
     required this.initialSelection,
-  }) : super(key: key);
+  });
 
   @override
   State<PercentageSelectorComponent> createState() => _PercentageSelectorComponentState();

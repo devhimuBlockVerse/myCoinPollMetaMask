@@ -5,18 +5,18 @@ class GradientButton extends StatefulWidget {
   final VoidCallback? onPressed;
 
   const GradientButton({
-    Key? key,
+    super.key,
     required this.text,
     this.trailingIcon,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   _GradientButtonState createState() => _GradientButtonState();
 }
 
 class _GradientButtonState extends State<GradientButton> {
-  List<Color> _colors = [
+  final List<Color> _colors = [
     const Color(0xFF2D8EFF),
     const Color(0xFF0090DE),
     const Color(0xFF2EE4A4),
@@ -75,7 +75,7 @@ class _GradientButtonState extends State<GradientButton> {
                   fit: BoxFit.scaleDown,
                   child: Text(
                     widget.text,
-                    style:  TextStyle(
+                    style:  const TextStyle(
                       fontFamily: 'SansSerif',
                       fontWeight: FontWeight.w700,
                       // fontSize: screenWidth * 0.045 * textScale, // responsive text

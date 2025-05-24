@@ -23,7 +23,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   SortTransactionHistoryOption? _currentSort;
   final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
   TextEditingController inputController = TextEditingController();
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _displayData = [];
 
 
@@ -34,17 +34,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
     {
       'title': 'Total\nTransactions',
       'value': '125',
-      'colors': [Color(0xFF040C16), Color(0xFF172C4B)],
+      'colors': [const Color(0xFF040C16), const Color(0xFF172C4B)],
     },
     {
       'title': 'Total\nEthereum',
       'value': '125',
-      'colors': [Color(0xFF040C16), Color(0xFF172C4B)],
+      'colors': [const Color(0xFF040C16), const Color(0xFF172C4B)],
     },
     {
       'title': 'Total\neCommerce',
       'value': '100',
-      'colors': [Color(0xFF101A29), Color(0xFF172C4B)],
+      'colors': [const Color(0xFF101A29), const Color(0xFF172C4B)],
     },
   ];
 
@@ -131,8 +131,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
           child: Container(
               width: screenWidth,
               height: screenHeight,
-              decoration: BoxDecoration(
-                color: const Color(0xFF01090B),
+              decoration: const BoxDecoration(
+                color: Color(0xFF01090B),
                 image: DecorationImage(
                   image: AssetImage('assets/icons/starGradientBg.png'),
                   fit: BoxFit.cover,
@@ -185,7 +185,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF01090B),
-                                  image: DecorationImage(
+                                  image: const DecorationImage(
                                     image: AssetImage('assets/icons/buildStatCardBG.png'),
                                     fit: BoxFit.fill,
                                    ),
@@ -267,7 +267,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                               Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Color(0xff040C16),
+                                  color: const Color(0xff040C16),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 padding: EdgeInsets.symmetric(

@@ -14,6 +14,7 @@ class Assets {
   static const String assetsAbiSaleContractABI = 'assets/abi/SaleContractABI.json';
   static const String assetsAppIcon = 'assets/app_icon.png';
   static const String assetsIconsAddSourceImage = 'assets/icons/addSourceImage.png';
+  static const String assetsIconsArrowIcon = 'assets/icons/arrowIcon.svg';
   static const String assetsIconsCopyImg = 'assets/icons/copyImg.svg';
   static const String assetsIconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String assetsIconsFrame = 'assets/icons/frame.png';
@@ -55,6 +56,7 @@ class Assets {
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
+  static const String iconsDialogFrame = 'assets/icons/dialogFrame.png';
   static const String iconsDisconnected = 'assets/icons/disconnected.svg';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
@@ -145,6 +147,7 @@ class Assets {
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsViewTokenFrameBg = 'assets/icons/viewTokenFrameBg.png';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';

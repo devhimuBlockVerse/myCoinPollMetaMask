@@ -158,7 +158,7 @@ class PaperClipper extends CustomPainter {
     canvas.drawPath(path, fillPaint);
 
     // Gradient border
-    final gradient = LinearGradient(
+    final gradient = const LinearGradient(
       colors: [Color(0xff1CD494), Color(0xff2680EF)],
     ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 

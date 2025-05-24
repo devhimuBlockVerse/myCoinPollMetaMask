@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class PieChartWidget extends StatefulWidget {
+  const PieChartWidget({super.key});
+
   @override
   State<StatefulWidget> createState() => _PieChartWidgetState();
 }
@@ -57,7 +57,7 @@ class _PieChartWidgetState extends State {
         PieChartSectionData(
           color: color,
           value: percentage,
-          title: '${value.toStringAsFixed(0)}',
+          title: value.toStringAsFixed(0),
           radius: 30,
           borderSide: const BorderSide(
             color: Colors.white,
@@ -77,11 +77,11 @@ class _PieChartWidgetState extends State {
   Color _getColor(String category) {
      switch (category) {
       case 'Achieved':
-        return Color(0xff980C41);
+        return const Color(0xff980C41);
       case 'Completed':
-        return Color(0xff2563EB);
+        return const Color(0xff2563EB);
       case 'Couldn’t Achieved':
-        return Color(0xff4F378A);
+        return const Color(0xff4F378A);
       default:
         return Colors.grey;
     }
@@ -90,7 +90,7 @@ class _PieChartWidgetState extends State {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : AspectRatio(
       aspectRatio: 1,
       child: PieChart(

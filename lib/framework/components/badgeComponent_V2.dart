@@ -15,7 +15,7 @@ class BadgeComponentV2 extends StatelessWidget {
   final String? svgAssetPath; // NEW
 
   const BadgeComponentV2({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
     this.width,
@@ -26,7 +26,7 @@ class BadgeComponentV2 extends StatelessWidget {
     this.iconColor,
     this.gradientColors,
     this.svgAssetPath, // NEW
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class BadgeComponentV2 extends StatelessWidget {
             height: responsiveHeight,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              image: DecorationImage(
+              image: const DecorationImage(
                 image: AssetImage('assets/icons/blockChainBg.png'),
                 fit: BoxFit.fill,
               ),
@@ -65,14 +65,14 @@ class BadgeComponentV2 extends StatelessWidget {
                     width: responsiveIconSize,
                     colorFilter: ColorFilter.mode(iconColor ?? Colors.white, BlendMode.srcIn),
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                 ] else if (leadingIcon != null) ...[
                   Icon(
                     leadingIcon,
                     size: responsiveIconSize,
                     color: iconColor ?? Colors.white,
                   ),
-                  SizedBox(width: 4),
+                  const SizedBox(width: 4),
                 ],
                 Flexible(
                   child: Text(

@@ -79,11 +79,12 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   String formatDateWithSuffix(DateTime date) {
     int day = date.day;
     String suffix = 'th';
-    if (day == 1 || day == 21 || day == 31) suffix = 'st';
-    else if (day == 2 || day == 22) suffix = 'nd';
+    if (day == 1 || day == 21 || day == 31) {
+      suffix = 'st';
+    } else if (day == 2 || day == 22) suffix = 'nd';
     else if (day == 3 || day == 23) suffix = 'rd';
 
-    String formatted = "${day}$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
+    String formatted = "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
     return formatted;
   }
   void _onSearchChanged() {
@@ -128,7 +129,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Color(0xFF0A1C2F),
+      backgroundColor: const Color(0xFF0A1C2F),
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -160,21 +161,21 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 ///Stack Input ECM and Percentage Section
                 ecmInputSection(textScale, screenWidth, screenHeight),
 
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 /// Stack ECM Validity And Day's Section
                 validitySection(textScale, screenWidth, screenHeight),
 
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 /// Lock OverView Container
                 lockOverViewSection(textScale, screenWidth, screenHeight),
-                SizedBox(height: 18),
+                const SizedBox(height: 18),
 
                 /// Stack Amount , Profile , Total Reward Section
                 Container(
@@ -203,7 +204,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                      ],
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   decoration: BoxDecoration(
@@ -232,7 +233,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
@@ -277,7 +278,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
                   child: Container(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       // border: Border.all(color: Colors.white60),
@@ -322,7 +323,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                 hintStyle: TextStyle(color: Colors.white60),
                                 border: InputBorder.none,
                                 prefixIcon: Icon(Icons.search, color: Colors.white60),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                                contentPadding: EdgeInsets.symmetric(vertical: 12.0),
 
                               ),
                               textAlign: TextAlign.start,
@@ -373,7 +374,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                                         return Column(
                                           children: [
                                             Container(
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                 border: Border(
                                                   bottom: BorderSide(color: Colors.white10),
                                                 ),
@@ -395,7 +396,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                                           ],
                                         );
-                                      }).toList(),
+                                      }),
                                   ],
                                 ),
                               ),
@@ -420,7 +421,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
   Widget ecmInputSection(double textScale, double screenWidth, double screenHeight) {
 
     if(error != null){
-      return Text('Error: $error', style: TextStyle(color: Colors.red));
+      return Text('Error: $error', style: const TextStyle(color: Colors.red));
     }
 
         return  Column(
@@ -530,7 +531,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                             return  SizedBox(
                               width:  screenWidth * 0.055,
                               height:  screenHeight * 0.015,
-                              child: CircularProgressIndicator(
+                              child: const CircularProgressIndicator(
                                 strokeWidth: 2, color: Colors.white,
                               ),
                             );
@@ -631,7 +632,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                       width: 2,
                     ),
                     gradient: isSelected
-                        ? LinearGradient(
+                        ? const LinearGradient(
                       colors: [
                         Color(0xFF2D8EFF),
                         Color(0xFF2EE4A4),
@@ -859,7 +860,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                       width: 2,
                     ),
                     gradient: isSelected
-                        ? LinearGradient(
+                        ? const LinearGradient(
                       colors: [
                         Color(0xFF2D8EFF),
                         Color(0xFF2EE4A4),

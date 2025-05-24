@@ -10,11 +10,11 @@ class AnimatedBlockchainImages extends StatefulWidget {
   final double containerHeight;
 
   const AnimatedBlockchainImages({
-    Key? key,
+    super.key,
     required this.imageAssets,
     required this.containerWidth,
     required this.containerHeight,
-  }) : super(key: key);
+  });
 
   @override
   _AnimatedBlockchainImagesState createState() => _AnimatedBlockchainImagesState();
@@ -57,7 +57,7 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
     // Define the base size of the individual rounded images - Slightly increased again
     final double baseImageSize = effectiveDimension * 0.55;
 
-    return Container(
+    return SizedBox(
       width: widget.containerWidth,
       height: widget.containerHeight,
       child: AnimatedBuilder(

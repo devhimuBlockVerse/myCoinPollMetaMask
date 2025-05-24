@@ -10,14 +10,14 @@ class InfoCard extends StatelessWidget {
   final double? width;
 
   const InfoCard({
-    Key? key,
+    super.key,
     required this.label1,
     required this.label2,
     required this.description,
     required this.imagePath,
     this.backgroundImagePath,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class InfoCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -89,7 +89,7 @@ class InfoCard extends StatelessWidget {
                     ),
 
                     /// Logo
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Container(
                       width: baseSize * 0.12,
                       height: baseSize * 0.12,

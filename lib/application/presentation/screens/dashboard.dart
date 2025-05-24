@@ -34,7 +34,7 @@ class _DashboardViewState extends State<DashboardView> {
      return WillPopScope(
       onWillPop: () async => false,
       child:   Scaffold(
-          backgroundColor: Color(0xFF0A1C2F),
+          backgroundColor: const Color(0xFF0A1C2F),
               appBar: AppBar(
                 backgroundColor: Colors.black,
                 elevation: 0,

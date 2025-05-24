@@ -117,7 +117,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
-                                      color: Color(0xFFF4F4F5),
+                                      color: const Color(0xFFF4F4F5),
                                       fontWeight: FontWeight.w600,
                                       fontSize: getResponsiveFontSize(context, 16),
                                       height: 1.6,

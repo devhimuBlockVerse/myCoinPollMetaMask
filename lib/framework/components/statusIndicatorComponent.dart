@@ -10,12 +10,12 @@ class StatusIndicator extends StatelessWidget {
   final String iconPath;
 
   const StatusIndicator({
-    Key? key,
+    super.key,
     required this.statusText,
     this.statusLabel = 'Status:',
     required this.statusColor,
     required this.iconPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

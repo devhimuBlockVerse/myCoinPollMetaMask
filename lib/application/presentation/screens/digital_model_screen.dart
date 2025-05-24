@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 
 import '../../../framework/components/AddressFieldComponent.dart';
@@ -12,7 +11,6 @@ import '../../../framework/components/disconnectButton.dart';
 import '../../../framework/components/loader.dart';
 import '../../../framework/utils/routes/route_names.dart';
 import '../viewmodel/wallet_view_model.dart';
-import 'dashboard.dart';
 
 
 
@@ -113,7 +111,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
     final double paddingScale = screenWidth * 0.04;
 
     return Scaffold(
-      backgroundColor: Color(0xFF0A1C2F),
+      backgroundColor: const Color(0xFF0A1C2F),
        body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -146,9 +144,9 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                     // width: screenWidth * 0.92,
                     width: screenWidth ,
                     padding: EdgeInsets.all(screenWidth * 0.04),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
 
-                      image:const DecorationImage(
+                      image:DecorationImage(
                         image: AssetImage('assets/icons/buyEcmContainerImage.png'),
                         fit: BoxFit.fitHeight,
                       ),
@@ -180,17 +178,17 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               const SizedBox(
                                   height: 3),
                               // const SizedBox(height: 8),
-                              if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                              if (walletVM.walletAddress.isNotEmpty)
                                 CustomLabeledInputField(
                                 // labelText: '',
                                 labelText: 'Your Address:',
-                                hintText: '${walletVM.walletAddress}',
+                                hintText: walletVM.walletAddress,
                                 controller: readingMoreController,
                                 isReadOnly: true,
                               ),
                               const SizedBox(height: 3),
 
-                              if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                              if (walletVM.walletAddress.isNotEmpty)
                                 CustomLabeledInputField(
                                 labelText: 'Referred By:',
                                 hintText: 'Show and Enter Referred id..',
@@ -208,9 +206,9 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               ),
                               const SizedBox(height: 8),
 
-                              Text(
+                              const Text(
                                 'ICO is Live',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 28,
                                   fontWeight: FontWeight.w600,
@@ -342,7 +340,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                     debugPrint("Parsed double: $ethDouble");
                                     if (ethDouble == null || ethDouble <= 0) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Enter a valid ECM amount')),
+                                        const SnackBar(content: Text('Enter a valid ECM amount')),
                                       );
                                       return;
                                     }
@@ -368,13 +366,13 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                     debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Purchase successful')),
+                                      const SnackBar(content: Text('Purchase successful')),
                                     );
                                   }catch (e) {
                                     debugPrint("Buy ECM failed: $e");
                                    }
                                   },
-                                gradientColors: [
+                                gradientColors: const [
                                   Color(0xFF2D8EFF),
                                   Color(0xFF2EE4A4)
                                 ],
@@ -382,8 +380,8 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               const SizedBox(height: 14),
 
 
-                              if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                                isDisconnecting ? Center(child: CircularProgressIndicator())
+                              if (walletVM.walletAddress.isNotEmpty)
+                                isDisconnecting ? const Center(child: CircularProgressIndicator())
                                     :
                                 DisconnectButton(
                                 label: 'Disconnect',

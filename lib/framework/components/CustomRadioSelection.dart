@@ -42,7 +42,7 @@ class CustomRadioOption extends StatelessWidget {
 
      double lineHeight = 1.2;
 
-     final Gradient borderGradient = LinearGradient(
+     const Gradient borderGradient = LinearGradient(
       colors: [Color(0xFF1CD494), Color(0xFF2680EF)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,

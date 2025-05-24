@@ -37,7 +37,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
     });
 
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining == 0) {
         setState(() {
           _canResend = true;
@@ -181,7 +181,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                       _formatTime(_secondsRemaining),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Color(0xFF77798D),
+                                        color: const Color(0xFF77798D),
                                         fontSize: baseSize * 0.035, // scalable
                                         fontFamily: 'Poppins',
                                       ),
@@ -198,7 +198,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                         'Resend Code',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: _canResend ? Color(0xFFFFF5ED) : Colors.redAccent,
+                                          color: _canResend ? const Color(0xFFFFF5ED) : Colors.redAccent,
                                           fontSize: baseSize * 0.04,
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w600,

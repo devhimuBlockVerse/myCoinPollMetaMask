@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
-import 'package:mycoinpoll_metamask/framework/utils/routes/route_names.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodel/bottom_nav_provider.dart';
 import '../viewmodel/wallet_view_model.dart';
-import 'dashboard.dart';
 
 class WalletLoginScreen extends StatefulWidget {
   const WalletLoginScreen({super.key});
@@ -28,7 +25,7 @@ class _WalletLoginScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF0A1C2F),
+        backgroundColor: const Color(0xFF0A1C2F),
         appBar: AppBar(
           backgroundColor: Colors.black,
           elevation: 0,

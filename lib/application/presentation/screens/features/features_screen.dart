@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../framework/components/featureCard.dart';
 
@@ -26,8 +25,8 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
           child: Container(
               width: screenWidth,
               height: screenHeight,
-              decoration: BoxDecoration(
-                 color: const Color(0xFF01090B),
+              decoration: const BoxDecoration(
+                 color: Color(0xFF01090B),
                 image: DecorationImage(
                   // image: AssetImage('assets/icons/gradientBgImage.png'),
                   // fit: BoxFit.contain,
@@ -64,7 +63,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                            children: [
-                            SizedBox(height: screenHeight * 0.02),
+                            // SizedBox(height: screenHeight * 0.02),
                             FeatureCard(
                               iconPath: 'assets/icons/cryptoLaunchpad.png',
                               title: 'Crypto Launchpad',

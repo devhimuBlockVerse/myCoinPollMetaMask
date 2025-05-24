@@ -10,11 +10,11 @@ class ResponsiveSearchField extends StatelessWidget {
   final String? svgAssetPath;
 
   const ResponsiveSearchField({
-    Key? key,
+    super.key,
     required this.controller,
     this.onChanged,
     this.hintText = 'search...',this.svgAssetPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

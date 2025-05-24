@@ -14,7 +14,7 @@ class UserBadgeLevel extends StatelessWidget {
   final double? heightFactor;
 
   const UserBadgeLevel({
-    Key? key,
+    super.key,
     required this.label,
     required this.iconPath,
     this.backgroundColor = const Color(0xCC1CD691),
@@ -22,7 +22,7 @@ class UserBadgeLevel extends StatelessWidget {
     this.textColor = Colors.white,
     this.widthFactor,
     this.heightFactor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +35,10 @@ class UserBadgeLevel extends StatelessWidget {
     final containerHeight = heightFactor ?? baseSize * 0.06;
     final horizontalPadding = baseSize * 0.013;
     final verticalPadding = baseSize * 0.005;
-    final borderWidth = 0.51;
+    const borderWidth = 0.51;
     final iconSize = baseSize * 0.04;
     final spacingBetweenIconAndText = baseSize * 0.008;
-    final textHeight = 1.1;
+    const textHeight = 1.1;
 
     return Container(
       width: containerWidth,

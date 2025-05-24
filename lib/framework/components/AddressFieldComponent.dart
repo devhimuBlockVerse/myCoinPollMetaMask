@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../utils/dynamicFontSize.dart';
+
 
 
 class CustomLabeledInputField extends StatelessWidget {
@@ -57,7 +59,8 @@ class CustomLabeledInputField extends StatelessWidget {
                     labelText,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: fontSize,
+                      // fontSize: fontSize,
+                      fontSize: getResponsiveFontSize(context, 12),
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w400,
                     ),
@@ -77,12 +80,15 @@ class CustomLabeledInputField extends StatelessWidget {
                             color: Colors.white,
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w400,
-                            fontSize: fontSize,
-                          ),
+                            // fontSize: fontSize,
+
+                            fontSize: getResponsiveFontSize(context, 12),
+                    ),
                           decoration: InputDecoration(
                             hintText: hintText,
                             hintStyle: TextStyle(
-                              fontSize: fontSize * 0.95,
+                              // fontSize: fontSize * 0.95,
+                              fontSize: getResponsiveFontSize(context, 12),
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                               color: const Color(0xffFFF5ED),

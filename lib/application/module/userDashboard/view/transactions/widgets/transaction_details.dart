@@ -82,7 +82,7 @@ class TransactionDetailsDialog extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.01),
-                    FullWidthInfoBox(
+                    const FullWidthInfoBox(
                       svgAssetPath: 'assets/icons/tnx_hash.svg', // Ensure asset exists
                       label: 'Txn Hash',
                       value: '0xac6d8ae0a1dcX', // Longer example
@@ -113,7 +113,7 @@ class FullWidthInfoBox extends StatelessWidget {
   final String? statusText;
 
   const FullWidthInfoBox({
-    Key? key,
+    super.key,
     required this.svgAssetPath,
     required this.label,
     this.value,
@@ -125,7 +125,7 @@ class FullWidthInfoBox extends StatelessWidget {
     this.explicitHeight,
     this.explicitWidth,
     this.statusText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

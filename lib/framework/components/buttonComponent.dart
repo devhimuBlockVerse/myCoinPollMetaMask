@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/appkit_modal_impl.dart';
-import 'package:flutter/material.dart';
 
 
 class ReownAppKitButton extends StatelessWidget {

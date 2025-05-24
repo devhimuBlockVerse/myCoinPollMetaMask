@@ -7,12 +7,12 @@ class CardNewsComponent extends StatelessWidget {
   final String headline;
 
   const CardNewsComponent({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.source,
     required this.timeAgo,
     required this.headline,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

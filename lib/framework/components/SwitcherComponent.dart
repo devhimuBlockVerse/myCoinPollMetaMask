@@ -42,7 +42,7 @@ class _SwitcherComponentState extends State<SwitcherComponent> {
     final containerWidth = screenWidth * 0.9;
     final labelWidth = screenWidth * 0.7;
 
-    return Container(
+    return SizedBox(
       width: containerWidth,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -54,7 +54,7 @@ class _SwitcherComponentState extends State<SwitcherComponent> {
               widget.title,
               textAlign: TextAlign.start,
               style: TextStyle(
-                  color: Color(0xFFFEFEFE),
+                  color: const Color(0xFFFEFEFE),
                   fontSize: screenWidth * 0.040,
                   fontFamily: 'Poppins',
                   letterSpacing: 0.25,
@@ -63,7 +63,7 @@ class _SwitcherComponentState extends State<SwitcherComponent> {
               ),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Switch(
             value: isSwitchOn,
             activeColor: Colors.blueAccent,

@@ -118,7 +118,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => LessonScreen()),
+                                MaterialPageRoute(builder: (context) => const LessonScreen()),
                               );
                             },
                           ),
@@ -132,7 +132,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => LessonScreen()),
+                                MaterialPageRoute(builder: (context) => const LessonScreen()),
                               );
                             },
                           ),

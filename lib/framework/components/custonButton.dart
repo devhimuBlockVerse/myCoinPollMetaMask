@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../utils/dynamicFontSize.dart';
+
 
 
 class CustomButton extends StatelessWidget {
@@ -24,12 +26,12 @@ class CustomButton extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = MediaQuery.of(context).size.width;
-         final buttonWidth = width ?? (screenWidth / 360) * 2;
+         final buttonWidth = width ?? (screenWidth / 360) * 3;
 
         final textScale = MediaQuery.of(context).textScaleFactor;
         final baseFontSize = (screenWidth / 360) * 40;
-        final iconSize = (screenWidth / 360) * 14;
-        final checkIconSize = (screenWidth / 360) * 12;
+        final iconSize = (screenWidth / 360) * 16;
+        final checkIconSize = (screenWidth / 360) * 16;
         return InkWell(
           onTap: onPressed,
           child: ClipPath(
@@ -39,7 +41,7 @@ class CustomButton extends StatelessWidget {
               height: screenWidth * 0.08,
               padding: EdgeInsets.symmetric(
                 horizontal: screenWidth * 0.04,
-                vertical: screenWidth * 0.025,
+                // vertical: screenWidth * 0.025,
               ),
               decoration: BoxDecoration(
                 gradient: isActive
@@ -53,21 +55,21 @@ class CustomButton extends StatelessWidget {
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
-                // borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(8),
                 border: isActive
                     ? null
-                    : Border.all(color: const Color(0xFF1FB9B1C9), width: 1),
+                    : Border.all(color: const Color(0xff1fb9b1c9), width: 1),
               ),
               child: IntrinsicHeight(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
                     if (icon != null) ...[
                       Image.asset(
                         icon!,
-                        // width: screenWidth * 0.05,
-                        // height: screenWidth * 0.05,
+
+                        fit: BoxFit.fill,
                         width: iconSize,
                         height: iconSize,
                       ),
@@ -81,7 +83,8 @@ class CustomButton extends StatelessWidget {
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             color: Colors.white,
-                             fontSize: baseFontSize * textScale,
+                             // fontSize: baseFontSize * textScale,
+                            fontSize: getResponsiveFontSize(context, 14),
                              fontWeight: FontWeight.w400,
                             fontFamily: 'Poppins',
                             height: 0.6,
@@ -98,6 +101,8 @@ class CustomButton extends StatelessWidget {
                           width: checkIconSize,
                           height: checkIconSize,
                           color: Colors.white,
+                          fit: BoxFit.contain,
+
                         ),
                       )
                     ],
@@ -115,13 +120,13 @@ class CustomButtonClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final Path path = Path();
-    const double notchWidth = 18;
-    const double notchHeight = 3;
-    const double cutSize =  4;
+    const double notchWidth =0;
+    const double notchHeight =0;
+    const double cutSize = 0;
 
     // Offset amounts
-    const double topNotchOffset = 30; // move right
-    const double bottomNotchOffset = -30; // move left
+    const double topNotchOffset =0; // move right
+    const double bottomNotchOffset = 0; // move left
 
     // Top-left angled start
     path.moveTo(cutSize, 0);

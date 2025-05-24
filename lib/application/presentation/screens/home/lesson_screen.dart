@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../../../framework/widgets/video_player.dart';
 
@@ -95,7 +94,7 @@ class _LessonScreenState extends State<LessonScreen> {
                           _headerSection(context),
 
                           SizedBox(height: screenHeight * 0.03),
-                          VideoPlayerService(
+                          const VideoPlayerService(
                             videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
                           ),
 

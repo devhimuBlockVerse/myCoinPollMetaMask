@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/dynamicFontSize.dart';
+
 class BadgeComponent extends StatelessWidget {
   final String text;
   final bool isSelected;
@@ -14,30 +16,30 @@ class BadgeComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     final double responsiveWidth = width ?? MediaQuery.of(context).size.width * 0.14;
+     final double responsiveWidth = width ?? MediaQuery.of(context).size.width * 0.16;
     final double responsiveHeight = height ?? MediaQuery.of(context).size.height * 0.025;
-    final double responsiveFontSize = fontSize ?? MediaQuery.of(context).size.width * 0.024;
+    final double responsiveFontSize = fontSize ?? MediaQuery.of(context).size.width * 0.026;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(4),
-      child: ClipPath(
-        clipper: BadgetButtonClipper(),
-        child: Container(
-          width: responsiveWidth,
-          height: responsiveHeight,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isSelected ? (selectedColor ?? Colors.blueAccent) : (unselectedColor ?? Colors.white.withOpacity(0.4)),
-            borderRadius: BorderRadius.circular(4),
-          ),
+      borderRadius: BorderRadius.circular(9),
+      child: Container(
+        width: responsiveWidth,
+        height: responsiveHeight,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: isSelected ? (selectedColor ?? Colors.blueAccent) : (unselectedColor ?? Colors.white.withOpacity(0.4)),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Flexible(
           child: Text(
             text,
             style: TextStyle(
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w500,
               fontSize: responsiveFontSize,
-              height: 1,
+              // fontSize: getResponsiveFontSize(context, 12),
+              height: 0.8,
               color: Colors.white,
             ),
           ),
@@ -55,13 +57,13 @@ class BadgetButtonClipper extends CustomClipper<Path> {
     final Path path = Path();
 
     // Scaled based on size
-    final double cutSize = size.height * 0.18;
-    final double notchWidth = size.width * 0.1;
-    final double notchHeight = size.height * 0.05;
+    final double cutSize = size.height * 0;
+    final double notchWidth = size.width * 0 ;
+    final double notchHeight = size.height * 0;
 
     // Notch offsets
-    final double topNotchOffset = size.width * 0.15;
-    final double bottomNotchOffset = -size.width * 0.15;
+    final double topNotchOffset = size.width * 0;
+    final double bottomNotchOffset = -size.width * 0;
 
     // Start from top-left
     path.moveTo(cutSize, 0);

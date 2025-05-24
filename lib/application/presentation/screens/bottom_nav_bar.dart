@@ -21,11 +21,11 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
   final List<Widget> _pages = [
-    HomeScreen(),
-    FeaturesScreen(),
-    AndroVerseScreen(),
-    NewsScreen(),
-    ProfileScreen(),
+    const HomeScreen(),
+    const FeaturesScreen(),
+    const AndroVerseScreen(),
+    const NewsScreen(),
+    const ProfileScreen(),
   ];
 
   final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
@@ -43,7 +43,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       context: context,
       builder: (context) {
         return Theme(
-          data: ThemeData(dialogBackgroundColor: Colors.transparent),
+          data: ThemeData(dialogTheme: const DialogThemeData(backgroundColor: Colors.transparent)),
           child: AlertDialog(
             contentPadding: EdgeInsets.symmetric(
               horizontal: screenWidth * 0.02,

@@ -131,7 +131,7 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
       roadmapWidgets.add(
         Center(
           child: Transform.translate(
-            offset: Offset(3, -28),
+            offset: const Offset(3, -28),
             child: Image.asset(
               'assets/icons/line.png',
               height: screenHeight * 0.07,
@@ -145,7 +145,7 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
     }
   }
 
-  return Container(
+  return SizedBox(
     width: double.infinity,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -38,8 +38,8 @@ class _TrendingScreenState extends State<TrendingScreen> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
-            color: const Color(0xFF01090B),
+          decoration: const BoxDecoration(
+            color: Color(0xFF01090B),
             image: DecorationImage(
               // image: AssetImage('assets/icons/gradientBgImage.png'),
               // fit: BoxFit.contain,
@@ -99,7 +99,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
                       width: screenWidth,
                        decoration: BoxDecoration(
                         // color:  Color(0xF2040C16),
-                         image: DecorationImage(
+                         image: const DecorationImage(
                            image: AssetImage('assets/icons/newsFrame.png'),
                            fit: BoxFit.none,
                          ),

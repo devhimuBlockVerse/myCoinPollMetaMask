@@ -103,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           SizedBox(height: screenHeight * 0.05),
 
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 
                             child: Column(
                               children: [
@@ -136,7 +136,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   onPressed: (){
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => TradeConfirmationScreen()),
+                                      MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
                                     );
                                   },
                                 ),
@@ -148,7 +148,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   onPressed: (){
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+                                      MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
                                     );
                                   },
                                 ),
@@ -160,7 +160,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   onPressed: (){
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => ContactScreen()),
+                                      MaterialPageRoute(builder: (context) => const ContactScreen()),
                                     );
                                   },
                                 ),
@@ -172,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   onPressed: (){
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => FeedbackScreen()),
+                                      MaterialPageRoute(builder: (context) => const FeedbackScreen()),
                                     );
                                   },
                                 ),
@@ -195,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => BottomNavBar()),
+                                              builder: (context) => const BottomNavBar()),
                                         );
                                       }
                                     }catch(e){

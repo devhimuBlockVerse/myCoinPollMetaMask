@@ -7,8 +7,7 @@ import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/percentageSelectorComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
-import '../../../../../framework/utils/date_parser.dart';
-import '../../../../../framework/utils/enums/sort_option.dart';
+ import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import 'widgets/staking_table.dart';
 
@@ -28,7 +27,7 @@ class _StakingScreenState extends State<StakingScreen> {
   final SortDataUseCase _sortDataUseCase = SortDataUseCase();
 
   TextEditingController inputController = TextEditingController();
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   String? _selectedDuration;
   List<Map<String, dynamic>> _filteredData = [];
   String _currentSelectedPercentage = dummyPercentageOptions[0];
@@ -85,8 +84,8 @@ class _StakingScreenState extends State<StakingScreen> {
           child: Container(
               width: screenWidth,
               height: screenHeight,
-              decoration: BoxDecoration(
-                color: const Color(0xFF01090B),
+              decoration: const BoxDecoration(
+                color: Color(0xFF01090B),
                 image: DecorationImage(
                   image: AssetImage('assets/icons/starGradientBg.png'),
                   fit: BoxFit.cover,
@@ -184,7 +183,7 @@ class _StakingScreenState extends State<StakingScreen> {
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                  color: Color(0xff040C16),
+                                  color: const Color(0xff040C16),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               padding: EdgeInsets.symmetric(
@@ -315,7 +314,7 @@ class _StakingScreenState extends State<StakingScreen> {
                 Text(
                   'My 0 ECM Stack for 180 Days',
                   style: TextStyle(
-                    color: Color(0xffFFFFFF),
+                    color: const Color(0xffFFFFFF),
                     fontSize: getResponsiveFontSize(context, 12),
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w600,
@@ -364,7 +363,7 @@ class _StakingScreenState extends State<StakingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
+                        const Text(
                           'Max: 5000',
                           style: TextStyle(
                             color: Colors.white,
@@ -373,7 +372,7 @@ class _StakingScreenState extends State<StakingScreen> {
                             fontFamily: 'Poppins',
                           ),
                         ),
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
                         ListingField(
                           labelText: 'Input Amounts',
                           controller: inputController,
@@ -386,14 +385,14 @@ class _StakingScreenState extends State<StakingScreen> {
                     ),
                   ),
 
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
 
                   // Right side: Dropdown
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SizedBox(height: 26),
+                        const SizedBox(height: 26),
                         ListingField(
                           isDropdown: true,
                           labelText: '', // no label
@@ -433,7 +432,7 @@ class _StakingScreenState extends State<StakingScreen> {
               Center(
                 child: SizedBox(
                   width: screenWidth * 0.4,
-                  child: Divider(
+                  child: const Divider(
                     color: Color(0xff2C2E41),
                     thickness: 1,
                     height: 1,
@@ -475,7 +474,7 @@ class _StakingScreenState extends State<StakingScreen> {
                 children: [
                   _buildInfoRow("Stack amount", "0.0000 ECM"),
                   SizedBox(height: screenHeight * 0.01),
-                  _buildInfoRow("Estimated Profit", "0 ECM", valueColor: Color(0xFF1CD494)),
+                  _buildInfoRow("Estimated Profit", "0 ECM", valueColor: const Color(0xFF1CD494)),
                   SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Total with Reward", "0 ECM"),
                 ],
@@ -487,7 +486,7 @@ class _StakingScreenState extends State<StakingScreen> {
             // Vertical Divider
             Container(
               width: 1,
-              color: Color(0xCC2C2E41),
+              color: const Color(0xCC2C2E41),
               height: null,
             ),
 
@@ -501,7 +500,7 @@ class _StakingScreenState extends State<StakingScreen> {
                 children: [
                   _buildInfoRow("Annual Return Rate", "0 %"),
                   SizedBox(height: screenHeight * 0.01),
-                  _buildInfoRow("Duration", "0 days", valueColor: Color(0xFF1CD494)),
+                  _buildInfoRow("Duration", "0 days", valueColor: const Color(0xFF1CD494)),
                   SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Unlocked on", "20th, May 2025"),
                 ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +9,8 @@ import '../../../../framework/components/CustomRadioSelection.dart';
 import '../../../../framework/components/ListingFields.dart';
 
 class ApplyForListingScreen extends StatefulWidget {
+  const ApplyForListingScreen({super.key});
+
   @override
   _ApplyForListingScreenState createState() => _ApplyForListingScreenState();
 }
@@ -43,9 +44,9 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             // color: const Color(0xFF0B0A1E),
-            color: const Color(0xFF01090B),
+            color: Color(0xFF01090B),
             image: DecorationImage(
               // image: AssetImage('assets/icons/gradientBgImage.png'),
               // fit: BoxFit.contain,
@@ -95,7 +96,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
 
                             Container(
                               width: double.infinity,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Color(0x232c2e41),
                                ),
                               child: Padding(
@@ -180,7 +181,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                         // Action
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => SignIn()),
+                                          MaterialPageRoute(builder: (context) => const SignIn()),
                                         );
                                       },
                                     ),
@@ -198,10 +199,10 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                               padding: const EdgeInsets.all(10.0),
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0XFF040C16),
+                                  color: const Color(0XFF040C16),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: Color(0xff000000),
+                                    color: const Color(0xff000000),
                                     width: 1,
 
                                   )
@@ -586,8 +587,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                               fontSize: MediaQuery.of(context).size.height * 0.015,
                                               height: 0.6,
                                               decoration: TextDecoration.underline,
-                                              color: Color(0XFF1CD494),
-                                              decorationColor: Color(0XFF1CD494),
+                                              color: const Color(0XFF1CD494),
+                                              decorationColor: const Color(0XFF1CD494),
                                               decorationThickness: 1.5,
                                             ),
                                           ),

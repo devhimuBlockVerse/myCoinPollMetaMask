@@ -1,11 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
-import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/widgets/custom_contact_info.dart';
 
 class ContactScreen extends StatefulWidget {
@@ -196,7 +193,7 @@ class _ContactScreenState extends State<ContactScreen> {
                               horizontal: MediaQuery.of(context).size.width * 0.02,
                               vertical: MediaQuery.of(context).size.height * 0.02,
                             ),
-                            child: CustomContactInfo(
+                            child: const CustomContactInfo(
                               phoneNumber: '012 3456 789',
                               emailAddress: 'info@mycoinpoll.com',
                             ),

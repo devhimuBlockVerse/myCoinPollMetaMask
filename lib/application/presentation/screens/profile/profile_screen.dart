@@ -29,8 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Container(
             width: screenWidth,
             height: screenHeight,
-            decoration: BoxDecoration(
-              color: const Color(0xFF01090B),
+            decoration: const BoxDecoration(
+              color: Color(0xFF01090B),
               image: DecorationImage(
                 // image: AssetImage('assets/icons/starGradientBg.png'),
                 image: AssetImage('assets/icons/solidBackGround.png'),
@@ -83,13 +83,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                              decoration: BoxDecoration(
                                // color: const Color(0xFF01090B),
-                               image: DecorationImage(
+                               image: const DecorationImage(
                                   image: AssetImage('assets/icons/profileFrameBg.png'),
                                  fit: BoxFit.fill,
                                 ),
                                borderRadius: BorderRadius.circular(14),
                                border: Border.all(
-                                 color: Color(0XFFFFF5ED),
+                                 color: const Color(0XFFFFF5ED),
                                  width: 0.1,
                                ),
                              ),
@@ -111,7 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     onTrailingIconTap: () {
                                       debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => PersonalInformationScreen()),
+                                        MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
                                       );
                                     },
                                    ),
@@ -125,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     onTrailingIconTap: () {
                                       debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => TradeConfirmationScreen()),
+                                        MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
                                       );
                                     },
                                    ),
@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     onTrailingIconTap: () {
                                       debugPrint("Trailing icon tapped");
                                       Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => TermsConditionScreen()),
+                                        MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
                                       );
                                     },
                                    ),
@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      onTrailingIconTap: () {
                                        debugPrint("Trailing icon tapped");
                                        Navigator.of(context).push(
-                                       MaterialPageRoute(builder: (context) => NotificationsScreen()),
+                                       MaterialPageRoute(builder: (context) => const NotificationsScreen()),
                                      );
                                      },
                                    ),
@@ -167,7 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      onTrailingIconTap: () {
                                        debugPrint("Trailing icon tapped");
                                        Navigator.of(context).push(
-                                         MaterialPageRoute(builder: (context) => SettingsScreen()),
+                                         MaterialPageRoute(builder: (context) => const SettingsScreen()),
                                        );
                                      },
                                    ),
@@ -275,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Text(
                   'Premium Member',
                   style: TextStyle(
-                    color: Color(0xFF18181D),
+                    color: const Color(0xFF18181D),
                     fontSize: 12 * scale,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w500,
@@ -303,7 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Text(
                         'Upgrade your plan',
                         style: TextStyle(
-                          color: Color(0xFFF7F9B7),
+                          color: const Color(0xFFF7F9B7),
                           fontSize: 10 * scale,
                           fontFamily: 'Poppins',
                           letterSpacing: -0.3,
@@ -315,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icon(
                         Icons.arrow_forward,
                         size: 12 * scale,
-                        color: Color(0xFFF7F9B7),
+                        color: const Color(0xFFF7F9B7),
                       ),
                     ],
                   ),

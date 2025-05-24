@@ -10,11 +10,11 @@ class BuyEcm extends StatefulWidget {
 
 
   const BuyEcm({
-    Key? key,
+    super.key,
     required this.text,
     this.trailingIcon,
     this.onPressed, this.height, this.width,
-  }) : super(key: key);
+  });
 
   @override
   _BuyEcmState createState() => _BuyEcmState();

@@ -8,10 +8,10 @@ class CustomContactInfo extends StatefulWidget {
   final String emailAddress;
 
   const CustomContactInfo({
-    Key? key,
+    super.key,
     required this.phoneNumber,
     required this.emailAddress,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomContactInfo> createState() => _CustomContactInfoState();
@@ -75,7 +75,7 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
                             Text(
                               'PHONE',
                               style: TextStyle(
-                                color: Color(0xffFFF5ED),
+                                color: const Color(0xffFFF5ED),
                                 fontSize:getResponsiveFontSize(context, 12.3),
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.02 * (12.0 * scaleFactor),
@@ -85,7 +85,7 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
                             Text(
                               widget.phoneNumber,
                               style: TextStyle(
-                                color: Color(0xffDBE2FB),
+                                color: const Color(0xffDBE2FB),
                                 fontSize:getResponsiveFontSize(context, 12.3),
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0.02 * (12.0 * scaleFactor),
@@ -120,7 +120,7 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
                             Text(
                               'EMAIL',
                               style: TextStyle(
-                                color: Color(0xffFFF5ED),
+                                color: const Color(0xffFFF5ED),
                                 fontSize:getResponsiveFontSize(context, 12.3),
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.02 * (12.0 * scaleFactor),
@@ -130,7 +130,7 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
                             Text(
                               widget.emailAddress,
                               style: TextStyle(
-                                color: Color(0xffDBE2FB),
+                                color: const Color(0xffDBE2FB),
                                 fontSize:getResponsiveFontSize(context, 12.3),
                                 fontWeight: FontWeight.w400,
                                 letterSpacing: 0.02 * (12.0 * scaleFactor),

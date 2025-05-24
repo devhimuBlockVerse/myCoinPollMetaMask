@@ -67,7 +67,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
              image: DecorationImage(
                image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
@@ -99,7 +99,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color(0xff040C16),
+                      color: const Color(0xff040C16),
                     borderRadius: BorderRadius.circular(12)
                     ),
 
@@ -178,13 +178,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
                      Text(
-                       "$greeting",
+                       greeting,
                        style: TextStyle(
                          fontFamily: 'Poppins',
                          fontWeight: FontWeight.w400,
                          fontSize: getResponsiveFontSize(context, 14),
                          height: 1.6,
-                         color: Color(0xffFFF5ED),
+                         color: const Color(0xffFFF5ED),
                        ),
                      ),
                      Text(
@@ -194,10 +194,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                          fontWeight: FontWeight.w600,
                          fontSize: getResponsiveFontSize(context, 18),
                          height: 1.3,
-                         color: Color(0xffFFF5ED),
+                         color: const Color(0xffFFF5ED),
                        ),
                      ),
-                     SizedBox(width: 8),
+                     const SizedBox(width: 8),
 
                    ],
                  ),
@@ -282,7 +282,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'ECM Coin',
                               textAlign:TextAlign.start,
                               style: TextStyle(
-                                color: Color(0xffFFF5ED),
+                                color: const Color(0xffFFF5ED),
                                 fontFamily: 'Poppins',
                                 fontSize: getResponsiveFontSize(context, 16),
                                 fontWeight: FontWeight.normal,
@@ -321,7 +321,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
 
                         // Badge
-                        UserBadgeLevel(
+                        const UserBadgeLevel(
                           label: 'Level-1',
                           iconPath: 'assets/icons/check.svg',
                         ),
@@ -343,7 +343,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             children: <TextSpan>[
                               TextSpan(
                                 text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
-                                style: TextStyle(color: Color(0xFF29FFA5),  fontFamily: 'Poppins',
+                                style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
                                   fontWeight: FontWeight.normal,
                                   fontSize: getResponsiveFontSize(context, 10),
                                 ),
@@ -398,8 +398,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               vertical: screenHeight * 0.003,
               horizontal: screenWidth * 0.03,
             ),
-            decoration: BoxDecoration(
-              image: const DecorationImage(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
                 image: AssetImage('assets/icons/linearFrame.png'),
                 fit: BoxFit.fill,
               ),
@@ -462,7 +462,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                      children: [
 
                                        /// Refactor This Component Later with status Active or Inactive Variation.
-                                       StatusIndicator(
+                                       const StatusIndicator(
                                         statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
                                         statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
                                         iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
@@ -581,7 +581,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     constraints: BoxConstraints(
                       maxWidth: screenHeight * 0.18,
                     ),
-                    child: PieChartWidget(),
+                    child: const PieChartWidget(),
                   ),
                 ),
 
@@ -619,7 +619,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                  fontFamily: 'Poppins',
                                  fontWeight: FontWeight.w400,
                                  fontSize: getResponsiveFontSize(context, 14),
-                                 color: Color(0xffFFF5ED),
+                                 color: const Color(0xffFFF5ED),
                                  height: 1.10,
 
                                ),
@@ -744,7 +744,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w500,
                         height: 1.6,
-                        color: Color(0xffFFF5ED),
+                        color: const Color(0xffFFF5ED),
                         fontSize: getResponsiveFontSize(context, 16),
                       ),
                     )
@@ -869,14 +869,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
 
 
-                    TransactionStatCard(
+                    const TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
                       title: 'Your Transactions',
                       value: '205',
                     ),
                     SizedBox(height: screenHeight * 0.01),
 
-                    TransactionStatCard(
+                    const TransactionStatCard(
                       bgImagePath: 'assets/icons/colorPurple.png',
                       title: 'Referral User',
                       value: '205',
@@ -884,7 +884,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
                      SizedBox(height: screenHeight * 0.01),
-                     TransactionStatCard(
+                     const TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
                       title: 'Referral Transactions',
                       value: '205',

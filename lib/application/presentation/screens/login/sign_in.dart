@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashboard/dashboard_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 
 import '../../../../framework/components/BlockButton.dart';
@@ -43,9 +42,9 @@ class _SignInState extends State<SignIn> {
         child: Container(
           width: screenWidth,
           height: screenHeight,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             // color: const Color(0xFF0B0A1E),
-            color: const Color(0xFF01090B),
+            color: Color(0xFF01090B),
             image: DecorationImage(
               // image: AssetImage('assets/icons/gradientBgImage.png'),
               // fit: BoxFit.contain,
@@ -102,7 +101,7 @@ class _SignInState extends State<SignIn> {
                               /// Email and Password
                                Container(
                                 width: double.infinity,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   image: DecorationImage(
                                     image: AssetImage('assets/icons/longinContainer.png'),
                                     fit: BoxFit.fill,
@@ -206,7 +205,7 @@ class _SignInState extends State<SignIn> {
                                           Row(
                                             children: [
 
-                                              Spacer(),
+                                              const Spacer(),
                                               Expanded(
                                                 child: Container(
                                                   height: 1.5,
@@ -249,7 +248,7 @@ class _SignInState extends State<SignIn> {
                                                   ),
                                                 ),
                                               ),
-                                              Spacer(),
+                                              const Spacer(),
 
                                             ],
                                           ),
@@ -276,7 +275,7 @@ class _SignInState extends State<SignIn> {
                                               // Apply the wallet connection from view model and navigate to the Dashboard
                                               Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => DashboardBottomNavBar()),
+                                                MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
                                               );
                                             },
                                           ),
@@ -311,7 +310,7 @@ class _SignInState extends State<SignIn> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
+    return SizedBox(
       width: screenWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -329,7 +328,7 @@ class _SignInState extends State<SignIn> {
             'Sign in to your \nAccount',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Color(0xFFEEEEEE),
+              color: const Color(0xFFEEEEEE),
               fontSize: screenHeight * 0.036,
               fontFamily: 'Poppins',
               fontWeight: FontWeight.bold,

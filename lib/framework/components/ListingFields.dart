@@ -235,7 +235,7 @@ class ListingField extends StatefulWidget {
   final ValueChanged<String?>? onDropdownChanged;
 
   const ListingField({
-    Key? key,
+    super.key,
     this.controller,
     this.labelText,
     this.height,
@@ -254,7 +254,7 @@ class ListingField extends StatefulWidget {
     this.selectedDropdownItem,
     this.onDropdownChanged,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<ListingField> createState() => _ListingFieldState();

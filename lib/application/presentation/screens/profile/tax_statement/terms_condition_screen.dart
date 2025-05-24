@@ -100,7 +100,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: Color(0xffFEFEFE),
+                                color: const Color(0xffFEFEFE),
                                 fontWeight: FontWeight.w600,
                                 fontSize: getResponsiveFontSize(context, 16),
                                 height: 1.3,
@@ -133,7 +133,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: Color(0xffFEFEFE),
+                                color: const Color(0xffFEFEFE),
                                 fontWeight: FontWeight.w600,
                                 fontSize: getResponsiveFontSize(context, 16),
                                 height: 1.3,
@@ -162,7 +162,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: Color(0xffFEFEFE),
+                                color: const Color(0xffFEFEFE),
                                 fontWeight: FontWeight.w600,
                                 fontSize: getResponsiveFontSize(context, 16),
                                 height: 1.3,
@@ -191,7 +191,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: Color(0xffFEFEFE),
+                                color: const Color(0xffFEFEFE),
                                 fontWeight: FontWeight.w600,
                                 fontSize: getResponsiveFontSize(context, 16),
                                 height: 1.3,

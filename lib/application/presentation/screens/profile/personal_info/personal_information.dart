@@ -242,7 +242,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                        Expanded(
                                          child: CustomDropdown(
                                            label: 'Country',
-                                           items: ['Dubai', 'USA', 'Bangladesh'],
+                                           items: const ['Dubai', 'USA', 'Bangladesh'],
                                            selectedValue: selectedGender,
                                            onChanged: (value) {
                                              setState(() {
@@ -256,7 +256,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                        Expanded(
                                          child: CustomDropdown(
                                            label: 'Gender',
-                                           items: ['Male', 'Female', 'Other'],
+                                           items: const ['Male', 'Female', 'Other'],
                                            selectedValue: selectedGender,
                                            onChanged: (value) {
                                              setState(() {
@@ -290,7 +290,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                   BlockButton(
                                     height: screenHeight * 0.045,
                                     width: screenWidth * 0.7,
-                                    label: 'Submit',
+                                    label: 'Update Profile',
                                     textStyle: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white,
@@ -305,7 +305,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (_) => ProfileScreen(),
+                                          builder: (_) => const ProfileScreen(),
                                         ),
                                       );
                                     },

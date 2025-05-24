@@ -8,12 +8,12 @@ class StatusChip extends StatelessWidget {
   final Color textColor;
 
   const StatusChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.backgroundColor,
     required this.borderColor,
     required this.textColor,
-  }) : super(key: key);
+  });
 
   // Factory constructors for common statuses
   factory StatusChip.approved() {

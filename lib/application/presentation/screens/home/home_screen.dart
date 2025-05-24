@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
          child: Container(
            width: screenWidth,
            height: screenHeight,
-           decoration: BoxDecoration(
+           decoration: const BoxDecoration(
              // color: const Color(0xFF0B0A1E),
              // color: const Color(0xFF01090B),
              image: DecorationImage(
@@ -170,12 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
                              builder: (context, model, _){
                                return  BlockButton(
                                  height: screenHeight * 0.040,
-                                 width: screenWidth * 0.4,
+                                 width: screenWidth * 0.3,
                                  label: model.isConnected ? 'Wallet Connected' : "Connect Wallet",
                                  textStyle:  TextStyle(
                                    fontWeight: FontWeight.w700,
                                    color: Colors.white,
-                                   fontSize: baseSize * 0.030,
+                                    fontSize: getResponsiveFontSize(context, 12),
                                  ),
                                  gradientColors: const [
                                    Color(0xFF2680EF),
@@ -188,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                      if (context.mounted && model.isConnected){
                                        Navigator.push(
                                          context,
-                                         MaterialPageRoute(builder: (context) => DashboardBottomNavBar()),
+                                         MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
                                        );
                                      }
 
@@ -238,10 +239,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                  Text(
                                    'Blockchain Innovation \nLaunchpad Hub',
                                    style: TextStyle(
-                                     color: Color(0xFFFFF5ED),
+                                     color: const Color(0xFFFFF5ED),
                                      fontFamily: 'Poppins',
-                                     fontSize: screenWidth * 0.04,
-                                     fontWeight: FontWeight.w400,
+                                     // fontSize: screenWidth * 0.04,
+                                     fontSize: getResponsiveFontSize(context, 17),
+                                     fontWeight: FontWeight.w500,
                                    ),
                                    maxLines: 2,
                                  ),
@@ -249,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                  /// Apply For Lising Button
                                  Padding(
-                                   padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.020),
+                                   padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
                                    child: BlockButton(
                                      height: screenHeight * 0.05,
                                      width: screenWidth * 0.4,
@@ -257,7 +259,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                      textStyle:  TextStyle(
                                        fontWeight: FontWeight.w700,
                                        color: Colors.white,
-                                       fontSize: screenWidth * 0.030,
+                                       // fontSize: screenWidth * 0.030,
+                                       fontSize: getResponsiveFontSize(context, 12),
+
                                      ),
                                      gradientColors: const [
                                        Color(0xFF2680EF),
@@ -268,12 +272,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                        debugPrint('Button tapped');
                                        Navigator.push(
                                          context,
-                                         MaterialPageRoute(builder: (context) => ApplyForListingScreen()),
+                                         MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
                                        );
 
                                      },
-                                     iconPath: 'assets/icons/arrowIcon.png',
-                                     iconSize : screenHeight * 0.028,
+                                     iconPath: 'assets/icons/arrowIcon.svg',
+                                     iconSize : screenHeight * 0.009,
                                    ),
                                  ),
                                ],
@@ -308,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
                    SizedBox(height: screenHeight * 0.05),
                    _buildBuyEcmSection(),
 
-                   SizedBox(height: screenHeight * 0.05),
+                   SizedBox(height: screenHeight * 0.03),
                    _learnAndEarnContainer(),
 
 
@@ -342,8 +346,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
-                  fontSize: baseSize * 0.045,
-                  height: 1.2,
+                  // fontSize: baseSize * 0.045,
+                  fontSize: getResponsiveFontSize(context, 16),
+                   height: 1.2,
                   color: Colors.white,
                 ),
               ),
@@ -354,7 +359,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
-                    fontSize: baseSize * 0.038,
+                    // fontSize: baseSize * 0.038,
+                    fontSize: getResponsiveFontSize(context, 14),
                     height: 1.2,
                     color: Colors.white,
                   ),
@@ -366,29 +372,14 @@ class _HomeScreenState extends State<HomeScreen> {
           /// Token Card
           Container(
             width: screenWidth,
-            // constraints: BoxConstraints(maxWidth: screenWidth * 0.95),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                colors: [Color(0xff010219), Color(0xff050A7F)],
-                begin: Alignment(-1.0, 0.0),
-                end: Alignment(1.0, 1.0),
-                stops: [0.68, 1.0],
+             decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.transparent
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x80FFFFFF),
-                  offset: Offset(0, 1),
-                  blurRadius: 1,
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Color(0x80010227),
-                  offset: Offset(0, 0.75),
-                  blurRadius: 0,
-                  spreadRadius: 0,
-                ),
-              ],
+              image:const DecorationImage(
+                image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                fit: BoxFit.fill,
+              ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.025),
@@ -402,19 +393,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       Stack(
                         children: [
 
-                          ClipPath(
-                            clipper: DiagonalCornerClipper(),
-                            child: Image.asset(
-                              'assets/icons/tokens.png',
-                              width: screenWidth * 0.4,
-                              height: screenHeight * 0.15,
-                              fit: BoxFit.fitWidth,
-                            ),
+                          Image.asset(
+                            'assets/icons/tokens.png',
+                            width: screenWidth * 0.4,
+                            height: screenHeight * 0.15,
+                            fit: BoxFit.fitWidth,
                           ),
 
                           Positioned(
                             top: screenHeight * 0.01,
-                            left: screenWidth * 0.03,
+                            left: screenWidth * 0.02,
                             right: screenWidth * 0.01,
                             child: Row(
                               children: [
@@ -447,18 +435,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
-                                fontSize: baseSize * 0.035,
-                                color: Color(0xffFFF5ED),
+                                 fontSize: getResponsiveFontSize(context, 14),
+                                color: const Color(0xffFFF5ED),
+                                height: 1.6,
                               ),
                             ),
-                            SizedBox(height: baseSize * 0.01),
+                            SizedBox(height: baseSize * 0.02),
                             Text(
                               'Join the ECM Token ICO to revolutionize e-commerce with blockchain.',
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
-                                fontSize: baseSize * 0.028,
-                                color: Color(0xffFFF5ED),
+                                // fontSize: baseSize * 0.028,
+                                fontSize: getResponsiveFontSize(context, 13),
+                                color: const Color(0xffFFF5ED),
+                                height: null,
                               ),
                             ),
                             SizedBox(height: baseSize * 0.01),
@@ -524,8 +515,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
-                          fontSize: baseSize * 0.025,
-                          color: Color(0xffFFF5ED),
+                          // fontSize: baseSize * 0.025,
+                          fontSize: getResponsiveFontSize(context, 12),
+                          color: const Color(0xffFFF5ED),
+                          height : 1.6,
+
                         ),
                       ),
                       SizedBox(height: baseSize * 0.01),
@@ -537,8 +531,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
-                              fontSize: baseSize * 0.025,
-                              color: Color(0xffFFF5ED),
+                              // fontSize: baseSize * 0.025,
+                              fontSize: getResponsiveFontSize(context, 12),
+
+                              color: const Color(0xffFFF5ED),
+                              height : 1.6,
+
                             ),
                           ),
                           Text(
@@ -546,8 +544,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
-                              fontSize: baseSize * 0.025,
-                              color: Color(0xffFFF5ED),
+                              // fontSize: baseSize * 0.025,
+                              fontSize: getResponsiveFontSize(context, 12),
+
+                              color: const Color(0xffFFF5ED),
+                              height : 1.6,
+
                             ),
                           ),
                         ],
@@ -556,7 +558,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: baseSize * 0.02),
 
-                  LinearProgressIndicator(
+                  const LinearProgressIndicator(
                     value: 0.5,
                     minHeight: 2,
                     backgroundColor: Colors.white24,
@@ -601,7 +603,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           textStyle: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
-                            fontSize: baseSize * 0.030,
+                            // fontSize: baseSize * 0.030,
+                            fontSize: getResponsiveFontSize(context, 12),
+
                           ),
                           gradientColors: const [
                             Color(0xFF2680EF),
@@ -610,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             // Navigate
                             Navigator.of(context).push(
-                               MaterialPageRoute(builder: (context) => ViewTokenScreen()),
+                               MaterialPageRoute(builder: (context) => const ViewTokenScreen()),
                             );
 
                           },
@@ -742,9 +746,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
-                  fontSize: baseSize * 0.045,
-                  height: 1.2,
-                  color: Colors.white,
+                  // fontSize: baseSize * 0.045,
+                  fontSize: getResponsiveFontSize(context, 16),
+                   color: Colors.white,
                 ),
               ),
              ],
@@ -780,12 +784,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
 
-                    const Divider(
-                      color: Colors.white12,
-                      thickness: 1,
-                      height: 20,
-                     ),
-
+                    SizedBox(
+                      width: screenWidth * 0.9,
+                      child: const Divider(
+                        color: Colors.white12,
+                        thickness: 1,
+                        height: 20,
+                      ),
+                    ),
                      /// Address Section
                      Padding(
                        padding: const EdgeInsets.all(8.0),
@@ -795,7 +801,7 @@ class _HomeScreenState extends State<HomeScreen> {
                            // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                            CustomLabeledInputField(
                              labelText: 'Your Address:',
-                             hintText: '${walletVM.walletAddress}',
+                             hintText: walletVM.walletAddress,
                              controller: readingMoreController,
                              isReadOnly: true,
                            ),
@@ -823,15 +829,18 @@ class _HomeScreenState extends State<HomeScreen> {
                          ],
                        ),
                      ),
-                    const Divider(
-                      color: Colors.white12,
-                      thickness: 1,
-                      height: 20,
+                    SizedBox(
+                      width: screenWidth * 0.9,
+                      child: const Divider(
+                        color: Colors.white12,
+                        thickness: 1,
+                        height: 20,
+                      ),
                     ),
 
                     ///Action Buttons
                     Padding(
-                      padding: const EdgeInsets.symmetric( horizontal: 55.0 , vertical: 10),
+                      padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -867,7 +876,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 12),
                           //Buy with USDT Button
                           Expanded(
                             child:
@@ -913,14 +922,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       style:  TextStyle(
                         color: Colors.white,
-                        fontSize: screenWidth * 0.032,
+                        // fontSize: screenWidth * 0.032,
+                        fontSize: getResponsiveFontSize(context, 13),
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Poppins',
-                        height: 0.6,
+                        height: 1.6,
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 18),
 
 
                     /// ECm AMount INput Section
@@ -952,7 +962,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Enter a valid ECM amount')),
+                              const SnackBar(content: Text('Enter a valid ECM amount')),
                             );
                             return;
                           }
@@ -978,13 +988,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Purchase successful')),
+                            const SnackBar(content: Text('Purchase successful')),
                           );
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
                         }
                       },
-                      gradientColors: [
+                      gradientColors: const [
                         Color(0xFF2D8EFF),
                         Color(0xFF2EE4A4)
                       ],
@@ -1011,7 +1021,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       width: screenWidth,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/icons/learnAndEarnFrame.png'),
           fit: BoxFit.fill,
@@ -1026,9 +1036,10 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: screenWidth * 0.25,
-              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.contain,),
+            SizedBox(
+              width: screenWidth * 0.28,
+              height: screenHeight * 0.14,
+              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.fill,),
             ),
 
             // Right Side: Text and Button
@@ -1046,8 +1057,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.right,
 
                       style: TextStyle(
-                        color: Color(0XFFFFF5ED),
-                        fontSize: baseSize * 0.040,
+                        color: const Color(0XFFFFF5ED),
+                        // fontSize: baseSize * 0.040,
+                        fontSize: getResponsiveFontSize(context, 14),
                         fontWeight: FontWeight.w500,
                         height: 1.3,
 
@@ -1058,8 +1070,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Boost your crypto knowledge and earn free tokens by learning blockchain basics.',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Color(0XFFFFF5ED),
-                        fontSize: baseSize * 0.030,
+                        color: const Color(0XFFFFF5ED),
+                        // fontSize: baseSize * 0.030,
+                        fontSize: getResponsiveFontSize(context, 12),
                         fontWeight: FontWeight.w400,
                         height: 1.6,
                       ),
@@ -1068,8 +1081,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: BlockButton(
-                        height: baseSize * 0.08,
-                        width: screenWidth * 0.3,
+                        height: baseSize * 0.10,
+                        width: screenWidth * 0.4,
                         label: "Get Started",
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -1084,7 +1097,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           debugPrint('Button tapped');
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => LearnEarnScreen()),
+                            MaterialPageRoute(builder: (context) => const LearnEarnScreen()),
                           );
                         },
                       ),
@@ -1101,25 +1114,5 @@ class _HomeScreenState extends State<HomeScreen> {
 
 }
 
-class DiagonalCornerClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    const double cutSize = 20;
-
-     path.moveTo(0, cutSize);
-    path.lineTo(cutSize, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - cutSize);
-    path.lineTo(size.width - cutSize, size.height);
-    path.lineTo(0, size.height);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
 
 

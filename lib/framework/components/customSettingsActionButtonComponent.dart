@@ -10,18 +10,18 @@ class CustomSettingsActionButton extends StatelessWidget {
   final double borderRadius;
 
   const CustomSettingsActionButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text ,
     required this.icon , // Default icon
     this.foregroundColor = Colors.white, // White text and icon
     this.borderRadius = 10.0, // Default border radius
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
 
         image: DecorationImage(
 
@@ -34,7 +34,7 @@ class CustomSettingsActionButton extends StatelessWidget {
       child: InkWell(
         onTap: onPressed,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +45,7 @@ class CustomSettingsActionButton extends StatelessWidget {
                 height: 24,
                 width: 24,
               ),
-              SizedBox(width: 12,),
+              const SizedBox(width: 12,),
               Text(
                 text,
                 style: TextStyle(

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../framework/components/BlockButton.dart';
+import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
-import '../bottom_nav_bar.dart';
 
 class AndroVerseScreen extends StatefulWidget {
   const AndroVerseScreen({super.key});
@@ -33,8 +32,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
           child: Container(
             width: screenWidth,
             height: screenHeight,
-            decoration: BoxDecoration(
-              color: const Color(0xFF01090B),
+            decoration: const BoxDecoration(
+              color: Color(0xFF01090B),
               image: DecorationImage(
                 // image: AssetImage('assets/icons/gradientBgImage.png'),
                 // fit: BoxFit.contain,
@@ -63,9 +62,11 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600, // SemiBold in Figma
-                          fontSize: baseSize * 0.05,
-                          height: 0.8,
-                          color: Color(0xFFFFF5ED),
+                          // fontSize: baseSize * 0.05,
+                          fontSize: getResponsiveFontSize(context, 20),
+                          height: 1.6,
+                          // height: 0.8,
+                          color: const Color(0xFFFFF5ED),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -76,9 +77,11 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         'The Future is Loading...',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          fontSize: baseSize * 0.035,
-                          height: 1.2,
-                          color:Color(0xCCFFF5ED),
+                          // fontSize: baseSize * 0.035,
+                          // height: 1.2,
+                          fontSize: getResponsiveFontSize(context, 14),
+                          height: 1.6,
+                          color:const Color(0xCCFFF5ED),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -102,9 +105,11 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.italic,
-                          fontSize: baseSize * 0.038,
-                          height: 0.8,
-                          color: Color(0xFFFFF5ED),
+                          // fontSize: baseSize * 0.038,
+                          // height: 0.8,
+                          fontSize: getResponsiveFontSize(context, 14),
+                          height: 1.6,
+                          color: const Color(0xFFFFF5ED),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -114,24 +119,28 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         'Explore digital ownership, trade NFTs, and unlock a new world coming back soon!',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          color:Color(0xCCFFF5ED),
+                          color:const Color(0xCCFFF5ED),
                           fontWeight: FontWeight.w400,
-                          fontSize: baseSize * 0.032,
-                          height: 1.23,
+                          // fontSize: baseSize * 0.032,
+                          // height: 1.23,
+                          fontSize: getResponsiveFontSize(context, 12),
+                          height: 1.6,
                         ),
                         textAlign: TextAlign.center,
                       ),
 
-                      SizedBox(height: screenHeight * 0.04),
+                      SizedBox(height: screenHeight * 0.03),
 
                       BlockButton(
-                        height: screenHeight * 0.05,
-                        width: screenWidth * 0.4,
+                        height: screenHeight * 0.06,
+                        width: screenWidth * 0.5,
                         label: 'Go Back to Home',
                         textStyle:  TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          fontSize: baseSize * 0.035,
+                          // fontSize: baseSize * 0.035,
+                          fontSize: getResponsiveFontSize(context, 15),
+                          height: 1.6,
                         ),
                         gradientColors: const [
                           Color(0xFF2680EF),
@@ -141,8 +150,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         onTap: () {
                           Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);  // Go to Home Screen
                         },
-                        iconPath: 'assets/icons/arrowIcon.png',
-                        iconSize : screenHeight * 0.028,
+                        iconPath: 'assets/icons/arrowIcon.svg',
+                        iconSize : screenHeight * 0.013,
                       ),
 
                     ],

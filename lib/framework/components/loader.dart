@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 
 class ECMProgressIndicator extends StatelessWidget {
@@ -44,9 +45,10 @@ class ECMProgressIndicator extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                      fontSize: 12 * textScale,
+                      // fontSize: 12 * textScale,
+                      fontSize: getResponsiveFontSize(context, 12),
                       color: Colors.white,
-                      height: 0.8,
+                      height: 1.0,
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Poppins',
                     ),
@@ -62,9 +64,10 @@ class ECMProgressIndicator extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 12 * textScale,
+                      // fontSize: 12 * textScale,
+                      fontSize: getResponsiveFontSize(context, 12),
                       color: Colors.white,
-                      height: 0.8,
+                      height: 1.0,
                       fontWeight: FontWeight.w400,
                       fontFamily: 'Poppins',
                     ),
@@ -103,8 +106,9 @@ class ECMProgressIndicator extends StatelessWidget {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12 * textScale,
-                        fontFamily: 'Montserrat',
+                        // fontSize: 12 * textScale,
+                        fontSize: getResponsiveFontSize(context, 12),
+                        fontFamily: 'Poppins',
                       ),
                       textAlign: TextAlign.end,
                     ),
@@ -113,14 +117,16 @@ class ECMProgressIndicator extends StatelessWidget {
               ),
               if (progress < 0.1)
                 Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8), // slight padding for better spacing
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   '$percentage%',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12 * textScale,
-                    fontFamily: 'Montserrat',
+                    // fontSize: 12 * textScale,
+                    fontSize: getResponsiveFontSize(context, 12),
+
+                    fontFamily: 'Poppins',
                   ),
                 ),
               ),

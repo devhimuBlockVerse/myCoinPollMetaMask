@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
-import '../../staking/widgets/transaction_details.dart';
+import 'transaction_details.dart';
 
  Widget buildTransactionTable(List<Map<String, dynamic>> transactionData, double screenWidth, BuildContext context) {
   double baseSize = screenWidth * 0.9;

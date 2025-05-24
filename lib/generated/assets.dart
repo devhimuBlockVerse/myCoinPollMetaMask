@@ -37,6 +37,7 @@ class Assets {
   static const String iconsBackButton = 'assets/icons/back_button.svg';
   static const String iconsBg = 'assets/icons/bg.png';
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
+  static const String iconsBgFrame = 'assets/icons/bgFrame.png';
   static const String iconsBgRoadMapFrame = 'assets/icons/bgRoadMapFrame.png';
   static const String iconsBlockChainBg = 'assets/icons/blockChainBg.png';
   static const String iconsBuildStatCardBG = 'assets/icons/buildStatCardBG.png';
@@ -134,6 +135,7 @@ class Assets {
   static const String iconsTermsImg = 'assets/icons/termsImg.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTimerImg = 'assets/icons/timerImg.svg';
+  static const String iconsTnxHash = 'assets/icons/tnx_hash.svg';
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsTotalEcommerceBG = 'assets/icons/totalEcommerceBG.png';
   static const String iconsTotalEthereumBG = 'assets/icons/totalEthereumBG.png';

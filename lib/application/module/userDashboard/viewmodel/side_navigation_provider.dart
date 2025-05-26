@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
@@ -10,8 +11,12 @@ class NavigationProvider extends ChangeNotifier {
   String get currentScreenId => _currentScreenId;
 
   void setScreen(String id) {
-    _currentScreenId = id;
-    notifyListeners();
+    // _currentScreenId = id;
+    // notifyListeners();
+    if (_currentScreenId != id) {
+      _currentScreenId = id;
+      notifyListeners();
+    }
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -29,8 +34,7 @@ class NavigationProvider extends ChangeNotifier {
       id: 'milestone',
       title: 'Milestone',
       iconPath: 'assets/icons/milestone.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Milestone Screen'),
+      screenBuilder: (context) => const MilestonScreen(screenName: 'Milestone'),
     ),
     NavItem(
       id: 'kyc',

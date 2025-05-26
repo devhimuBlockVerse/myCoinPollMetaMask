@@ -9,7 +9,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/stakin
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/transaction_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/sign_in.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../framework/res/colors.dart';
 

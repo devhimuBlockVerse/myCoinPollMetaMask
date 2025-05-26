@@ -14,7 +14,7 @@ import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
  import '../../../../../framework/utils/dynamicFontSize.dart';
- import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 
 class DashboardScreen extends StatefulWidget {

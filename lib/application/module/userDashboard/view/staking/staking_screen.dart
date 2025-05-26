@@ -10,7 +10,7 @@ import '../../../../../framework/components/percentageSelectorComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
  import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/usecases/sort_data.dart';
-import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widgets/staking_table.dart';
 

@@ -21,6 +21,7 @@ import '../../viewmodel/wallet_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  static const String routeName = '/home'; // Example route name
 
   @override
   State<HomeScreen> createState() =>

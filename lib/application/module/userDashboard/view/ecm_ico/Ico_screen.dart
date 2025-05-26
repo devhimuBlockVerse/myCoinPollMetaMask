@@ -341,7 +341,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
   /// Buy ECM Section
   Widget _buildBuyEcmSection() {
-    final Size screenSize = MediaQuery.of(context).size;
+     final Size screenSize = MediaQuery.of(context).size;
 
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -354,6 +354,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
       child: Column(
         children: [
 
+          SizedBox(height: screenHeight * 0.02),
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -384,12 +385,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     ),
 
 
-                    const Divider(
-                      color: Colors.white12,
-                      thickness: 1,
-                      height: 20,
+                    SizedBox(
+                      width: screenWidth * 0.9,
+                      child: const Divider(
+                        color: Colors.white12,
+                        thickness: 1,
+                        height: 20,
+                      ),
                     ),
-
                     /// Address Section
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -404,7 +407,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             isReadOnly: true,
                           ),
                           const SizedBox(height: 3),
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                           CustomLabeledInputField(
                             labelText: 'Referral Link:',
                             hintText: ' https://mycoinpoll.com?ref=125482458661',
@@ -428,15 +430,18 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         ],
                       ),
                     ),
-                    const Divider(
-                      color: Colors.white12,
-                      thickness: 1,
-                      height: 20,
+                    SizedBox(
+                      width: screenWidth * 0.9,
+                      child: const Divider(
+                        color: Colors.white12,
+                        thickness: 1,
+                        height: 20,
+                      ),
                     ),
 
                     ///Action Buttons
                     Padding(
-                      padding: const EdgeInsets.symmetric( horizontal: 55.0 , vertical: 10),
+                      padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -455,20 +460,24 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                     _ethPrice = ethPrice;
                                     isETHActive = true;
                                     isUSDTActive = false;
+
                                   });
                                   _updatePayableAmount();
 
                                 } catch (e) {
+
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
+
                                   }
                                 }
+
                               },
 
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 12),
                           //Buy with USDT Button
                           Expanded(
                             child:
@@ -492,9 +501,12 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                 } catch (e) {
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
+
                                     Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
+
                                   }
                                 }
+
                               },
 
                             ),
@@ -508,16 +520,19 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       isETHActive
                           ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
                           : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
+
                       style:  TextStyle(
                         color: Colors.white,
-                        fontSize: screenWidth * 0.032,
+                        // fontSize: screenWidth * 0.032,
+                        fontSize: getResponsiveFontSize(context, 13),
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Poppins',
-                        height: 0.6,
+                        height: 1.6,
                       ),
                     ),
 
-                    const SizedBox(height: 22),
+                    const SizedBox(height: 18),
+
 
                     /// ECm AMount INput Section
                     CustomInputField(

@@ -12,6 +12,10 @@ import 'package:provider/provider.dart';
 import '../../../framework/res/colors.dart';
 import '../viewmodel/bottom_nav_provider.dart';
 
+
+
+
+
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
@@ -28,6 +32,51 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     const ProfileScreen(),
   ];
 
+  // late final List<Widget> _pages;
+  // final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+  //   GlobalKey<NavigatorState>(),
+  //   GlobalKey<NavigatorState>(),
+  //   GlobalKey<NavigatorState>(),
+  //   GlobalKey<NavigatorState>(),
+  //   GlobalKey<NavigatorState>(),
+  // ];
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _pages = [
+  //     TabNavigator(
+  //       navigatorKey: _navigatorKeys[0],
+  //       tabRootRouteName: TabNavigatorRoutes.root,
+  //       rootPage: const HomeScreen(),
+  //
+  //     ),
+  //     TabNavigator(
+  //       navigatorKey: _navigatorKeys[1],
+  //       tabRootRouteName: TabNavigatorRoutes.root,
+  //       rootPage: const FeaturesScreen(), // Replace with your actual root page
+  //       // routes: { '/ecm_sub_page': (context) => ECMSubPage() },
+  //     ),
+  //     TabNavigator(
+  //       navigatorKey: _navigatorKeys[2],
+  //       tabRootRouteName: TabNavigatorRoutes.root,
+  //       rootPage: const AndroVerseScreen(),
+  //       // routes: { ... },
+  //     ),
+  //     TabNavigator(
+  //       navigatorKey: _navigatorKeys[3],
+  //       tabRootRouteName: TabNavigatorRoutes.root,
+  //       rootPage: const NewsScreen(),
+  //       // routes: { ... },
+  //     ),
+  //     TabNavigator(
+  //       navigatorKey: _navigatorKeys[4],
+  //       tabRootRouteName: TabNavigatorRoutes.root,
+  //       rootPage: const ProfileScreen(),
+  //       // routes: { ... },
+  //     ),
+  //   ];
+  // }
+  //
   final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
 
   final List<String> _imgPaths = [
@@ -119,6 +168,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     return value ?? false;
   }
 
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width * 1;
@@ -130,11 +180,14 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       child: WillPopScope(
         onWillPop: () => _onWillPop(screenWidth, screenHeight),
         child: Scaffold(
-          // extendBodyBehindAppBar: true,
-          // backgroundColor: Colors.transparent,
-          backgroundColor: const Color(0xFF0E0F1A), // Set appropriate background
+
+          backgroundColor: const Color(0xFF0E0F1A),
 
           body: _pages[currentIndex],
+          // body: IndexedStack(
+          //   index: currentIndex,
+          //   children: _pages,
+          // ),
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(15),
@@ -207,3 +260,56 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     );
   }
 }
+
+// class TabNavigatorRoutes {
+//   static const String root = '/';
+// }
+// class TabNavigator extends StatelessWidget {
+//   final GlobalKey<NavigatorState> navigatorKey;
+//   final String tabRootRouteName; // e.g., TabNavigatorRoutes.root
+//   final Widget rootPage; // The initial page for this tab (e.g., DashboardScreen)
+//   final Map<String, WidgetBuilder> routes; // Routes specific to this tab
+//
+//   const TabNavigator({
+//     super.key,
+//     required this.navigatorKey,
+//     required this.tabRootRouteName,
+//     required this.rootPage,
+//     this.routes = const {}, // Default to empty routes if none specific
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Navigator(
+//       key: navigatorKey,
+//       initialRoute: tabRootRouteName,
+//       onGenerateRoute: (RouteSettings settings) {
+//         WidgetBuilder? builder;
+//
+//         // Check predefined routes first
+//         if (routes.containsKey(settings.name)) {
+//           builder = routes[settings.name];
+//         } else if (settings.name == TabNavigatorRoutes.root) {
+//           // Default root page for this tab
+//           builder = (BuildContext _) => rootPage;
+//         }
+//         // Add more complex routing logic or specific routes for this tab here
+//         // For example, if tabRootRouteName is '/', then this handles the root.
+//         // You can extend this to parse arguments, etc.
+//
+//         if (builder != null) {
+//           return MaterialPageRoute(
+//             builder: builder,
+//             settings: settings,
+//           );
+//         }
+//         // Fallback for unknown routes within this tab - can show an error page
+//         return MaterialPageRoute(
+//           builder: (BuildContext _) => Scaffold(
+//             body: Center(child: Text('Error: Route not found within tab: ${settings.name}')),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }

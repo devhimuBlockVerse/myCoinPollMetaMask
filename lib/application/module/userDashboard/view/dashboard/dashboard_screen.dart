@@ -13,7 +13,9 @@ import '../../../../../framework/components/statusChipComponent.dart';
 import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
-import '../../../../../framework/utils/dynamicFontSize.dart';
+ import '../../../../../framework/utils/dynamicFontSize.dart';
+ import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+import '../../../side_nav_bar.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -22,18 +24,13 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
-
-
+class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
     super.initState();
     _setGreeting();
-
-
   }
-
 
 
   String greeting = "";
@@ -49,95 +46,115 @@ class _DashboardScreenState extends State<DashboardScreen> {
         : "Good Night";
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
 
-    // Dynamic multipliers
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
+
     final baseSize = isPortrait ? screenWidth : screenHeight;
-    return Scaffold(
 
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Container(
-          width: screenWidth,
-          height: screenHeight,
-          decoration: const BoxDecoration(
-             image: DecorationImage(
-               image: AssetImage('assets/icons/starGradientBg.png'),
-              fit: BoxFit.cover,
-              alignment: Alignment.topRight,
-            ),
-          ),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.01,
-                vertical: screenHeight * 0.02,
+    return WillPopScope(
+      onWillPop: () async {
+         return false;
+      },
+      child: Scaffold(
+        key: navProvider.scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
+
+
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            decoration: const BoxDecoration(
+               image: DecorationImage(
+                 image: AssetImage('assets/icons/starGradientBg.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topRight,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-
-
-                  /// User Name Data & Wallet Address
-                  _headerSection(),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  /// User Graph Chart and Level
-                  _EcmWithGraphChart(),
-                  SizedBox(height: screenHeight * 0.03),
-
-
-                  /// Referral Link
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: const Color(0xff040C16),
-                    borderRadius: BorderRadius.circular(12)
-                    ),
-
-                    child: ClipRRect(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: CustomLabeledInputField(
-                        labelText: 'Referral Link:',
-                        hintText: ' https://mycoinpoll.com?ref=125482458661',
-                         isReadOnly: true,
-                        trailingIconAsset: 'assets/icons/copyImg.svg',
-                        onTrailingIconTap: () {
-                          debugPrint('Trailing icon tapped');
-                        },
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.01,
+                  vertical: screenHeight * 0.02,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+      
+      
+                    /// User Name Data & Wallet Address
+                    _headerSection(),
+                    SizedBox(height: screenHeight * 0.02),
+      
+                    /// User Graph Chart and Level
+                    _EcmWithGraphChart(),
+                    SizedBox(height: screenHeight * 0.03),
+      
+      
+                    /// Referral Link
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0xff040C16),
+                      borderRadius: BorderRadius.circular(12)
+                      ),
+      
+                      child: ClipRRect(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: CustomLabeledInputField(
+                          labelText: 'Referral Link:',
+                          hintText: ' https://mycoinpoll.com?ref=125482458661',
+                           isReadOnly: true,
+                          trailingIconAsset: 'assets/icons/copyImg.svg',
+                          onTrailingIconTap: () {
+                            debugPrint('Trailing icon tapped');
+                          },
+                        ),
+                      ),
                       ),
                     ),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-
-
-
-                  _joinPromoteEarn(),
-                  SizedBox(height: screenHeight * 0.03),
-
-                  _milestoneSection(),
-                  SizedBox(height: screenHeight * 0.03),
-
-
-                  _kycStatus(),
-                  SizedBox(height: screenHeight * 0.03),
-
-
-                  _transactionsReferral(),
-                  // SizedBox(height: screenHeight * 0.03),
-
-
-                ],
+                    SizedBox(height: screenHeight * 0.03),
+      
+      
+      
+                    _joinPromoteEarn(),
+                    SizedBox(height: screenHeight * 0.03),
+      
+                    _milestoneSection(),
+                    SizedBox(height: screenHeight * 0.03),
+      
+      
+                    _kycStatus(),
+                    SizedBox(height: screenHeight * 0.03),
+      
+      
+                    _transactionsReferral(),
+                    // SizedBox(height: screenHeight * 0.03),
+      
+      
+                  ],
+                ),
               ),
             ),
           ),

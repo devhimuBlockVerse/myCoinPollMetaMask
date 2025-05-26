@@ -27,6 +27,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
 
   String? selectedGender;
   String? selectedCountry;
@@ -95,7 +99,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 ],
               ),
 
-              SizedBox(height: screenHeight * 0.01),
+              // SizedBox(height: screenHeight * 0.01),
 
               Expanded(
                 child: Padding(
@@ -119,7 +123,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
                           Container(
                             width: double.infinity,
-                            height: screenHeight * 0.7,
+                            height: screenHeight ,
 
                             decoration: BoxDecoration(
                                image: const DecorationImage(
@@ -286,12 +290,85 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
 
 
-                                   SizedBox(height: screenHeight * 0.03),
+                                   SizedBox(height: screenHeight * 0.05),
 
                                   BlockButton(
                                     height: screenHeight * 0.045,
                                     width: screenWidth * 0.7,
                                     label: 'Update Profile',
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      // fontSize: baseSize * 0.030,
+                                      fontSize: getResponsiveFontSize(context, 16),
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494),
+                                    ],
+                                    onTap: () {
+                                      // Update Personal Information , Save & Navigate back to Profile Screen
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const ProfileScreen(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.05),
+
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      'Update Your Password',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: getResponsiveFontSize(context, 16),
+                                        height: 1.6,
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.03),
+
+                                  ListingField(
+                                    controller: oldPasswordController,
+                                    labelText: 'Old Password',
+                                    height: screenHeight * 0.05,
+                                    expandable: false,
+                                    keyboard: TextInputType.name,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+                                  ListingField(
+                                    controller: newPasswordController,
+                                    labelText: 'New Password',
+                                    height: screenHeight * 0.05,
+                                    expandable: false,
+                                    keyboard: TextInputType.name,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  ListingField(
+                                    controller: confirmPasswordController,
+                                    labelText: 'Confirm Password',
+                                    height: screenHeight * 0.05,
+                                    expandable: false,
+                                    keyboard: TextInputType.name,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.05),
+
+                                  BlockButton(
+                                    height: screenHeight * 0.045,
+                                    width: screenWidth * 0.7,
+                                    label: 'Update Password',
                                     textStyle: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       color: Colors.white,

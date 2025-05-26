@@ -12,9 +12,8 @@ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 
 class MilestonScreen extends StatefulWidget {
-  final String screenName;
 
-  const MilestonScreen({super.key, required this.screenName});
+  const MilestonScreen({super.key });
 
   @override
   State<MilestonScreen> createState() => _MilestonScreenState();
@@ -106,13 +105,13 @@ class _MilestonScreenState extends State<MilestonScreen> {
     final navItems = navProvider.drawerNavItems;
 
     return  Scaffold(
-        key: navProvider.scaffoldKey,
+        // key: navProvider.scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(
           currentScreenId: currentScreenId,
           navItems: navItems,
-          onScreenSelected: (id) => navProvider.setScreen(id),
+          // onScreenSelected: (id) => navProvider.setScreen(id),
           onLogoutTapped: () {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Logout Pressed")));

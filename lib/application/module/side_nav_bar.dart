@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/side_navigation_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../framework/res/colors.dart';
 import '../domain/model/nav_item.dart';
@@ -75,7 +77,7 @@ class _SideNavBarState extends State<SideNavBar> {
         children: <Widget>[
           CircleAvatar(
             radius: avatarRadius,
-            backgroundImage: const AssetImage('assets/images/profile_placeholder.png'), // Ensure asset exists
+            backgroundImage: const AssetImage('assets/icons/ecm.png'), // Ensure asset exists
             backgroundColor: Colors.white.withOpacity(0.3),
           ),
           SizedBox(height: drawerWidth * 0.03),
@@ -108,8 +110,12 @@ class _SideNavBarState extends State<SideNavBar> {
       ),
     );
   }
+// In SideNavBar class (_SideNavBarState)
 
   Widget _buildNavItem(BuildContext context, NavItem item, double drawerWidth) {
+    // Access the NavigationProvider. listen: false is appropriate here as we are dispatching an action.
+    final navProvider = Provider.of<NavigationProvider>(context, listen: false);
+    // widget.currentScreenId is passed from MilestonScreen, which gets it from navProvider.
     final bool isSelected = item.id == widget.currentScreenId;
     final double itemHorizontalPadding = drawerWidth * 0.05;
     final double itemFontSize = drawerWidth * 0.045;
@@ -133,14 +139,33 @@ class _SideNavBarState extends State<SideNavBar> {
         ),
       ),
       onTap: () async {
-        Navigator.pop(context);
+        // 1. Close the drawer.
+        // The context here is from _buildNavItem, which is part of SideNavBar,
+        // which is built within MilestonScreen's Scaffold. So, Navigator.of(context).pop()
+        // should correctly target the drawer.
+        Navigator.of(context).pop(); // Closes the drawer
+
+        // 2. Check if the selected item is the screen we are already on.
+        // widget.currentScreenId reflects the ID of the screen that built this SideNavBar.
+        if (item.id == widget.currentScreenId) {
+          // If it's the same screen, do nothing further.
+          // The drawer is closed, and the screen remains the same.
+          // Provider's currentScreenId is already correct.
+          return;
+        }
+
+        // 3. Update the provider's state for the new screen.
+        // This will call navProvider.setScreen(item.id).
         widget.onScreenSelected(item.id);
 
-         await Navigator.push(
+        // 4. Navigate using pushReplacement.
+        // This ensures the old screen (e.g., an instance of MilestonScreen and its Scaffold
+        // using the GlobalKey) is disposed before the new screen is built.
+        // If the new screen is MilestonScreen, its new Scaffold will then be the sole user of the GlobalKey.
+        await Navigator.push(
           context,
-          MaterialPageRoute(builder: item.screenBuilder),
+          MaterialPageRoute(builder: item.screenBuilder), // item.screenBuilder creates the new screen instance
         );
-
       },
     );
 
@@ -161,8 +186,63 @@ class _SideNavBarState extends State<SideNavBar> {
       ),
       child: navTile,
     );
-
-    return navTile;
   }
+
+
+  // Widget _buildNavItem(BuildContext context, NavItem item, double drawerWidth) {
+  //   final bool isSelected = item.id == widget.currentScreenId;
+  //   final double itemHorizontalPadding = drawerWidth * 0.05;
+  //   final double itemFontSize = drawerWidth * 0.045;
+  //   final double itemIconSize = drawerWidth * 0.07;
+  //
+  //   Widget navTile = ListTile(
+  //     contentPadding: EdgeInsets.symmetric(horizontal: itemHorizontalPadding, vertical: drawerWidth * 0.001),
+  //     leading: SvgPicture.asset(
+  //       item.iconPath,
+  //       width: itemIconSize,
+  //       height: itemIconSize,
+  //       fit: BoxFit.scaleDown,
+  //     ),
+  //     title: Text(
+  //       item.title,
+  //       style: TextStyle(
+  //         color: isSelected ? AppColors.navItemSelected : AppColors.navItemDefault,
+  //         fontSize: itemFontSize,
+  //         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+  //         fontFamily: 'Poppins',
+  //       ),
+  //     ),
+  //     onTap: () async {
+  //       Navigator.pop(context);
+  //       widget.onScreenSelected(item.id);
+  //
+  //        await Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: item.screenBuilder),
+  //       );
+  //
+  //     },
+  //   );
+  //
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(
+  //       horizontal: itemHorizontalPadding / 2,
+  //       vertical: drawerWidth * 0.02,
+  //     ),
+  //     decoration: BoxDecoration(
+  //       image: DecorationImage(
+  //         image: AssetImage(
+  //           isSelected
+  //               ? 'assets/icons/sideNavSelectedOptionsBg.png'
+  //               : 'assets/icons/sideNavUnselectedOptionsBg.png',
+  //         ),
+  //         fit: BoxFit.fill,
+  //       ),
+  //     ),
+  //     child: navTile,
+  //   );
+  //
+  //   return navTile;
+  // }
 
  }

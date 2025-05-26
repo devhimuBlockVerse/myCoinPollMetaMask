@@ -8,7 +8,7 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/staking_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
-import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 
 
@@ -28,29 +28,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _displayData = [];
-
-
-
-  int selectedCard = 0;
-
-  final List<Map<String, dynamic>> cards = [
-    {
-      'title': 'Total\nTransactions',
-      'value': '125',
-      'colors': [const Color(0xFF040C16), const Color(0xFF172C4B)],
-    },
-    {
-      'title': 'Total\nEthereum',
-      'value': '125',
-      'colors': [const Color(0xFF040C16), const Color(0xFF172C4B)],
-    },
-    {
-      'title': 'Total\neCommerce',
-      'value': '100',
-      'colors': [const Color(0xFF101A29), const Color(0xFF172C4B)],
-    },
-  ];
-
 
 
   @override
@@ -120,7 +97,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final minContainerHeight = screenHeight * 0.13;
 
     final horizontalPadding = containerWidth * 0.03;
-    final itemSpacing = screenWidth * 0.03;
+    final itemSpacing = screenWidth * 0.02;
 
     double getResponsiveRadius(double base) => base * (screenWidth / 360);
     final navProvider = Provider.of<NavigationProvider>(context);
@@ -201,7 +178,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF01090B),
+                                  // color: const Color(0xFF01090B),
                                   image: const DecorationImage(
                                     image: AssetImage('assets/icons/buildStatCardBG.png'),
                                     fit: BoxFit.fill,
@@ -407,7 +384,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final padding = screenWidth * 0.025;
 
     return Container(
-      width: cardWidth,
+      width: screenWidth,
       height: cardHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -419,10 +396,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
         image: imageUrl != null
             ? DecorationImage(
           image: AssetImage(imageUrl),
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-        )
-            : null,
+          fit: BoxFit.fitHeight,
+          // alignment: Alignment.center,
+        ) : null,
       ),
       child: Padding(
         padding: EdgeInsets.all(padding),

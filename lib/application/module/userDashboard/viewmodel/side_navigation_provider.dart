@@ -2,8 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../framework/res/colors.dart';
-import '../../domain/model/nav_item.dart';
+import '../../../../framework/res/colors.dart';
+import '../../../domain/model/nav_item.dart';
 
 class NavigationProvider extends ChangeNotifier {
   String _currentScreenId = 'milestone';

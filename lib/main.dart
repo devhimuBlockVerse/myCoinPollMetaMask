@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mycoinpoll_metamask/application/presentation/viewmodel/dashboard_nav_provider.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'application/module/dashboard_bottom_nav.dart';
 import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
-import 'application/presentation/viewmodel/side_navigation_provider.dart';
+import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 
 

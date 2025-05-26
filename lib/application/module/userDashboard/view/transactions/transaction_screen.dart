@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/widgets/transaction_table.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/staking_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+import '../../../side_nav_bar.dart';
 
 
 class TransactionScreen extends StatefulWidget {
@@ -120,9 +123,23 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final itemSpacing = screenWidth * 0.03;
 
     double getResponsiveRadius(double base) => base * (screenWidth / 360);
-
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
 
     return  Scaffold(
+        key: navProvider.scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 

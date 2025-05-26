@@ -10,9 +10,12 @@ import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/general_utls.dart';
+import '../../../../presentation/viewmodel/side_navigation_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:web3dart/web3dart.dart';
+
+import '../../../side_nav_bar.dart';
 
 
 
@@ -91,7 +94,24 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
+
     return  Scaffold(
+        key: navProvider.scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
+
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 

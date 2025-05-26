@@ -56,7 +56,6 @@ class Assets {
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
-  static const String iconsDialogFrame = 'assets/icons/dialogFrame.png';
   static const String iconsDisconnected = 'assets/icons/disconnected.svg';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
@@ -147,7 +146,6 @@ class Assets {
   static const String iconsTermsImg = 'assets/icons/termsImg.svg';
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTimerImg = 'assets/icons/timerImg.svg';
-  static const String iconsTnxHash = 'assets/icons/tnx_hash.svg';
   static const String iconsTokens = 'assets/icons/tokens.png';
   static const String iconsTotalEcommerceBG = 'assets/icons/totalEcommerceBG.png';
   static const String iconsTotalEthereumBG = 'assets/icons/totalEthereumBG.png';

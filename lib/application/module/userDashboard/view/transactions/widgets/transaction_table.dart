@@ -136,6 +136,7 @@ import 'transaction_details.dart';
                             showDialog(
                               context: context,
                               builder: (_) => const TransactionDetailsDialog(),
+                              // builder: (_) => const TransactionDetails(),
                             );
 
 

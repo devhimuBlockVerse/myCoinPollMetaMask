@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
+import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
@@ -9,6 +10,8 @@ import '../../../../../framework/components/percentageSelectorComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
  import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/viewmodel/side_navigation_provider.dart';
+import '../../../side_nav_bar.dart';
 import 'widgets/staking_table.dart';
 
 const List<String> dummyPercentageOptions = ['25%', '50%', '75%', 'Max'];
@@ -74,8 +77,22 @@ class _StakingScreenState extends State<StakingScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     final bool isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
-
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
     return  Scaffold(
+        key: navProvider.scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 

@@ -249,7 +249,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
-                                  fontSize: getResponsiveFontSize(context, 18),
+                                  fontSize: getResponsiveFontSize(context, 17),
                                   height: 1.6,
                                   color: Colors.white,
                                 ),

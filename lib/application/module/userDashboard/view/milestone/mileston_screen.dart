@@ -247,18 +247,17 @@ class _MilestonScreenState extends State<MilestonScreen> {
 
                               SizedBox(height: screenHeight * 0.030),
                               Text(
-                                'Recent Transactions',
+                                'Milestone List',
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
-                                  fontSize: getResponsiveFontSize(context, 18),
+                                  fontSize: getResponsiveFontSize(context, 17),
                                   height: 1.6,
                                   color: Colors.white,
                                 ),
                               ),
                               SizedBox(height: screenHeight * 0.030),
-
 
                               /// Search Controller with Data Sorting Button
                               Container(

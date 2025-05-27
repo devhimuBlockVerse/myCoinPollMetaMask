@@ -243,8 +243,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                 ),
                               ),
 
-
-
                               SizedBox(height: screenHeight * 0.030),
                               Text(
                                 'Milestone List',
@@ -257,18 +255,18 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(height: screenHeight * 0.030),
+                              SizedBox(height: screenHeight * 0.015),
 
                               /// Search Controller with Data Sorting Button
                               Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff040C16),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                                 padding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.02,
-                                    vertical:  screenHeight * 0.01
+                                    vertical:  screenHeight * 0.001
                                 ),
 
                                 child: Row(

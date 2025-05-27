@@ -262,11 +262,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   color: const Color(0xff040C16),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
                                 padding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.02,
-                                    vertical:  screenHeight * 0.01
+                                    vertical:  screenHeight * 0.001
                                 ),
 
                                 child: Row(

@@ -55,6 +55,7 @@ class Assets {
   static const String iconsCrossIcon = 'assets/icons/crossIcon.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
+  static const String iconsDetailsBg = 'assets/icons/detailsBg.png';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
   static const String iconsDialogFrame = 'assets/icons/dialogFrame.png';
   static const String iconsDisconnected = 'assets/icons/disconnected.svg';
@@ -102,6 +103,7 @@ class Assets {
   static const String iconsMetaFutionImg = 'assets/icons/metaFutionImg.png';
   static const String iconsMetaVerseIntegration = 'assets/icons/metaVerseIntegration.png';
   static const String iconsMilestone = 'assets/icons/milestone.svg';
+  static const String iconsMilestoneBG = 'assets/icons/milestoneBG.png';
   static const String iconsMilestoneStatFrameBg = 'assets/icons/milestoneStatFrameBg.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
@@ -142,6 +144,7 @@ class Assets {
   static const String iconsStaticChart = 'assets/icons/staticChart.png';
   static const String iconsSubmissionCheck = 'assets/icons/submissionCheck.svg';
   static const String iconsSupportTicket = 'assets/icons/support_ticket.svg';
+  static const String iconsTableBg = 'assets/icons/tableBg.png';
   static const String iconsTared = 'assets/icons/tared.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';

@@ -9,14 +9,14 @@ import '../domain/model/nav_item.dart';
 
 class SideNavBar extends StatefulWidget {
   final String? currentScreenId;
-  final Function(String screenId)? onScreenSelected;
+  final Function(String screenId) onScreenSelected;
   final List<NavItem> navItems;
   final VoidCallback? onLogoutTapped;
 
   const SideNavBar({
     Key? key,
     this.currentScreenId,
-     this.onScreenSelected,
+    required this.onScreenSelected,
     required this.navItems,
     this.onLogoutTapped,
   }) : super(key: key);
@@ -26,6 +26,7 @@ class SideNavBar extends StatefulWidget {
 }
 
 class _SideNavBarState extends State<SideNavBar> {
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -35,16 +36,18 @@ class _SideNavBarState extends State<SideNavBar> {
     return SizedBox(
       width: drawerWidth,
       child: Drawer(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        backgroundColor: Colors.transparent,
         child: SafeArea(
           child: Container(
-
             decoration: const BoxDecoration(
               color:   Color(0xff040C16),
 
               image: DecorationImage(
                 image: AssetImage('assets/icons/sideNav_BG.png'),
                 fit: BoxFit.fill,
-
                ),
              ),
             child: ListView(
@@ -62,6 +65,7 @@ class _SideNavBarState extends State<SideNavBar> {
       ),
     );
   }
+
 
   Widget _buildHeader(BuildContext context, double drawerWidth) {
     final double avatarRadius = drawerWidth * 0.15;
@@ -110,62 +114,6 @@ class _SideNavBarState extends State<SideNavBar> {
       ),
     );
   }
-// In SideNavBar class (_SideNavBarState)
-
-  // Widget _buildNavItem(BuildContext context, NavItem item, double drawerWidth) {
-  //   final bool isSelected = item.id == widget.currentScreenId;
-  //   final double itemHorizontalPadding = drawerWidth * 0.05;
-  //   final double itemFontSize = drawerWidth * 0.045;
-  //   final double itemIconSize = drawerWidth * 0.07;
-  //
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(
-  //       horizontal: itemHorizontalPadding / 2,
-  //       vertical: drawerWidth * 0.02,
-  //     ),
-  //     decoration: BoxDecoration(
-  //       image: DecorationImage(
-  //         image: AssetImage(
-  //           isSelected
-  //               ? 'assets/icons/sideNavSelectedOptionsBg.png'
-  //               : 'assets/icons/sideNavUnselectedOptionsBg.png',
-  //         ),
-  //         fit: BoxFit.fill,
-  //       ),
-  //     ),
-  //     child: ListTile(
-  //       contentPadding: EdgeInsets.symmetric(
-  //         horizontal: itemHorizontalPadding,
-  //         vertical: drawerWidth * 0.001,
-  //       ),
-  //       leading: SvgPicture.asset(
-  //         item.iconPath,
-  //         width: itemIconSize,
-  //         height: itemIconSize,
-  //         fit: BoxFit.scaleDown,
-  //       ),
-  //       title: Text(
-  //         item.title,
-  //         style: TextStyle(
-  //           color: isSelected
-  //               ? AppColors.navItemSelected
-  //               : AppColors.navItemDefault,
-  //           fontSize: itemFontSize,
-  //           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-  //           fontFamily: 'Poppins',
-  //         ),
-  //       ),
-  //       onTap: () async {
-  //         Navigator.of(context).pop(); // Close drawer
-  //         await Future.delayed(Duration(milliseconds: 250)); // ensure drawer closes before nav
-  //         Navigator.of(context).push(
-  //           MaterialPageRoute(builder: item.screenBuilder),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
-
 
   Widget _buildNavItem(BuildContext context, NavItem item, double drawerWidth) {
     final bool isSelected = item.id == widget.currentScreenId;

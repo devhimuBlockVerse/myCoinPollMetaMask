@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
@@ -558,7 +559,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  debugPrint('View All button tapped');
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  MilestonScreen()));
+                },
                 child: Text(
                   'View All',
                   style: TextStyle(

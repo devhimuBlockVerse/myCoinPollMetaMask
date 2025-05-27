@@ -125,8 +125,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
             // color: const Color(0xFF0B0A1E),
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/icons/gradientBgImage.png'),
-              // fit: BoxFit.contain,
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,

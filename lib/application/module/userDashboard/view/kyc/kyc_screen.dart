@@ -75,6 +75,7 @@ class AppTextStyles {
       fontFamily: _fontFamily,
       color: AppColors.accentGreen,
        fontWeight: FontWeight.w400,
+      height: 0.8,
       fontSize: getResponsiveFontSize(context,12),
 
     );
@@ -204,8 +205,8 @@ class _KycScreenState extends State<KycScreen> {
       ),
       body: SafeArea(
         child: Container(
-          width: screenWidth,
-          height: screenHeight,
+          width: double.infinity,
+          // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/icons/starGradientBg.png'),
@@ -217,7 +218,8 @@ class _KycScreenState extends State<KycScreen> {
             children: [
               // App bar row
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
                     icon: SvgPicture.asset(
@@ -324,7 +326,13 @@ class _KycScreenState extends State<KycScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _tasks.length,
                         itemBuilder: (context, index) {
-                          return MilestoneLists(task: _tasks[index]);
+                          return Column(
+                            children: [
+                              MilestoneLists(task: _tasks[index]),
+                              SizedBox(height: screenHeight * 0.020),
+
+                            ],
+                          );
                         },
                       ),
                     ],

@@ -21,6 +21,7 @@ class MilestonScreen extends StatefulWidget {
 
 class _MilestonScreenState extends State<MilestonScreen> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   SortTransactionHistoryOption? _currentSort;
@@ -105,28 +106,28 @@ class _MilestonScreenState extends State<MilestonScreen> {
     final navItems = navProvider.drawerNavItems;
 
     return  Scaffold(
-        // key: navProvider.scaffoldKey,
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(
           currentScreenId: currentScreenId,
           navItems: navItems,
-          // onScreenSelected: (id) => navProvider.setScreen(id),
+          onScreenSelected: (id) => navProvider.setScreen(id),
           onLogoutTapped: () {
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Logout Pressed")));
           },
         ),
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
+
 
         body: SafeArea(
-          top: false,
-          child: Container(
+           child: Container(
               width: screenWidth,
               height: screenHeight,
               decoration: const BoxDecoration(
-                color: Color(0xFF01090B),
+                // color: Color(0xFF01090B),
                 image: DecorationImage(
                   image: AssetImage('assets/icons/starGradientBg.png'),
                   fit: BoxFit.cover,

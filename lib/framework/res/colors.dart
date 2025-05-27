@@ -15,16 +15,25 @@ class AppColors{
   /// FOr Testing
 
 
-  static const Color drawerGradientStart = Color(0xFF00A9B7); // Cyan/Teal top
-  static const Color drawerGradientEnd = Color(0xFF0A254A);   // Deep dark blue bottom
+   static const Color drawerGradientEnd = Color(0xFF0A254A);   // Deep dark blue bottom
   static const Color profileName = Colors.white;
   static const Color userIdText = Color(0xFF22C55E); // Green
   static const Color navItemDefault = Colors.white70;
   static const Color navItemSelected = Colors.white;
-  static const Color selectedItemBackground = Color(0xFF1E90FF); // Dodger Blue like
-  static const Color iconDefault = Colors.white70;
-  static const Color iconSelected = Colors.white;
 
+
+
+
+
+  static const Color primaryBackground = Color(0xFF1A1A2E); // Dark blueish background
+  static const Color cardBackground = Color(0xFF2A2A4D);   // Slightly lighter card background
+  static const Color textPrimary = Colors.white;
+  static const Color textSecondary = Color(0xFFB0B0D1); // Lighter gray/purple text
+  static const Color accentGreen = Color(0xFF00FFA3);     // Bright green for "Active" and buttons
+  static const Color accentOrange = Color(0xFFFF9900);    // Orange for "Ongoing"
+  static const Color buttonBlue = Color(0xFF2563EB);      // Blue for "See Details"
+  static const Color disabledButton = Color(0xFF4A4A6A);  // Grayish for "Started"
+  static const Color completedText = Color(0xFF9090A0);   // Color for "completed" text
 
 }
 

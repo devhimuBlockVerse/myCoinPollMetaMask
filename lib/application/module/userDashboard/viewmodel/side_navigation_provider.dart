@@ -5,6 +5,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
+import '../view/kyc/kyc_screen.dart';
 
 class NavigationProvider extends ChangeNotifier {
   String _currentScreenId = 'milestone';
@@ -40,8 +41,7 @@ class NavigationProvider extends ChangeNotifier {
       id: 'kyc',
       title: 'KYC',
       iconPath: 'assets/icons/kyc.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'KYC Screen'),
+      screenBuilder: (context) => const KycScreen(),
     ),
     NavItem(
       id: 'purchase_log',

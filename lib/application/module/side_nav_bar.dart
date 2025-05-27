@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/side_navigation_provider.dart';
-import 'package:provider/provider.dart';
-
 import '../../framework/res/colors.dart';
 import '../domain/model/nav_item.dart';
 

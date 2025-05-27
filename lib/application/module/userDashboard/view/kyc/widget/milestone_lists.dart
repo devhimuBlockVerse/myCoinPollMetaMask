@@ -20,30 +20,32 @@ class MilestoneLists extends StatelessWidget {
     final scaleFactor = isSmallScreen ? 0.9 : 1.0;
 
     return Card(
-      elevation: 0,
+      // elevation: 9,
+      margin: EdgeInsets.zero,
       child: Container(
+        width: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/icons/milestoneBG.png'),
             fit: BoxFit.fill,
           ),
         ),
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.035),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildImageSection(context, scaleFactor),
-                  SizedBox(width: screenWidth * 0.03),
-                  Expanded(child: _buildDetailsSection(context, scaleFactor)),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.015),
-              _buildActionButton(context, scaleFactor),
-            ],
-          ),
+        padding: EdgeInsets.symmetric(vertical:screenHeight * 0.020,horizontal: screenWidth * 0.03),
+
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildImageSection(context, scaleFactor),
+                SizedBox(width: screenWidth * 0.02),
+                Expanded(child: _buildDetailsSection(context, scaleFactor)),
+              ],
+            ),
+            SizedBox(height: screenHeight * 0.015),
+            _buildActionButton(context, scaleFactor),
+          ],
         ),
       ),
     );
@@ -60,11 +62,11 @@ class MilestoneLists extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: task.imageUrl,
             width: imageSize,
-            height: imageSize * 1.1,
-            fit: BoxFit.cover,
+            height: imageSize * 1.18,
+            fit: BoxFit.fill,
             placeholder: (context, url) => Container(
               width: imageSize,
-              height: imageSize * 1.1,
+              // height: imageSize * 1.1,
               color: AppColors.disabledButton,
               child: const Center(
                   child: CircularProgressIndicator(color: AppColors.accentGreen)),
@@ -80,7 +82,7 @@ class MilestoneLists extends StatelessWidget {
         if (task.status != EcmTaskStatus.completed)
           Positioned(
             top: 6,
-            left: 6,
+            left: 72,
             child: _buildStatusBadge(context),
           ),
       ],
@@ -157,7 +159,7 @@ class MilestoneLists extends StatelessWidget {
                 child: const Divider(
                   color: Colors.white12,
                   thickness: 1,
-                  height: 20,
+                  height: 15,
                 ),
               ),
               _buildInfoRow("Deadline", task.deadline, scaleFactor, context),
@@ -166,7 +168,7 @@ class MilestoneLists extends StatelessWidget {
                 child: const Divider(
                   color: Colors.white12,
                   thickness: 1,
-                  height: 20,
+                  height: 15,
                 ),
               ),
               _buildInfoRow(
@@ -182,7 +184,7 @@ class MilestoneLists extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        // const SizedBox(height: 8),
         Text(
           task.milestoneMessage,
           style: AppTextStyles.milestoneText(context).copyWith(

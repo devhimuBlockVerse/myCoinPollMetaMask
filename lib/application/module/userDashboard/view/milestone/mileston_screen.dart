@@ -94,8 +94,8 @@ class _MilestonScreenState extends State<MilestonScreen> {
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
     final containerWidth = screenWidth;
-    final containerHeight = screenHeight * 0.12;
-    final minContainerHeight = screenHeight * 0.13;
+    final containerHeight = screenHeight * 0.10;
+    final minContainerHeight = screenHeight * 0.002;
 
     final horizontalPadding = containerWidth * 0.03;
     final itemSpacing = screenWidth * 0.02;
@@ -120,8 +120,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                 const SnackBar(content: Text("Logout Pressed")));
           },
         ),
-
-
         body: SafeArea(
            child: Container(
               width: screenWidth,
@@ -137,7 +135,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
               child:
               Column(
                 children: [
-
                   Row(
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -168,7 +165,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                       SizedBox(width: screenWidth * 0.12), // Responsive spacer for balance
                     ],
                   ),
-
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -176,9 +172,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
                         vertical: screenHeight * 0.02,
                       ),
                       child: SingleChildScrollView(
-
                         child: ConstrainedBox(
-
                           constraints: BoxConstraints(
                             minHeight: screenHeight - kToolbarHeight, // or screenHeight * 0.9
                           ),
@@ -186,16 +180,12 @@ class _MilestonScreenState extends State<MilestonScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SizedBox(height: screenHeight * 0.01),
-
-
 
                               Container(
-                                width: double.infinity,
+                                width: screenWidth,
                                 height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
-
+                                // height: screenHeight * 0.10,
                                 decoration: BoxDecoration(
-                                  // color: const Color(0xFF01090B),
                                   image: const DecorationImage(
                                     image: AssetImage('assets/icons/buildStatCardBG.png'),
                                     fit: BoxFit.fill,
@@ -205,7 +195,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: horizontalPadding,
-                                    vertical: screenHeight * 0.014,
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,49 +202,46 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                     children: [
                                       Expanded(
                                         child: _buildStatCard(
-                                          title: 'Total \nTransactions',
-                                          value: '125',
+                                          title: 'Total Milestone',
+                                          value: '1250',
                                           gradient: const LinearGradient(
                                             begin: Alignment(0.99, 0.14),
                                             end: Alignment(-0.99, -0.14),
                                             colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                           ),
-                                          imageUrl: "assets/icons/totalTransactionBg.png",
+                                          imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                         ),
                                       ),
                                       SizedBox(width: itemSpacing),
                                       Expanded(
                                         child: _buildStatCard(
-                                          title: 'Total \nEthereum',
-                                          value: '125',
+                                          title: 'Active Milestone',
+                                          value: '1200',
                                           gradient: const LinearGradient(
                                             begin: Alignment(0.99, 0.14),
                                             end: Alignment(-0.99, -0.14),
                                             colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                           ),
-                                          imageUrl: "assets/icons/totalEthereumBG.png",
+                                          imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                         ),
                                       ),
                                       SizedBox(width: itemSpacing),
                                       Expanded(
                                         child: _buildStatCard(
-                                          title: 'Total \neCommerce',
-                                          value: '100',
+                                          title: 'Complete',
+                                          value: '1000',
                                           gradient: const LinearGradient(
                                             begin: Alignment(0.99, 0.14),
                                             end: Alignment(-0.99, -0.14),
                                             colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                           ),
-                                          imageUrl: "assets/icons/totalEcommerceBG.png",
+                                          imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
-
-
-
 
 
 
@@ -383,8 +369,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
   }
 
 
-
-
   Widget _buildStatCard({
     required String title,
     required String value,
@@ -393,16 +377,11 @@ class _MilestonScreenState extends State<MilestonScreen> {
     Color? borderColor,
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    final cardWidth = screenWidth / 3.5;
-    final cardHeight = screenHeight * 0.13;
-    final borderRadius = screenWidth * 0.02;
-    final padding = screenWidth * 0.025;
+    final borderRadius = screenWidth * 0.009;
+     final verticalContentPadding = screenWidth * 0.02;
 
     return Container(
       width: screenWidth,
-      height: cardHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         gradient: gradient,
@@ -413,42 +392,42 @@ class _MilestonScreenState extends State<MilestonScreen> {
         image: imageUrl != null
             ? DecorationImage(
           image: AssetImage(imageUrl),
-          fit: BoxFit.fitHeight,
-          // alignment: Alignment.center,
-        ) : null,
+          fit: BoxFit.fill,
+        )
+            : null,
       ),
       child: Padding(
-        padding: EdgeInsets.all(padding),
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.02,
+          vertical: verticalContentPadding,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Flexible(
-              flex: 3,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
               child: Text(
                 title,
-                textAlign: TextAlign.start,
                 style: TextStyle(
-                  fontSize:getResponsiveFontSize(context, 12),
+                  fontSize: getResponsiveFontSize(context, 12),
                   color: Colors.white.withOpacity(0.8),
                   fontWeight: FontWeight.w500,
                   height: 1.3,
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.003),
-            Flexible(
-              flex: 2,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  value,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize:getResponsiveFontSize(context, 16),
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+            SizedBox(height: 4),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: getResponsiveFontSize(context, 16),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -457,6 +436,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
       ),
     );
   }
+
 
 
 

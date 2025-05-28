@@ -3,8 +3,10 @@ import 'package:mycoinpoll_metamask/framework/components/BlockButton.dart';
 
 import '../../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../../framework/res/colors.dart';
-import '../kyc_screen.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+ import 'package:cached_network_image/cached_network_image.dart';
+
+import '../../../../../../framework/utils/status_styling_utils.dart';
+import '../../kyc/kyc_screen.dart';
 
 
 class MilestoneLists extends StatelessWidget {
@@ -18,34 +20,38 @@ class MilestoneLists extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final bool isSmallScreen = screenWidth < 380;
     final scaleFactor = isSmallScreen ? 0.9 : 1.0;
+    final double cardOpacity = task.status == EcmTaskStatus.completed ? 0.60 : 1.0;
 
-    return Card(
-      // elevation: 9,
-      margin: EdgeInsets.zero,
-      child: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/icons/milestoneBG.png'),
-            fit: BoxFit.fill,
-          ),
-        ),
-        padding: EdgeInsets.symmetric(vertical:screenHeight * 0.020,horizontal: screenWidth * 0.03),
+    return Opacity(
+      opacity: cardOpacity,
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: Container(
+          width: double.infinity,
+          decoration:  const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/icons/milestoneBG.png'),
+              fit: BoxFit.fill,
 
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildImageSection(context, scaleFactor),
-                SizedBox(width: screenWidth * 0.02),
-                Expanded(child: _buildDetailsSection(context, scaleFactor)),
-              ],
             ),
-            SizedBox(height: screenHeight * 0.015),
-            _buildActionButton(context, scaleFactor),
-          ],
+          ),
+          padding: EdgeInsets.symmetric(vertical:screenHeight * 0.020,horizontal: screenWidth * 0.03),
+
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildImageSection(context, scaleFactor),
+                  SizedBox(width: screenWidth * 0.02),
+                  Expanded(child: Opacity( opacity: cardOpacity,child: _buildDetailsSection(context, scaleFactor))),
+                ],
+              ),
+              SizedBox(height: screenHeight * 0.015),
+              _buildActionButton(context, scaleFactor),
+            ],
+          ),
         ),
       ),
     );
@@ -79,10 +85,9 @@ class MilestoneLists extends StatelessWidget {
             ),
           ),
         ),
-        if (task.status != EcmTaskStatus.completed)
-          Positioned(
-            top: 6,
-            left: 72,
+           Positioned(
+            top: 4,
+            right: 4,
             child: _buildStatusBadge(context),
           ),
       ],
@@ -91,30 +96,36 @@ class MilestoneLists extends StatelessWidget {
 
   Widget _buildStatusBadge(BuildContext context) {
     String text;
-    Color backgroundColor;
 
     switch (task.status) {
       case EcmTaskStatus.active:
         text = "Active";
-        backgroundColor = AppColors.accentGreen;
         break;
       case EcmTaskStatus.ongoing:
         text = "On Going";
-        backgroundColor = AppColors.accentOrange;
         break;
       case EcmTaskStatus.completed:
-        return const SizedBox.shrink();
+        text = "Completed";
+        break;
+       default:
+        text = "Unknown";
     }
 
+    final styling = getMilestoneStatusStyling(text);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(4),
+        color: styling.backgroundColor,
+        border: Border.all(color: styling.borderColor),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Text(
         text,
-        style: AppTextStyles.statusBadgeText.copyWith(fontSize: 12),
+        style: AppTextStyles.statusBadgeText.copyWith(
+          fontSize: 12,
+          color: styling.textColor,
+        ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
@@ -123,18 +134,19 @@ class MilestoneLists extends StatelessWidget {
 
   Widget _buildDetailsSection(BuildContext context, double scaleFactor) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Title with scaled font size & no overflow
         Text(
-          task.title,
-          style: AppTextStyles.cardTitle(context).copyWith(
-            fontSize: 18 * scaleFactor,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
+         task.title,
+         style: AppTextStyles.cardTitle(context).copyWith(
+           fontSize: 18 * scaleFactor,
+         ),
+          maxLines: null,
+          softWrap: true,
         ),
         const SizedBox(height: 8),
         Container(
@@ -184,7 +196,8 @@ class MilestoneLists extends StatelessWidget {
             ],
           ),
         ),
-        // const SizedBox(height: 8),
+
+        SizedBox(height:screenHeight * 0.005),
         Text(
           task.milestoneMessage,
           style: AppTextStyles.milestoneText(context).copyWith(
@@ -193,7 +206,7 @@ class MilestoneLists extends StatelessWidget {
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
         ),
-        SizedBox(height: 12 * scaleFactor),
+        SizedBox(height: 01 * scaleFactor),
       ],
     );
   }

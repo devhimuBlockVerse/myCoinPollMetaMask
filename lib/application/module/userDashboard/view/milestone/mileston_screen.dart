@@ -5,8 +5,7 @@ import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/milestone_llist_dummy_data.dart';
-import '../../../../data/staking_dummy_data.dart';
-import '../../../../domain/model/milestone_list_models.dart';
+ import '../../../../domain/model/milestone_list_models.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -169,7 +168,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.04,
-                    vertical: screenHeight * 0.02,
+                    vertical: screenHeight * 0.01,
                   ),
                   child: ListView(
                     children: [

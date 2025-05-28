@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
- import 'package:flutter_svg/svg.dart';
-  import 'package:provider/provider.dart';
-
- import '../../../../../framework/utils/dynamicFontSize.dart';
-import '../../../../../framework/utils/enums/milestone_status.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import '../../../../../framework/components/searchControllerComponent.dart';
+import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/milestone_llist_dummy_data.dart';
 import '../../../../data/staking_dummy_data.dart';
@@ -11,7 +10,6 @@ import '../../../../domain/model/milestone_list_models.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
-import '../kyc/kyc_screen.dart';
 import 'widget/milestone_lists.dart';
 
 class MilestonScreen extends StatefulWidget {
@@ -30,44 +28,53 @@ class _MilestonScreenState extends State<MilestonScreen> {
   final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> _displayData = [];
+   List<EcmTaskModel> _displayData = [];
 
 
   @override
   void initState() {
     super.initState();
-    _displayData = List.from(transactionData);
+    // _displayData = List.from(milestoneListsData);
     _searchController.addListener(_applyFiltersAndSort);
 
   }
-
-
   void _applyFiltersAndSort() {
-    List<Map<String, dynamic>> currentFilteredData = List.from(transactionData);
     String query = _searchController.text.toLowerCase();
 
-    //  search filter
-    if (query.isNotEmpty) {
-      currentFilteredData = currentFilteredData.where((row) {
-        return (row['TxnHash']?.toLowerCase().contains(query) ?? false) ||
-            (row['Status']?.toLowerCase().contains(query) ?? false) ||
-            (row['Amount']?.toLowerCase().contains(query) ?? false) ||
-            (row['DateTime']?.toLowerCase().contains(query) ?? false) ||
-            (row['SL']?.toLowerCase().contains(query) ?? false);
-      }).toList();
-    }
+    List<EcmTaskModel> filtered = milestoneListsData.where((task) {
+      return task.title.toLowerCase().contains(query) ||
+          task.milestoneMessage.toLowerCase().contains(query) ||
+          task.targetSales.toLowerCase().contains(query);
+    }).toList();
 
-    //  sorting if a sort option is selected
+    // Apply sorting based on selected option
     if (_currentSort != null) {
-      currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
+      switch (_currentSort!) {
+        case SortTransactionHistoryOption.dateLatest:
+          filtered.sort((a, b) => b.createdDate.compareTo(a.createdDate));
+          break;
+        case SortTransactionHistoryOption.dateOldest:
+          filtered.sort((a, b) => a.createdDate.compareTo(b.createdDate));
+          break;
+        case SortTransactionHistoryOption.statusAsc:
+          filtered.sort((a, b) => a.milestoneMessage.compareTo(b.milestoneMessage));
+          break;
+        case SortTransactionHistoryOption.statusDesc:
+          filtered.sort((a, b) => b.milestoneMessage.compareTo(a.milestoneMessage));
+          break;
+        case SortTransactionHistoryOption.amountAsc:
+          filtered.sort((a, b) => a.targetSales.compareTo(b.targetSales));
+          break;
+        case SortTransactionHistoryOption.amountDesc:
+          filtered.sort((a, b) => b.targetSales.compareTo(a.targetSales));
+          break;
+      }
     }
 
     setState(() {
-      _displayData = currentFilteredData;
+      _displayData = filtered;
     });
   }
-
-
 
   void _sortData(SortTransactionHistoryOption option) {
     setState(() {
@@ -75,6 +82,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
       _applyFiltersAndSort();
     });
   }
+
 
   @override
   void dispose() {
@@ -88,39 +96,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // This data would come from an API via a state management solution
-  // final List<EcmTaskModel> _tasks = [
-  //   EcmTaskModel(
-  //     id: '1',
-  //     title: 'Sell 1000 ECM Coin',
-  //     imageUrl: 'https://picsum.photos/seed/1/200/220', // Placeholder image
-  //     targetSales: '1000 ECM',
-  //     deadline: '10 May 2025',
-  //     reward: RewardModel(primaryReward: '\$200 USD'),
-  //     milestoneMessage: 'You will Get \$200 after completing the milestone.',
-  //     status: EcmTaskStatus.active,
-  //   ),
-  //   EcmTaskModel(
-  //     id: '2',
-  //     title: 'Engage Community for ECM',
-  //     imageUrl: 'https://picsum.photos/seed/2/200/220', // Placeholder image
-  //     targetSales: '500 ECM',
-  //     deadline: '15 December 2025',
-  //     reward: RewardModel(primaryReward: 'Tour Trip; 200 USD'),
-  //     milestoneMessage: 'You will Get Tour & \$200 after completing the milestone.',
-  //     status: EcmTaskStatus.completed,
-  //   ),
-  //   EcmTaskModel(
-  //     id: '3',
-  //     title: 'Develop New ECM Feature',
-  //     imageUrl: 'https://picsum.photos/seed/3/200/220', // Placeholder image
-  //     targetSales: '1 Feature',
-  //     deadline: '30 July 2025',
-  //     reward: RewardModel(primaryReward: '\$350 USD'),
-  //     milestoneMessage: 'You will Get \$350 after completing the milestone.',
-  //     status: EcmTaskStatus.ongoing,
-  //   ),
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -274,6 +249,85 @@ class _MilestonScreenState extends State<MilestonScreen> {
                       ),
 
                       SizedBox(height: screenHeight * 0.030),
+
+
+                      /// Search And Sorting
+
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xff040C16),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02,
+                            vertical:  screenHeight * 0.001
+                        ),
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: ResponsiveSearchField(
+                                controller: _searchController,
+                                // onChanged:  (value) => _onSearchChanged(),
+                                onChanged:  (value) => _applyFiltersAndSort(),
+                                svgAssetPath: 'assets/icons/search.svg',
+
+                              ),
+                            ),
+
+
+                            /// Data Sorting  Button
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: PopupMenuButton<SortTransactionHistoryOption>(
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/sortingList.svg',
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onSelected: (SortTransactionHistoryOption option) {
+                                      _sortData(option);
+                                    },
+                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.dateLatest,
+                                        child: Text('Date: Latest First'),
+                                      ),
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.dateOldest,
+                                        child: Text('Date: Oldest First'),
+                                      ),
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.statusAsc,
+                                        child: Text('Status: A-Z'),
+                                      ),
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.statusDesc,
+                                        child: Text('Status: Z-A'),
+                                      ),
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.amountAsc,
+                                        child: Text('Amount: Low to High'),
+                                      ),
+                                      const PopupMenuItem<SortTransactionHistoryOption>(
+                                        value: SortTransactionHistoryOption.amountDesc,
+                                        child: Text('Amount: High to Low'),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.016),
 
                       // Milestone list
                       ListView.builder(

@@ -1,5 +1,7 @@
 import '../../../framework/utils/date_parser.dart';
+import '../../../framework/utils/enums/milestone_status.dart';
 import '../../../framework/utils/enums/sort_option.dart';
+import '../model/milestone_list_models.dart';
 
 
 class SortDataUseCase {
@@ -56,5 +58,52 @@ class SortTransactionDataUseCase {
       }
     });
     return sorted;
+  }
+}
+
+
+class SortEcmTaskUseCase {
+
+  int _getStatusPriority(EcmTaskStatus taskStatus, SortMilestoneLists sortOption) {
+    switch (sortOption) {
+      case SortMilestoneLists.active:
+        if (taskStatus == EcmTaskStatus.active) return 0;
+        if (taskStatus == EcmTaskStatus.ongoing) return 1;
+        if (taskStatus == EcmTaskStatus.completed) return 2;
+        break;
+      case SortMilestoneLists.onGoing:
+        if (taskStatus == EcmTaskStatus.ongoing) return 0;
+        if (taskStatus == EcmTaskStatus.active) return 1;
+        if (taskStatus == EcmTaskStatus.completed) return 2;
+        break;
+      case SortMilestoneLists.completed:
+        if (taskStatus == EcmTaskStatus.completed) return 0;
+        if (taskStatus == EcmTaskStatus.active) return 1;
+        if (taskStatus == EcmTaskStatus.ongoing) return 2;
+        break;
+    }
+     return 3;
+  }
+
+   List<EcmTaskModel> call(
+      List<EcmTaskModel> data,
+      SortMilestoneLists option,
+      ) {
+     final sortedList = List<EcmTaskModel>.from(data);
+
+    sortedList.sort((taskA, taskB) {
+       final priorityA = _getStatusPriority(taskA.status, option);
+      final priorityB = _getStatusPriority(taskB.status, option);
+
+       int comparisonResult = priorityA.compareTo(priorityB);
+
+       if (comparisonResult == 0) {
+         return taskA.title.compareTo(taskB.title);
+      }
+
+      return comparisonResult;
+    });
+
+    return sortedList;
   }
 }

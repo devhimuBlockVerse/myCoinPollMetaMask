@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 
 class StatusStyling {
   final Color backgroundColor;
-  final Color borderColor;
-  final Color textColor;
+   final Color borderColor;
+   final Color textColor;
 
   StatusStyling({
-    required this.backgroundColor,
+      required this.backgroundColor,
     required this.borderColor,
     required this.textColor,
   });
 }
-
 StatusStyling getStatusStyling(String status) {
   switch (status) {
     case 'Completed':
@@ -70,18 +69,20 @@ StatusStyling getStatusStyling(String status) {
       backgroundColor: const Color(0xff1CD494).withOpacity(0.20),
       textColor: const Color(0xff1CD494),
       borderColor: const Color(0xff1CD494),
-    );
+     );
   } else if (status == 'On Going') {
     return StatusStyling(
       backgroundColor: Colors.transparent,
-      textColor:  Colors.white,
+       textColor:  Colors.white,
       borderColor:  Colors.white,
     );
   } else if (status == 'Completed') {
     return StatusStyling(
       backgroundColor: Colors.transparent,
-      textColor:  Colors.white,
+       textColor:  Colors.white,
       borderColor: const Color(0xff2680EF),
+
+
     );
   }
    return StatusStyling(

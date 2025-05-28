@@ -24,6 +24,7 @@ class Assets {
   static const String fontsPoppinsRegular = 'assets/fonts/Poppins-Regular.ttf';
   static const String fontsPoppinsSemiBold = 'assets/fonts/Poppins-SemiBold.ttf';
   static const String fontsPoppinsSemiBoldItalic = 'assets/fonts/Poppins-SemiBoldItalic.ttf';
+  static const String iconsAchivedSalesImg = 'assets/icons/achivedSalesImg.svg';
   static const String iconsAddSourceImage = 'assets/icons/addSourceImage.png';
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
@@ -55,6 +56,7 @@ class Assets {
   static const String iconsCrossIcon = 'assets/icons/crossIcon.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
+  static const String iconsDeadLineImg = 'assets/icons/deadLineImg.svg';
   static const String iconsDetailsBg = 'assets/icons/detailsBg.png';
   static const String iconsDialogBg = 'assets/icons/dialogBg.png';
   static const String iconsDialogFrame = 'assets/icons/dialogFrame.png';
@@ -127,6 +129,7 @@ class Assets {
   static const String iconsRoadMapLineXX = 'assets/icons/roadMapLineXX.png';
   static const String iconsRoadMapLiner = 'assets/icons/roadMapLiner.png';
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
+  static const String iconsRootContentBg = 'assets/icons/rootContentBg.png';
   static const String iconsSearch = 'assets/icons/search.svg';
   static const String iconsSettingActionBg = 'assets/icons/settingActionBg.png';
   static const String iconsSettings = 'assets/icons/settings.svg';
@@ -141,11 +144,13 @@ class Assets {
   static const String iconsStaking = 'assets/icons/staking.svg';
   static const String iconsStakingFrame = 'assets/icons/stakingFrame.png';
   static const String iconsStarGradientBg = 'assets/icons/starGradientBg.png';
+  static const String iconsStartDateImg = 'assets/icons/startDateImg.svg';
   static const String iconsStaticChart = 'assets/icons/staticChart.png';
   static const String iconsSubmissionCheck = 'assets/icons/submissionCheck.svg';
   static const String iconsSupportTicket = 'assets/icons/support_ticket.svg';
   static const String iconsTableBg = 'assets/icons/tableBg.png';
   static const String iconsTared = 'assets/icons/tared.svg';
+  static const String iconsTargetSalesImg = 'assets/icons/targetSalesImg.svg';
   static const String iconsTaxStatement = 'assets/icons/taxStatement.svg';
   static const String iconsTeleImage = 'assets/icons/teleImage.svg';
   static const String iconsTermsImg = 'assets/icons/termsImg.svg';

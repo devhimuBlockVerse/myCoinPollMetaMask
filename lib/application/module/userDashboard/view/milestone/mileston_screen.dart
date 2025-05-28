@@ -200,7 +200,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                     end: Alignment(-0.99, -0.14),
                                     colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                   ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                 ),
                               ),
                               SizedBox(width: itemSpacing),
@@ -213,7 +212,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                     end: Alignment(-0.99, -0.14),
                                     colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                   ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                 ),
                               ),
                               SizedBox(width: itemSpacing),
@@ -226,7 +224,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                     end: Alignment(-0.99, -0.14),
                                     colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                   ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
                                 ),
                               ),
                             ],
@@ -271,8 +268,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                               flex: 2,
                               child: ResponsiveSearchField(
                                 controller: _searchController,
-                                // onChanged:  (value) => _onSearchChanged(),
-                                // onChanged:  (value) => _applyFiltersAndSort(),
                                 svgAssetPath: 'assets/icons/search.svg',
 
                               ),
@@ -313,7 +308,6 @@ class _MilestonScreenState extends State<MilestonScreen> {
                                           child: const Text('Clear Sort'),
                                           onTap: () => Future(() => _sortData(_currentSort!)),
                                       ),
-
                                     ],
                                   )
                               ),
@@ -369,8 +363,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
     required String title,
     required String value,
     required LinearGradient gradient,
-    String? imageUrl,
-    Color? borderColor,
+     Color? borderColor,
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
     final borderRadius = screenWidth * 0.009;
@@ -385,12 +378,10 @@ class _MilestonScreenState extends State<MilestonScreen> {
           color: borderColor ?? const Color(0xFF2B2D40),
           width: 1,
         ),
-        image: imageUrl != null
-            ? DecorationImage(
-          image: AssetImage(imageUrl),
-          fit: BoxFit.fill,
-        )
-            : null,
+          image: DecorationImage(
+            image: AssetImage('assets/icons/milestoneStatFrameBg.png'),
+            fit: BoxFit.fill,
+          )
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -407,9 +398,11 @@ class _MilestonScreenState extends State<MilestonScreen> {
               child: Text(
                 title,
                 style: TextStyle(
+                  fontFamily: 'Poppins',
+
                   fontSize: getResponsiveFontSize(context, 12),
                   color: Colors.white.withOpacity(0.8),
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   height: 1.3,
                 ),
               ),
@@ -421,6 +414,8 @@ class _MilestonScreenState extends State<MilestonScreen> {
               child: Text(
                 value,
                 style: TextStyle(
+                  fontFamily: 'Poppins',
+
                   fontSize: getResponsiveFontSize(context, 16),
                   fontWeight: FontWeight.bold,
                   color: Colors.white,

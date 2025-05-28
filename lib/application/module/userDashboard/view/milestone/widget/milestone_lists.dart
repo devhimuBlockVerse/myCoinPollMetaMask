@@ -9,6 +9,7 @@ import '../../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../../framework/utils/milestone_test_styles.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
 import '../../../../../domain/model/milestone_list_models.dart';
+import '../milestone_details_screen.dart';
 
 
 class MilestoneLists extends StatelessWidget {
@@ -306,6 +307,12 @@ class MilestoneLists extends StatelessWidget {
                 text: 'See Details',
                 onPressed: () {
                   debugPrint('Button tapped!');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MilestoneDetailsScreen(task: task.status == EcmTaskStatus.active ? task : task,),
+                    ),
+                  );
                 },
                 height: baseSize * 0.10 * scaleFactor,
               ),
@@ -334,6 +341,13 @@ class MilestoneLists extends StatelessWidget {
                 text: 'See Details',
                 onPressed: () {
                   debugPrint('Button tapped!');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MilestoneDetailsScreen(task: task.status == EcmTaskStatus.active ? task : task,),
+                    ),
+                  );
+
                 },
                 height: baseSize * 0.10 * scaleFactor,
               ),

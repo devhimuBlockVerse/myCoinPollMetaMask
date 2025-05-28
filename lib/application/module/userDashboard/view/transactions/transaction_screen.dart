@@ -412,9 +412,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 title,
                 textAlign: TextAlign.start,
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontSize:getResponsiveFontSize(context, 12),
                   color: Colors.white.withOpacity(0.8),
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   height: 1.3,
                 ),
               ),
@@ -428,6 +429,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   value,
                   textAlign: TextAlign.start,
                   style: TextStyle(
+                    fontFamily: 'Poppins',
+
                     fontSize:getResponsiveFontSize(context, 16),
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

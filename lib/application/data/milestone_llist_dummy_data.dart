@@ -23,9 +23,9 @@ final List<EcmTaskModel> milestoneListsData = List.generate(20, (i) {
 
   return EcmTaskModel(
     id: id,
-    title: '$title #$id',
+    title: '$title',
     imageUrl: 'https://picsum.photos/seed/$id/200/220',
-    targetSales: i % 3 == 0 ? '${(i + 1) * 100} ECM' : '${(i + 1)} Feature(s)',
+    targetSales: i % 3 == 0 ? '${(i + 1) * 100} ECM' : '${(i + 1) * 10} ECM',
     deadline: '${10 + i} Jul 2025',
     reward: reward,
     milestoneMessage: 'You will Get ${reward.primaryReward}${reward.secondaryReward != null ? ' & ${reward.secondaryReward}' : ''} after completing the milestone.',

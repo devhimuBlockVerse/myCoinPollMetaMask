@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -104,7 +105,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.04,
-                    vertical: screenHeight * 0.02,
+                    vertical: screenHeight * 0.01,
                   ),
                   child: ListView(
                     children: [
@@ -122,7 +123,6 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                           padding: EdgeInsets.symmetric(horizontal: horizontalPadding,vertical: screenHeight * 0.015,),
                           child: Column(
                             children: [
-
 
                               Container(
                                 width: double.infinity,
@@ -142,7 +142,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                        'Sell 1000 ECM Coin',
+                                        '${widget.task.title}',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
@@ -175,7 +175,8 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                                     child: _buildStatCard(
                                       leadingImageUrl: 'assets/icons/targetSalesImg.svg',
                                       title: 'Target Sales',
-                                      value: '10.000 ECM',
+                                      // value: '10.000 ECM',
+                                      value: '${widget.task.targetSales}',
                                       gradient: const LinearGradient(
                                         begin: Alignment(0.99, 0.14),
                                         end: Alignment(-0.99, -0.14),
@@ -225,7 +226,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                                     child: _buildStatCard(
                                       leadingImageUrl: 'assets/icons/deadLineImg.svg',
                                       title: 'Deadline',
-                                      value: '1st June 2025',
+                                      value: '${widget.task.deadline}',
                                       valueTextColor: Color(0xffE04043),
                                       gradient: const LinearGradient(
                                         begin: Alignment(0.99, 0.14),

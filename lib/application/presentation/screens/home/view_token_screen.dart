@@ -1029,12 +1029,12 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                             image: AssetImage('assets/icons/progressFrameBg.png'),
                             fit: BoxFit.fill,
                           ),
-                          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+                          // borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.06,
-                            vertical: screenHeight * 0.03,
+                            vertical: screenHeight * 0.02,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,

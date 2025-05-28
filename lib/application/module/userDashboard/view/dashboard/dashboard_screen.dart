@@ -448,7 +448,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: screenWidth * 0.06,
-                                vertical: screenHeight * 0.03,
+                                vertical: screenHeight * 0.02,
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -459,7 +459,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     percent: 0.9,
                                     percentText: "280/300",
                                     barColor: const Color(0xFF1CD494),
-                                    textScale: textScale,
+                                    // textScale: textScale ,
+                                    textScale: getResponsiveFontSize(context, 12),
                                     screenHeight: screenHeight,
                                     screenWidth: screenWidth,
                                   ),

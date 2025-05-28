@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../framework/utils/milestone_test_styles.dart';
@@ -30,12 +31,9 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
     final bool isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
-    final containerWidth = screenWidth;
+    final textScale = screenWidth / 375;
 
-
-    final horizontalPadding = containerWidth * 0.028;
-
-     final navProvider = Provider.of<NavigationProvider>(context);
+    final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
 
@@ -110,141 +108,14 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                   child: ListView(
                     children: [
 
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsetsDirectional.zero,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/rootContentBg.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding,vertical: screenHeight * 0.015,),
-                          child: Column(
-                            children: [
-
-                              Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff040C16),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.03,
-                                    vertical:  screenHeight * 0.005
-                                ),
-
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        '${widget.task.title}',
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: getResponsiveFontSize(context, 18),
-                                          height: 1.6,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                        flex: 1,
-
-                                        child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: _buildStatusBadge(context))),
-                                  ],
-                                ),
-                              ),
+                      headerStatistic(),
 
 
-                              SizedBox(height: screenHeight * 0.03),
-
-                              /// Target Sales , Achieved Sales
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: _buildStatCard(
-                                      leadingImageUrl: 'assets/icons/targetSalesImg.svg',
-                                      title: 'Target Sales',
-                                      // value: '10.000 ECM',
-                                      value: '${widget.task.targetSales}',
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(0.99, 0.14),
-                                        end: Alignment(-0.99, -0.14),
-                                        colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                      ),
-                                     ),
-                                  ),
-                                  SizedBox(width: screenWidth * 0.03),
-                                  Expanded(
-                                    child: _buildStatCard(
-                                      leadingImageUrl: 'assets/icons/achivedSalesImg.svg',
-
-                                      title: 'Achieved Sales',
-                                      value: '5.8589 ECM',
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(0.99, 0.14),
-                                        end: Alignment(-0.99, -0.14),
-                                        colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                      ),
-                                     ),
-                                  ),
-                                 ],
-                              ),
-                              SizedBox(height: screenHeight * 0.014),
-
-                              /// Start Date , Deadline
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: _buildStatCard(
-                                      leadingImageUrl: 'assets/icons/startDateImg.svg',
-                                      title: 'Start Date',
-                                      value: '1st June 2025',
-                                      valueTextColor: Color(0xff8BE896),
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(0.99, 0.14),
-                                        end: Alignment(-0.99, -0.14),
-                                        colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: screenWidth * 0.03),
-
-                                  Expanded(
-                                    child: _buildStatCard(
-                                      leadingImageUrl: 'assets/icons/deadLineImg.svg',
-                                      title: 'Deadline',
-                                      value: '${widget.task.deadline}',
-                                      valueTextColor: Color(0xffE04043),
-                                      gradient: const LinearGradient(
-                                        begin: Alignment(0.99, 0.14),
-                                        end: Alignment(-0.99, -0.14),
-                                        colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-
-                            ],
-                          ),
-                        ),
-
-                      ),
-
+                      UserActivityProgressBar(
+                        title: "Profile Setup",
+                        currentValue: 3,
+                        maxValue: 5,
+                       )
                     ],
                   ),
                 ),
@@ -257,6 +128,154 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
   }
 
 
+
+  Widget headerStatistic(){
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final bool isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    final containerWidth = screenWidth;
+
+
+    final horizontalPadding = containerWidth * 0.028;
+
+    return  Container(
+      width: double.infinity,
+      padding: EdgeInsetsDirectional.zero,
+      decoration: BoxDecoration(
+        image: const DecorationImage(
+          image: AssetImage('assets/icons/rootContentBg.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding,vertical: screenHeight * 0.015,),
+        child: Column(
+          children: [
+
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xff040C16),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenWidth * 0.03,
+                  vertical:  screenHeight * 0.005
+              ),
+
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      '${widget.task.title}',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: getResponsiveFontSize(context, 18),
+                        height: 1.6,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 1,
+
+                      child: Align(
+                          alignment: Alignment.topRight,
+                          child: _buildStatusBadge(context))),
+                ],
+              ),
+            ),
+
+
+            SizedBox(height: screenHeight * 0.03),
+
+            /// Target Sales , Achieved Sales
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: _buildStatCard(
+                    leadingImageUrl: 'assets/icons/targetSalesImg.svg',
+                    title: 'Target Sales',
+                    // value: '10.000 ECM',
+                    value: '${widget.task.targetSales}',
+                    gradient: const LinearGradient(
+                      begin: Alignment(0.99, 0.14),
+                      end: Alignment(-0.99, -0.14),
+                      colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenWidth * 0.03),
+                Expanded(
+                  child: _buildStatCard(
+                    leadingImageUrl: 'assets/icons/achivedSalesImg.svg',
+
+                    title: 'Achieved Sales',
+                    value: '5.8589 ECM',
+                    gradient: const LinearGradient(
+                      begin: Alignment(0.99, 0.14),
+                      end: Alignment(-0.99, -0.14),
+                      colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: screenHeight * 0.014),
+
+            /// Start Date , Deadline
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: _buildStatCard(
+                    leadingImageUrl: 'assets/icons/startDateImg.svg',
+                    title: 'Start Date',
+                    value: '1st June 2025',
+                    valueTextColor: Color(0xff8BE896),
+                    gradient: const LinearGradient(
+                      begin: Alignment(0.99, 0.14),
+                      end: Alignment(-0.99, -0.14),
+                      colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                    ),
+                  ),
+                ),
+                SizedBox(width: screenWidth * 0.03),
+
+                Expanded(
+                  child: _buildStatCard(
+                    leadingImageUrl: 'assets/icons/deadLineImg.svg',
+                    title: 'Deadline',
+                    value: '${widget.task.deadline}',
+                    valueTextColor: Color(0xffE04043),
+                    gradient: const LinearGradient(
+                      begin: Alignment(0.99, 0.14),
+                      end: Alignment(-0.99, -0.14),
+                      colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+
+          ],
+        ),
+      ),
+
+    );
+
+  }
   Widget _buildStatusBadge(BuildContext context) {
     String text;
 
@@ -388,4 +407,92 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
 
 
 
+}
+
+
+
+class UserActivityProgressBar extends StatelessWidget {
+  final String title;
+  final double currentValue;
+  final double maxValue;
+  final Color barColor;
+
+  // Optional: For explicit sizing control
+  final double? screenWidth;
+  final double? screenHeight;
+
+  const UserActivityProgressBar({
+    super.key,
+    required this.title,
+    required this.currentValue,
+    required this.maxValue,
+    this.barColor = Colors.green,
+     this.screenWidth,
+    this.screenHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final double effectiveScreenWidth = screenWidth ?? MediaQuery.of(context).size.width;
+    final double effectiveScreenHeight = screenHeight ?? MediaQuery.of(context).size.height;
+
+    double calculatedPercentage = 0;
+    if (maxValue > 0) {
+      calculatedPercentage = (currentValue / maxValue * 100).clamp(0.0, 100.0);
+    }
+
+     final String displayedProgressText = '${calculatedPercentage.toStringAsFixed(0)}%';
+
+     final double fillPercent = calculatedPercentage / 100;
+
+    final baseTextStyle = TextStyle(
+      color: Colors.white,
+      fontFamily: 'Poppins', // Ensure Poppins font is added
+      fontWeight: FontWeight.w400,
+      height: 1.6,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: baseTextStyle.copyWith(
+                  fontSize: getResponsiveFontSize(context, 13),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              displayedProgressText, // Show calculated percentage string
+              style: baseTextStyle.copyWith(
+                fontSize: getResponsiveFontSize(context, 13),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: effectiveScreenHeight * 0.012),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(effectiveScreenWidth * 0.02),
+
+
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(effectiveScreenWidth * 0.02),
+            child: LinearProgressIndicator(
+              value: fillPercent, // Use the 0.0-1.0 scale for the indicator
+              backgroundColor: const Color(0xFF2B2D40),
+              valueColor: AlwaysStoppedAnimation<Color>(barColor),
+              minHeight: effectiveScreenHeight * 0.01,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
   import 'package:provider/provider.dart';
 
  import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../data/milestone_llist_dummy_data.dart';
 import '../../../../data/staking_dummy_data.dart';
+import '../../../../domain/model/milestone_list_models.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -86,38 +89,38 @@ class _MilestonScreenState extends State<MilestonScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // This data would come from an API via a state management solution
-  final List<EcmTaskModel> _tasks = [
-    EcmTaskModel(
-      id: '1',
-      title: 'Sell 1000 ECM Coin',
-      imageUrl: 'https://picsum.photos/seed/1/200/220', // Placeholder image
-      targetSales: '1000 ECM',
-      deadline: '10 May 2025',
-      reward: RewardModel(primaryReward: '\$200 USD'),
-      milestoneMessage: 'You will Get \$200 after completing the milestone.',
-      status: EcmTaskStatus.active,
-    ),
-    EcmTaskModel(
-      id: '2',
-      title: 'Engage Community for ECM',
-      imageUrl: 'https://picsum.photos/seed/2/200/220', // Placeholder image
-      targetSales: '500 Interactions',
-      deadline: '15 June 2025',
-      reward: RewardModel(primaryReward: 'Tour Trip; 200 USD'),
-      milestoneMessage: 'You will Get Tour & \$200 after completing the milestone.',
-      status: EcmTaskStatus.completed,
-    ),
-    EcmTaskModel(
-      id: '3',
-      title: 'Develop New ECM Feature',
-      imageUrl: 'https://picsum.photos/seed/3/200/220', // Placeholder image
-      targetSales: '1 Feature',
-      deadline: '30 July 2025',
-      reward: RewardModel(primaryReward: '\$350 USD'),
-      milestoneMessage: 'You will Get \$350 after completing the milestone.',
-      status: EcmTaskStatus.ongoing,
-    ),
-  ];
+  // final List<EcmTaskModel> _tasks = [
+  //   EcmTaskModel(
+  //     id: '1',
+  //     title: 'Sell 1000 ECM Coin',
+  //     imageUrl: 'https://picsum.photos/seed/1/200/220', // Placeholder image
+  //     targetSales: '1000 ECM',
+  //     deadline: '10 May 2025',
+  //     reward: RewardModel(primaryReward: '\$200 USD'),
+  //     milestoneMessage: 'You will Get \$200 after completing the milestone.',
+  //     status: EcmTaskStatus.active,
+  //   ),
+  //   EcmTaskModel(
+  //     id: '2',
+  //     title: 'Engage Community for ECM',
+  //     imageUrl: 'https://picsum.photos/seed/2/200/220', // Placeholder image
+  //     targetSales: '500 ECM',
+  //     deadline: '15 December 2025',
+  //     reward: RewardModel(primaryReward: 'Tour Trip; 200 USD'),
+  //     milestoneMessage: 'You will Get Tour & \$200 after completing the milestone.',
+  //     status: EcmTaskStatus.completed,
+  //   ),
+  //   EcmTaskModel(
+  //     id: '3',
+  //     title: 'Develop New ECM Feature',
+  //     imageUrl: 'https://picsum.photos/seed/3/200/220', // Placeholder image
+  //     targetSales: '1 Feature',
+  //     deadline: '30 July 2025',
+  //     reward: RewardModel(primaryReward: '\$350 USD'),
+  //     milestoneMessage: 'You will Get \$350 after completing the milestone.',
+  //     status: EcmTaskStatus.ongoing,
+  //   ),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +270,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
                             ],
                           ),
                         ),
+
                       ),
 
                       SizedBox(height: screenHeight * 0.030),
@@ -275,11 +279,11 @@ class _MilestonScreenState extends State<MilestonScreen> {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _tasks.length,
+                        itemCount: milestoneListsData.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
-                              MilestoneLists(task: _tasks[index]),
+                              MilestoneLists(task: milestoneListsData[index]),
                               SizedBox(height: screenHeight * 0.020),
 
                             ],

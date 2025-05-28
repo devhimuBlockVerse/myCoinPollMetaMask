@@ -5,8 +5,10 @@ import '../../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../../framework/res/colors.dart';
  import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../../../../framework/utils/enums/milestone_status.dart';
+import '../../../../../../framework/utils/milestone_test_styles.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
-import '../../kyc/kyc_screen.dart';
+import '../../../../../domain/model/milestone_list_models.dart';
 
 
 class MilestoneLists extends StatelessWidget {
@@ -44,7 +46,7 @@ class MilestoneLists extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildImageSection(context, scaleFactor),
-                  SizedBox(width: screenWidth * 0.02),
+                  SizedBox(width: screenWidth * 0.03),
                   Expanded(child: Opacity( opacity: cardOpacity,child: _buildDetailsSection(context, scaleFactor))),
                 ],
               ),
@@ -59,7 +61,7 @@ class MilestoneLists extends StatelessWidget {
 
   Widget _buildImageSection(BuildContext context, double scaleFactor) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final imageSize = screenWidth * 0.32 * scaleFactor;
+    final imageSize = screenWidth * 0.35 * scaleFactor;
 
     return Stack(
       children: [
@@ -154,7 +156,8 @@ class MilestoneLists extends StatelessWidget {
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/icons/detailsBg.png'),
-              fit: BoxFit.fill,
+              fit: BoxFit.fill
+              ,
             ),
           ),
           padding: EdgeInsets.symmetric(
@@ -341,6 +344,9 @@ class MilestoneLists extends StatelessWidget {
     }
   }
 }
+
+
+
 
 
 

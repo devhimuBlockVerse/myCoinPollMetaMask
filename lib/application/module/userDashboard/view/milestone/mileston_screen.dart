@@ -24,61 +24,49 @@ class _MilestonScreenState extends State<MilestonScreen> {
 
 
 
-  SortTransactionHistoryOption? _currentSort;
-  final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
+  SortMilestoneLists? _currentSort;
+  final SortEcmTaskUseCase _sortEcmTaskUseCase = SortEcmTaskUseCase();
+
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-   List<EcmTaskModel> _displayData = [];
 
+  List<EcmTaskModel> _masterData = []; // Holds the original, unfiltered list
+  List<EcmTaskModel> _displayData = []; // Holds the filtered and sorted list for display
 
   @override
   void initState() {
     super.initState();
-    // _displayData = List.from(milestoneListsData);
-    _searchController.addListener(_applyFiltersAndSort);
+    _masterData = List.from(milestoneListsData);
+    _displayData = List.from(_masterData);
+
+     _searchController.addListener(_applyFiltersAndSort);
+    _applyFiltersAndSort();
 
   }
-  void _applyFiltersAndSort() {
-    String query = _searchController.text.toLowerCase();
+  void _onSearchChanged() {
+    _applyFiltersAndSort();
+  }
 
-    List<EcmTaskModel> filtered = milestoneListsData.where((task) {
+   void _applyFiltersAndSort() {
+    final query = _searchController.text.toLowerCase();
+
+    // Filter tasks by query
+    var filtered = _masterData.where((task) {
       return task.title.toLowerCase().contains(query) ||
           task.milestoneMessage.toLowerCase().contains(query) ||
           task.targetSales.toLowerCase().contains(query);
     }).toList();
 
-    // Apply sorting based on selected option
+    // Sort if an option is selected
     if (_currentSort != null) {
-      switch (_currentSort!) {
-        case SortTransactionHistoryOption.dateLatest:
-          filtered.sort((a, b) => b.createdDate.compareTo(a.createdDate));
-          break;
-        case SortTransactionHistoryOption.dateOldest:
-          filtered.sort((a, b) => a.createdDate.compareTo(b.createdDate));
-          break;
-        case SortTransactionHistoryOption.statusAsc:
-          filtered.sort((a, b) => a.milestoneMessage.compareTo(b.milestoneMessage));
-          break;
-        case SortTransactionHistoryOption.statusDesc:
-          filtered.sort((a, b) => b.milestoneMessage.compareTo(a.milestoneMessage));
-          break;
-        case SortTransactionHistoryOption.amountAsc:
-          filtered.sort((a, b) => a.targetSales.compareTo(b.targetSales));
-          break;
-        case SortTransactionHistoryOption.amountDesc:
-          filtered.sort((a, b) => b.targetSales.compareTo(a.targetSales));
-          break;
-      }
+      filtered = _sortEcmTaskUseCase(filtered, _currentSort!);
     }
-
-    setState(() {
-      _displayData = filtered;
-    });
+    setState(() => _displayData = filtered);
   }
 
-  void _sortData(SortTransactionHistoryOption option) {
+  void _sortData(SortMilestoneLists option) {
     setState(() {
-      _currentSort = option;
+      _currentSort = (_currentSort == option) ? null : option;
       _applyFiltersAndSort();
     });
   }
@@ -86,9 +74,8 @@ class _MilestonScreenState extends State<MilestonScreen> {
 
   @override
   void dispose() {
-    inputController.dispose();
+    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
-    _searchController.removeListener(_applyFiltersAndSort);
 
     super.dispose();
   }
@@ -274,7 +261,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
                               child: ResponsiveSearchField(
                                 controller: _searchController,
                                 // onChanged:  (value) => _onSearchChanged(),
-                                onChanged:  (value) => _applyFiltersAndSort(),
+                                // onChanged:  (value) => _applyFiltersAndSort(),
                                 svgAssetPath: 'assets/icons/search.svg',
 
                               ),
@@ -286,39 +273,36 @@ class _MilestonScreenState extends State<MilestonScreen> {
                               flex: 1,
                               child: Align(
                                   alignment: Alignment.centerRight,
-                                  child: PopupMenuButton<SortTransactionHistoryOption>(
+                                  child: PopupMenuButton<SortMilestoneLists>(
                                     icon: SvgPicture.asset(
                                       'assets/icons/sortingList.svg',
                                       fit: BoxFit.contain,
+
                                     ),
-                                    onSelected: (SortTransactionHistoryOption option) {
+                                    tooltip: "Sort Milestones",
+                                    onSelected: (SortMilestoneLists option) {
                                       _sortData(option);
                                     },
-                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.dateLatest,
-                                        child: Text('Date: Latest First'),
+                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.active,
+                                        child: Text('Priority: Active'),
                                       ),
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.dateOldest,
-                                        child: Text('Date: Oldest First'),
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.onGoing,
+                                        child: Text('Priority: Ongoing'),
                                       ),
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.statusAsc,
-                                        child: Text('Status: A-Z'),
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.completed,
+                                        child: Text('Priority: Completed'),
                                       ),
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.statusDesc,
-                                        child: Text('Status: Z-A'),
+                                      if (_currentSort != null) const PopupMenuDivider(),
+                                      if (_currentSort != null)
+                                         PopupMenuItem<SortMilestoneLists>(
+                                          child: const Text('Clear Sort'),
+                                          onTap: () => Future(() => _sortData(_currentSort!)),
                                       ),
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.amountAsc,
-                                        child: Text('Amount: Low to High'),
-                                      ),
-                                      const PopupMenuItem<SortTransactionHistoryOption>(
-                                        value: SortTransactionHistoryOption.amountDesc,
-                                        child: Text('Amount: High to Low'),
-                                      ),
+
                                     ],
                                   )
                               ),
@@ -330,19 +314,30 @@ class _MilestonScreenState extends State<MilestonScreen> {
                       SizedBox(height: screenHeight * 0.016),
 
                       // Milestone list
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: milestoneListsData.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              MilestoneLists(task: milestoneListsData[index]),
-                              SizedBox(height: screenHeight * 0.020),
+                      Expanded(
+                        child: _displayData.isEmpty
+                            ? Center(
+                          child: Text(
+                            _searchController.text.isNotEmpty
+                                ? 'No milestones match your search.'
+                                : 'No milestones available.',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        )
+                            : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _displayData.length,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                MilestoneLists(task: _displayData[index]),
+                                SizedBox(height: screenHeight * 0.020),
 
-                            ],
-                          );
-                        },
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

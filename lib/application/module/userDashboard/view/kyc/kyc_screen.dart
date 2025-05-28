@@ -4,123 +4,11 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/milestone_status.dart';
+import '../../../../domain/model/milestone_list_models.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../milestone/widget/milestone_lists.dart';
-
-
-//enum CLass
-enum EcmTaskStatus { active, ongoing, completed }
-//Model
-class RewardModel {
-  final String? primaryReward; // e.g., "$200 USD" or "Tour Trip"
-  final String? secondaryReward; // e.g., "200 USD" (if primary is "Tour Trip")
-
-  RewardModel({this.primaryReward, this.secondaryReward});
-}
-
-class EcmTaskModel {
-  final String id;
-  final String title;
-  final String imageUrl; // URL or local asset path for the image
-  final String targetSales; // e.g., "1000 ECM"
-  final String deadline; // e.g., "10 May 2025"
-  final RewardModel reward;
-  final String milestoneMessage; // e.g., "You will Get $200 after completing the milestone."
-  final EcmTaskStatus status;
-
-  EcmTaskModel({
-    required this.id,
-    required this.title,
-    required this.imageUrl,
-    required this.targetSales,
-    required this.deadline,
-    required this.reward,
-    required this.milestoneMessage,
-    required this.status,
-  });
-}
-
-//Test style
-
-class AppTextStyles {
-   static const String _fontFamily = 'Poppins';
-
-
-
-  static TextStyle  cardTitle(BuildContext context) {
-    return  TextStyle(
-      fontFamily: _fontFamily,
-      color: AppColors.textPrimary,
-      fontSize: getResponsiveFontSize(context,16),
-      fontWeight: FontWeight.w500,
-      height: 1.3,
-    );
-  }
-
-  static TextStyle cardSubtitle(BuildContext context) {
-    return  TextStyle(
-      fontFamily: _fontFamily,
-      color: AppColors.textPrimary,
-      fontSize: getResponsiveFontSize(context,12),
-      fontWeight: FontWeight.w400,
-      height: 0.8,
-
-
-    );
-  }
-
-  static TextStyle rewardText (BuildContext context){
-    return  TextStyle(
-      fontFamily: _fontFamily,
-      color: AppColors.accentGreen,
-       fontWeight: FontWeight.w400,
-      height: 0.8,
-      fontSize: getResponsiveFontSize(context,12),
-
-    );
-  }
-
-  static TextStyle get rewardSecondaryText {
-    return const TextStyle(
-      fontFamily: _fontFamily,
-      color: AppColors.accentGreen,
-      fontSize: 13, // Adjust based on Figma
-      fontWeight: FontWeight.normal,
-    );
-  }
-
-  static TextStyle get buttonText {
-    return const TextStyle(
-      fontFamily: _fontFamily,
-      color: Colors.white,
-      fontSize: 14, // Adjust based on Figma
-      fontWeight: FontWeight.bold,
-    );
-  }
-
-  static TextStyle get statusBadgeText {
-    return const TextStyle(
-      fontFamily: _fontFamily,
-      color: Colors.white,
-      fontSize: 10,
-      fontWeight: FontWeight.w500,
-      height: 1.3,
-
-    );
-  }
-
-  static TextStyle milestoneText(BuildContext context) {
-    return TextStyle(
-      fontFamily: _fontFamily,
-      color: AppColors.textSecondary,
-      fontSize: getResponsiveFontSize(context,12),
-      height: 1.3,
-      fontStyle: FontStyle.italic
-    );
-  }
-}
-
 
 class KycScreen extends StatefulWidget {
   const KycScreen({super.key});
@@ -133,39 +21,6 @@ class _KycScreenState extends State<KycScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // In a real app, this data would come from an API via a state management solution
-  final List<EcmTaskModel> _tasks = [
-    EcmTaskModel(
-      id: '1',
-      title: 'Sell 1000 ECM Coin',
-      imageUrl: 'https://picsum.photos/seed/1/200/220', // Placeholder image
-      targetSales: '1000 ECM',
-      deadline: '10 May 2025',
-      reward: RewardModel(primaryReward: '\$200 USD'),
-      milestoneMessage: 'You will Get \$200 after completing the milestone.',
-      status: EcmTaskStatus.active,
-    ),
-    EcmTaskModel(
-      id: '2',
-      title: 'Engage Community for ECM',
-      imageUrl: 'https://picsum.photos/seed/2/200/220', // Placeholder image
-      targetSales: '500 Interactions',
-      deadline: '15 June 2025',
-      reward: RewardModel(primaryReward: 'Tour Trip; 200 USD'),
-      milestoneMessage: 'You will Get Tour & \$200 after completing the milestone.',
-      status: EcmTaskStatus.completed,
-    ),
-    EcmTaskModel(
-      id: '3',
-      title: 'Develop New ECM Feature jkkhkj jhkjhkj l',
-      imageUrl: 'https://picsum.photos/seed/3/200/220', // Placeholder image
-      targetSales: '1 Feature',
-      deadline: '30 July 2025',
-      reward: RewardModel(primaryReward: '\$350 USD'),
-      milestoneMessage: 'You will Get \$350 after completing the milestone.',
-      status: EcmTaskStatus.ongoing,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -319,21 +174,6 @@ class _KycScreenState extends State<KycScreen> {
 
                       SizedBox(height: screenHeight * 0.030),
 
-                      // Milestone list
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _tasks.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              MilestoneLists(task: _tasks[index]),
-                              SizedBox(height: screenHeight * 0.020),
-
-                            ],
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),

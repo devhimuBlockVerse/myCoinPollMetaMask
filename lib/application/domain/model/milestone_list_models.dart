@@ -1,8 +1,8 @@
 import '../../../framework/utils/enums/milestone_status.dart';
 
 class RewardModel {
-  final String? primaryReward; // e.g., "$200 USD" or "Tour Trip"
-  final String? secondaryReward; // e.g., "200 USD" (if primary is "Tour Trip")
+  final String? primaryReward;
+  final String? secondaryReward;
 
   RewardModel({this.primaryReward, this.secondaryReward});
 }
@@ -10,11 +10,11 @@ class RewardModel {
 class EcmTaskModel {
   final String id;
   final String title;
-  final String imageUrl; // URL or local asset path for the image
-  final String targetSales; // e.g., "1000 ECM"
-  final String deadline; // e.g., "10 May 2025"
+  final String imageUrl;
+  final String targetSales;
+  final String deadline;
   final RewardModel reward;
-  final String milestoneMessage; // e.g., "You will Get $200 after completing the milestone."
+  final String milestoneMessage;
   final EcmTaskStatus status;
 
   EcmTaskModel({

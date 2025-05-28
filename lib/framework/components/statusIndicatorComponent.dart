@@ -30,7 +30,7 @@ class StatusIndicator extends StatelessWidget {
               statusLabel,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: getResponsiveFontSize(context, 10),
+                fontSize: getResponsiveFontSize(context, 13),
                 fontFamily: 'Poppins',
               ),
             ),
@@ -48,8 +48,8 @@ class StatusIndicator extends StatelessWidget {
                   if (iconPath.isNotEmpty) ...[
                     SvgPicture.asset(
                       iconPath,
-                      width: getResponsiveFontSize(context, 10),
-                      height: getResponsiveFontSize(context, 10),
+                      width: getResponsiveFontSize(context, 13),
+                      height: getResponsiveFontSize(context, 13),
                     ),
                     const SizedBox(width: 4),
                   ],
@@ -57,7 +57,7 @@ class StatusIndicator extends StatelessWidget {
                     statusText,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: getResponsiveFontSize(context, 10),
+                      fontSize: getResponsiveFontSize(context, 13),
                       fontFamily: 'Poppins',
                     ),
                     softWrap: true,

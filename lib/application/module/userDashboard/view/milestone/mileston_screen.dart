@@ -237,7 +237,18 @@ class _MilestonScreenState extends State<MilestonScreen> {
 
                       SizedBox(height: screenHeight * 0.030),
 
-
+                      Text(
+                        'Milestone List',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          fontSize: getResponsiveFontSize(context, 18),
+                          height: 1.6,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.010),
                       /// Search And Sorting
 
                       Container(
@@ -314,30 +325,33 @@ class _MilestonScreenState extends State<MilestonScreen> {
                       SizedBox(height: screenHeight * 0.016),
 
                       // Milestone list
-                      Expanded(
-                        child: _displayData.isEmpty
-                            ? Center(
-                          child: Text(
-                            _searchController.text.isNotEmpty
-                                ? 'No milestones match your search.'
-                                : 'No milestones available.',
-                            style: Theme.of(context).textTheme.titleMedium,
+                      _displayData.isEmpty
+                          ? Center(
+                        child: Text(
+                          _searchController.text.isNotEmpty
+                              ? 'No milestones match your search.'
+                              : 'No milestones available.',
+                          style:TextStyle(
+                            fontFamily: 'Poppins',
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: screenWidth * 0.04,
                           ),
-                        )
-                            : ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _displayData.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                MilestoneLists(task: _displayData[index]),
-                                SizedBox(height: screenHeight * 0.020),
-
-                              ],
-                            );
-                          },
                         ),
+                      )
+                          : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _displayData.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              MilestoneLists(task: _displayData[index]),
+                              SizedBox(height: screenHeight * 0.020),
+
+                            ],
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/widget/milestone_lists.dart';
-import 'package:provider/provider.dart';
+ import 'package:provider/provider.dart';
 
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import '../milestone/widget/milestone_lists.dart';
 
 
 //enum CLass
@@ -52,7 +52,7 @@ class AppTextStyles {
     return  TextStyle(
       fontFamily: _fontFamily,
       color: AppColors.textPrimary,
-      fontSize: getResponsiveFontSize(context,16), // Adjust based on Figma
+      fontSize: getResponsiveFontSize(context,16),
       fontWeight: FontWeight.w500,
       height: 1.3,
     );
@@ -103,12 +103,14 @@ class AppTextStyles {
     return const TextStyle(
       fontFamily: _fontFamily,
       color: Colors.white,
-      fontSize: 10, // Adjust based on Figma
-      fontWeight: FontWeight.bold,
+      fontSize: 10,
+      fontWeight: FontWeight.w500,
+      height: 1.3,
+
     );
   }
 
-  static TextStyle  milestoneText(BuildContext context) {
+  static TextStyle milestoneText(BuildContext context) {
     return TextStyle(
       fontFamily: _fontFamily,
       color: AppColors.textSecondary,
@@ -118,8 +120,6 @@ class AppTextStyles {
     );
   }
 }
-
-
 
 
 class KycScreen extends StatefulWidget {
@@ -157,7 +157,7 @@ class _KycScreenState extends State<KycScreen> {
     ),
     EcmTaskModel(
       id: '3',
-      title: 'Develop New ECM Feature',
+      title: 'Develop New ECM Feature jkkhkj jhkjhkj l',
       imageUrl: 'https://picsum.photos/seed/3/200/220', // Placeholder image
       targetSales: '1 Feature',
       deadline: '30 July 2025',
@@ -166,7 +166,6 @@ class _KycScreenState extends State<KycScreen> {
       status: EcmTaskStatus.ongoing,
     ),
   ];
-
 
   @override
   Widget build(BuildContext context) {

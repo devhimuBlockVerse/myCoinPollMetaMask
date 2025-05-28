@@ -64,3 +64,30 @@ StatusStyling getStatusStyling(String status) {
   );
 }
 
+ StatusStyling getMilestoneStatusStyling(String status) {
+  if (status == 'Active') {
+    return StatusStyling(
+      backgroundColor: const Color(0xff1CD494).withOpacity(0.20),
+      textColor: const Color(0xff1CD494),
+      borderColor: const Color(0xff1CD494),
+    );
+  } else if (status == 'On Going') {
+    return StatusStyling(
+      backgroundColor: Colors.transparent,
+      textColor:  Colors.white,
+      borderColor:  Colors.white,
+    );
+  } else if (status == 'Completed') {
+    return StatusStyling(
+      backgroundColor: Colors.transparent,
+      textColor:  Colors.white,
+      borderColor: const Color(0xff2680EF),
+    );
+  }
+   return StatusStyling(
+    backgroundColor: Colors.grey.shade800,
+    textColor: Colors.white70,
+    borderColor: Colors.grey.shade600,
+  );
+}
+

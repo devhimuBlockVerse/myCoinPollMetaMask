@@ -167,7 +167,7 @@ class _MilestonScreenState extends State<MilestonScreen> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.04,
+                    horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
                   child: ListView(

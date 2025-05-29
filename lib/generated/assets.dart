@@ -37,6 +37,7 @@ class Assets {
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
   static const String iconsBackButton = 'assets/icons/back_button.svg';
+  static const String iconsBecomeAffiliate = 'assets/icons/becomeAffiliate.png';
   static const String iconsBg = 'assets/icons/bg.png';
   static const String iconsBgContainerImg = 'assets/icons/bgContainerImg.png';
   static const String iconsBgFrame = 'assets/icons/bgFrame.png';
@@ -123,6 +124,7 @@ class Assets {
   static const String iconsProgressFrameBg = 'assets/icons/progressFrameBg.png';
   static const String iconsProjectLaunch = 'assets/icons/projectLaunch.png';
   static const String iconsPurchaseLog = 'assets/icons/purchase_log.svg';
+  static const String iconsQuality = 'assets/icons/quality.png';
   static const String iconsRateImg = 'assets/icons/rateImg.svg';
   static const String iconsReferral = 'assets/icons/referral.svg';
   static const String iconsReferralTransaction = 'assets/icons/referral_transaction.svg';
@@ -170,6 +172,7 @@ class Assets {
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsUserActivityLogBg = 'assets/icons/userActivityLogBg.png';
+  static const String iconsUserActivityLogBg2 = 'assets/icons/userActivityLogBg2.png';
   static const String iconsUserActivityProgressBg = 'assets/icons/userActivityProgressBg.png';
   static const String iconsViewTokenFrameBg = 'assets/icons/viewTokenFrameBg.png';
   static const String iconsWallet = 'assets/icons/wallet.svg';

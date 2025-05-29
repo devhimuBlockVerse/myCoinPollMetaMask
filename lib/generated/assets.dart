@@ -169,6 +169,7 @@ class Assets {
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsUserActivityLogBg = 'assets/icons/userActivityLogBg.png';
   static const String iconsUserActivityProgressBg = 'assets/icons/userActivityProgressBg.png';
   static const String iconsViewTokenFrameBg = 'assets/icons/viewTokenFrameBg.png';
   static const String iconsWallet = 'assets/icons/wallet.svg';

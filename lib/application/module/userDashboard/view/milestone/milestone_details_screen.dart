@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/widget/user_activity_table.dart';
 import 'package:provider/provider.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/rewardInfoCardComponent.dart';
@@ -9,9 +10,13 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../framework/utils/milestone_test_styles.dart';
 import '../../../../../framework/utils/status_styling_utils.dart';
+import '../../../../data/staking_dummy_data.dart';
+import '../../../../data/user_activity_dummy_data.dart';
 import '../../../../domain/model/milestone_list_models.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import '../staking/widgets/staking_table.dart';
+import '../transactions/widgets/transaction_table.dart';
 
 class MilestoneDetailsScreen extends StatefulWidget {
   final EcmTaskModel task;
@@ -25,6 +30,17 @@ class MilestoneDetailsScreen extends StatefulWidget {
 class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  List<Map<String, dynamic>> _filteredData = [];
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _filteredData = List.from(activityData);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +129,6 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                       /// Activity Status
                       headerStatistic(),
 
-
                       SizedBox(height: screenHeight * 0.03),
 
                       ///Progress Bar
@@ -128,33 +143,12 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                         ),
                         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
 
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            UserActivityProgressBar(
-                              title: "Progress",
-                              currentValue: 2,
-                              maxValue: 5,
-                              barColor: Color(0xff1CD494),
-                              ),
-
-                            SizedBox(height: screenHeight * 0.01),
-                            
-                            Text(
-                              "Lorem Ipsum is simply dummy text of the printing and types ettin industry. Lorem Ipsum has been",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: getResponsiveFontSize(context, 12),
-                                color: Colors.white.withOpacity(0.80),
-                                fontStyle: FontStyle.italic,
-                                height: 1.6
-
-                               ),
-                            )
-                          ],
-                        ),
+                        child: UserActivityProgressBar(
+                          title: "Progress",
+                          currentValue: 2,
+                          maxValue: 5,
+                          barColor: Color(0xff1CD494),
+                          ),
                       ),
 
                       SizedBox(height: screenHeight * 0.03),
@@ -162,6 +156,55 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                       /// Reward section
                       rewardInfoCard(),
 
+
+                      SizedBox(height: screenHeight * 0.03),
+
+
+                      Container(
+                        width: double.infinity,
+                         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/icons/userActivityLogBg.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
+
+                        ),
+
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+
+                            Text(
+                              'User Activity Log',
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
+                                fontSize: getResponsiveFontSize(context, 16),
+                                height: 1.6,
+                                color: Colors.white,
+                              ),
+                            ),
+
+                            SizedBox(height: screenHeight * 0.02),
+                            ...[
+                              _filteredData.isNotEmpty
+                                  ? buildUserActivity(_filteredData, screenWidth, context)
+                                  : Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(20),
+                                child: const Text(
+                                  'No data found',
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                              ),
+                            ],
+
+                          ],
+                        ),
+
+                      ),
 
 
                     ],

@@ -1,11 +1,10 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+ import '../../../../../../framework/utils/dynamicFontSize.dart';
 
-import '../../../../../../framework/utils/dynamicFontSize.dart';
-import '../../../../../../framework/utils/status_styling_utils.dart';
-
-Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWidth, BuildContext context) {
-  double baseSize = screenWidth * 0.9;
+ Widget buildUserActivity(List<Map<String, dynamic>> activityData, double screenWidth, BuildContext context) {
+  double baseSize = screenWidth * 0.8;
   double screenHeight = MediaQuery.of(context).size.height;
 
 
@@ -13,7 +12,6 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
     color: Colors.white,
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w500,
-    // fontSize: baseSize * 0.035,
     fontSize: getResponsiveFontSize(context, 12),
     height: 1.6,
   );
@@ -40,15 +38,15 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
     child: LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            height: screenHeight * 0.4,
+            width: constraints.maxWidth * 1.8,
             child: DataTable2(
-              columnSpacing: baseSize * 0.09,
-              horizontalMargin: baseSize * 0.002,
+              columnSpacing: baseSize * 0.12,
+              horizontalMargin: baseSize * 0.0,
               dataRowHeight: baseSize * 0.12,
-              headingRowHeight: baseSize * 0.06,
+              headingRowHeight: baseSize * 0.08,
               dividerThickness: 0,
               headingRowDecoration: const BoxDecoration(
                 color: Color(0xff051121),
@@ -56,14 +54,14 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
 
               columns: [
                 DataColumn2(label: buildCenteredText('SL', headingStyle), size: ColumnSize.S),
-                DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.M),
-                DataColumn2(label: buildCenteredText('Action', headingStyle), size: ColumnSize.L),
-                DataColumn2(label: buildCenteredText('Achieved Sales', headingStyle), size: ColumnSize.M),
-
-                DataColumn2(label: buildCenteredText('Target Sales', headingStyle), size: ColumnSize.L),
-               ],
-              rows: stakingData.map((data) {
-
+                DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.S),
+                 DataColumn2(label: buildCenteredText('Action', headingStyle), size: ColumnSize.L),
+                DataColumn2(label: buildCenteredText('Achieved Sales', headingStyle), size: ColumnSize.S),
+                DataColumn2(label: buildCenteredText('Target Sales', headingStyle), size: ColumnSize.S),
+              ],
+              rows: activityData.asMap().entries.map((entry) {
+                int idx = entry.key;
+                Map<String, dynamic> data = entry.value;
 
                 return DataRow2(
 
@@ -71,18 +69,30 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
                     DataCell(buildCenteredText(data['SL'] ?? '', cellTextStyle)),
                     DataCell(buildCenteredText(data['Date'] ?? '', cellTextStyle)),
                     DataCell(buildCenteredText(data['Action'] ?? '', cellTextStyle)),
+
+
                     DataCell(buildCenteredText(data['Achieved Sales'] ?? '', cellTextStyle)),
                     DataCell(buildCenteredText(data['Target Sales'] ?? '', cellTextStyle)),
+
+
 
 
                   ],
                 );
               }).toList(),
+              empty: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    'No matching transactions found.',
+                    style: TextStyle(color: Colors.white70, fontSize: getResponsiveFontSize(context, 14)),
+                  ),
+                ),
+              ),
             ),
           ),
         );
       },
     ),
   );
- }
-
+}

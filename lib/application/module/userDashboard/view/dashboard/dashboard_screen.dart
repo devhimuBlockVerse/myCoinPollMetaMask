@@ -17,6 +17,7 @@ import '../../../../../framework/components/walletAddressComponent.dart';
  import '../../../../../framework/utils/dynamicFontSize.dart';
  import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
+import '../affiliate/affiliate_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -507,6 +508,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                            ],
                                            onTap: () {
                                              debugPrint('Button tapped');
+                                             Navigator.push(context, MaterialPageRoute(builder: (context) =>  AffiliateScreen()));
+
                                             },
                                          ),
                                        ),

@@ -5,17 +5,17 @@ import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 class FeatureCard extends StatelessWidget {
   final String iconPath;
   final String title;
-  final String description;
+  final String? description;
   final bool isSvg;
   final VoidCallback? onTap;
-
+  final List<String>? bulletPoints;
   const FeatureCard({
     super.key,
     required this.iconPath,
     required this.title,
-    required this.description,
+     this.description,
     this.isSvg = false,
-    this.onTap,
+    this.onTap, this.bulletPoints,
   });
 
   @override
@@ -25,8 +25,6 @@ class FeatureCard extends StatelessWidget {
 
     // Responsive sizes
     double iconWidth = screenWidth * 0.15;
-    double titleFontSize = screenWidth * 0.035;
-    double descFontSize = screenWidth * 0.025;
 
     return InkWell(
       onTap: onTap,
@@ -95,10 +93,11 @@ class FeatureCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
-                  Opacity(
+                  if (description != null)
+                    Opacity(
                     opacity: 0.7,
                     child: Text(
-                      description,
+                      description  ?? '',
                       style: TextStyle(
                         color: Colors.white,
                         // fontSize: descFontSize,
@@ -109,6 +108,34 @@ class FeatureCard extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  if (bulletPoints != null && bulletPoints!.isNotEmpty) ...[
+                     ...bulletPoints!.map(
+                          (point) => Padding(
+                            padding: const EdgeInsets.all(1.5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.check_circle, color: Colors.white70, size: 16),
+                                SizedBox(width: screenWidth * 0.02),
+                                Expanded(
+                                  child: Text(
+                                    point,
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: getResponsiveFontSize(context, 12),
+                                      fontFamily: 'Poppins',
+                                      height: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                    ),
+                  ]
+
                 ],
               ),
             ),
@@ -118,3 +145,4 @@ class FeatureCard extends StatelessWidget {
     );
   }
 }
+

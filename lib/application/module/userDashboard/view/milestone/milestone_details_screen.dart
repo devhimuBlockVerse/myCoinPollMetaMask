@@ -120,7 +120,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.04,
+                    horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
                   child: ListView(
@@ -165,7 +165,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
                         decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage('assets/icons/userActivityLogBg.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
+                              image: AssetImage('assets/icons/userActivityLogBg2.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
 
                         ),
 

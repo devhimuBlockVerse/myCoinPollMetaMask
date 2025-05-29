@@ -1,5 +1,5 @@
-import '../../framework/utils/enums/milestone_status.dart';
-import '../domain/model/milestone_list_models.dart';
+import '../../../framework/utils/enums/milestone_status.dart';
+import '../../domain/model/milestone_list_models.dart';
 
 final List<EcmTaskModel> milestoneListsData = List.generate(20, (i) {
   final statuses = EcmTaskStatus.values;

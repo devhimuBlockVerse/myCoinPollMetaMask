@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mycoinpoll_metamask/application/data/staking_dummy_data.dart';
+import 'package:mycoinpoll_metamask/application/data/dummyData/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';

@@ -447,7 +447,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             ),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.06,
+                                horizontal: screenWidth * 0.05,
                                 vertical: screenHeight * 0.02,
                               ),
                               child: Column(
@@ -460,7 +460,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     percentText: "280/300",
                                     barColor: const Color(0xFF1CD494),
                                     // textScale: textScale ,
-                                    textScale: getResponsiveFontSize(context, 12),
+                                    // textScale: getResponsiveFontSize(context, 12),
                                     screenHeight: screenHeight,
                                     screenWidth: screenWidth,
                                   ),
@@ -470,7 +470,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     percent: 0.4,
                                     percentText: "1200/2500",
                                     barColor: const Color(0xFFF0B90B),
-                                    textScale: textScale,
+                                    // textScale: textScale,
                                     screenHeight: screenHeight,
                                     screenWidth: screenWidth,
                                   ),
@@ -478,14 +478,17 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                                    Row(
                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     crossAxisAlignment: CrossAxisAlignment.center,
                                      children: [
 
                                        /// Refactor This Component Later with status Active or Inactive Variation.
-                                       const StatusIndicator(
-                                        statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
-                                        statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
-                                        iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
-                                       ),
+                                        Flexible(
+                                          child: StatusIndicator(
+                                          statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
+                                          statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
+                                          iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
+                                                                                 ),
+                                        ),
 
                                        Align(
                                          alignment: Alignment.centerRight,

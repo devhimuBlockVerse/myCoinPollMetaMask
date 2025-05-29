@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
+import '../../../../../framework/components/userActivityProgressBarComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../framework/utils/milestone_test_styles.dart';
@@ -111,11 +112,46 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                       headerStatistic(),
 
 
-                      UserActivityProgressBar(
-                        title: "Profile Setup",
-                        currentValue: 3,
-                        maxValue: 5,
-                       )
+                      SizedBox(height: screenHeight * 0.03),
+                      Container(
+                        width: double.infinity,
+                        // height: screenHeight,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/icons/userActivityProgressBg.png'),
+                            fit: BoxFit.fill,
+                           ),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
+
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            UserActivityProgressBar(
+                              title: "Progress",
+                              currentValue: 2,
+                              maxValue: 5,
+                              barColor: Color(0xff1CD494),
+                              ),
+
+                            SizedBox(height: screenHeight * 0.01),
+                            
+                            Text(
+                              "Lorem Ipsum is simply dummy text of the printing and types ettin industry. Lorem Ipsum has been",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: getResponsiveFontSize(context, 12),
+                                color: Colors.white.withOpacity(0.80),
+                                fontStyle: FontStyle.italic,
+                                height: 1.6
+
+                               ),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -177,7 +213,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
-                        fontSize: getResponsiveFontSize(context, 18),
+                        fontSize: getResponsiveFontSize(context, 16),
                         height: 1.6,
                         color: Colors.white,
                       ),
@@ -375,7 +411,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                      title,
                      style: TextStyle(
                        fontFamily: 'Poppins',
-                       fontSize: getResponsiveFontSize(context, 13),
+                       fontSize: getResponsiveFontSize(context, 12),
                        color: Colors.white.withOpacity(0.8),
                        fontWeight: FontWeight.w400,
                        height: 1.6,
@@ -384,7 +420,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                  ),
                ] 
             ),
-            SizedBox(height: 4),
+            SizedBox(height: screenHeight * 0.001),
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.center,
@@ -393,7 +429,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Poppins',
-                  fontSize: getResponsiveFontSize(context, 18),
+                  fontSize: getResponsiveFontSize(context, 16),
                   fontWeight: FontWeight.w500,
                   color: valueTextColor ?? Colors.white,
                 ),
@@ -411,88 +447,3 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
 
 
 
-class UserActivityProgressBar extends StatelessWidget {
-  final String title;
-  final double currentValue;
-  final double maxValue;
-  final Color barColor;
-
-  // Optional: For explicit sizing control
-  final double? screenWidth;
-  final double? screenHeight;
-
-  const UserActivityProgressBar({
-    super.key,
-    required this.title,
-    required this.currentValue,
-    required this.maxValue,
-    this.barColor = Colors.green,
-     this.screenWidth,
-    this.screenHeight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final double effectiveScreenWidth = screenWidth ?? MediaQuery.of(context).size.width;
-    final double effectiveScreenHeight = screenHeight ?? MediaQuery.of(context).size.height;
-
-    double calculatedPercentage = 0;
-    if (maxValue > 0) {
-      calculatedPercentage = (currentValue / maxValue * 100).clamp(0.0, 100.0);
-    }
-
-     final String displayedProgressText = '${calculatedPercentage.toStringAsFixed(0)}%';
-
-     final double fillPercent = calculatedPercentage / 100;
-
-    final baseTextStyle = TextStyle(
-      color: Colors.white,
-      fontFamily: 'Poppins', // Ensure Poppins font is added
-      fontWeight: FontWeight.w400,
-      height: 1.6,
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: baseTextStyle.copyWith(
-                  fontSize: getResponsiveFontSize(context, 13),
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              displayedProgressText, // Show calculated percentage string
-              style: baseTextStyle.copyWith(
-                fontSize: getResponsiveFontSize(context, 13),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: effectiveScreenHeight * 0.012),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(effectiveScreenWidth * 0.02),
-
-
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(effectiveScreenWidth * 0.02),
-            child: LinearProgressIndicator(
-              value: fillPercent, // Use the 0.0-1.0 scale for the indicator
-              backgroundColor: const Color(0xFF2B2D40),
-              valueColor: AlwaysStoppedAnimation<Color>(barColor),
-              minHeight: effectiveScreenHeight * 0.01,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -98,6 +98,7 @@ class Assets {
   static const String iconsLinearFrame = 'assets/icons/linearFrame.png';
   static const String iconsLinearFrame2 = 'assets/icons/linearFrame2.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
+  static const String iconsLoadingProgress = 'assets/icons/loadingProgress.svg';
   static const String iconsLogout = 'assets/icons/logout.svg';
   static const String iconsLogoutImg = 'assets/icons/logoutImg.svg';
   static const String iconsLonginContainer = 'assets/icons/longinContainer.png';
@@ -165,6 +166,7 @@ class Assets {
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
+  static const String iconsUserActivityProgressBg = 'assets/icons/userActivityProgressBg.png';
   static const String iconsViewTokenFrameBg = 'assets/icons/viewTokenFrameBg.png';
   static const String iconsWallet = 'assets/icons/wallet.svg';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';

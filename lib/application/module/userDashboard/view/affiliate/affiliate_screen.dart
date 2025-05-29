@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/affiliate/widget/referral_sales_table.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/AddressFieldComponent.dart';
@@ -7,8 +8,8 @@ import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/featureCard.dart';
 import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
-import '../../../../data/user_activity_dummy_data.dart';
-import '../../../side_nav_bar.dart';
+import '../../../../data/dummyData/referral_sales_dummy_data.dart';
+ import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../milestone/widget/user_activity_table.dart';
 
@@ -29,7 +30,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _filteredData = List.from(activityData);
+    _filteredData = List.from(referralSalesData);
 
   }
 
@@ -201,7 +202,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                             SizedBox(height: screenHeight * 0.02),
                             ...[
                               _filteredData.isNotEmpty
-                                  ? buildUserActivity(_filteredData, screenWidth, context)
+                                  ? referralSalesTable(_filteredData, screenWidth, context)
                                   : Container(
                                 alignment: Alignment.center,
                                 padding: const EdgeInsets.all(20),

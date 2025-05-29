@@ -36,88 +36,93 @@ class CustomLabeledInputField extends StatelessWidget {
 
     final fontSize = baseFontSize * textScale;
 
-    return ClipPath(
-      clipper: _CustomAddressPainter(safePadding),
-      child: Padding(
-        padding: const EdgeInsets.all(3.5),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.030,
-            vertical: screenHeight * 0.006,
-          ),
-          color: Colors.white12,
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
-                  ).createShader(bounds),
-                  child: Text(
-                    labelText,
-                    style: TextStyle(
-                      color: Colors.white,
-                      // fontSize: fontSize,
-                      fontSize: getResponsiveFontSize(context, 12),
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w400,
+    return Container(
+      width: double.infinity,
+      height: screenHeight * 0.03,
+      decoration: BoxDecoration(
+      color: Colors.white12,
+        borderRadius: BorderRadius.circular(screenWidth * 0.02),
+
+    ),
+
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.022,
+        vertical: screenHeight * 0.006,
+      ),
+
+      // color: Colors.white12,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+              ).createShader(bounds),
+              child: Text(
+                labelText,
+                style: TextStyle(
+                  color: Colors.white,
+                  // fontSize: fontSize,
+                  fontSize: getResponsiveFontSize(context, 12),
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(width: screenWidth * 0.02),
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      readOnly: isReadOnly,
+                      controller: controller,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        // fontSize: fontSize,
+                        fontSize: getResponsiveFontSize(context, 12),
+                ),
+                      decoration: InputDecoration(
+                        hintText: hintText,
+                        hintStyle: TextStyle(
+                          // fontSize: fontSize * 0.95,
+                          fontSize: getResponsiveFontSize(context, 12),
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xffFFF5ED),
+
+                        ),
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      cursorColor: Colors.white,
                     ),
                   ),
-                ),
-                SizedBox(width: screenWidth * 0.02),
-                Expanded(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          readOnly: isReadOnly,
-                          controller: controller,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            // fontSize: fontSize,
-
-                            fontSize: getResponsiveFontSize(context, 12),
-                    ),
-                          decoration: InputDecoration(
-                            hintText: hintText,
-                            hintStyle: TextStyle(
-                              // fontSize: fontSize * 0.95,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xffFFF5ED),
-                            ),
-                            border: InputBorder.none,
-                            isDense: true,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          cursorColor: Colors.white,
+                  if (trailingIconAsset != null)
+                    GestureDetector(
+                      onTap: onTrailingIconTap,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child: SvgPicture.asset(
+                          trailingIconAsset!,
+                          height: fontSize * 1.1,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      if (trailingIconAsset != null)
-                        GestureDetector(
-                          onTap: onTrailingIconTap,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                            child: SvgPicture.asset(
-                              trailingIconAsset!,
-                              height: fontSize * 1.1,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -132,13 +137,13 @@ class CustomLabeledInputField extends StatelessWidget {
   @override
   Path getClip(Size size) {
     final Path path = Path();
-    const double notchWidth = 10;
-    const double notchHeight = 5;
-    const double cutSize =  14;
+    const double notchWidth = 0;
+    const double notchHeight = 0;
+    const double cutSize =  0;
 
     // Offset amounts
-    const double topNotchOffset = 90; // move right
-    const double bottomNotchOffset = -90; // move left
+    const double topNotchOffset = 0; // move right
+    const double bottomNotchOffset = -0; // move left
 
     // Top-left angled start
     path.moveTo(cutSize, 0);

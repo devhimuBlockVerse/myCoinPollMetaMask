@@ -61,7 +61,7 @@ class StatusIndicator extends StatelessWidget {
                     child: Text(
                       statusText,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFE04043),
                         fontSize: getResponsiveFontSize(context, 12),
                         fontFamily: 'Poppins',
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/featureCard.dart';
 import '../../../../../framework/components/statusIndicatorComponent.dart';
@@ -67,40 +68,29 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/icons/affiliateBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // App bar row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/back_button.svg',
-                      color: Colors.white,
-                      width: screenWidth * 0.04,
-                      height: screenWidth * 0.04,
-                    ),
-                    onPressed: () => Navigator.pop(context),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/back_button.svg',
+                    color: Colors.white,
+                    width: screenWidth * 0.04,
+                    height: screenWidth * 0.04,
                   ),
-                  // Text(
-                  //   'Your Affiliate Progress',
-                  //   style: TextStyle(
-                  //     fontFamily: 'Poppins',
-                  //     color: Colors.white,
-                  //     fontWeight: FontWeight.w600,
-                  //     fontSize: screenWidth * 0.05,
-                  //   ),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  SizedBox(width: screenWidth * 0.12),
-                ],
+                  onPressed: () => Navigator.pop(context),
+                ),
               ),
+
 
               // Main content area
               Expanded(
@@ -153,6 +143,31 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                       ),
 
                       SizedBox(height: screenHeight * 0.03),
+                      /// Referral Link
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: const Color(0xff040C16).withOpacity(0.50),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+
+                        child: ClipRRect(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: CustomLabeledInputField(
+                              labelText: 'Referral Link:',
+                              hintText: ' https://mycoinpoll.com?ref=125482458661',
+                              isReadOnly: true,
+                              trailingIconAsset: 'assets/icons/copyImg.svg',
+                              onTrailingIconTap: () {
+                                debugPrint('Trailing icon tapped');
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.03),
 
                       Container(
                         width: double.infinity,
@@ -172,7 +187,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
 
 
                             Text(
-                              'User Activity Log',
+                              'Top Referral Sales',
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: 'Poppins',

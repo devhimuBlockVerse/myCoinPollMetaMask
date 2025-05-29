@@ -426,7 +426,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             controller: readingMoreController,
                             isReadOnly: true,
                           ),
-                          const SizedBox(height: 3),
+                           SizedBox(height: screenHeight * 0.02),
                           CustomLabeledInputField(
                             labelText: 'Referral Link:',
                             hintText: ' https://mycoinpoll.com?ref=125482458661',
@@ -437,7 +437,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                               debugPrint('Trailing icon tapped');
                             },
                           ),
-                          const SizedBox(height: 3),
+                          SizedBox(height: screenHeight * 0.02),
                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
                           CustomLabeledInputField(
                             labelText: 'Referred By:',

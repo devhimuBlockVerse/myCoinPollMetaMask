@@ -88,20 +88,16 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: Text(
-                        'Your Affiliate Progress',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: screenWidth * 0.05,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
+                  // Text(
+                  //   'Your Affiliate Progress',
+                  //   style: TextStyle(
+                  //     fontFamily: 'Poppins',
+                  //     color: Colors.white,
+                  //     fontWeight: FontWeight.w600,
+                  //     fontSize: screenWidth * 0.05,
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
                   SizedBox(width: screenWidth * 0.12),
                 ],
               ),
@@ -117,11 +113,24 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                     children: [
 
                       /// Activity Status
+                      Text(
+                        'Your Affiliate Progress',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: getResponsiveFontSize(context, 16),
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
 
+                      SizedBox(height: screenHeight * 0.02),
+
+                      _affiliateProgress(),
 
                       SizedBox(height: screenHeight * 0.03),
 
-                     const FeatureCard(
+                      const FeatureCard(
                         iconPath: 'assets/icons/becomeAffiliate.png',
                         title: 'Why Become an Affiliate?',
                         isSvg: false,
@@ -131,8 +140,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                           'Gain priority access to special events',
                         ],
                       ),
-                      SizedBox(height: screenHeight * 0.03),
-
+                      SizedBox(height: screenHeight * 0.02),
 
                      const FeatureCard(
                         iconPath: 'assets/icons/quality.png',
@@ -144,6 +152,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                         ],
                       ),
 
+                      SizedBox(height: screenHeight * 0.03),
 
                       Container(
                         width: double.infinity,
@@ -206,35 +215,18 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
   }
 
 
-  Widget _joinPromoteEarn(){
+  Widget _affiliateProgress(){
     final Size screenSize = MediaQuery.of(context).size;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final textScale = screenWidth / 375;
     final bool isPortrait = screenSize.height > screenSize.width;
 
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-    return Padding(
+     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Join. Promote. Earn.',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  fontSize: baseSize * 0.045,
-                  height: 1.2,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: screenHeight * 0.02),
 
           Container(
             width: double.infinity,

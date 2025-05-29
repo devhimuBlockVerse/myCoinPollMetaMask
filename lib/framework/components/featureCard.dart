@@ -92,7 +92,7 @@ class FeatureCard extends StatelessWidget {
                       height: 1.6, // Less vertical gap
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.01),
+                  SizedBox(height: screenHeight * 0.006),
                   if (description != null)
                     Opacity(
                     opacity: 0.7,

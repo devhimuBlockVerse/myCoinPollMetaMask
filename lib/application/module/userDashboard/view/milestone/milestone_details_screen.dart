@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
+import '../../../../../framework/components/rewardInfoCardComponent.dart';
 import '../../../../../framework/components/userActivityProgressBarComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/milestone_status.dart';
@@ -109,10 +110,13 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                   child: ListView(
                     children: [
 
+                      /// Activity Status
                       headerStatistic(),
 
 
                       SizedBox(height: screenHeight * 0.03),
+
+                      ///Progress Bar
                       Container(
                         width: double.infinity,
                         // height: screenHeight,
@@ -151,7 +155,15 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                             )
                           ],
                         ),
-                      )
+                      ),
+
+                      SizedBox(height: screenHeight * 0.03),
+
+                      /// Reward section
+
+
+
+
                     ],
                   ),
                 ),
@@ -442,8 +454,56 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
   }
 
 
+  Widget rewardInfoCard(){
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    return Container(
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        image:  DecorationImage(
+            image: AssetImage('assets/icons/rewardContainerBg.png'),filterQuality: FilterQuality.high,fit: BoxFit.fill
+        ),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Rewards',
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: getResponsiveFontSize(context, 16),
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                height: 1.6),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+
+          RewardInfoCard(
+            imageUrl: 'assets/icons/worldTrip.png',
+            message: 'We will provide you a tour trip from Dhaka to Cox’s Bazar for 2–3 days.',
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          RewardInfoCard(
+            imageUrl: 'assets/icons/money.png',
+            message: 'You will Get \$200 after completing the milestone',
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+          RewardInfoCard(
+            imageUrl: 'assets/icons/coin.png',
+            message: 'You will Get 150 ECM after completing the milestone',
+          ),
+
+
+        ],
+      ),
+    );
+  }
+
 
 }
-
 
 

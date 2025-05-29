@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../utils/dynamicFontSize.dart';
 
+
 class StatusIndicator extends StatelessWidget {
   final String statusText;
   final String statusLabel;
@@ -19,23 +20,27 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntrinsicWidth(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            flex: 2,
+            child: Text(
               statusLabel,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: getResponsiveFontSize(context, 13),
+                fontSize: getResponsiveFontSize(context, 12),
                 fontFamily: 'Poppins',
               ),
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(width: 8),
-            Container(
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            flex: 4,
+            child: Container(
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 border: Border.all(color: statusColor, width: 0.25),
@@ -43,7 +48,6 @@ class StatusIndicator extends StatelessWidget {
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (iconPath.isNotEmpty) ...[
                     SvgPicture.asset(
@@ -53,21 +57,30 @@ class StatusIndicator extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                   ],
-                  Text(
-                    statusText,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: getResponsiveFontSize(context, 13),
-                      fontFamily: 'Poppins',
+                  Flexible(
+                    child: Text(
+                      statusText,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getResponsiveFontSize(context, 12),
+                        fontFamily: 'Poppins',
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      maxLines: 1,
                     ),
-                    softWrap: true,
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+
+
+
+

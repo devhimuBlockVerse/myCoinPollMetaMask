@@ -160,7 +160,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                       SizedBox(height: screenHeight * 0.03),
 
                       /// Reward section
-
+                      rewardInfoCard(),
 
 
 

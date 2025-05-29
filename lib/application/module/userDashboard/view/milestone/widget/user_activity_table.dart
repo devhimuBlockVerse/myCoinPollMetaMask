@@ -44,15 +44,17 @@ import 'package:flutter/services.dart';
             width: constraints.maxWidth * 1.8,
             child: DataTable2(
               columnSpacing: baseSize * 0.12,
-              horizontalMargin: baseSize * 0.0,
+               horizontalMargin: baseSize * 0.0,
               dataRowHeight: baseSize * 0.12,
               headingRowHeight: baseSize * 0.08,
               dividerThickness: 0,
+
               headingRowDecoration: const BoxDecoration(
                 color: Color(0xff051121),
               ),
 
-              columns: [
+
+               columns: [
                 DataColumn2(label: buildCenteredText('SL', headingStyle), size: ColumnSize.S),
                 DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.S),
                  DataColumn2(label: buildCenteredText('Action', headingStyle), size: ColumnSize.L),
@@ -96,3 +98,5 @@ import 'package:flutter/services.dart';
     ),
   );
 }
+
+

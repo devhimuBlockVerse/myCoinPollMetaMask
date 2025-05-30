@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/wallet/widget/add_funs.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../presentation/viewmodel/bottom_nav_provider.dart';
+import '../../transactions/widgets/transaction_details.dart';
 class WalletCard extends StatelessWidget {
 
   final List<String> _labels = ['With Draw', 'Transfer', 'Scan', 'Gift'];
@@ -13,7 +15,12 @@ class WalletCard extends StatelessWidget {
     'assets/icons/scan.svg',
     'assets/icons/gift.svg',
   ];
-
+  final List<Widget> _pages = [
+    const TransactionDetailsDialog(),
+    const TransactionDetailsDialog(),
+    const TransactionDetailsDialog(),
+    const TransactionDetailsDialog(),
+   ];
   @override
   Widget build(BuildContext context) {
     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
@@ -123,6 +130,11 @@ class WalletCard extends StatelessWidget {
                   /// Add Funds
                   InkWell(
                     onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) =>const AddFunds(),
+
+                      );
                       debugPrint("Add Funds");
                     },
                     child: Column(
@@ -270,7 +282,12 @@ class WalletCard extends StatelessWidget {
                 children: List.generate(_labels.length, (index) {
                   return InkWell(
                     onTap: () {
-                      Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
+                      showDialog(
+                        context: context,
+                        builder: (context) => _pages[index],
+                      );
+                      print('Tapped ${_labels[index]}');
+                      // Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
                     },
                     child: Column(
                       children: [

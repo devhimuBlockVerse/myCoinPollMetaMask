@@ -106,8 +106,7 @@ class _ListingFieldState extends State<ListingField> {
         widget.prefixPngPath!,
         height: iconSize,
         width: iconSize,
-        // color: Colors.white.withOpacity(0.5), // Apply color filter if needed for PNG
-        fit: BoxFit.contain,
+         fit: BoxFit.contain,
       );
     }
 
@@ -119,14 +118,14 @@ class _ListingFieldState extends State<ListingField> {
             ? null
             : widget.height ?? screenHeight * 0.06,
         padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.045, // Already responsive
-          vertical: screenHeight * 0.012, // Already responsive
+          horizontal: screenWidth * 0.045,
+          vertical: screenHeight * 0.012,
         ),
         decoration: ShapeDecoration(
           color: const Color(0XFF101A29),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1.2, color: Color(0xFF141317)), // Border width is fixed
-            borderRadius: BorderRadius.circular(responsiveBorderRadius), // Made responsive
+            side: const BorderSide(width: 1.2, color: Color(0xFF141317)),
+            borderRadius: BorderRadius.circular(responsiveBorderRadius),
           ),
           shadows: const [
             BoxShadow(

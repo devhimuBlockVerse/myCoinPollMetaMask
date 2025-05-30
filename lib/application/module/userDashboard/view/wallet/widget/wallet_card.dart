@@ -24,7 +24,7 @@ class WalletCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: double.infinity,
+          width: screenWidth,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/icons/walletCardBg.png'),

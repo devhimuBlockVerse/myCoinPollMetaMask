@@ -180,8 +180,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       WalletCard(),
 
                       SizedBox(height: screenHeight * 0.030),
-                      SizedBox(height: screenHeight * 0.030),
-                      Text(
+                       Text(
                         'Recent Transactions',
                         textAlign: TextAlign.left,
                         style: TextStyle(
@@ -192,7 +191,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           color: Colors.white,
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.030),
+                      SizedBox(height: screenHeight * 0.020),
 
 
                       /// Search Controller with Data Sorting Button

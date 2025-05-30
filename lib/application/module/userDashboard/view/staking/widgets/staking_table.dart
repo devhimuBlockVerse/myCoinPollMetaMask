@@ -7,6 +7,7 @@ import '../../../../../../framework/utils/status_styling_utils.dart';
 Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWidth, BuildContext context) {
   double baseSize = screenWidth * 0.9;
   double screenHeight = MediaQuery.of(context).size.height;
+  const double designScreenWidth = 375.0;
 
 
   TextStyle headingStyle = TextStyle(
@@ -44,54 +45,23 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
           child: SizedBox(
             height: screenHeight * 0.4,
             width: constraints.maxWidth * 1.8,
-            // child: DataTable2(
-            //   columnSpacing: baseSize * 0.09,
-            //   horizontalMargin: baseSize * 0.002,
-            //   dataRowHeight: baseSize * 0.12,
-            //   headingRowHeight: baseSize * 0.06,
-            //   dividerThickness: 0,
-            //   headingRowDecoration: const BoxDecoration(
-            //     color: Color(0xff051121),
-            //   ),
-            //
-            //   columns: [
-            //     DataColumn2(label: buildCenteredText('SL', headingStyle), size: ColumnSize.S),
-            //     DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.M),
-            //     DataColumn2(label: buildCenteredText('Action', headingStyle), size: ColumnSize.L),
-            //     DataColumn2(label: buildCenteredText('Achieved Sales', headingStyle), size: ColumnSize.M),
-            //
-            //     DataColumn2(label: buildCenteredText('Target Sales', headingStyle), size: ColumnSize.L),
-            //    ],
-            //   rows: stakingData.map((data) {
-            //
-            //
-            //     return DataRow2(
-            //
-            //       cells: [
-            //         DataCell(buildCenteredText(data['SL'] ?? '', cellTextStyle)),
-            //         DataCell(buildCenteredText(data['Date'] ?? '', cellTextStyle)),
-            //         DataCell(buildCenteredText(data['Action'] ?? '', cellTextStyle)),
-            //         DataCell(buildCenteredText(data['Achieved Sales'] ?? '', cellTextStyle)),
-            //         DataCell(buildCenteredText(data['Target Sales'] ?? '', cellTextStyle)),
-            //
-            //
-            //       ],
-            //     );
-            //   }).toList(),
-            // ),
+
 
             child: DataTable2(
-              columnSpacing: baseSize * 0.09,
-              horizontalMargin: baseSize * 0.002,
               dataRowHeight: baseSize * 0.12,
-              headingRowHeight: baseSize * 0.06,
+              columnSpacing: screenWidth * 0.001,
+              horizontalMargin: screenWidth * 0.002,
+              headingRowHeight: screenHeight * 0.06,
               dividerThickness: 0,
               columns: [
-                DataColumn2(label: buildCenteredText('SL', headingStyle), size: ColumnSize.S),
-                DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.M),
+                DataColumn2(label: buildCenteredText('SL', headingStyle),
+                  fixedWidth: screenWidth * (40.0 / designScreenWidth),
+
+                ),
+                DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Duration', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Reward', headingStyle), size: ColumnSize.M),
-                DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.L),
+                DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.S),
                 DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.M),
               ],
               rows: stakingData.map((data) {
@@ -144,4 +114,7 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
     ),
   );
  }
+
+
+
 

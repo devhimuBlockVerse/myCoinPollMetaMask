@@ -47,16 +47,12 @@ import 'transaction_details.dart';
             height: screenHeight * 0.4,
             width: constraints.maxWidth * 1.8,
             child: DataTable2(
-              // columnSpacing: baseSize * 0.09,
-              horizontalMargin: baseSize * 0.002,
-              dataRowHeight: baseSize * 0.12,
-              headingRowHeight: baseSize * 0.06,
 
+              dataRowHeight: screenHeight * 0.04,
 
               columnSpacing: screenWidth * 0.001,
-              // horizontalMargin: screenWidth * 0.002,
-              // dataRowHeight: baseSize * 0.12,
-              // headingRowHeight: screenHeight * 0.05,
+              horizontalMargin: screenWidth * 0.002,
+              headingRowHeight: screenHeight * 0.06,
 
 
               dividerThickness: 0,
@@ -67,12 +63,21 @@ import 'transaction_details.dart';
               columns: [
                 DataColumn2(label: buildCenteredText('SL', headingStyle),
                     fixedWidth: screenWidth * (40.0 / designScreenWidth)),
-                DataColumn2(label: buildCenteredText('Date Time', headingStyle), size: ColumnSize.M),
+                DataColumn2(label: buildCenteredText('Date Time', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Txn Hash', headingStyle), size: ColumnSize.L),
-                DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.S),
-                DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.S),
+                DataColumn2(label: buildCenteredText('Status', headingStyle),
+                    size: ColumnSize.M
+
+                ),
+                DataColumn2(label: buildCenteredText('Amount', headingStyle),
+                    size: ColumnSize.S
+                    // fixedWidth: screenWidth * (120.0 / designScreenWidth)
+                ),
                 DataColumn2(label: buildCenteredText('Details', headingStyle),
-                    fixedWidth: screenWidth * (40.0 / designScreenWidth)),
+                    // size: ColumnSize.L
+
+                    fixedWidth: screenWidth * (40.0 / designScreenWidth)
+        ),
               ],
               rows: transactionData.asMap().entries.map((entry) {
                 int idx = entry.key;
@@ -87,6 +92,8 @@ import 'transaction_details.dart';
                     DataCell(buildCenteredText(data['DateTime'] ?? '', cellTextStyle)),
                     DataCell(
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
                             child: buildCenteredText(data['TxnHash'] ?? '', cellTextStyle),
@@ -102,7 +109,7 @@ import 'transaction_details.dart';
                               );
                             },
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
+                              padding: const EdgeInsets.only(left: 1.0),
                               child: SvgPicture.asset(
                                 'assets/icons/copyImg.svg',
                                 height: getResponsiveFontSize(context, 10),

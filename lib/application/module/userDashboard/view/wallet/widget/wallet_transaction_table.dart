@@ -50,7 +50,7 @@ Widget walletRecentTransaction(
             child: DataTable2(
               columnSpacing: screenWidth * (10.0 / designScreenWidth),
               horizontalMargin: 0.0,
-              dataRowHeight: screenHeight * 0.05,
+              dataRowHeight: screenHeight * 0.04,
               headingRowHeight: screenHeight * 0.04,
               dividerThickness: 0,
               headingRowDecoration: const BoxDecoration(
@@ -76,7 +76,7 @@ Widget walletRecentTransaction(
 
                 DataColumn2(
                   label: buildCenteredText('Status', headingStyle),
-                  size: ColumnSize.M,
+                  size: ColumnSize.L,
                 ),
                 DataColumn2(
                   label: buildCenteredText('Amount', headingStyle),

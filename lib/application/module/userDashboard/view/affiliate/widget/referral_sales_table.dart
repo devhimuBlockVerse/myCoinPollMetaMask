@@ -54,7 +54,8 @@ Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double s
                columnSpacing: screenWidth * (10.0 / designScreenWidth),
 
               horizontalMargin: 0.0,
-               dataRowHeight: screenHeight * 0.05,
+               dataRowHeight: screenHeight * 0.04,
+
               headingRowHeight: screenHeight * 0.04,
               dividerThickness: 0,
 

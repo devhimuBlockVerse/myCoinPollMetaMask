@@ -4,13 +4,11 @@ import 'package:provider/provider.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../data/dummyData/milestone_llist_dummy_data.dart';
 import '../../../../data/dummyData/staking_dummy_data.dart';
-import '../../../../domain/model/milestone_list_models.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
-import '../milestone/widget/milestone_lists.dart';
 import '../transactions/widgets/transaction_table.dart';
  class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -303,417 +301,472 @@ class _WalletScreenState extends State<WalletScreen> {
 }
 
 
+
+
+//  class CardPrice extends StatelessWidget {
+//   final List<String> _labels = ['Withdraw', 'Transfer', 'Scan', 'Gift'];
+//   final List<String> _imgPaths = [
+//     'assets/icons/home.svg',
+//     'assets/icons/features.svg',
+//     'assets/icons/news.svg',
+//     'assets/icons/profileIcon.svg',
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
+//     final screenWidth = MediaQuery.of(context).size.width;
+//
+//     return Container(
+//       width: double.infinity,
+//       padding: EdgeInsets.symmetric(
+//         vertical: screenWidth * 0.05,
+//         horizontal: screenWidth * 0.04,
+//       ),
+//       decoration: BoxDecoration(
+//         image: DecorationImage(
+//           image: AssetImage('assets/icons/walletCardBg.png'),
+//           fit: BoxFit.fill,
+//         ),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           /// Wallet Info Row
+//           Row(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               /// Left Section - Wallet Info + Growth
+//               Expanded(
+//                 child: Row(
+//                   crossAxisAlignment: CrossAxisAlignment.end,
+//                   children: [
+//                     /// Wallet Info
+//                     Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           'Total Wallet Balance:',
+//                           style: TextStyle(
+//                             color: Color(0xCCFFF5ED),
+//                             fontSize: 12,
+//                             fontFamily: 'Poppins',
+//                             height: 1.4,
+//                           ),
+//                         ),
+//                         SizedBox(height: 6),
+//                         Text(
+//                           '\$ 10,1542.00',
+//                           style: TextStyle(
+//                             color: Color(0xFFFFF5ED),
+//                             fontSize: 18,
+//                             fontWeight: FontWeight.w600,
+//                             fontFamily: 'Poppins',
+//                             height: 1.3,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                     SizedBox(width: 10),
+//                     /// Growth Box
+//                     Container(
+//                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//                       decoration: BoxDecoration(
+//                         color: Color(0x1915FF10),
+//                         borderRadius: BorderRadius.circular(24),
+//                       ),
+//                       child: Row(
+//                         children: [
+//                           Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: 18),
+//                           SizedBox(width: 4),
+//                           Text(
+//                             '+0.8%',
+//                             style: TextStyle(
+//                               color: Color(0xFF37CAB0),
+//                               fontSize: 12,
+//                               fontFamily: 'Poppins',
+//                               height: 1.4,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//
+//               /// Right Section - Add Funds
+//               Column(
+//                 children: [
+//                   Container(
+//                     width: 36,
+//                     height: 36,
+//                     padding: const EdgeInsets.all(6),
+//                     decoration: BoxDecoration(
+//                       color: Colors.white.withOpacity(0.05),
+//                       borderRadius: BorderRadius.circular(6),
+//                       border: Border.all(color: Color(0x9900EFFF)),
+//                     ),
+//                     child: Image.network(
+//                       "https://picsum.photos/20/20",
+//                       width: 18,
+//                       height: 18,
+//                       fit: BoxFit.cover,
+//                     ),
+//                   ),
+//                   SizedBox(height: 6),
+//                   Text(
+//                     'Add Funds',
+//                     style: TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 12,
+//                       fontFamily: 'Poppins',
+//                       height: 1.4,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//
+//           SizedBox(height: 20),
+//
+//           /// Balance Info
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               /// Available Funds
+//               Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: const [
+//                   Text(
+//                     'Available Funds:',
+//                     style: TextStyle(
+//                       color: Color(0xCCFFF5ED),
+//                       fontSize: 12,
+//                       fontFamily: 'Poppins',
+//                     ),
+//                   ),
+//                   SizedBox(height: 6),
+//                   Text(
+//                     '\$ 1541.00',
+//                     style: TextStyle(
+//                       color: Color(0xFFFFF5ED),
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w600,
+//                       fontFamily: 'Poppins',
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               /// ETH Balance
+//               Row(
+//                 children: [
+//                   Image.network("https://picsum.photos/20/20", width: 20),
+//                   SizedBox(width: 6),
+//                   const Text(
+//                     '265.0 ETH',
+//                     style: TextStyle(
+//                       color: Color(0xFFFFF5ED),
+//                       fontSize: 14,
+//                       fontFamily: 'Poppins',
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               /// BTC Balance
+//               Row(
+//                 children: [
+//                   Image.network("https://picsum.photos/20/20", width: 20),
+//                   SizedBox(width: 6),
+//                   const Text(
+//                     '1.25 BTC',
+//                     style: TextStyle(
+//                       color: Color(0xFFFFF5ED),
+//                       fontSize: 14,
+//                       fontFamily: 'Poppins',
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//
+//           /// Divider
+//           Padding(
+//             padding: const EdgeInsets.symmetric(vertical: 16),
+//             child: Divider(color: Colors.white12, thickness: 1),
+//           ),
+//
+//           /// Action Buttons Row
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: List.generate(4, (index) {
+//               return InkWell(
+//                 onTap: () {
+//                   Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
+//                 },
+//                 child: Column(
+//                   children: [
+//                     SvgPicture.asset(
+//                       _imgPaths[index],
+//                       color: Colors.white,
+//                       width: 24,
+//                       height: 24,
+//                     ),
+//                     SizedBox(height: 6),
+//                     Text(
+//                       _labels[index],
+//                       style: TextStyle(
+//                         color: Colors.white,
+//                         fontSize: 12,
+//                         fontFamily: 'Poppins',
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               );
+//             }),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
 class CardPrice extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
+  final List<String> _labels = ['With Draw', 'Transfer', 'Scan', 'Gift'];
+  final List<String> _imgPaths = [
+    'assets/icons/home.svg',
+    'assets/icons/features.svg',
+    'assets/icons/news.svg',
+    'assets/icons/profileIcon.svg',
+  ];
+
+  TextStyle textStyle(Color color, double size,
+      {FontWeight weight = FontWeight.normal}) {
+    return TextStyle(
+      color: color,
+      fontSize: size,
+      fontFamily: 'Poppins',
+      fontWeight: weight,
+      height: 1.4,
+    );
+  }
+
+  Widget coinRow(String text, String imageUrl) {
+    return Row(
       children: [
-        Container(
-          width: 343,
-          height: 219,
-          decoration: ShapeDecoration(
-            gradient: LinearGradient(
-              begin: Alignment(-0.94, -0.33),
-              end: Alignment(0.94, 0.33),
-              colors: [Color(0xFF040404), Colors.black.withOpacity(0)],
-            ),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1, color: Color(0x9900EFFF)),
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 20,
-                top: 20,
-                child: Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              width: 107,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Total Wallet Balance :',
-                                    style: TextStyle(
-                                      color: Color(0xCCFFF5ED),
-                                      fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                      height: 0.11,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: Text(
-                                      '\$ 10,1542.00',
-                                      style: TextStyle(
-                                        color: Color(0xFFFFF5ED),
-                                        fontSize: 18,
-                                        fontFamily: 'Poppins',
-                                        height: 0.07,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                              decoration: ShapeDecoration(
-                                color: Color(0x1915FF10),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 16,
-                                    height: 16,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: BoxDecoration(),
-                                    child: Stack(children: [
-
-                                        ]),
-                                  ),
-                                  Text(
-                                    '+0.8%',
-                                    style: TextStyle(
-                                      color: Color(0xFF37CAB0),
-                                      fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                      height: 0.12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 64),
-                      Container(
-                        height: 58,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 30,
-                              height: 30,
-                              padding: const EdgeInsets.all(9),
-                              decoration: ShapeDecoration(
-                                color: Colors.white.withOpacity(0.05000000074505806),
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(width: 1, color: Color(0x9900EFFF)),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 11,
-                                    height: 11,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage("https://picsum.photos/11/11"),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Add Funds',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 153,
-                child: Container(
-                  width: 303,
-                  height: 47,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(children: [
-
-                                  ]),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'With Draw',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(children: [
-
-                                  ]),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Transfer',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(children: [
-
-                                  ]),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Scan',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 32),
-                      Container(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(children: [
-
-                                  ]),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Gift',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                height: 0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 88,
-                child: Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: 84,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Available Funds :',
-                              style: TextStyle(
-                                color: Color(0xCCFFF5ED),
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                                height: 0.11,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                '\$ 1541.00',
-                                style: TextStyle(
-                                  color: Color(0xFFFFF5ED),
-                                  fontSize: 18,
-                                  fontFamily: 'Poppins',
-                                  height: 0.07,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 26),
-                      Container(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage("https://picsum.photos/20/20"),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    '1.25 BTC',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Color(0xFFFFF5ED),
-                                      fontSize: 14,
-                                      fontFamily: 'Poppins',
-                                      height: 0.09,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 18),
-                            Container(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage("https://picsum.photos/20/20"),
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    '265.0 ETH',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Color(0xFFFFF5ED),
-                                      fontSize: 14,
-                                      fontFamily: 'Poppins',
-                                      height: 0.09,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+        Image.network(
+          imageUrl,
+          width: 20,
+          height: 20,
+          fit: BoxFit.cover,
+        ),
+        const SizedBox(width: 5),
+        Text(
+          text,
+          style: textStyle(const Color(0xFFFFF5ED), 14),
         ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth * 0.04;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/icons/walletCardBg.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Top Row
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Wallet Info and Growth
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          /// Wallet Info
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total Wallet Balance:',
+                                style: textStyle(
+                                    const Color(0xCCFFF5ED), 12),
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                '\$ 10,1542.00',
+                                style: textStyle(
+                                  const Color(0xFFFFF5ED),
+                                  18,
+                                  weight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 8),
+
+                          /// Growth %
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0x1915FF10),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.arrow_drop_up_sharp,
+                                    color: Color(0xFF37CAB0), size: 16),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '+0.8%',
+                                  style: textStyle(
+                                      const Color(0xFF37CAB0), 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// Add Funds
+                    Column(
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: const Color(0x9900EFFF)),
+                          ),
+                          child: Center(
+                            child: Image.network(
+                              "https://picsum.photos/11/11",
+                              width: 18,
+                              height: 18,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Add Funds',
+                          style: textStyle(Colors.white, 12),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                /// Balance Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    /// Available Funds
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Available Funds :',
+                          style:
+                          textStyle(const Color(0xCCFFF5ED), 12),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '\$ 1541.00',
+                          style: textStyle(
+                            const Color(0xFFFFF5ED),
+                            18,
+                            weight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    /// Coins
+                    Row(
+                      children: [
+                        coinRow('265.0 ETH', "https://picsum.photos/20/20"),
+                        const SizedBox(width: 16),
+                        coinRow('1.25 BTC', "https://picsum.photos/20/20"),
+                      ],
+                    ),
+                  ],
+                ),
+
+                /// Divider
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Divider(
+                    color: Colors.white12,
+                    thickness: 1,
+                    indent: 0,
+                    endIndent: 0,
+                  ),
+                ),
+
+                /// Action Icons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(_labels.length, (index) {
+                    return InkWell(
+                      onTap: () {
+                        Provider.of<BottomNavProvider>(context,
+                            listen: false)
+                            .setIndex(index);
+                      },
+                      child: Column(
+                        children: [
+                          SvgPicture.asset(
+                            _imgPaths[index],
+                            color: Colors.white,
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _labels[index],
+                            style: textStyle(Colors.white, 12),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

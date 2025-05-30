@@ -26,6 +26,7 @@ class Assets {
   static const String fontsPoppinsSemiBoldItalic = 'assets/fonts/Poppins-SemiBoldItalic.ttf';
   static const String iconsAchivedSalesImg = 'assets/icons/achivedSalesImg.svg';
   static const String iconsAddSourceImage = 'assets/icons/addSourceImage.png';
+  static const String iconsAffiliateBg = 'assets/icons/affiliateBg.png';
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
   static const String iconsAndroverseHumanImage = 'assets/icons/androverseHumanImage.png';
   static const String iconsAndroverseHumanImg = 'assets/icons/androverseHumanImg.png';
@@ -176,6 +177,7 @@ class Assets {
   static const String iconsUserActivityProgressBg = 'assets/icons/userActivityProgressBg.png';
   static const String iconsViewTokenFrameBg = 'assets/icons/viewTokenFrameBg.png';
   static const String iconsWallet = 'assets/icons/wallet.svg';
+  static const String iconsWalletCardBg = 'assets/icons/walletCardBg.png';
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';

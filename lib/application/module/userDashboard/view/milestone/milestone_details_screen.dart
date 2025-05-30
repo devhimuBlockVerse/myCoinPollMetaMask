@@ -1,22 +1,17 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/widget/user_activity_table.dart';
 import 'package:provider/provider.dart';
-import '../../../../../framework/components/buildProgressBar.dart';
-import '../../../../../framework/components/rewardInfoCardComponent.dart';
+ import '../../../../../framework/components/rewardInfoCardComponent.dart';
 import '../../../../../framework/components/userActivityProgressBarComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../framework/utils/milestone_test_styles.dart';
 import '../../../../../framework/utils/status_styling_utils.dart';
-import '../../../../data/dummyData/staking_dummy_data.dart';
 import '../../../../data/dummyData/user_activity_dummy_data.dart';
 import '../../../../domain/model/milestone_list_models.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
-import '../staking/widgets/staking_table.dart';
-import '../transactions/widgets/transaction_table.dart';
 
 class MilestoneDetailsScreen extends StatefulWidget {
   final EcmTaskModel task;

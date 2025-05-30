@@ -296,477 +296,604 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-
-
 }
 
 
-
-
-//  class CardPrice extends StatelessWidget {
-//   final List<String> _labels = ['Withdraw', 'Transfer', 'Scan', 'Gift'];
+// class CardPrice extends StatelessWidget {
+//   final List<String> _labels = ['With Draw', 'Transfer', 'Scan', 'Gift'];
 //   final List<String> _imgPaths = [
-//     'assets/icons/home.svg',
-//     'assets/icons/features.svg',
-//     'assets/icons/news.svg',
-//     'assets/icons/profileIcon.svg',
+//     'assets/icons/withDraw.svg',
+//     'assets/icons/transfer.svg',
+//     'assets/icons/scan.svg',
+//     'assets/icons/gift.svg',
 //   ];
+//
+//
+//
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
 //     final screenWidth = MediaQuery.of(context).size.width;
+//     final screenHeight = MediaQuery.of(context).size.height;
 //
-//     return Container(
-//       width: double.infinity,
-//       padding: EdgeInsets.symmetric(
-//         vertical: screenWidth * 0.05,
-//         horizontal: screenWidth * 0.04,
-//       ),
-//       decoration: BoxDecoration(
-//         image: DecorationImage(
-//           image: AssetImage('assets/icons/walletCardBg.png'),
-//           fit: BoxFit.fill,
-//         ),
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           /// Wallet Info Row
-//           Row(
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Container(
+//           width: double.infinity,
+//           decoration: BoxDecoration(
+//             image: DecorationImage(
+//               image: AssetImage('assets/icons/walletCardBg.png'),
+//               fit: BoxFit.fill,
+//             ),
+//           ),
+//           padding:  EdgeInsets.symmetric(vertical: 24, horizontal: screenWidth * 0.05),
+//           child: Column(
 //             crossAxisAlignment: CrossAxisAlignment.start,
 //             children: [
-//               /// Left Section - Wallet Info + Growth
-//               Expanded(
-//                 child: Row(
-//                   crossAxisAlignment: CrossAxisAlignment.end,
-//                   children: [
-//                     /// Wallet Info
-//                     Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
+//               /// Top Row
+//               Row(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 mainAxisAlignment: MainAxisAlignment.start,
+//
+//                 children: [
+//                   /// Wallet Info and Growth
+//                   Expanded(
+//                     child: Row(
+//                       crossAxisAlignment: CrossAxisAlignment.end,
+//                       mainAxisAlignment: MainAxisAlignment.start,
 //                       children: [
-//                         Text(
-//                           'Total Wallet Balance:',
-//                           style: TextStyle(
-//                             color: Color(0xCCFFF5ED),
-//                             fontSize: 12,
-//                             fontFamily: 'Poppins',
-//                             height: 1.4,
-//                           ),
+//                         /// Wallet Info
+//                         Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Text(
+//                               textAlign: TextAlign.start,
+//                               'Total Wallet Balance:',
+//                               style: TextStyle(
+//                                 color: Color(0xCCFFF5ED),
+//                                 fontFamily: 'Poppins',
+//                                 fontSize: getResponsiveFontSize(context, 12),
+//                                 fontWeight: FontWeight.w400,
+//                                 height: 1.3,
+//
+//                               ),
+//                             ),
+//                             const SizedBox(height: 5),
+//                             Text(
+//                               '\$ 10,1542.00',
+//                               style: TextStyle(
+//                                 color: Color(0xffFFF5ED),
+//                                 fontFamily: 'Poppins',
+//                                 fontSize: getResponsiveFontSize(context, 18),
+//                                 fontWeight: FontWeight.w500,
+//                                 height: 1.3,
+//                               ),
+//                             ),
+//                           ],
 //                         ),
-//                         SizedBox(height: 6),
-//                         Text(
-//                           '\$ 10,1542.00',
-//                           style: TextStyle(
-//                             color: Color(0xFFFFF5ED),
-//                             fontSize: 18,
-//                             fontWeight: FontWeight.w600,
-//                             fontFamily: 'Poppins',
-//                             height: 1.3,
+//
+//                         /// Growth %
+//                         Container(
+//
+//                           decoration: BoxDecoration(
+//                             color: const Color(0x1915FF10),
+//                             borderRadius: BorderRadius.circular(24),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.start,
+//                             crossAxisAlignment: CrossAxisAlignment.center,
+//                             children: [
+//                               const Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: 24),
+//                                Text(
+//                                 '+0.8%',
+//                                  textAlign: TextAlign.start,
+//                                  style: TextStyle(
+//                                    color: Color(0xff37CBB0),
+//                                    fontFamily: 'Poppins',
+//                                    fontSize: getResponsiveFontSize(context, 12),
+//                                    fontWeight: FontWeight.w500,
+//                                    height: 1.3,
+//                                  ),
+//                               ),
+//                             ],
 //                           ),
 //                         ),
 //                       ],
 //                     ),
-//                     SizedBox(width: 10),
-//                     /// Growth Box
-//                     Container(
-//                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-//                       decoration: BoxDecoration(
-//                         color: Color(0x1915FF10),
-//                         borderRadius: BorderRadius.circular(24),
+//                   ),
+//
+//                   /// Add Funds
+//                   InkWell(
+//                     onTap: (){
+//                       debugPrint("Add Funds");
+//                     },
+//                     child: Column(
+//                       children: [
+//                         Container(
+//                           width: 30,
+//                           height: 30,
+//                            decoration: BoxDecoration(
+//                              image: DecorationImage(
+//                                image: AssetImage('assets/icons/addFundsBg.png'),
+//                                fit: BoxFit.fill,
+//                              ),
+//                           ),
+//                           child: Center(
+//                             child: SvgPicture.asset(
+//                               "assets/icons/addIcon.svg",
+//                               width: 18,
+//                               height: 18,
+//                               fit: BoxFit.fill,
+//                             ),
+//                           ),
+//                         ),
+//                         const SizedBox(height: 6),
+//                         Text(
+//                           'Add Funds',
+//                           style: TextStyle(
+//                             color: Colors.white,
+//                             fontFamily: 'Poppins',
+//                             fontSize: getResponsiveFontSize(context, 12),
+//                             fontWeight: FontWeight.w400,
+//
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               const SizedBox(height: 10),
+//
+//               /// Balance Row
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 crossAxisAlignment: CrossAxisAlignment.end,
+//                 children: [
+//                   /// Available Funds
+//                   Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         'Available Funds :',
+//                         style: TextStyle(
+//                           color: Color(0xffFFF5ED).withOpacity(0.80),
+//                           fontFamily: 'Poppins',
+//                           fontSize: getResponsiveFontSize(context, 12),
+//                           fontWeight: FontWeight.w400,
+//                           height: 1.3,
+//                         ),
+//
 //                       ),
-//                       child: Row(
+//                       const SizedBox(height: 6),
+//                       Text(
+//                         '\$ 1541.00',
+//                         style: TextStyle(
+//                           color: Color(0xffFFF5ED),
+//                           fontFamily: 'Poppins',
+//                           fontSize: getResponsiveFontSize(context, 18),
+//                           fontWeight: FontWeight.w500,
+//                           height: 1.3,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//
+//                   /// Coins
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     crossAxisAlignment: CrossAxisAlignment.center,
+//                     children: [
+//
+//                       Row(
 //                         children: [
-//                           Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: 18),
-//                           SizedBox(width: 4),
+//                           Image.asset(
+//                             'assets/icons/BTC.png',
+//                             width: 20,
+//                             height: 20,
+//                             fit: BoxFit.contain,
+//                           ),
+//                           const SizedBox(width: 5),
 //                           Text(
-//                             '+0.8%',
+//                             '1.25 BTC',
 //                             style: TextStyle(
-//                               color: Color(0xFF37CAB0),
-//                               fontSize: 12,
+//                               color: Color(0xffFFF5ED),
 //                               fontFamily: 'Poppins',
-//                               height: 1.4,
+//                               fontSize: getResponsiveFontSize(context, 14),
+//                               fontWeight: FontWeight.w500,
+//                               height: 1.3,
 //                             ),
 //                           ),
 //                         ],
 //                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
 //
-//               /// Right Section - Add Funds
-//               Column(
-//                 children: [
-//                   Container(
-//                     width: 36,
-//                     height: 36,
-//                     padding: const EdgeInsets.all(6),
-//                     decoration: BoxDecoration(
-//                       color: Colors.white.withOpacity(0.05),
-//                       borderRadius: BorderRadius.circular(6),
-//                       border: Border.all(color: Color(0x9900EFFF)),
-//                     ),
-//                     child: Image.network(
-//                       "https://picsum.photos/20/20",
-//                       width: 18,
-//                       height: 18,
-//                       fit: BoxFit.cover,
-//                     ),
-//                   ),
-//                   SizedBox(height: 6),
-//                   Text(
-//                     'Add Funds',
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 12,
-//                       fontFamily: 'Poppins',
-//                       height: 1.4,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
+//                       const SizedBox(width: 16),
 //
-//           SizedBox(height: 20),
-//
-//           /// Balance Info
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               /// Available Funds
-//               Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: const [
-//                   Text(
-//                     'Available Funds:',
-//                     style: TextStyle(
-//                       color: Color(0xCCFFF5ED),
-//                       fontSize: 12,
-//                       fontFamily: 'Poppins',
-//                     ),
-//                   ),
-//                   SizedBox(height: 6),
-//                   Text(
-//                     '\$ 1541.00',
-//                     style: TextStyle(
-//                       color: Color(0xFFFFF5ED),
-//                       fontSize: 18,
-//                       fontWeight: FontWeight.w600,
-//                       fontFamily: 'Poppins',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//
-//               /// ETH Balance
-//               Row(
-//                 children: [
-//                   Image.network("https://picsum.photos/20/20", width: 20),
-//                   SizedBox(width: 6),
-//                   const Text(
-//                     '265.0 ETH',
-//                     style: TextStyle(
-//                       color: Color(0xFFFFF5ED),
-//                       fontSize: 14,
-//                       fontFamily: 'Poppins',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//
-//               /// BTC Balance
-//               Row(
-//                 children: [
-//                   Image.network("https://picsum.photos/20/20", width: 20),
-//                   SizedBox(width: 6),
-//                   const Text(
-//                     '1.25 BTC',
-//                     style: TextStyle(
-//                       color: Color(0xFFFFF5ED),
-//                       fontSize: 14,
-//                       fontFamily: 'Poppins',
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//
-//           /// Divider
-//           Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 16),
-//             child: Divider(color: Colors.white12, thickness: 1),
-//           ),
-//
-//           /// Action Buttons Row
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//             children: List.generate(4, (index) {
-//               return InkWell(
-//                 onTap: () {
-//                   Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
-//                 },
-//                 child: Column(
-//                   children: [
-//                     SvgPicture.asset(
-//                       _imgPaths[index],
-//                       color: Colors.white,
-//                       width: 24,
-//                       height: 24,
-//                     ),
-//                     SizedBox(height: 6),
-//                     Text(
-//                       _labels[index],
-//                       style: TextStyle(
-//                         color: Colors.white,
-//                         fontSize: 12,
-//                         fontFamily: 'Poppins',
+//                       Row(
+//                         children: [
+//                           Image.asset(
+//                             'assets/icons/EthCoin.png',
+//                             width: 20,
+//                             height: 20,
+//                             fit: BoxFit.contain,
+//                           ),
+//                           const SizedBox(width: 5),
+//                           Text(
+//                             '265.0 ETH',
+//                             style: TextStyle(
+//                               color: Color(0xffFFF5ED),
+//                               fontFamily: 'Poppins',
+//                               fontSize: getResponsiveFontSize(context, 14),
+//                               fontWeight: FontWeight.w500,
+//                               height: 1.3,
+//                             ),
+//                           ),
+//                         ],
 //                       ),
-//                     ),
-//                   ],
+//
+//
+//                      ],
+//                   ),
+//                 ],
+//               ),
+//
+//               /// Divider
+//
+//               Center(
+//                 child: SizedBox(
+//                   width: screenWidth * 0.9,
+//                   child: const Divider(
+//                     color: Colors.white12,
+//                     thickness: 2,
+//                     height: 20,
+//                   ),
 //                 ),
-//               );
-//             }),
+//               ),
+//
+//               const SizedBox(height: 10),
+//               /// Action Icons
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                 children: List.generate(_labels.length, (index) {
+//                   return InkWell(
+//                     onTap: () {
+//                       Provider.of<BottomNavProvider>(context,
+//                           listen: false)
+//                           .setIndex(index);
+//                     },
+//                     child: Column(
+//                       children: [
+//                         SvgPicture.asset(
+//                           _imgPaths[index],
+//                           color: Colors.white,
+//                           width: 26,
+//                           height: 26,
+//                         ),
+//                         const SizedBox(height: 5),
+//                         Text(
+//                           _labels[index],
+//                           style: TextStyle(
+//                             color:Colors.white,
+//                             fontFamily: 'Poppins',
+//                             fontSize: getResponsiveFontSize(context, 12),
+//                             fontWeight: FontWeight.w400,
+//                             height: 1.6 ,
+//
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 }),
+//               ),
+//             ],
 //           ),
-//         ],
-//       ),
+//         ),
+//       ],
 //     );
 //   }
 // }
 
+
+
 class CardPrice extends StatelessWidget {
   final List<String> _labels = ['With Draw', 'Transfer', 'Scan', 'Gift'];
   final List<String> _imgPaths = [
-    'assets/icons/home.svg',
-    'assets/icons/features.svg',
-    'assets/icons/news.svg',
-    'assets/icons/profileIcon.svg',
+    'assets/icons/withDraw.svg',
+    'assets/icons/transfer.svg',
+    'assets/icons/scan.svg',
+    'assets/icons/gift.svg',
   ];
-
-  TextStyle textStyle(Color color, double size,
-      {FontWeight weight = FontWeight.normal}) {
-    return TextStyle(
-      color: color,
-      fontSize: size,
-      fontFamily: 'Poppins',
-      fontWeight: weight,
-      height: 1.4,
-    );
-  }
-
-  Widget coinRow(String text, String imageUrl) {
-    return Row(
-      children: [
-        Image.network(
-          imageUrl,
-          width: 20,
-          height: 20,
-          fit: BoxFit.cover,
-        ),
-        const SizedBox(width: 5),
-        Text(
-          text,
-          style: textStyle(const Color(0xFFFFF5ED), 14),
-        ),
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
     final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalPadding = screenWidth * 0.04;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/icons/walletCardBg.png'),
-                fit: BoxFit.fill,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/icons/walletCardBg.png'),
+              fit: BoxFit.fill,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Top Row
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// Wallet Info and Growth
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          /// Wallet Info
-                          Column(
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.03, // Original was 24
+            horizontal: screenWidth * 0.05,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Top Row
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  /// Wallet Info and Growth
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        /// Wallet Info
+                        Expanded(
+                          flex: 2,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
+                                textAlign: TextAlign.start,
                                 'Total Wallet Balance:',
-                                style: textStyle(
-                                    const Color(0xCCFFF5ED), 12),
+                                style: TextStyle(
+                                  color: Color(0xCCFFF5ED),
+                                  fontFamily: 'Poppins',
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.3,
+                                ),
                               ),
-                              const SizedBox(height: 5),
+                              SizedBox(height: screenHeight * 0.006), // Original was 5
                               Text(
-                                '\$ 10,1542.00',
-                                style: textStyle(
-                                  const Color(0xFFFFF5ED),
-                                  18,
-                                  weight: FontWeight.w600,
+                                '\$ 10,1542.0000000000000000',
+                                style: TextStyle(
+                                  color: Color(0xffFFF5ED),
+                                  fontFamily: 'Poppins',
+                                  fontSize: getResponsiveFontSize(context, 18),
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.3,
+                                  overflow: TextOverflow.ellipsis
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(width: 8),
+                        ),
 
-                          /// Growth %
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                        /// Growth %
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.01,
+                              vertical: screenHeight * 0.003,
+                            ),
+                            margin: EdgeInsets.only(left: screenWidth * 0.001), // Add margin to separate from wallet info
                             decoration: BoxDecoration(
                               color: const Color(0x1915FF10),
-                              borderRadius: BorderRadius.circular(24),
+                              borderRadius: BorderRadius.circular(screenWidth * 0.06),
                             ),
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(Icons.arrow_drop_up_sharp,
-                                    color: Color(0xFF37CAB0), size: 16),
-                                const SizedBox(width: 4),
+                                Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: screenWidth * 0.05), // Original was 24
                                 Text(
                                   '+0.8%',
-                                  style: textStyle(
-                                      const Color(0xFF37CAB0), 12),
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(
+                                    color: Color(0xff37CBB0),
+                                    fontFamily: 'Poppins',
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.3,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
 
-                    /// Add Funds
-                    Column(
+                  /// Add Funds
+                  InkWell(
+                    onTap: () {
+                      debugPrint("Add Funds");
+                    },
+                    child: Column(
                       children: [
                         Container(
-                          width: 30,
-                          height: 30,
-                          padding: const EdgeInsets.all(6),
+                          width: screenWidth * 0.08,
+                          height: screenWidth * 0.08,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(color: const Color(0x9900EFFF)),
+                            image: DecorationImage(
+                              image: AssetImage('assets/icons/addFundsBg.png'),
+                              fit: BoxFit.fill,
+                            ),
                           ),
                           child: Center(
-                            child: Image.network(
-                              "https://picsum.photos/11/11",
-                              width: 18,
-                              height: 18,
-                              fit: BoxFit.cover,
+                            child: SvgPicture.asset(
+                              "assets/icons/addIcon.svg",
+                              width: screenWidth * 0.048,
+                              height: screenWidth * 0.048,
+                              fit: BoxFit.fill,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: screenHeight * 0.0075),
                         Text(
                           'Add Funds',
-                          style: textStyle(Colors.white, 12),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-
-                /// Balance Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    /// Available Funds
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Available Funds :',
-                          style:
-                          textStyle(const Color(0xCCFFF5ED), 12),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '\$ 1541.00',
-                          style: textStyle(
-                            const Color(0xFFFFF5ED),
-                            18,
-                            weight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    /// Coins
-                    Row(
-                      children: [
-                        coinRow('265.0 ETH', "https://picsum.photos/20/20"),
-                        const SizedBox(width: 16),
-                        coinRow('1.25 BTC', "https://picsum.photos/20/20"),
-                      ],
-                    ),
-                  ],
-                ),
-
-                /// Divider
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Divider(
-                    color: Colors.white12,
-                    thickness: 1,
-                    indent: 0,
-                    endIndent: 0,
-                  ),
-                ),
-
-                /// Action Icons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(_labels.length, (index) {
-                    return InkWell(
-                      onTap: () {
-                        Provider.of<BottomNavProvider>(context,
-                            listen: false)
-                            .setIndex(index);
-                      },
-                      child: Column(
-                        children: [
-                          SvgPicture.asset(
-                            _imgPaths[index],
+                          style: TextStyle(
                             color: Colors.white,
-                            width: 24,
-                            height: 24,
+                            fontFamily: 'Poppins',
+                            fontSize: getResponsiveFontSize(context, 12),
+                            fontWeight: FontWeight.w400,
                           ),
-                          const SizedBox(height: 4),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: screenHeight * 0.010), // Original was 10
+
+              /// Balance Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  /// Available Funds
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Available Funds :',
+                        style: TextStyle(
+                          color: Color(0xffFFF5ED).withOpacity(0.80),
+                          fontFamily: 'Poppins',
+                          fontSize: getResponsiveFontSize(context, 12),
+                          fontWeight: FontWeight.w400,
+                          height: 1.3,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.0075),
+                      Text(
+                        '\$ 1541.00',
+                        style: TextStyle(
+                          color: Color(0xffFFF5ED),
+                          fontFamily: 'Poppins',
+                          fontSize: getResponsiveFontSize(context, 18),
+                          fontWeight: FontWeight.w500,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  /// Coins
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/BTC.png',
+                            width: screenWidth * 0.053,
+                            height: screenWidth * 0.053,
+                            fit: BoxFit.contain,
+                          ),
+                          SizedBox(width: screenWidth * 0.013) ,
                           Text(
-                            _labels[index],
-                            style: textStyle(Colors.white, 12),
+                            '1.25 BTC',
+                            style: TextStyle(
+                              color: Color(0xffFFF5ED),
+                              fontFamily: 'Poppins',
+                              fontSize: getResponsiveFontSize(context, 14),
+                              fontWeight: FontWeight.w500,
+                              height: 1.3,
+                            ),
                           ),
                         ],
                       ),
-                    );
-                  }),
+
+                      SizedBox(width: screenWidth * 0.042), // Original was 16
+
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/EthCoin.png',
+                            width: screenWidth * 0.053,
+                            height: screenWidth * 0.053,
+                            fit: BoxFit.contain,
+                          ),
+                          SizedBox(width: screenWidth * 0.013),
+                          Text(
+                            '265.0 ETH',
+                            style: TextStyle(
+                              color: Color(0xffFFF5ED),
+                              fontFamily: 'Poppins',
+                              fontSize: getResponsiveFontSize(context, 14),
+                              fontWeight: FontWeight.w500,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              /// Divider
+              Center(
+                child: SizedBox(
+                  width: screenWidth * 0.9,
+                  child: Divider(
+                    color: Colors.white12,
+                    thickness: screenHeight * 0.0025,
+                    height: screenHeight * 0.025,
+                  ),
                 ),
-              ],
-            ),
+              ),
+
+              SizedBox(height: screenHeight * 0.008),
+              /// Action Icons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(_labels.length, (index) {
+                  return InkWell(
+                    onTap: () {
+                      Provider.of<BottomNavProvider>(context, listen: false).setIndex(index);
+                    },
+                    child: Column(
+                      children: [
+                        SvgPicture.asset(
+                          _imgPaths[index],
+                          color: Colors.white,
+                          width: screenWidth * 0.059,
+                          height: screenWidth * 0.059,
+                        ),
+                        SizedBox(height: screenHeight * 0.005),
+                        Text(
+                          _labels[index],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                            fontSize: getResponsiveFontSize(context, 12),
+                            fontWeight: FontWeight.w400,
+                            height: 1.6,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

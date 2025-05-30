@@ -44,11 +44,13 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
           scrollDirection: Axis.vertical,
           child: SizedBox(
             height: screenHeight * 0.4,
-            width: constraints.maxWidth * 1.8,
+            width: constraints.maxWidth,
 
 
             child: DataTable2(
-              dataRowHeight: baseSize * 0.12,
+              // dataRowHeight: baseSize * 0.12,
+              dataRowHeight: screenHeight * 0.04,
+
               columnSpacing: screenWidth * 0.001,
               horizontalMargin: screenWidth * 0.002,
               headingRowHeight: screenHeight * 0.06,
@@ -62,7 +64,7 @@ Widget buildStakingTable(List<Map<String, dynamic>> stakingData, double screenWi
                 DataColumn2(label: buildCenteredText('Duration', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Reward', headingStyle), size: ColumnSize.M),
                 DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.S),
-                DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.M),
+                DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.L),
               ],
               rows: stakingData.map((data) {
                 final statusText = data['Status'] ?? '';

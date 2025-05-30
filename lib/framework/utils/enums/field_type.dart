@@ -1,0 +1,1 @@
+enum CustomInputType { dropdown, input }

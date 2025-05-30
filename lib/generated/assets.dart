@@ -25,6 +25,8 @@ class Assets {
   static const String fontsPoppinsSemiBold = 'assets/fonts/Poppins-SemiBold.ttf';
   static const String fontsPoppinsSemiBoldItalic = 'assets/fonts/Poppins-SemiBoldItalic.ttf';
   static const String iconsAchivedSalesImg = 'assets/icons/achivedSalesImg.svg';
+  static const String iconsAddFundsBg = 'assets/icons/addFundsBg.png';
+  static const String iconsAddIcon = 'assets/icons/addIcon.svg';
   static const String iconsAddSourceImage = 'assets/icons/addSourceImage.png';
   static const String iconsAffiliateBg = 'assets/icons/affiliateBg.png';
   static const String iconsAndroverse = 'assets/icons/androverse.svg';
@@ -37,6 +39,7 @@ class Assets {
   static const String iconsApplyForLisitngImg1 = 'assets/icons/applyForLisitngImg1.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
+  static const String iconsBTC = 'assets/icons/BTC.png';
   static const String iconsBackButton = 'assets/icons/back_button.svg';
   static const String iconsBecomeAffiliate = 'assets/icons/becomeAffiliate.png';
   static const String iconsBg = 'assets/icons/bg.png';
@@ -77,10 +80,12 @@ class Assets {
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
   static const String iconsEmail = 'assets/icons/email.svg';
   static const String iconsEth = 'assets/icons/eth.png';
+  static const String iconsEthCoin = 'assets/icons/EthCoin.png';
   static const String iconsFeatures = 'assets/icons/features.svg';
   static const String iconsFeedbackImg = 'assets/icons/feedbackImg.svg';
   static const String iconsFrame = 'assets/icons/frame.png';
   static const String iconsFrameBg = 'assets/icons/frameBg.png';
+  static const String iconsGift = 'assets/icons/gift.svg';
   static const String iconsGradientBgImage = 'assets/icons/gradientBgImage.png';
   static const String iconsGradientImg = 'assets/icons/gradientImg.png';
   static const String iconsHeaderFrameContainer = 'assets/icons/headerFrameContainer.png';
@@ -137,6 +142,7 @@ class Assets {
   static const String iconsRoadMapLiner = 'assets/icons/roadMapLiner.png';
   static const String iconsRoadmapFrame = 'assets/icons/roadmapFrame.png';
   static const String iconsRootContentBg = 'assets/icons/rootContentBg.png';
+  static const String iconsScan = 'assets/icons/scan.svg';
   static const String iconsSearch = 'assets/icons/search.svg';
   static const String iconsSettingActionBg = 'assets/icons/settingActionBg.png';
   static const String iconsSettings = 'assets/icons/settings.svg';
@@ -171,6 +177,7 @@ class Assets {
   static const String iconsTransaction = 'assets/icons/transaction.svg';
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
+  static const String iconsTransfer = 'assets/icons/transfer.svg';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsUserActivityLogBg = 'assets/icons/userActivityLogBg.png';
   static const String iconsUserActivityLogBg2 = 'assets/icons/userActivityLogBg2.png';
@@ -181,6 +188,7 @@ class Assets {
   static const String iconsWalletIcon = 'assets/icons/walletIcon.svg';
   static const String iconsWarningIcon = 'assets/icons/warningIcon.svg';
   static const String iconsWarningImg = 'assets/icons/warningImg.png';
+  static const String iconsWithDraw = 'assets/icons/withDraw.svg';
   static const String iconsWorldTrip = 'assets/icons/worldTrip.png';
   static const String iconsXIcon = 'assets/icons/xIcon.svg';
   static const String iconsYearCircular = 'assets/icons/yearCircular.png';

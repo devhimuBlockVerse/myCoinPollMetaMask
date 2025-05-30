@@ -6,6 +6,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
 import '../view/kyc/kyc_screen.dart';
+import '../view/wallet/wallet_screen.dart';
 
 class NavigationProvider extends ChangeNotifier {
   String _currentScreenId = 'milestone';
@@ -54,8 +55,8 @@ class NavigationProvider extends ChangeNotifier {
       id: 'wallet',
       title: 'Wallet',
       iconPath: 'assets/icons/wallet.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Wallet Screen'),
+      screenBuilder: (context) => const WalletScreen(),
+
     ),
     NavItem(
       id: 'referral_stat',

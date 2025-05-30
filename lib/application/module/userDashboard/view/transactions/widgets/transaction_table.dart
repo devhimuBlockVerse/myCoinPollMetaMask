@@ -9,6 +9,7 @@ import 'transaction_details.dart';
  Widget buildTransactionTable(List<Map<String, dynamic>> transactionData, double screenWidth, BuildContext context) {
   double baseSize = screenWidth * 0.9;
   double screenHeight = MediaQuery.of(context).size.height;
+  const double designScreenWidth = 375.0;
 
 
   TextStyle headingStyle = TextStyle(
@@ -46,22 +47,32 @@ import 'transaction_details.dart';
             height: screenHeight * 0.4,
             width: constraints.maxWidth * 1.8,
             child: DataTable2(
-              columnSpacing: baseSize * 0.09,
+              // columnSpacing: baseSize * 0.09,
               horizontalMargin: baseSize * 0.002,
               dataRowHeight: baseSize * 0.12,
               headingRowHeight: baseSize * 0.06,
+
+
+              columnSpacing: screenWidth * 0.001,
+              // horizontalMargin: screenWidth * 0.002,
+              // dataRowHeight: baseSize * 0.12,
+              // headingRowHeight: screenHeight * 0.05,
+
+
               dividerThickness: 0,
               headingRowDecoration: const BoxDecoration(
                 color: Color(0xff051121),
               ),
 
               columns: [
-                DataColumn2(label: buildCenteredText('SL', headingStyle), size: ColumnSize.S),
+                DataColumn2(label: buildCenteredText('SL', headingStyle),
+                    fixedWidth: screenWidth * (40.0 / designScreenWidth)),
                 DataColumn2(label: buildCenteredText('Date Time', headingStyle), size: ColumnSize.M),
                 DataColumn2(label: buildCenteredText('Txn Hash', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.S),
-                DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.M),
-                DataColumn2(label: buildCenteredText('Details', headingStyle), size: ColumnSize.S),
+                DataColumn2(label: buildCenteredText('Amount', headingStyle), size: ColumnSize.S),
+                DataColumn2(label: buildCenteredText('Details', headingStyle),
+                    fixedWidth: screenWidth * (40.0 / designScreenWidth)),
               ],
               rows: transactionData.asMap().entries.map((entry) {
                 int idx = entry.key;

@@ -6,6 +6,8 @@ import '../../../../../../framework/utils/dynamicFontSize.dart';
 Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double screenWidth, BuildContext context) {
 
   double screenHeight = MediaQuery.of(context).size.height;
+  const double designScreenWidth = 375.0;
+  const double designScreenHeight = 812.0;
 
   TextStyle headingStyle = TextStyle(
     color: Colors.white,
@@ -25,7 +27,9 @@ Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double s
 
   Widget buildCenteredText(String text, TextStyle style) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      // padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      // padding: EdgeInsets.symmetric(horizontal: screenWidth * (4.0 / designScreenWidth)),
+
       child: Center(
         child: FittedBox(
             alignment: Alignment.center,
@@ -47,8 +51,9 @@ Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double s
             height: screenHeight * 0.4,
             width: constraints.maxWidth,
             child: DataTable2(
-               columnSpacing: 10.0,
-               horizontalMargin: 0.0,
+               columnSpacing: screenWidth * (10.0 / designScreenWidth),
+
+              horizontalMargin: 0.0,
                dataRowHeight: screenHeight * 0.05,
               headingRowHeight: screenHeight * 0.04,
               dividerThickness: 0,
@@ -59,13 +64,12 @@ Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double s
                columns: [
                 DataColumn2(
                   label: buildCenteredText('SL', headingStyle),
-                  fixedWidth: 40,
+                   fixedWidth: screenWidth * (40.0 / designScreenWidth),
 
                 ),
                 DataColumn2(
                   label: buildCenteredText('Name', headingStyle),
-                  // size: ColumnSize.L,
-                    fixedWidth: 120,
+                     fixedWidth: screenWidth * (120.0 / designScreenWidth),
                     headingRowAlignment: MainAxisAlignment.center
                 ),
                 DataColumn2(
@@ -103,7 +107,8 @@ Widget referralSalesTable(List<Map<String, dynamic>> referralSalesData, double s
               }).toList(),
               empty: Center(
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  // padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(screenWidth * (20.0 / designScreenWidth)),
                   child: Text(
                     'No matching transactions found.',
                     style: TextStyle(color: Colors.white70, fontSize: getResponsiveFontSize(context, 14)),

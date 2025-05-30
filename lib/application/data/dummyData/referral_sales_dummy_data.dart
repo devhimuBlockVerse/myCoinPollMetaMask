@@ -6,7 +6,7 @@ final List<Map<String, String>> referralSalesData = List.generate(40, (index) {
   return {
     'SL': (index + 1).toString().padLeft(2, '0'),
     'Name': names[index % names.length],
-    'ECMPurchased': '${(index % 5 + 1) * 100} ECM',
+    'ECMPurchased': '${(index % 5 + 1) * 1000} ECM',
     'Date': '${(7 + index % 20).toString().padLeft(2, '0')}/10/2024',
   };
 });

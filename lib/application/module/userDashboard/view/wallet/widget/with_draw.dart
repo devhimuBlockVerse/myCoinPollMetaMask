@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-
 import '../../../../../../framework/components/BlockButton.dart';
 import '../../../../../../framework/components/customOptionComponent.dart';
 import '../../../../../../framework/components/fieldContainerCompoenent.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/enums/field_type.dart';
 
-
-class AddFunds extends StatefulWidget {
-  const AddFunds({super.key});
+class WithDraw extends StatefulWidget {
+  const WithDraw({super.key});
 
   @override
-  State<AddFunds> createState() => _AddFundsState();
+  State<WithDraw> createState() => _WithDrawState();
 }
 
-class _AddFundsState extends State<AddFunds> {
+class _WithDrawState extends State<WithDraw> {
 
   String selected = 'ETH';
   List<String> currencies = ['ETH', 'ECM'];
@@ -62,7 +60,7 @@ class _AddFundsState extends State<AddFunds> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Add Funds',
+                                  'Withdraw',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.045,
@@ -159,7 +157,7 @@ class _AddFundsState extends State<AddFunds> {
 
 
                           Text(
-                            'Payment Method :',
+                            'Withdrawal Method :',
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               color: Colors.white,
@@ -216,15 +214,42 @@ class _AddFundsState extends State<AddFunds> {
                             ),
                           ),
 
-                          SizedBox(height: screenHeight * 0.01),
+                          SizedBox(height: screenHeight * 0.02),
 
-                          CustomOptionComponent(
-                            label: 'Show QR Code (For crypto transfers only)',
-                            isSquare: true,
-                            isSelected: isCheckSelected,
-                            onTap: () => setState(() => isCheckSelected = !isCheckSelected),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Withdrawal Fee :',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  // letterSpacing: -0.5,
+                                  height: 0.11,
+                                ),
+                              ),
+                              // SizedBox(width: screenWidth * 0.02),
+
+                              Text(
+                                '0.01 ETH',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  // letterSpacing: -0.5,
+                                  height: 0.11,
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: screenHeight * 0.01),
+
+                          SizedBox(height: screenHeight * 0.02),
 
 
                           SizedBox(
@@ -236,42 +261,52 @@ class _AddFundsState extends State<AddFunds> {
                             ),
                           ),
 
-                          SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.02),
 
 
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text(
-                                'Total Amount:',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: getResponsiveFontSize(context, 16),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  // letterSpacing: -0.5,
-                                  height: 0.11,
-                                ),
-                              ),
-                              // SizedBox(width: screenWidth * 0.02),
+                              Text.rich(
+                                TextSpan(
+                                  text: 'Recipient Wallet Address ',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    height: 0.11,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: '(for crypto only)',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.50),
+                                        fontSize: getResponsiveFontSize(context, 12),
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w500,
+                                        height: 0.11,
 
-                              Text(
-                                '\$3,5241 USD',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: getResponsiveFontSize(context, 16),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  // letterSpacing: -0.5,
-                                  height: 0.11,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                textAlign: TextAlign.start,
                               ),
+
+                              SizedBox(height: screenHeight * 0.02),
+
+                              // Input mode
+                              FieldContainer(
+                                type: CustomInputType.input,
+                                controller: amountController,
+                                hintText: "0x123...56789",
+                              ),
+
                             ],
                           ),
+
 
 
                           SizedBox(height: screenHeight * 0.04),
@@ -282,7 +317,7 @@ class _AddFundsState extends State<AddFunds> {
                             child: BlockButton(
                               height: screenHeight * 0.045,
                               width: screenWidth * 0.7,
-                              label: 'Confirm & Add Funds',
+                              label: 'Confirm & Withdraw',
                               textStyle: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -300,6 +335,22 @@ class _AddFundsState extends State<AddFunds> {
                             ),
                           ),
 
+                          SizedBox(height: screenHeight * 0.03),
+
+                          Text(
+                            'Note: Processing may take 1-3 business days.',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: getResponsiveFontSize(context, 12),
+                              fontFamily: 'Poppins',
+                               fontStyle: FontStyle.italic,
+                               // height: 0.11,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01),
+
+
                         ],
                       ),
                     ),
@@ -313,13 +364,3 @@ class _AddFundsState extends State<AddFunds> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-

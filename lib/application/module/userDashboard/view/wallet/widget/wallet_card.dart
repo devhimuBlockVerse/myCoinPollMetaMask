@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/wallet/widget/add_funs.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/wallet/widget/with_draw.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../transactions/widgets/transaction_details.dart';
+import 'transfer.dart';
 class WalletCard extends StatelessWidget {
 
   final List<String> _labels = ['With Draw', 'Transfer', 'Scan', 'Gift'];
@@ -16,8 +18,8 @@ class WalletCard extends StatelessWidget {
     'assets/icons/gift.svg',
   ];
   final List<Widget> _pages = [
-    const TransactionDetailsDialog(),
-    const TransactionDetailsDialog(),
+    const WithDraw(),
+    const Transfer(),
     const TransactionDetailsDialog(),
     const TransactionDetailsDialog(),
    ];

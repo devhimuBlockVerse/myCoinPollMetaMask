@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../framework/components/ListingFields.dart';
+import '../../../../../../framework/components/BlockButton.dart';
 import '../../../../../../framework/components/customOptionComponent.dart';
 import '../../../../../../framework/components/fieldContainerCompoenent.dart';
-import '../../../../../../framework/components/transactionDetailsComponent.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/enums/field_type.dart';
 
@@ -32,7 +31,6 @@ class _AddFundsState extends State<AddFunds> {
     final screenHeight = MediaQuery.of(context).size.height;
 
 
-
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
@@ -56,7 +54,7 @@ class _AddFundsState extends State<AddFunds> {
                     ),
                     child: IntrinsicHeight(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
@@ -68,8 +66,9 @@ class _AddFundsState extends State<AddFunds> {
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: screenWidth * 0.045,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                     fontFamily: 'Poppins',
+                                    height: 1.10,
                                   ),
                                 ),
                               ),
@@ -83,6 +82,8 @@ class _AddFundsState extends State<AddFunds> {
                               )
                             ],
                           ),
+                          SizedBox(height: screenHeight * 0.01),
+
                           SizedBox(
                             width: screenWidth * 0.9,
                             child: Divider(
@@ -95,7 +96,7 @@ class _AddFundsState extends State<AddFunds> {
 
 
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
@@ -110,6 +111,9 @@ class _AddFundsState extends State<AddFunds> {
                                   height: 0.11,
                                 ),
                               ),
+
+                              SizedBox(height: screenHeight * 0.02),
+
                               FieldContainer(
                                 imgUrl: selected == "ETH" ? "assets/icons/eth.png" : "assets/icons/ecmSmall.png",
                                 items: currencies,
@@ -124,9 +128,22 @@ class _AddFundsState extends State<AddFunds> {
                                 },
                               ),
 
+                              SizedBox(height: screenHeight * 0.03),
+
+                              Text(
+                                'Enter Amount',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getResponsiveFontSize(context, 14),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  // letterSpacing: -0.5,
+                                  height: 0.11,
+                                ),
+                              ),
                               SizedBox(height: screenHeight * 0.02),
 
-                              // Text()
                               // Input mode
                               FieldContainer(
                                 type: CustomInputType.input,
@@ -138,14 +155,11 @@ class _AddFundsState extends State<AddFunds> {
                           ),
 
 
-
-                          SizedBox(height: screenHeight * 0.02),
-
-
+                          SizedBox(height: screenHeight * 0.03),
 
 
                           Text(
-                            'Payment Method',
+                            'Payment Method:',
                             textAlign: TextAlign.start,
                             style: TextStyle(
                               color: Colors.white,
@@ -156,25 +170,13 @@ class _AddFundsState extends State<AddFunds> {
                               height: 0.11,
                             ),
                           ),
+                          SizedBox(height: screenHeight * 0.03),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              CustomOptionComponent(
-                                label: 'Crypto Wallet',
-                                isSelected: selectedOption == 'Crypto Wallet',
-                                onTap: () {
-                                  setState(() => selectedOption = 'Crypto Wallet');
-                                },
-                              ),
-                              CustomOptionComponent(
-                                label: 'Bank Transfer',
-                                isSelected: selectedOption == 'Bank Transfer',
-                                onTap: () {
-                                  setState(() => selectedOption = 'Bank Transfer');
-                                },
-                              ),
+
                               CustomOptionComponent(
                                 label: 'Credit Card',
                                 isSelected: selectedOption == 'Credit Card',
@@ -182,9 +184,28 @@ class _AddFundsState extends State<AddFunds> {
                                   setState(() => selectedOption = 'Credit Card');
                                 },
                               ),
+                              SizedBox(width: screenWidth * 0.01),
+
+                              CustomOptionComponent(
+                                label: 'Bank Transfer',
+                                isSelected: selectedOption == 'Bank Transfer',
+                                onTap: () {
+                                  setState(() => selectedOption = 'Bank Transfer');
+                                },
+                              ),
+                              SizedBox(width: screenWidth * 0.01),
+
+                              CustomOptionComponent(
+                                label: 'Crypto Wallet',
+                                isSelected: selectedOption == 'Crypto Wallet',
+                                onTap: () {
+                                  setState(() => selectedOption = 'Crypto Wallet');
+                                },
+                              ),
                             ],
                           ),
 
+                          SizedBox(height: screenHeight * 0.01),
 
                           SizedBox(
                             width: screenWidth * 0.9,
@@ -195,7 +216,7 @@ class _AddFundsState extends State<AddFunds> {
                             ),
                           ),
 
-                          SizedBox(height: screenHeight * 0.02),
+                          SizedBox(height: screenHeight * 0.01),
 
                           CustomOptionComponent(
                             label: 'Show QR Code (For crypto transfers only)',
@@ -203,6 +224,7 @@ class _AddFundsState extends State<AddFunds> {
                             isSelected: isCheckSelected,
                             onTap: () => setState(() => isCheckSelected = !isCheckSelected),
                           ),
+                          SizedBox(height: screenHeight * 0.01),
 
 
                           SizedBox(
@@ -214,44 +236,70 @@ class _AddFundsState extends State<AddFunds> {
                             ),
                           ),
 
+                          SizedBox(height: screenHeight * 0.04),
 
-                          SizedBox(height: screenHeight * 0.02),
 
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  'Payment Method',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: getResponsiveFontSize(context, 16),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    // letterSpacing: -0.5,
-                                    height: 0.11,
-                                  ),
+                              Text(
+                                'Total Amount:',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  // letterSpacing: -0.5,
+                                  height: 0.11,
                                 ),
                               ),
-                              Expanded(
-                                child: Text(
-                                  '\$3,5241 USD',
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: getResponsiveFontSize(context, 16),
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    // letterSpacing: -0.5,
-                                    height: 0.11,
-                                  ),
+                              // SizedBox(width: screenWidth * 0.02),
+
+                              Text(
+                                '\$3,5241 USD',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  // letterSpacing: -0.5,
+                                  height: 0.11,
                                 ),
                               ),
                             ],
                           ),
+
+
+                          SizedBox(height: screenHeight * 0.04),
+
+
+                          Align(
+                            alignment: Alignment.center,
+                            child: BlockButton(
+                              height: screenHeight * 0.045,
+                              width: screenWidth * 0.7,
+                              label: 'Confirm & Add Funds',
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                                // fontSize: baseSize * 0.030,
+                                fontSize: getResponsiveFontSize(context, 16),
+                              ),
+                              gradientColors: const [
+                                Color(0xFF2680EF),
+                                Color(0xFF1CD494),
+                              ],
+                              onTap: () {
+                                //  Confirm Add Funds Transaction Process
+
+                              },
+                            ),
+                          ),
+
                         ],
                       ),
                     ),

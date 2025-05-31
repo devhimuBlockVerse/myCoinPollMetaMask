@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import '../../../../../../framework/res/colors.dart';
+import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../domain/model/PurchaseLogModel.dart';
 
 
@@ -17,19 +19,13 @@ class PurchaseCard extends StatelessWidget {
     String formattedDate = formatter.format(transaction.date);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric( vertical: 8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
+            image: DecorationImage(
+              image: AssetImage('assets/icons/logBg.png'),
+              fit: BoxFit.fill,
+             ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -38,152 +34,155 @@ class PurchaseCard extends StatelessWidget {
             children: [
               // Header Row: ECM Coins | Ref: Jane Cooper
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentOrange.withOpacity(0.2), // Lighter orange background
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: AppColors.accentOrange, width: 1.0),
-                    ),
-                    child: Icon(Icons.currency_bitcoin, color: AppColors.accentOrange, size: 24),
-                    // Or an Image.asset for a custom logo
-                    // child: Image.asset('assets/ecm_logo.png', width: 24, height: 24),
-                  ),
+                  Image.asset('assets/icons/logEcm.png', width: 40,height: 40,),
                   const SizedBox(width: 12.0),
-                  Text(
-                    transaction.coinName,
-                    style: const TextStyle(
-                      color: AppColors.textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        transaction.coinName,
+                        style:  TextStyle(
+                          color: AppColors.textColor,
+                          fontSize: getResponsiveFontSize(context, 14),
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                          height: 1.3,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SvgPicture.asset('assets/icons/calender.svg',fit: BoxFit.fill,width: 16,),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            formattedDate,
+                            style:  TextStyle(
+                              color: AppColors.lightTextColor,
+                              fontSize: getResponsiveFontSize(context, 12),
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              height: 1.6,
+
+                            ),
+                          ),
+                        ],
+                      ),
+
+                    ],
                   ),
                   const Spacer(),
-                  Icon(Icons.link, color: AppColors.lightTextColor, size: 18),
+                  SvgPicture.asset('assets/icons/reff.svg',fit: BoxFit.fill,width: 12,),
                   const SizedBox(width: 4.0),
                   Text(
                     'Ref: ${transaction.refName}',
-                    style: const TextStyle(
-                      color: AppColors.lightTextColor,
-                      fontSize: 14,
+                    style:  TextStyle(
+                      color: AppColors.textColor,
+                      fontSize: getResponsiveFontSize(context, 12),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                      height: 1.1,
+
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16.0),
 
-              // Date Row
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, color: AppColors.lightTextColor, size: 16),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    formattedDate,
-                    style: const TextStyle(
-                      color: AppColors.lightTextColor,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20.0), // More space before contract details
 
               // Contract Details
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    flex: 3, // Give more space to the left column
+                    flex: 3, // more space to the left column
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Contract Name',
-                          style: TextStyle(
-                            color: AppColors.lightTextColor,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(height: 4.0),
+
+                        /// Card name
                         Text(
                           transaction.contractName,
-                          style: const TextStyle(
-                            color: AppColors.textColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        const Text(
-                          'Name of Sender',
                           style: TextStyle(
-                            color: AppColors.lightTextColor,
-                            fontSize: 13,
+                            color: Color(0XFF7D8FA9),
+                            fontSize: getResponsiveFontSize(context, 12),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
+
                         const SizedBox(height: 4.0),
+
+                        ///Sender Name
                         Text(
                           transaction.senderName,
-                          style: const TextStyle(
-                            color: AppColors.textColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: getResponsiveFontSize(context, 16),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ],
                     ),
                   ),
+
                   Expanded(
-                    flex: 2, // Give less space to the right column
+                    flex: 2, // less space to the right column
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end, // Align right
                       children: [
-                        const Text(
+                         Text(
                           'ECM Amount',
                           style: TextStyle(
-                            color: AppColors.lightTextColor,
-                            fontSize: 13,
+                            color: Color(0XFF7D8FA9),
+                            fontSize: getResponsiveFontSize(context, 12),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                         const SizedBox(height: 4.0),
                         Text(
                           '${transaction.ecmAmount.toStringAsFixed(2)} ECM',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.accentGreen,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            fontSize: getResponsiveFontSize(context, 16),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
                           ),
+
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20.0), // Space before hash
+              const SizedBox(height: 20.0),
 
               // Hash Section
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Text(
                       'Hash: ${transaction.hash}',
-                      style: const TextStyle(
-                        color: AppColors.lightTextColor,
-                        fontSize: 13,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getResponsiveFontSize(context, 12),
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                        height: 1.10,
                       ),
-                      overflow: TextOverflow.ellipsis, // Prevent text from overflowing
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 8.0),
                   InkWell(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: transaction.hash));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Hash copied to clipboard!')),
-                      );
-                    },
-                    child: Icon(Icons.copy_all, color: AppColors.lightTextColor, size: 18),
+                    onTap: () {},
+                    child: SvgPicture.asset('assets/icons/arrowIcon.svg',fit: BoxFit.fill,width: 12,),
                   ),
                 ],
               ),

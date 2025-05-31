@@ -26,8 +26,7 @@ class AppColors{
 
 
   static const Color primaryBackground = Color(0xFF1A1A2E); // Dark blueish background
-  static const Color cardBackground = Color(0xFF2A2A4D);   // Slightly lighter card background
-  static const Color textPrimary = Colors.white;
+   static const Color textPrimary = Colors.white;
   static const Color textSecondary = Color(0xFFB0B0D1); // Lighter gray/purple text
   static const Color accentGreen = Color(0xFF00FFA3);     // Bright green for "Active" and buttons
   static const Color accentOrange = Color(0xFFFF9900);    // Orange for "Ongoing"

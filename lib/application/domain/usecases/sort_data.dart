@@ -1,6 +1,7 @@
 import '../../../framework/utils/date_parser.dart';
 import '../../../framework/utils/enums/milestone_status.dart';
 import '../../../framework/utils/enums/sort_option.dart';
+import '../model/PurchaseLogModel.dart';
 import '../model/milestone_list_models.dart';
 
 
@@ -105,5 +106,30 @@ class SortEcmTaskUseCase {
     });
 
     return sortedList;
+  }
+}
+
+
+class SortPurchaseLogUseCase {
+  List<PurchaseLogModel> call(
+      List<PurchaseLogModel> data,
+      SortPurchaseLogOption option,
+      ) {
+    final sorted = List<PurchaseLogModel>.from(data);
+
+    sorted.sort((a, b) {
+      switch (option) {
+        case SortPurchaseLogOption.dateLatest:
+          return b.date.compareTo(a.date);
+        case SortPurchaseLogOption.dateOldest:
+          return a.date.compareTo(b.date);
+        case SortPurchaseLogOption.amountHighToLow:
+          return b.ecmAmount.compareTo(a.ecmAmount);
+        case SortPurchaseLogOption.amountLowToHigh:
+          return a.ecmAmount.compareTo(b.ecmAmount);
+      }
+    });
+
+    return sorted;
   }
 }

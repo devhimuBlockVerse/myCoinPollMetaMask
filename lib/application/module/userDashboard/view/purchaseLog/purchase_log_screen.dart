@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/model/PurchaseLogModel.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -43,7 +44,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
     });
 
     try {
-      await Future.delayed(const Duration(seconds: 2)); // Simulate network delay
+      await Future.delayed(const Duration(seconds: 2));
       transactions = [
         PurchaseLogModel(
           coinName: 'ECM Coins',
@@ -196,79 +197,79 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
 
                       /// Search Controller with Data Sorting Button
-                      // Container(
-                      //   width: double.infinity,
-                      //   decoration: BoxDecoration(
-                      //     color: const Color(0xff040C16),
-                      //     borderRadius: BorderRadius.circular(5),
-                      //   ),
-                      //   padding: EdgeInsets.symmetric(
-                      //       horizontal: screenWidth * 0.02,
-                      //       vertical:  screenHeight * 0.001
-                      //   ),
-                      //
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     children: [
-                      //       Expanded(
-                      //         flex: 2,
-                      //         child: ResponsiveSearchField(
-                      //           controller: _searchController,
-                      //           // onChanged:  (value) => _onSearchChanged(),
-                      //           onChanged:  (value) => _applyFiltersAndSort(),
-                      //           svgAssetPath: 'assets/icons/search.svg',
-                      //
-                      //         ),
-                      //       ),
-                      //
-                      //
-                      //       /// Data Sorting  Button
-                      //       Expanded(
-                      //         flex: 1,
-                      //         child: Align(
-                      //             alignment: Alignment.centerRight,
-                      //             child: PopupMenuButton<SortMilestoneLists>(
-                      //               icon: SvgPicture.asset(
-                      //                 'assets/icons/sortingList.svg',
-                      //                 fit: BoxFit.contain,
-                      //               ),
-                      //               onSelected: (SortMilestoneLists option) {
-                      //                 _sortData(option);
-                      //               },
-                      //               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
-                      //                 const PopupMenuItem<SortMilestoneLists>(
-                      //                   value: SortMilestoneLists.active,
-                      //                   child: Text('Priority: Active'),
-                      //                 ),
-                      //                 const PopupMenuItem<SortMilestoneLists>(
-                      //                   value: SortMilestoneLists.onGoing,
-                      //                   child: Text('Priority: Ongoing'),
-                      //                 ),
-                      //                 const PopupMenuItem<SortMilestoneLists>(
-                      //                   value: SortMilestoneLists.completed,
-                      //                   child: Text('Priority: Completed'),
-                      //                 ),
-                      //                 if (_currentSort != null) const PopupMenuDivider(),
-                      //                 if (_currentSort != null)
-                      //                   PopupMenuItem<SortMilestoneLists>(
-                      //                     child: const Text('Clear Sort'),
-                      //                     onTap: () => Future(() => _sortData(_currentSort!)),
-                      //                   ),
-                      //               ],
-                      //             )
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xff040C16),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.02,
+                            vertical:  screenHeight * 0.001
+                        ),
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: ResponsiveSearchField(
+                                controller: _searchController,
+                                // onChanged:  (value) => _onSearchChanged(),
+                                onChanged:  (value) => _applyFiltersAndSort(),
+                                svgAssetPath: 'assets/icons/search.svg',
+
+                              ),
+                            ),
+
+
+                            /// Data Sorting  Button
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: PopupMenuButton<SortMilestoneLists>(
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/sortingList.svg',
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onSelected: (SortMilestoneLists option) {
+                                      _sortData(option);
+                                    },
+                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.active,
+                                        child: Text('Priority: Active'),
+                                      ),
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.onGoing,
+                                        child: Text('Priority: Ongoing'),
+                                      ),
+                                      const PopupMenuItem<SortMilestoneLists>(
+                                        value: SortMilestoneLists.completed,
+                                        child: Text('Priority: Completed'),
+                                      ),
+                                      if (_currentSort != null) const PopupMenuDivider(),
+                                      if (_currentSort != null)
+                                        PopupMenuItem<SortMilestoneLists>(
+                                          child: const Text('Clear Sort'),
+                                          onTap: () => Future(() => _sortData(_currentSort!)),
+                                        ),
+                                    ],
+                                  )
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
                       SizedBox(height: screenHeight * 0.016),
 
 
                       isLoading
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.accentOrange))
+                          ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
                           : errorMessage != null
                           ? Center(
                         child: Text(

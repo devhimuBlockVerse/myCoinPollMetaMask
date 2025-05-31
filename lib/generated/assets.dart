@@ -50,6 +50,7 @@ class Assets {
   static const String iconsBuildStatCardBG = 'assets/icons/buildStatCardBG.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
+  static const String iconsCalender = 'assets/icons/calender.svg';
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';
@@ -107,6 +108,8 @@ class Assets {
   static const String iconsLinearFrame2 = 'assets/icons/linearFrame2.png';
   static const String iconsLinkArrow = 'assets/icons/linkArrow.svg';
   static const String iconsLoadingProgress = 'assets/icons/loadingProgress.svg';
+  static const String iconsLogBg = 'assets/icons/logBg.png';
+  static const String iconsLogEcm = 'assets/icons/logEcm.png';
   static const String iconsLogout = 'assets/icons/logout.svg';
   static const String iconsLogoutImg = 'assets/icons/logoutImg.svg';
   static const String iconsLonginContainer = 'assets/icons/longinContainer.png';
@@ -134,6 +137,7 @@ class Assets {
   static const String iconsRateImg = 'assets/icons/rateImg.svg';
   static const String iconsReferral = 'assets/icons/referral.svg';
   static const String iconsReferralTransaction = 'assets/icons/referral_transaction.svg';
+  static const String iconsReff = 'assets/icons/reff.svg';
   static const String iconsRewardContainerBg = 'assets/icons/rewardContainerBg.png';
   static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';

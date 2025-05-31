@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/framework/components/BlockButton.dart';
-
 import '../../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../../framework/res/colors.dart';
  import 'package:cached_network_image/cached_network_image.dart';
-
 import '../../../../../../framework/utils/enums/milestone_status.dart';
 import '../../../../../../framework/utils/milestone_test_styles.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';

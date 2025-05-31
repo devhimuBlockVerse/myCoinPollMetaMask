@@ -19,9 +19,7 @@ class _WithDrawState extends State<WithDraw> {
   String selectedOption = 'Crypto Wallet';
   bool isCheckSelected = false;
 
-
   TextEditingController amountController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {

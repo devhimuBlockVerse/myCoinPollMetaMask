@@ -35,6 +35,13 @@ class AppColors{
   static const Color disabledButton = Color(0xFF4A4A6A);  // Grayish for "Started"
   static const Color completedText = Color(0xFF9090A0);   // Color for "completed" text
 
+
+
+
+  static const Color textColor = Colors.white;
+  static const Color lightTextColor = Color(0xFFC0C0C0); // Light gray
+
+
 }
 
 

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
+import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/model/PurchaseLogModel.dart';
+import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widget/purchase_card.dart';
@@ -23,10 +25,15 @@ class PurchaseLogScreen extends StatefulWidget {
 
 class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
+
+
+  SortPurchaseLogOption? _currentSort;
+  final SortPurchaseLogUseCase _sortDataUseCase = SortPurchaseLogUseCase();
+
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
-  List<PurchaseLogModel> transactions = [];
+  List<PurchaseLogModel> _transactionData = [];
   bool isLoading = true;
   String? errorMessage;
 
@@ -37,7 +44,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
     _fetchTransactions();
   }
 
-  Future<void> _fetchTransactions() async {
+   Future<void> _fetchTransactions() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
@@ -45,35 +52,26 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
     try {
       await Future.delayed(const Duration(seconds: 2));
-      transactions = [
-        PurchaseLogModel(
-          coinName: 'ECM Coins',
-          refName: 'Jane Cooper',
-          date: DateTime(2025, 2, 19),
-          contractName: 'Smart Contract Alpha',
-          senderName: 'John Doe',
-          ecmAmount: 1000.00,
-          hash: '0xB274429lcA7dF45278CcSGVFI2241xxaFlcl',
-        ),
-        PurchaseLogModel(
-          coinName: 'ECM Coins',
-          refName: 'Alice Smith',
-          date: DateTime(2025, 3, 5),
-          contractName: 'Rental Agreement',
-          senderName: 'Property Manager',
-          ecmAmount: 500.50,
-          hash: '0x1A3B4C5D6E7F8A9B0C1D2E3F4A5B6C7D8E9F0A1B',
-        ),
-        PurchaseLogModel(
-          coinName: 'ECM Coins',
-          refName: 'Bob Johnson',
-          date: DateTime(2025, 1, 10),
-          contractName: 'Service Payment',
-          senderName: 'Company XYZ',
-          ecmAmount: 250.75,
-          hash: '0xFEFDFCFBF8F7F6F5F4F3F2F1F0EFEAE9E8E7E6E5E4',
-        ),
+
+      List<String> names = [
+        'Alice Smith', 'Bob Johnson', 'Charlie Brown', 'David Lee', 'Eva Green',
+        'Frank Harris', 'Grace Kim', 'Hank Adams', 'Ivy Moore', 'Jack White',
+        'Kara Black', 'Liam Young', 'Mia Scott', 'Nina Hill', 'Oscar Reed',
+        'Paul King', 'Quinn Price', 'Rachel Cook', 'Steve Bell', 'Tina Ward'
       ];
+
+      _transactionData = List.generate(40, (index) {
+        final name = names[index % names.length];
+        return PurchaseLogModel(
+          coinName: 'ECM Coins',
+          refName: name,
+          date: DateTime(2025, 1 + (index % 12), 1 + (index % 28)),
+          contractName: 'Contract ${String.fromCharCode(65 + (index % 5))}', // A–E
+          senderName: 'Sender ${index + 1}',
+          ecmAmount: 100.0 + (index * 25.5),
+          hash: '0xHASH${index.toString().padLeft(4, '0')}',
+        );
+      });
     } catch (e) {
       errorMessage = 'Failed to load transactions: $e';
     } finally {
@@ -85,6 +83,37 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
 
 
+  void _applyFiltersAndSort() {
+    String query = _searchController.text.toLowerCase().trim();
+
+    // Filter transactions
+    List<PurchaseLogModel> filtered = _transactionData.where((tx) {
+      if (query.isEmpty) return true;
+
+      return tx.hash.toLowerCase().contains(query) ||
+          tx.refName.toLowerCase().contains(query) ||
+          tx.senderName.toLowerCase().contains(query) ||
+          tx.contractName.toLowerCase().contains(query) ||
+          tx.ecmAmount.toString().toLowerCase().contains(query) ||
+          tx.date.toIso8601String().toLowerCase().contains(query);
+    }).toList();
+
+    //  Sort using your use case
+    if (_currentSort != null) {
+      filtered = _sortDataUseCase(filtered, _currentSort!);
+    }
+
+    //   Update UI
+    setState(() {
+      _transactionData = filtered;
+    });
+  }
+  void _sortData( SortPurchaseLogOption option) {
+    setState(() {
+      _currentSort = option;
+      _applyFiltersAndSort();
+    });
+  }
   @override
   void dispose() {
      _searchController.dispose();
@@ -226,41 +255,60 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
 
                             /// Data Sorting  Button
-                            Expanded(
+                             Expanded(
                               flex: 1,
                               child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: PopupMenuButton<SortMilestoneLists>(
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/sortingList.svg',
-                                      fit: BoxFit.contain,
-                                    ),
-                                    onSelected: (SortMilestoneLists option) {
-                                      _sortData(option);
-                                    },
-                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.active,
-                                        child: Text('Priority: Active'),
+                                alignment: Alignment.centerRight,
+                                child: PopupMenuButton<SortPurchaseLogOption>(
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/sortingList.svg',
+                                    fit: BoxFit.contain,
+                                  ),
+                                  onSelected: _sortData,
+                                  itemBuilder: (context) {
+                                    final items = <PopupMenuEntry<SortPurchaseLogOption>>[
+                                      const PopupMenuItem(
+                                        value: SortPurchaseLogOption.dateLatest,
+                                        child: Text('Date: Latest First'),
                                       ),
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.onGoing,
-                                        child: Text('Priority: Ongoing'),
+                                      const PopupMenuItem(
+                                        value: SortPurchaseLogOption.dateOldest,
+                                        child: Text('Date: Oldest First'),
                                       ),
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.completed,
-                                        child: Text('Priority: Completed'),
+                                      const PopupMenuItem(
+                                        value: SortPurchaseLogOption.amountHighToLow,
+                                        child: Text('Amount: High to Low'),
                                       ),
-                                      if (_currentSort != null) const PopupMenuDivider(),
-                                      if (_currentSort != null)
-                                        PopupMenuItem<SortMilestoneLists>(
+                                      const PopupMenuItem(
+                                        value: SortPurchaseLogOption.amountLowToHigh,
+                                        child: Text('Amount: Low to High'),
+                                      ),
+                                    ];
+
+                                    if (_currentSort != null) {
+                                      items.add(const PopupMenuDivider());
+                                      items.add(
+                                        PopupMenuItem(
+                                          value: _currentSort!,
                                           child: const Text('Clear Sort'),
-                                          onTap: () => Future(() => _sortData(_currentSort!)),
+                                          onTap: () {
+                                            Future(() {
+                                              setState(() {
+                                                _currentSort = null;
+                                                _applyFiltersAndSort();
+                                              });
+                                            });
+                                          },
                                         ),
-                                    ],
-                                  )
+                                      );
+                                    }
+
+                                    return items;
+                                  },
+                                ),
                               ),
-                            ),
+                            )
+
                           ],
                         ),
                       ),
@@ -283,9 +331,9 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                         child: ListView.builder(
                           shrinkWrap: true, // Add this
                           physics: const NeverScrollableScrollPhysics(), // Add this
-                          itemCount: transactions.length,
+                          itemCount: _transactionData.length,
                           itemBuilder: (context, index) {
-                            return PurchaseCard(transaction: transactions[index]);
+                            return PurchaseCard(transaction: _transactionData[index]);
                           },
                         ),
                       ),

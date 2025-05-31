@@ -6,6 +6,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
 import '../view/kyc/kyc_screen.dart';
+import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/wallet/wallet_screen.dart';
 
 class NavigationProvider extends ChangeNotifier {
@@ -48,8 +49,8 @@ class NavigationProvider extends ChangeNotifier {
       id: 'purchase_log',
       title: 'Purchase Log',
       iconPath: 'assets/icons/purchase_log.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Purchase Log Screen'),
+      screenBuilder: (context) => const PurchaseLogScreen(),
+
     ),
     NavItem(
       id: 'wallet',

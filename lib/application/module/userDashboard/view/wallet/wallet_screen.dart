@@ -6,12 +6,9 @@ import 'package:provider/provider.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../data/dummyData/staking_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
-import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
-import '../transactions/widgets/transaction_table.dart';
 import 'widget/wallet_transaction_table.dart';
  class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -22,8 +19,7 @@ import 'widget/wallet_transaction_table.dart';
 
 class _WalletScreenState extends State<WalletScreen> {
 
-
-  SortTransactionHistoryOption? _currentSort;
+   SortTransactionHistoryOption? _currentSort;
   final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -186,7 +182,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 17),
+                          fontSize: getResponsiveFontSize(context, 16),
                           height: 1.6,
                           color: Colors.white,
                         ),

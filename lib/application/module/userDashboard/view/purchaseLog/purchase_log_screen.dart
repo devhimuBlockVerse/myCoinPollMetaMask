@@ -126,18 +126,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final bool isPortrait = screenHeight > screenWidth;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-
-    final containerWidth = screenWidth;
-    final containerHeight = screenHeight * 0.10;
-    final minContainerHeight = screenHeight * 0.002;
-
-    final horizontalPadding = containerWidth * 0.03;
-    final itemSpacing = screenWidth * 0.02;
-
-    double getResponsiveRadius(double base) => base * (screenWidth / 360);
-    final navProvider = Provider.of<NavigationProvider>(context);
+      final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
 
@@ -211,7 +200,9 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                   ),
                   child: ListView(
                     children: [
-                       Text(
+                      SizedBox(height: screenHeight * 0.010),
+
+                      Text(
                         'Purchase History',
                         textAlign: TextAlign.left,
                         style: TextStyle(
@@ -315,28 +306,27 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
                       SizedBox(height: screenHeight * 0.016),
 
-
-                      isLoading
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
-                          : errorMessage != null
-                          ? Center(
-                        child: Text(
-                          errorMessage!,
-                          style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+                        isLoading
+                            ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
+                            : errorMessage != null
+                            ? Center(
+                          child: Text(
+                            errorMessage!,
+                            style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+                          ),
+                        )
+                            : RefreshIndicator(
+                          onRefresh: _fetchTransactions,
+                          color: AppColors.accentOrange,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _transactionData.length,
+                            itemBuilder: (context, index) {
+                              return PurchaseCard(transaction: _transactionData[index]);
+                            },
+                          ),
                         ),
-                      )
-                          : RefreshIndicator(
-                        onRefresh: _fetchTransactions,
-                        color: AppColors.accentOrange,
-                        child: ListView.builder(
-                          shrinkWrap: true, // Add this
-                          physics: const NeverScrollableScrollPhysics(), // Add this
-                          itemCount: _transactionData.length,
-                          itemBuilder: (context, index) {
-                            return PurchaseCard(transaction: _transactionData[index]);
-                          },
-                        ),
-                      ),
 
 
 
@@ -353,3 +343,4 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
   }
 
 }
+

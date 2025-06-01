@@ -1,6 +1,7 @@
 import '../../../framework/utils/date_parser.dart';
 import '../../../framework/utils/enums/milestone_status.dart';
 import '../../../framework/utils/enums/sort_option.dart';
+import '../../data/dummyData/referral_transaction_dummy_data.dart';
 import '../model/PurchaseLogModel.dart';
 import '../model/milestone_list_models.dart';
 
@@ -127,6 +128,35 @@ class SortPurchaseLogUseCase {
           return b.ecmAmount.compareTo(a.ecmAmount);
         case SortPurchaseLogOption.amountLowToHigh:
           return a.ecmAmount.compareTo(b.ecmAmount);
+      }
+    });
+
+    return sorted;
+  }
+}
+
+
+
+
+class SortReferralTransactionUseCase {
+  List<ReferralTransactionModel> call(
+      List<ReferralTransactionModel> data,
+      SortReferralTransactionOption option,
+      ) {
+    final sorted = List<ReferralTransactionModel>.from(data);
+
+    sorted.sort((a, b) {
+      switch (option) {
+        case SortReferralTransactionOption.dateLatest:
+          return b.date.compareTo(a.date);
+        case SortReferralTransactionOption.dateOldest:
+          return a.date.compareTo(b.date);
+        case SortReferralTransactionOption.amountHighToLow:
+        // Use the new field name purchaseAmountECM
+          return b.purchaseAmountECM.compareTo(a.purchaseAmountECM);
+        case SortReferralTransactionOption.amountLowToHigh:
+        // Use the new field name purchaseAmountECM
+          return a.purchaseAmountECM.compareTo(b.purchaseAmountECM);
       }
     });
 

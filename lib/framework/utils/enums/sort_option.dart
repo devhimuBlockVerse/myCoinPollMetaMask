@@ -12,3 +12,12 @@ enum SortPurchaseLogOption {
   amountLowToHigh,
 }
 
+
+
+enum SortReferralTransactionOption {
+  dateLatest,
+  dateOldest,
+  // Renamed ecmAmount to purchaseAmountECM to match the model
+  amountHighToLow,
+  amountLowToHigh,
+}

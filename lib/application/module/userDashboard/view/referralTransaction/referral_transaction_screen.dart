@@ -1,18 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralTransaction/widget/referral_transaction_card.dart';
 import 'package:provider/provider.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../domain/model/PurchaseLogModel.dart';
-import '../../../../domain/usecases/sort_data.dart';
+import '../../../../data/dummyData/referral_transaction_dummy_data.dart';
+ import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
-import '../purchaseLog/widget/purchase_card.dart';
-
+ import 'package:intl/intl.dart';
 
 class ReferralTransactionScreen extends StatefulWidget {
   const ReferralTransactionScreen({super.key});
@@ -23,22 +25,33 @@ class ReferralTransactionScreen extends StatefulWidget {
 
 class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
 
-  SortPurchaseLogOption? _currentSort;
-  final SortPurchaseLogUseCase _sortDataUseCase = SortPurchaseLogUseCase();
+  SortReferralTransactionOption? _currentSort;
+  final SortReferralTransactionUseCase _sortDataUseCase = SortReferralTransactionUseCase();
 
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
-  List<PurchaseLogModel> _transactionData = [];
+  List<ReferralTransactionModel> _transactionData = [];
+  List<ReferralTransactionModel> _allTransactionData = [];
+
   bool isLoading = true;
   String? errorMessage;
+  Timer? _debounce;
+
 
 
   @override
   void initState() {
     super.initState();
     _fetchTransactions();
+    _searchController.addListener(() {
+      if (_debounce?.isActive ?? false) _debounce!.cancel();
+      _debounce = Timer(const Duration(milliseconds: 300), () {
+        _applyFiltersAndSort();
+      });
+    });
   }
+
 
   Future<void> _fetchTransactions() async {
     setState(() {
@@ -49,25 +62,19 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
     try {
       await Future.delayed(const Duration(seconds: 2));
 
-      List<String> names = [
-        'Alice Smith', 'Bob Johnson', 'Charlie Brown', 'David Lee', 'Eva Green',
-        'Frank Harris', 'Grace Kim', 'Hank Adams', 'Ivy Moore', 'Jack White',
-        'Kara Black', 'Liam Young', 'Mia Scott', 'Nina Hill', 'Oscar Reed',
-        'Paul King', 'Quinn Price', 'Rachel Cook', 'Steve Bell', 'Tina Ward'
-      ];
-
       _transactionData = List.generate(40, (index) {
-        final name = names[index % names.length];
-        return PurchaseLogModel(
+        return ReferralTransactionModel(
           coinName: 'ECM Coins',
-          refName: name,
-          date: DateTime(2025, 1 + (index % 12), 1 + (index % 28)),
-          contractName: 'Contract ${String.fromCharCode(65 + (index % 5))}', // A–E
-          senderName: 'Sender ${index + 1}',
-          ecmAmount: 100.0 + (index * 25.5),
-          hash: '0xHASH${index.toString().padLeft(4, '0')}',
+          date: DateTime(2025, 2, 19).add(Duration(days: index)),
+          userName: 'User ${index + 1}',
+          uuId: '53625${100 + index}',
+          purchaseAmountECM: 1000.00 + (index * 50),
+          referralBonusMCM: 10 + (index % 5),
+          referralBonusETH: 12 + (index % 4),
         );
       });
+      _allTransactionData = List.from(_transactionData);
+
     } catch (e) {
       errorMessage = 'Failed to load transactions: $e';
     } finally {
@@ -78,40 +85,41 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
   }
 
 
-
   void _applyFiltersAndSort() {
     String query = _searchController.text.toLowerCase().trim();
 
-    // Filter transactions
-    List<PurchaseLogModel> filtered = _transactionData.where((tx) {
+     // List<ReferralTransactionModel> filtered = _transactionData.where((tx) {
+     List<ReferralTransactionModel> filtered = _allTransactionData.where((tx) {
       if (query.isEmpty) return true;
 
-      return tx.hash.toLowerCase().contains(query) ||
-          tx.refName.toLowerCase().contains(query) ||
-          tx.senderName.toLowerCase().contains(query) ||
-          tx.contractName.toLowerCase().contains(query) ||
-          tx.ecmAmount.toString().toLowerCase().contains(query) ||
-          tx.date.toIso8601String().toLowerCase().contains(query);
+       return tx.userName.toLowerCase().contains(query) ||
+          tx.uuId.toLowerCase().contains(query) ||
+          tx.purchaseAmountECM.toString().toLowerCase().contains(query) ||
+          tx.referralBonusMCM.toString().toLowerCase().contains(query) ||
+          tx.referralBonusETH.toString().toLowerCase().contains(query) ||
+           DateFormat('d MMMM yyyy').format(tx.date).toLowerCase().contains(query);
     }).toList();
 
-    //  Sort using your use case
     if (_currentSort != null) {
-      filtered = _sortDataUseCase(filtered, _currentSort!);
+        filtered = _sortDataUseCase(filtered, _currentSort!);
     }
 
-    //   Update UI
+    // Update UI
     setState(() {
       _transactionData = filtered;
     });
   }
-  void _sortData( SortPurchaseLogOption option) {
+
+  void _sortData( SortReferralTransactionOption option) {
     setState(() {
       _currentSort = option;
       _applyFiltersAndSort();
     });
   }
+
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -338,28 +346,28 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                               flex: 1,
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: PopupMenuButton<SortPurchaseLogOption>(
+                                child: PopupMenuButton<SortReferralTransactionOption>(
                                   icon: SvgPicture.asset(
                                     'assets/icons/sortingList.svg',
                                     fit: BoxFit.contain,
                                   ),
                                   onSelected: _sortData,
                                   itemBuilder: (context) {
-                                    final items = <PopupMenuEntry<SortPurchaseLogOption>>[
+                                    final items = <PopupMenuEntry<SortReferralTransactionOption>>[
                                       const PopupMenuItem(
-                                        value: SortPurchaseLogOption.dateLatest,
+                                        value: SortReferralTransactionOption.dateLatest,
                                         child: Text('Date: Latest First'),
                                       ),
                                       const PopupMenuItem(
-                                        value: SortPurchaseLogOption.dateOldest,
+                                        value: SortReferralTransactionOption.dateOldest,
                                         child: Text('Date: Oldest First'),
                                       ),
                                       const PopupMenuItem(
-                                        value: SortPurchaseLogOption.amountHighToLow,
+                                        value: SortReferralTransactionOption.amountHighToLow,
                                         child: Text('Amount: High to Low'),
                                       ),
                                       const PopupMenuItem(
-                                        value: SortPurchaseLogOption.amountLowToHigh,
+                                        value: SortReferralTransactionOption.amountLowToHigh,
                                         child: Text('Amount: Low to High'),
                                       ),
                                     ];
@@ -412,7 +420,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: _transactionData.length,
                           itemBuilder: (context, index) {
-                            return PurchaseCard(transaction: _transactionData[index]);
+                            return ReferralTransactionCard(transaction: _transactionData[index]);
                           },
                         ),
                       ),

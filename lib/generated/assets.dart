@@ -174,10 +174,14 @@ class Assets {
   static const String iconsTimer = 'assets/icons/timer.png';
   static const String iconsTimerImg = 'assets/icons/timerImg.svg';
   static const String iconsTokens = 'assets/icons/tokens.png';
+  static const String iconsTotalEcmBg = 'assets/icons/totalEcmBg.png';
+  static const String iconsTotalEcmRefBg = 'assets/icons/totalEcmRefBg.png';
   static const String iconsTotalEcommerceBG = 'assets/icons/totalEcommerceBG.png';
   static const String iconsTotalEthereumBG = 'assets/icons/totalEthereumBG.png';
   static const String iconsTotalMilestoneFrame = 'assets/icons/totalMilestoneFrame.png';
+  static const String iconsTotalRefUserBg = 'assets/icons/totalRefUserBg.png';
   static const String iconsTotalTransactionBg = 'assets/icons/totalTransactionBg.png';
+  static const String iconsTotalTransactionRefBg = 'assets/icons/totalTransactionRefBg.png';
   static const String iconsTransaction = 'assets/icons/transaction.svg';
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';

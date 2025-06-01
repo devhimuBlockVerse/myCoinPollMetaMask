@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
+import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/dummyData/staking_dummy_data.dart';
@@ -181,10 +182,12 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SizedBox(height: screenHeight * 0.01),
+                              // SizedBox(height: screenHeight * 0.01),
+                              _buildHeader(context),
 
                               SizedBox(height: screenHeight * 0.03),
-                              /// Referral Link
+
+                               /// Referral Link
                               Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
@@ -400,6 +403,82 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
   }
 
 
+  Widget _buildHeader(BuildContext context) {
+    final drawerWidth = MediaQuery.of(context).size.width ;
+    final double avatarRadius = drawerWidth * 0.054;
+    final double verticalPadding = drawerWidth * 0.08;
+
+     final double containerPadding = drawerWidth * 0.025;
+
+    return Padding(
+      padding:  EdgeInsets.symmetric(horizontal: drawerWidth * 0.02),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          CircleAvatar(
+            radius: avatarRadius,
+            backgroundImage: const AssetImage('assets/icons/ecm.png'), // Ensure asset exists
+            backgroundColor: Colors.white.withOpacity(0.3),
+          ),
+          SizedBox(width: drawerWidth * 0.02),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Abdur Salam',
+                style: TextStyle(
+                  color: AppColors.profileName,
+                  fontSize: getResponsiveFontSize(context, 16),
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Poppins',
+                  height: 1.3,
+                ),
+              ),
+              SizedBox(height: drawerWidth * 0.01),
+
+              Container(
+
+                padding: EdgeInsets.symmetric(
+                  vertical: containerPadding * 0.2,
+                  horizontal: containerPadding,
+                ),
+
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(drawerWidth * 0.01),
+                  border: Border.all(color: Color(0XFF1CD494).withOpacity(0.40)),
+                  color: Color(0XFF1CD494).withOpacity(0.20),
+                 ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle, color: AppColors.whiteColor, size: drawerWidth * 0.035),
+                    SizedBox(width: drawerWidth * 0.010),
+                    Text(
+                      'User ID: 5268574132',
+                      style: TextStyle(
+                        color: AppColors.whiteColor,
+                        fontSize: getResponsiveFontSize(context, 10),
+                        fontWeight: FontWeight.w400,
+                        fontFamily: 'Poppins',
+                        height: 1.6,
+
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+
+
+        ],
+      ),
+    );
+  }
 
 
   Widget _buildStatCard({

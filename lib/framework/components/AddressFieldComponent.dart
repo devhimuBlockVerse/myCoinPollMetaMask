@@ -47,7 +47,7 @@ class CustomLabeledInputField extends StatelessWidget {
 
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.022,
-        vertical: screenHeight * 0.006,
+        // vertical: screenHeight * 0.006,
       ),
 
       // color: Colors.white12,

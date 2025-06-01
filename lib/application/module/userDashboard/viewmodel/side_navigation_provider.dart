@@ -7,6 +7,7 @@ import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
 import '../view/kyc/kyc_screen.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
+import '../view/referralStat/referralStatScreen.dart';
 import '../view/referralTransaction/referral_transaction_screen.dart';
 import '../view/wallet/wallet_screen.dart';
 
@@ -65,9 +66,9 @@ class NavigationProvider extends ChangeNotifier {
       id: 'referral_stat',
       title: 'Referral Stat',
       iconPath: 'assets/icons/referral.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Wallet Screen'),
-    ),
+      screenBuilder: (context) => const ReferralStatScreen(),
+
+  ),
     NavItem(
       id: 'referral_transaction',
       title: 'Referral Transaction',

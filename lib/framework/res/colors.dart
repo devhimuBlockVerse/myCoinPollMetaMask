@@ -17,7 +17,8 @@ class AppColors{
 
    static const Color drawerGradientEnd = Color(0xFF0A254A);   // Deep dark blue bottom
   static const Color profileName = Colors.white;
-  static const Color userIdText = Color(0xFF22C55E); // Green
+  // static const Color userIdText = Color(0xFF22C55E); // Green
+  static const Color userIdText = Color(0xFF1CD494); // Green
   static const Color navItemDefault = Colors.white70;
   static const Color navItemSelected = Colors.white;
 

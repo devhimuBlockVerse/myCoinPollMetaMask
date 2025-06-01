@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../framework/res/colors.dart';
 import '../domain/model/nav_item.dart';
 
-
 class SideNavBar extends StatefulWidget {
   final String? currentScreenId;
   final Function(String screenId) onScreenSelected;
@@ -70,6 +69,7 @@ class _SideNavBarState extends State<SideNavBar> {
     final double nameFontSize = drawerWidth * 0.06;
     final double idFontSize = drawerWidth * 0.04;
     final double iconSize = drawerWidth * 0.05;
+    final double containerPadding = drawerWidth * 0.025;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: verticalPadding),
@@ -87,25 +87,41 @@ class _SideNavBarState extends State<SideNavBar> {
             style: TextStyle(
               color: AppColors.profileName,
               fontSize: nameFontSize,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               fontFamily: 'Poppins',
+              height: 1.3,
             ),
           ),
           SizedBox(height: drawerWidth * 0.01),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.check_circle, color: AppColors.userIdText, size: iconSize),
-              SizedBox(width: drawerWidth * 0.015),
-              Text(
-                'User ID: 5268574132',
-                style: TextStyle(
-                  color: AppColors.userIdText,
-                  fontSize: idFontSize,
-                  fontFamily: 'Poppins',
+
+          Container(
+            padding: EdgeInsets.symmetric(
+              vertical: containerPadding * 0.6,
+              horizontal: containerPadding,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(drawerWidth * 0.01),
+              border: Border.all(color: AppColors.userIdText.withOpacity(0.40)),
+              color: AppColors.userIdText.withOpacity(0.20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check_circle, color: AppColors.whiteColor, size: iconSize),
+                SizedBox(width: drawerWidth * 0.015),
+                Text(
+                  'User ID: 5268574132',
+                  style: TextStyle(
+                    color: AppColors.whiteColor,
+                    fontSize: idFontSize,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Poppins',
+                    height: 1.6,
+
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

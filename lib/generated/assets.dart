@@ -97,6 +97,7 @@ class Assets {
   static const String iconsIco = 'assets/icons/ico.svg';
   static const String iconsKyc = 'assets/icons/kyc.svg';
   static const String iconsKycStatusBgFrame = 'assets/icons/kycStatusBgFrame.png';
+  static const String iconsKycUser = 'assets/icons/kycUser.svg';
   static const String iconsLanguageImg = 'assets/icons/languageImg.svg';
   static const String iconsLearnAndEarnBgContainer = 'assets/icons/learnAndEarnBgContainer.png';
   static const String iconsLearnAndEarnFrame = 'assets/icons/learnAndEarnFrame.png';

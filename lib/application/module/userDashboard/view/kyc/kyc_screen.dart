@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_inProgress_screen.dart';
  import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
@@ -528,7 +529,9 @@ class _KycScreenState extends State<KycScreen> {
               Color(0xFF1CD494)
               // 1CD494
             ],
-            onTap: () {},
+            onTap: () {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
+            },
             iconPath: 'assets/icons/arrowIcon.svg',
             iconSize : screenHeight * 0.013,
           ),

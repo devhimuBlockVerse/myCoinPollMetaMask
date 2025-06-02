@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/status_styling_utils.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../dashboard/dashboard_screen.dart';
@@ -230,7 +231,7 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
 
 
                       /// _kycVerification
-                      if (selectedCardIndex >= 0) _kycVerification(),
+                      _kycVerificationStatus(),
 
                     ],
                   ),
@@ -320,21 +321,16 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
   }
 
 
-  Widget _kycVerification(){
+  Widget _kycVerificationStatus(){
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final bool isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
-    final bool isCardSelected = selectedCardIndex >= 0 && selectedCardIndex < _documentTypes.length;
 
-    final ImageProvider displayImageProvider = isCardSelected
-        ? AssetImage(_documentTypes[selectedCardIndex]['icon']!)
-        : const NetworkImage("https://picsum.photos/24/18");
-
-    final String submissionText = isCardSelected
-        ? _documentTypes[selectedCardIndex]['submissionText']!
-        : 'Please select a document type above';
+    // This will come from your model/API
+    String _userKycStatus = 'Pending';
+    StatusStyling statusStyle = getKycUserStatusStyle(_userKycStatus);
 
 
     return Column(
@@ -357,7 +353,7 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
               Flexible(
                 flex: 1,
                 child: SvgPicture.asset(
-                  'assets/icons/kycUser.svg',
+                  'assets/icons/kycVerify.svg',
                   width: screenWidth * 0.04,
                   fit: BoxFit.contain,
                 ),
@@ -366,7 +362,7 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
               Flexible(
                 flex: 3,
                 child: Text(
-                  "KYC Verification",
+                  "KYC Verification Status",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Poppins',
@@ -385,6 +381,119 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
         SizedBox(height: screenHeight * 0.04),
 
 
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                     _userKycStatus == "Rejected"
+                        ? 'assets/icons/statusRejected.svg'
+                        : 'assets/icons/statusCehck.svg',
+                     width: getResponsiveFontSize(context, 18),
+                    height: getResponsiveFontSize(context, 18),
+                  ),
+                  SizedBox(width: screenWidth * 0.02),
+                  Text(
+                    _userKycStatus == 'Approved' ? "Submission Approved!" :
+                        _userKycStatus == "Rejected" ? "Your KYC verification was rejected" :
+                        "Submission Received!",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                      fontSize: getResponsiveFontSize(context, 14),
+                      height: 1.6,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Reference Number: #12542463",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: getResponsiveFontSize(context, 12),
+                      color: Colors.white70,
+                    ),
+                  ),
+
+
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.03,
+                      vertical: screenWidth * 0.01,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusStyle.backgroundColor,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: statusStyle.borderColor,width: 0.5),
+                    ),
+                    child: Text(
+                      _userKycStatus,
+                      style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w400,
+                          fontSize: getResponsiveFontSize(context, 11),
+                          color: statusStyle.textColor,
+                          height: 1.1
+                      ),
+                    ),
+                  )
+
+                ],
+              ),
+
+              SizedBox(height: screenHeight * 0.02),
+
+              if (_userKycStatus == "Pending")
+                Text(
+                  "Once your request is processed, you'll receive a notification ensure prompt communication to keep you updated on the status and provide timely updates.",
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: getResponsiveFontSize(context, 12),
+                    height: 1.6,
+                    color: Colors.white70,
+                  ),
+                ),
+
+              if (_userKycStatus == 'Approved')
+                Text(
+                "Your submission has been successfully approved. You will receive a confirmation notification shortly. We appreciate your cooperation and will keep you informed of any further updates.",
+                style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: getResponsiveFontSize(context, 12),
+                height: 1.6,
+                color: Colors.white70,
+
+                ),
+                )
+              else if (_userKycStatus == 'Rejected')
+                Text(
+                "We couldn't verify your details due to inconsistencies in the provided documents. Kindly resubmit with accurate and clear information.",
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: getResponsiveFontSize(context, 12),
+                  height: 1.6,
+                  color: Colors.white70,
+                  ),
+                ),
+
+            ]
+          ),
+        )
+        
 
 
 

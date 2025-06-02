@@ -115,3 +115,33 @@ StatusStyling getReferralUserStatusStyle(String status) {
     borderColor: Colors.grey.shade600,
   );
 }
+
+
+StatusStyling getKycUserStatusStyle(String status) {
+  switch (status) {
+    case 'Approved':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF0A2A1F), // Very dark, desaturated green
+        borderColor: const Color(0xFF29C77F),    // Bright Green
+        textColor: const Color(0xFF29C77F),       // Bright Green
+      );
+    case 'Rejected':
+      return StatusStyling(
+        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
+        textColor: const Color(0xFFE04043),
+        borderColor: const Color(0xFFE04043),
+      );
+    case 'Pending':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF3D3013), // Very dark, desaturated orange/yellow
+        borderColor: const Color(0xFFFABE2B),    // Bright Orange/Yellow
+        textColor: const Color(0xFFFABE2B),       // Bright Orange/Yellow
+      );
+    default: // Fallback for unknown statuses
+      return StatusStyling(
+        backgroundColor: const Color(0xFF2A2A2A), // Dark grey
+        borderColor: Colors.grey[600]!,
+        textColor: Colors.white,
+      );
+  }
+}

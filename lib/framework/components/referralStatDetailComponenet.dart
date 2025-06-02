@@ -4,21 +4,15 @@ import 'package:flutter_svg/svg.dart';
 
 import '../utils/status_styling_utils.dart';
 
-class TransactionDetails extends StatelessWidget {
+
+class ReferralDetailsComponent extends StatelessWidget {
   final String label;
   final String value;
   final String? svgIconPath;
   final double? spacing;
   final String? status;
 
-  const TransactionDetails({
-    Key? key,
-    required this.label,
-    required this.value,
-    this.svgIconPath,
-    this.spacing,
-    this.status,
-  }) : super(key: key);
+  const ReferralDetailsComponent({super.key, required this.label, required this.value, this.svgIconPath, this.spacing, this.status});
 
   void _copyToClipboard(BuildContext context) {
     Clipboard.setData(ClipboardData(text: value));
@@ -27,12 +21,13 @@ class TransactionDetails extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final fontSize = width * 0.031;
     final showStatus = status != null && status!.isNotEmpty;
-    final styling = showStatus ? getTransactionStatusStyling(status!) : null;
+    final styling = showStatus ? getReferralUserStatusStyle(status!) : null;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: width * 0.018),
@@ -104,61 +99,7 @@ class TransactionDetails extends StatelessWidget {
             ),
           ),
 
-          // Expanded(
-          //   child: Wrap(
-          //     alignment: WrapAlignment.end,
-          //     crossAxisAlignment: WrapCrossAlignment.center,
-          //     spacing: spacing ?? 10,
-          //     children: [
-          //       Flexible(
-          //         child: Text(
-          //           value,
-          //           textAlign: TextAlign.right,
-          //           softWrap: true,
-          //           overflow: TextOverflow.visible,
-          //           style: TextStyle(
-          //             color: Colors.white,
-          //             fontSize: fontSize,
-          //             fontFamily: 'Poppins',
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //         ),
-          //       ),
-          //       if (svgIconPath != null)
-          //         GestureDetector(
-          //           onTap: () => _copyToClipboard(context),
-          //           child: SvgPicture.asset(
-          //             svgIconPath!,
-          //             width: fontSize + 3,
-          //             height: fontSize + 3,
-          //             fit: BoxFit.contain,
-          //             color: Colors.white.withOpacity(0.8),
-          //           ),
-          //         ),
-          //       if (showStatus)
-          //         Container(
-          //           padding:
-          //           const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
-          //           decoration: BoxDecoration(
-          //             color: styling!.backgroundColor,
-          //             border: Border.all(color: styling.borderColor),
-          //             borderRadius: BorderRadius.circular(4),
-          //           ),
-          //           child: Text(
-          //             status!,
-          //             style: TextStyle(
-          //               fontSize: fontSize,
-          //               color: styling.textColor,
-          //               fontFamily: 'Poppins',
-          //               fontWeight: FontWeight.bold,
-          //               height: 0.8,
-          //             ),
-          //           ),
-          //         ),
-          //     ],
-          //   ),
-          // ),
-        ],
+         ],
       ),
     );
   }

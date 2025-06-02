@@ -1,10 +1,13 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
+import '../../../../../../framework/components/referralStatDetailComponenet.dart';
 import '../../../../../../framework/components/transactionDetailsComponent.dart';
 
-class TransactionDetailsDialog extends StatelessWidget {
-  const TransactionDetailsDialog({super.key});
+
+
+class ReferralDetails extends StatelessWidget {
+  const ReferralDetails({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,33 +76,33 @@ class TransactionDetailsDialog extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.01),
 
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'Time/Date',
                             value: '07/10/2024; 09:30 PM',
                           ),
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'Block',
                             value: '20969235',
                           ),
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'Status',
                             value: '',
-                            status: 'In',
+                            status: 'Active',
                           ),
 
                           SizedBox(height: screenHeight * 0.03),
 
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'Txn Hash',
                             value: '0xac6d8ae0a1dcX',
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'From',
                             value: '0xaFODFEC80xaFOFODFEODCaFC8',
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
-                          const TransactionDetails(
+                          const ReferralDetailsComponent(
                             label: 'To',
                             value:
                             '0xaFODFEC80xaFOFODFEODCaFC8',
@@ -117,9 +120,6 @@ class TransactionDetailsDialog extends StatelessWidget {
       ),
     );
   }
+
+
 }
-
-
-
-
-

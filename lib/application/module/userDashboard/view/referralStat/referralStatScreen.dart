@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralStat/widgets/referral_stat_table.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/widgets/transaction_table.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,9 @@ import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../data/dummyData/referral_user_list_dummy_data.dart';
 import '../../../../data/dummyData/staking_dummy_data.dart';
+import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -22,41 +25,41 @@ class ReferralStatScreen extends StatefulWidget {
 }
 
 class _ReferralStatScreenState extends State<ReferralStatScreen> {
-  SortTransactionHistoryOption? _currentSort;
-  final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
+  SortReferralUserListOption? _currentSort;
+  final SortReferralUseListUseCase _sortDataUseCase = SortReferralUseListUseCase();
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> _displayData = [];
+  List<ReferralUserListModel> _displayData = [];
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _displayData = List.from(transactionData);
+    _displayData = List.from(referralUserListData);
     _searchController.addListener(_applyFiltersAndSort);
 
   }
 
-
   void _applyFiltersAndSort() {
-    List<Map<String, dynamic>> currentFilteredData = List.from(transactionData);
-    String query = _searchController.text.toLowerCase();
+     List<ReferralUserListModel> currentFilteredData = List.from(referralUserListData); // Start with the original full data
+    String query = _searchController.text.toLowerCase().trim(); // Trim whitespace
 
-    //  search filter
+    // Search filter based on UserLogModel fields
     if (query.isNotEmpty) {
-      currentFilteredData = currentFilteredData.where((row) {
-        return (row['TxnHash']?.toLowerCase().contains(query) ?? false) ||
-            (row['Status']?.toLowerCase().contains(query) ?? false) ||
-            (row['Amount']?.toLowerCase().contains(query) ?? false) ||
-            (row['DateTime']?.toLowerCase().contains(query) ?? false) ||
-            (row['SL']?.toLowerCase().contains(query) ?? false);
+      currentFilteredData = currentFilteredData.where((userLog) {
+        // Check each relevant field for the query
+        return userLog.sl.toLowerCase().contains(query) ||
+            userLog.date.toLowerCase().contains(query) ||
+            userLog.name.toLowerCase().contains(query) ||
+            userLog.userId.toLowerCase().contains(query) ||
+            userLog.status.toLowerCase().contains(query);
       }).toList();
     }
 
-    //  sorting if a sort option is selected
+    // Sorting if a sort option is selected
     if (_currentSort != null) {
-      currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
+       currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
     }
 
     setState(() {
@@ -66,7 +69,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
 
 
 
-  void _sortData(SortTransactionHistoryOption option) {
+  void _sortData(SortReferralUserListOption option) {
     setState(() {
       _currentSort = option;
       _applyFiltersAndSort();
@@ -328,38 +331,46 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                       flex: 1,
                                       child: Align(
                                           alignment: Alignment.centerRight,
-                                          child: PopupMenuButton<SortTransactionHistoryOption>(
+                                          child: PopupMenuButton<SortReferralUserListOption>(
                                             icon: SvgPicture.asset(
                                               'assets/icons/sortingList.svg',
                                               fit: BoxFit.contain,
                                             ),
-                                            onSelected: (SortTransactionHistoryOption option) {
+                                            onSelected: (SortReferralUserListOption option) {
                                               _sortData(option);
                                             },
-                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.dateLatest,
+                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortReferralUserListOption>>[
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.dateDesc,
                                                 child: Text('Date: Latest First'),
                                               ),
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.dateOldest,
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.dateAsc,
                                                 child: Text('Date: Oldest First'),
                                               ),
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.statusAsc,
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.nameAsc,
                                                 child: Text('Status: A-Z'),
                                               ),
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.statusDesc,
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.nameDesc,
                                                 child: Text('Status: Z-A'),
                                               ),
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.amountAsc,
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.userIdAsc,
                                                 child: Text('Amount: Low to High'),
                                               ),
-                                              const PopupMenuItem<SortTransactionHistoryOption>(
-                                                value: SortTransactionHistoryOption.amountDesc,
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.userIdDesc,
                                                 child: Text('Amount: High to Low'),
+                                              ),
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.statusAsc,
+                                                child: Text('Status: Active First'),
+                                              ),
+                                              const PopupMenuItem<SortReferralUserListOption>(
+                                                value: SortReferralUserListOption.statusDesc,
+                                                child: Text('Status: Inactive First'),
                                               ),
                                             ],
                                           )
@@ -376,7 +387,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                               ...[
 
                                 _displayData.isNotEmpty
-                                    ? buildTransactionTable(_displayData, screenWidth, context)
+                                    ? buildReferralUserListTable(_displayData, screenWidth, context)
                                     : Container(
                                   alignment: Alignment.center,
                                   padding: const EdgeInsets.all(20),

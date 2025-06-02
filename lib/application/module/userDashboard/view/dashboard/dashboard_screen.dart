@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
@@ -735,6 +736,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
               ///  Update the Status Dynamically Based on User Status
               StatusChip.approved(),
+              // StatusChip.rejected(),
+              // StatusChip.pending(),
             ],
           ),
           SizedBox(height: screenHeight * 0.02),
@@ -809,8 +812,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       Color(0xFF2680EF),
                       Color(0xFF1CD494),
                     ],
-                    onTap: () {
+
+                      onTap: () {
                       debugPrint('Button tapped');
+                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  KycScreen()));
+
                     },
                   ),
                 ),

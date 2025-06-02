@@ -7,6 +7,7 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import 'kyc_status_screen.dart';
 
 class KycInProgressScreen extends StatefulWidget {
   const KycInProgressScreen({super.key});
@@ -149,7 +150,7 @@ class _KycInProgressScreenState extends State<KycInProgressScreen> {
                                   // 1CD494
                                 ],
                                 onTap: () {
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycStatusScreen()), (route) => false);
                                 },
 
                               ),

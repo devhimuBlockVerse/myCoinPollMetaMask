@@ -21,3 +21,20 @@ enum SortReferralTransactionOption {
   amountHighToLow,
   amountLowToHigh,
 }
+
+
+
+enum SortReferralUserListOption {
+  dateAsc,      // Oldest to Latest (consistent with standard ascending date sort)
+  dateDesc,     // Latest to Oldest
+  nameAsc,      // A-Z
+  nameDesc,     // Z-A
+  statusAsc,    // Active then Inactive (or alphabetical)
+  statusDesc,   // Inactive then Active (or reverse alphabetical)
+  slAsc,        // SL 01, 02...
+  slDesc,       // SL 10, 09...
+  userIdAsc,    // User ID ascending
+  userIdDesc,   // User ID descending
+}
+
+

@@ -92,3 +92,26 @@ StatusStyling getStatusStyling(String status) {
   );
 }
 
+
+
+StatusStyling getReferralUserStatusStyle(String status) {
+  if (status == 'Active') {
+    return StatusStyling(
+      backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
+      textColor: const Color(0xFF1CD494),
+      borderColor: const Color(0xFF1CD494),
+    );
+  } else if (status == 'Inactive') {
+    return StatusStyling(
+      backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
+      textColor: const Color(0xFFE04043),
+      borderColor: const Color(0xFFE04043),
+    );
+  }
+  // Default styling for unknown statuses
+  return StatusStyling(
+    backgroundColor: Colors.grey.shade800,
+    textColor: Colors.white70,
+    borderColor: Colors.grey.shade600,
+  );
+}

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
@@ -33,10 +34,8 @@ class _KycScreenState extends State<KycScreen> {
     final containerHeight = screenHeight * 0.10;
     final minContainerHeight = screenHeight * 0.002;
 
-    final horizontalPadding = containerWidth * 0.03;
     final itemSpacing = screenWidth * 0.02;
 
-    double getResponsiveRadius(double base) => base * (screenWidth / 360);
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
@@ -69,6 +68,8 @@ class _KycScreenState extends State<KycScreen> {
             ),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // App bar row
               Row(
@@ -87,7 +88,7 @@ class _KycScreenState extends State<KycScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Kyc Screen',
+                        "KYC Verification Process",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -111,68 +112,122 @@ class _KycScreenState extends State<KycScreen> {
                   ),
                   child: ListView(
                     children: [
-                      // Stat Cards
+
+
                       Container(
                         width: screenWidth,
-                        height: containerHeight < minContainerHeight
-                            ? minContainerHeight
-                            : containerHeight,
                         decoration: BoxDecoration(
                           image: const DecorationImage(
-                            image: AssetImage('assets/icons/buildStatCardBG.png'),
+                            image: AssetImage('assets/icons/selectDocumentBg.png'),
                             fit: BoxFit.fill,
                           ),
-                         ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Total Milestone',
-                                  value: '1250',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                  ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
-                                ),
-                              ),
-                              SizedBox(width: itemSpacing),
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Active Milestone',
-                                  value: '1200',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                  ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
-                                ),
-                              ),
-                              SizedBox(width: itemSpacing),
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Complete',
-                                  value: '1000',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                  ),
-                                  imageUrl: "assets/icons/milestoneStatFrameBg.png",
-                                ),
-                              ),
-                            ],
-                          ),
+                        ),
+                        child: Text(
+                          "Select Your Documents:",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: getResponsiveFontSize(context, 12),
+                            height: 1.6,
+                            color: Colors.white,)
                         ),
                       ),
 
+                      SizedBox(height: screenHeight * 0.02,),
+
+
+
+                      // Stat Cards
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: _buildStatCard(
+                              title: 'National Id Card',
+                               gradient: const LinearGradient(
+                                begin: Alignment(0.99, 0.14),
+                                end: Alignment(-0.99, -0.14),
+                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                              ),
+                              emojiIcon: "assets/icons/nid.png",
+
+                            ),
+                          ),
+                          SizedBox(width: itemSpacing),
+                          Expanded(
+                            child: _buildStatCard(
+                              title: 'Passport',
+                               gradient: const LinearGradient(
+                                begin: Alignment(0.99, 0.14),
+                                end: Alignment(-0.99, -0.14),
+                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                              ),
+                              emojiIcon: "assets/icons/passport.png",
+
+                            ),
+                          ),
+                          SizedBox(width: itemSpacing),
+                          Expanded(
+                            child: _buildStatCard(
+                              title: 'Driving License',
+                               gradient: const LinearGradient(
+                                begin: Alignment(0.99, 0.14),
+                                end: Alignment(-0.99, -0.14),
+                                colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                              ),
+                              emojiIcon: "assets/icons/drivingLicense.png",
+
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: screenHeight * 0.02,),
+
+                      Container(
+                        width: screenWidth,
+                        decoration:const BoxDecoration(
+                          image:  DecorationImage(
+                            image: AssetImage('assets/icons/estimatedBG.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: SvgPicture.asset(
+                                'assets/icons/timerImg.svg',
+                                width: screenWidth * 0.04,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Flexible(
+                              flex: 3,
+                              child: Text(
+                                "Select Your Documents:",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  height: 1.6,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(height: screenHeight * 0.030),
+
+
 
                     ],
                   ),
@@ -188,10 +243,10 @@ class _KycScreenState extends State<KycScreen> {
 
   Widget _buildStatCard({
     required String title,
-    required String value,
     required LinearGradient gradient,
-    String? imageUrl,
-    Color? borderColor,
+     Color? borderColor,
+    String? emojiIcon,
+
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
     final borderRadius = screenWidth * 0.009;
@@ -206,12 +261,7 @@ class _KycScreenState extends State<KycScreen> {
           color: borderColor ?? const Color(0xFF2B2D40),
           width: 1,
         ),
-        image: imageUrl != null
-            ? DecorationImage(
-          image: AssetImage(imageUrl),
-          fit: BoxFit.fill,
-        )
-            : null,
+
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
@@ -219,9 +269,21 @@ class _KycScreenState extends State<KycScreen> {
           vertical: verticalContentPadding,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          // mainAxisSize: MainAxisSize.min,
           children: [
+            if (emojiIcon != null)
+              SizedBox(
+                width: screenWidth * 0.06,
+                height: screenWidth * 0.06,
+                child: Image.asset(
+                  emojiIcon,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            SizedBox(height: 2),
+
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
@@ -235,23 +297,19 @@ class _KycScreenState extends State<KycScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 4),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: getResponsiveFontSize(context, 16),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+
           ],
         ),
       ),
     );
   }
 
+
+
+
 }
+
+
+
+
+

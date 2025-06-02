@@ -3,8 +3,9 @@ import '../../../framework/utils/enums/milestone_status.dart';
 import '../../../framework/utils/enums/sort_option.dart';
 import '../../data/dummyData/referral_transaction_dummy_data.dart';
 import '../model/PurchaseLogModel.dart';
+import '../model/ReferralUserListModel.dart';
 import '../model/milestone_list_models.dart';
-
+import 'package:intl/intl.dart';
 
 class SortDataUseCase {
   List<Map<String, dynamic>> call(
@@ -157,6 +158,50 @@ class SortReferralTransactionUseCase {
         case SortReferralTransactionOption.amountLowToHigh:
         // Use the new field name purchaseAmountECM
           return a.purchaseAmountECM.compareTo(b.purchaseAmountECM);
+      }
+    });
+
+    return sorted;
+  }
+}
+
+
+class SortReferralUseListUseCase {
+  List<ReferralUserListModel> call(
+      List<ReferralUserListModel> data, // Type changed to List<UserLogModel>
+      SortReferralUserListOption option, // Option type changed
+      ) {
+    final sorted = List<ReferralUserListModel>.from(data);
+    final DateFormat parser = DateFormat('MM/dd/yy');
+
+    sorted.sort((a, b) {
+      switch (option) {
+        case SortReferralUserListOption.dateAsc:
+           return parser.parse(a.date).compareTo(parser.parse(b.date));
+        case SortReferralUserListOption.dateDesc:
+          return parser.parse(b.date).compareTo(parser.parse(a.date));
+        case SortReferralUserListOption.nameAsc:
+          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        case SortReferralUserListOption.nameDesc:
+          return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+        case SortReferralUserListOption.statusAsc:
+
+          if (a.status == 'Active' && b.status == 'Inactive') return -1;
+          if (a.status == 'Inactive' && b.status == 'Active') return 1;
+          return a.status.compareTo(b.status);
+        case SortReferralUserListOption.statusDesc:
+          if (a.status == 'Inactive' && b.status == 'Active') return -1;
+          if (a.status == 'Active' && b.status == 'Inactive') return 1;
+          return b.status.compareTo(a.status);
+        case SortReferralUserListOption.slAsc:
+        // Convert SL string to int for numerical sorting
+          return int.parse(a.sl).compareTo(int.parse(b.sl));
+        case SortReferralUserListOption.slDesc:
+          return int.parse(b.sl).compareTo(int.parse(a.sl));
+        case SortReferralUserListOption.userIdAsc:
+          return a.userId.toLowerCase().compareTo(b.userId.toLowerCase());
+        case SortReferralUserListOption.userIdDesc:
+          return b.userId.toLowerCase().compareTo(a.userId.toLowerCase());
       }
     });
 

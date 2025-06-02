@@ -1,121 +1,141 @@
-import 'dart:ui';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../../../../framework/components/transactionDetailsComponent.dart';
+import 'package:flutter_svg/svg.dart';
+import '../../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../../framework/utils/status_styling_utils.dart';
+import '../../../../../domain/model/ReferralUserListModel.dart';
+import '../../transactions/widgets/transaction_details.dart';
+import 'referral_details.dart';
 
+Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, double screenWidth, BuildContext context) {
+  double screenHeight = MediaQuery.of(context).size.height;
+  const double designScreenWidth = 375.0;
 
-class TransactionDetailsDialog extends StatelessWidget {
-  const TransactionDetailsDialog({super.key});
+  TextStyle headingStyle = TextStyle(
+    color: Colors.white,
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w500,
+    fontSize: getResponsiveFontSize(context, 12),
+    height: 1.6,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+  TextStyle cellTextStyle = TextStyle(
+    color: Colors.white,
+    fontFamily: 'Poppins',
+    fontWeight: FontWeight.w400,
+    fontSize: getResponsiveFontSize(context, 12),
+    height: 1.6,
+  );
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/icons/dialogFrame.png',
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(screenWidth * 0.09),
-                child: SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: screenHeight * 0.85,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'Transactions Details',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.045,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Poppins',
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: screenWidth * 0.06,
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          Text(
-                            '\$ 100000.00',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth * 0.08,
-                              color: const Color(0xff1CD494),
-                              height: 1.6,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-
-                          const DetailWidget(
-                            label: 'Time/Date',
-                            value: '07/10/2024; 09:30 PM',
-                          ),
-                          const DetailWidget(
-                            label: 'Block',
-                            value: '20969235',
-                          ),
-                          const DetailWidget(
-                            label: 'Status',
-                            value: '',
-                            status: 'In',
-                          ),
-
-                          SizedBox(height: screenHeight * 0.03),
-
-                          const DetailWidget(
-                            label: 'Txn Hash',
-                            value: '0xac6d8ae0a1dcX',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
-                          const DetailWidget(
-                            label: 'From',
-                            value: '0xaFODFEC80xaFOFODFEODCaFC8',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
-                          const DetailWidget(
-                            label: 'To',
-                            value:
-                            '0xaFODFEC80xaFOFODFEODCaFC8',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+  Widget buildCenteredText(String text, TextStyle style) {
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(text, style: style, textAlign: TextAlign.center, overflow: TextOverflow.visible),
       ),
     );
   }
+
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            height: screenHeight * 0.45,
+            width: constraints.maxWidth * 1.5,
+            child: DataTable2(
+              dataRowHeight: screenHeight * 0.04,
+              columnSpacing: screenWidth * 0.001,
+              horizontalMargin: screenWidth * 0.002,
+              headingRowHeight: screenHeight * 0.04,
+              dividerThickness: 0,
+              headingRowDecoration: const BoxDecoration(
+                color: Color(0xff051121),
+              ),
+              columns: [
+                DataColumn2(
+                  label: buildCenteredText('SL', headingStyle),
+                  fixedWidth: screenWidth * (40.0 / designScreenWidth),
+                ),
+                DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.L),
+                DataColumn2(label: buildCenteredText('Name', headingStyle), size: ColumnSize.L),
+                DataColumn2(label: buildCenteredText('User ID', headingStyle), size: ColumnSize.M),
+                DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.M),
+                DataColumn2(
+                  label: buildCenteredText('Details', headingStyle),
+                  fixedWidth: screenWidth * (40.0 / designScreenWidth),
+                ),
+              ],
+              rows: userLogData.asMap().entries.map((entry) {
+                ReferralUserListModel data = entry.value; // Use UserLogModel
+                final statusText = data.status;
+                final statusStyle = getReferralUserStatusStyle(statusText);
+
+                return DataRow2(
+                  cells: [
+                    DataCell(buildCenteredText(data.sl, cellTextStyle)),
+                    DataCell(buildCenteredText(data.date, cellTextStyle)),
+                    DataCell(buildCenteredText(data.name, cellTextStyle)),
+                    DataCell(buildCenteredText(data.userId, cellTextStyle)),
+                    DataCell(
+                      Center(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: getResponsiveFontSize(context, 8),
+                            vertical: getResponsiveFontSize(context, 4),
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusStyle.backgroundColor,
+                            border: Border.all(color: statusStyle.borderColor, width: 0.5),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            statusText,
+                            style: cellTextStyle.copyWith(
+                              color: statusStyle.textColor,
+                              fontSize: getResponsiveFontSize(context, 11),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: IconButton(
+
+                          icon: Icon(Icons.visibility_outlined, color: const Color(0xFF7EE4C2), size: getResponsiveFontSize(context, 18)),
+
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => const ReferralDetails(),
+                            );
+                            print('View details for User ID: ${data.userId}');
+                          },
+                          tooltip: 'View Details',
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+              empty: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    'No matching user logs found.',
+                    style: TextStyle(color: Colors.white70, fontSize: getResponsiveFontSize(context, 14)),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }

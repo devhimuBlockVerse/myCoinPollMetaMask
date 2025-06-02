@@ -71,6 +71,7 @@ class Assets {
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
   static const String iconsDiscoverIMG2 = 'assets/icons/discoverIMG2.png';
   static const String iconsDistributionImage = 'assets/icons/distribution_image.png';
+  static const String iconsDrivingLicense = 'assets/icons/drivingLicense.png';
   static const String iconsDropDownIcon = 'assets/icons/dropDownIcon.svg';
   static const String iconsEcm = 'assets/icons/ecm.png';
   static const String iconsEcmLarge = 'assets/icons/ecmLarge.png';
@@ -80,6 +81,7 @@ class Assets {
   static const String iconsEditIcon = 'assets/icons/editIcon.svg';
   static const String iconsEducationalRes = 'assets/icons/educationalRes.png';
   static const String iconsEmail = 'assets/icons/email.svg';
+  static const String iconsEstimatedBG = 'assets/icons/estimatedBG.png';
   static const String iconsEth = 'assets/icons/eth.png';
   static const String iconsEthCoin = 'assets/icons/EthCoin.png';
   static const String iconsFeatures = 'assets/icons/features.svg';
@@ -123,8 +125,10 @@ class Assets {
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
   static const String iconsNewsFrame = 'assets/icons/newsFrame.png';
+  static const String iconsNid = 'assets/icons/nid.png';
   static const String iconsNofitication = 'assets/icons/nofitication.svg';
   static const String iconsNotify = 'assets/icons/notify.svg';
+  static const String iconsPassport = 'assets/icons/passport.png';
   static const String iconsPhone = 'assets/icons/phone.svg';
   static const String iconsPrivecyImg = 'assets/icons/privecyImg.svg';
   static const String iconsProfile = 'assets/icons/profile.svg';
@@ -148,6 +152,7 @@ class Assets {
   static const String iconsRootContentBg = 'assets/icons/rootContentBg.png';
   static const String iconsScan = 'assets/icons/scan.svg';
   static const String iconsSearch = 'assets/icons/search.svg';
+  static const String iconsSelectDocumentBg = 'assets/icons/selectDocumentBg.png';
   static const String iconsSettingActionBg = 'assets/icons/settingActionBg.png';
   static const String iconsSettings = 'assets/icons/settings.svg';
   static const String iconsSettingsIcon = 'assets/icons/settingsIcon.png';

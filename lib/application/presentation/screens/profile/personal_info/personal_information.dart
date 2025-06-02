@@ -32,8 +32,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
 
 
-  String? selectedGender;
-  String? selectedCountry;
+  String? _selectedGender;
+  String? _selectedCountry;
 
   @override
   Widget build(BuildContext context) {
@@ -249,10 +249,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                          child: CustomDropdown(
                                            label: 'Country',
                                            items: const ['Dubai', 'USA', 'Bangladesh'],
-                                           selectedValue: selectedGender,
+                                           selectedValue: _selectedCountry,
                                            onChanged: (value) {
                                              setState(() {
-                                               selectedGender = value;
+                                               _selectedCountry = value;
                                              });
                                            },
                                          ),
@@ -263,10 +263,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                          child: CustomDropdown(
                                            label: 'Gender',
                                            items: const ['Male', 'Female', 'Other'],
-                                           selectedValue: selectedGender,
+                                           selectedValue: _selectedGender,
                                            onChanged: (value) {
                                              setState(() {
-                                               selectedGender = value;
+                                               _selectedGender = value;
                                              });
                                            },
                                          ),

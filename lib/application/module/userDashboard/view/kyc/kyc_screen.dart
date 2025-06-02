@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
 
+import '../../../../../framework/components/BlockButton.dart';
+import '../../../../../framework/components/buy_ecm_button.dart';
+import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -17,7 +20,25 @@ class _KycScreenState extends State<KycScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedCardIndex = -1;
+  String? _selectedCountry;
 
+  final List<Map<String, String>> _documentTypes = [
+    {
+      'title': 'National Id Card',
+      'icon': 'assets/icons/nid.png',
+      'submissionText': 'NID Submission Required',
+    },
+    {
+      'title': 'Passport',
+      'icon': 'assets/icons/passport.png',
+      'submissionText': 'Passport Submission Required',
+    },
+    {
+      'title': 'Driving License',
+      'icon': 'assets/icons/drivingLicense.png',
+      'submissionText': 'Driving License Submission Required',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +99,7 @@ class _KycScreenState extends State<KycScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        "KYC Verification Process",
+                        "KYC Verification",
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -131,57 +152,35 @@ class _KycScreenState extends State<KycScreen> {
 
 
 
-                      // Stat Cards
+                      /// Stat Cards
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: _buildStatCard(
-                              title: 'National Id Card',
-                               emojiIcon: "assets/icons/nid.png",
-                              selected: selectedCardIndex == 0,
-                              onTap: () {
-                                print("Tapped card 0, new index: 0");
-
-                                setState(() {
-                                  selectedCardIndex = 0;
-                                });
-                              },
+                        children: List.generate(_documentTypes.length, (index) {
+                          final docType = _documentTypes[index];
+                          return Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                right: index < _documentTypes.length - 1 ? itemSpacing : 0,
+                              ),
+                              child: _buildStatCard(
+                                title: docType['title']!,
+                                emojiIcon: docType['icon']!,
+                                selected: selectedCardIndex == index,
+                                onTap: () {
+                                  setState(() {
+                                    selectedCardIndex = index;
+                                  });
+                                  print("Tapped card $index, new index: $index");
+                                },
+                              ),
                             ),
-                          ),
-                          SizedBox(width: itemSpacing),
-                          Expanded(
-                            child: _buildStatCard(
-                              title: 'Passport',
-
-                              emojiIcon: "assets/icons/passport.png",
-                              selected: selectedCardIndex == 1,
-                              onTap: () {
-                                setState(() {
-                                  selectedCardIndex = 1;
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(width: itemSpacing),
-                          Expanded(
-                            child: _buildStatCard(
-                              title: 'Driving License',
-
-                              emojiIcon: "assets/icons/drivingLicense.png",
-                              selected: selectedCardIndex == 2,
-                              onTap: () {
-                                setState(() {
-                                  selectedCardIndex = 2;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
+                          );
+                        }),
                       ),
 
-                      SizedBox(height: screenHeight * 0.02,),
+                      SizedBox(height: screenHeight * 0.03),
 
                       Container(
                         width: screenWidth,
@@ -226,47 +225,11 @@ class _KycScreenState extends State<KycScreen> {
                         ),
                       ),
 
-                      SizedBox(height: screenHeight * 0.030),
+                      SizedBox(height: screenHeight * 0.06),
 
 
-                      Container(
-                        width: screenWidth,
-                        decoration:const BoxDecoration(
-                          image:  DecorationImage(
-                            image: AssetImage('assets/icons/selectDocumentBg.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: SvgPicture.asset(
-                                'assets/icons/kycUser.svg',
-                                width: screenWidth * 0.04,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Flexible(
-                              flex: 3,
-                              child: Text(
-                                "KYC Verification",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                   fontWeight: FontWeight.w500,
-                                  fontSize: getResponsiveFontSize(context, 14),
-                                  height: 1.6,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      /// _kycVerification
+                      _kycVerification(),
 
 
 
@@ -292,7 +255,7 @@ class _KycScreenState extends State<KycScreen> {
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
     final borderRadius = screenWidth * 0.009;
-    final verticalContentPadding = screenWidth * 0.02;
+    final verticalContentPadding = screenWidth * 0.03;
 
     return GestureDetector(
       onTap: onTap,
@@ -334,7 +297,7 @@ class _KycScreenState extends State<KycScreen> {
                     fit: BoxFit.contain,
                   ),
                 ),
-              SizedBox(height: 2),
+              SizedBox(height: 3),
 
               FittedBox(
                 fit: BoxFit.scaleDown,
@@ -344,7 +307,7 @@ class _KycScreenState extends State<KycScreen> {
                   style: TextStyle(
                     fontSize: getResponsiveFontSize(context, 12),
                     color: Colors.white.withOpacity(0.8),
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     height: 1.3,
                   ),
                 ),
@@ -358,11 +321,231 @@ class _KycScreenState extends State<KycScreen> {
   }
 
 
+  Widget _kycVerification(){
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final bool isPortrait = screenHeight > screenWidth;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    final bool isCardSelected = selectedCardIndex >= 0 && selectedCardIndex < _documentTypes.length;
+
+    final ImageProvider displayImageProvider = isCardSelected
+        ? AssetImage(_documentTypes[selectedCardIndex]['icon']!)
+        : const NetworkImage("https://picsum.photos/24/18");
+
+    final String submissionText = isCardSelected
+        ? _documentTypes[selectedCardIndex]['submissionText']!
+        : 'Please select a document type above';
+
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        Container(
+          width: screenWidth,
+          decoration:const BoxDecoration(
+            image:  DecorationImage(
+              image: AssetImage('assets/icons/selectDocumentBg.png'),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 1,
+                child: SvgPicture.asset(
+                  'assets/icons/kycUser.svg',
+                  width: screenWidth * 0.04,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              SizedBox(width: screenWidth * 0.02),
+              Flexible(
+                flex: 3,
+                child: Text(
+                  "KYC Verification",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                    fontSize: getResponsiveFontSize(context, 14),
+                    height: 1.6,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+
+        SizedBox(height: screenHeight * 0.04),
+
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "Verification requires the following:",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+              fontSize: getResponsiveFontSize(context, 14),
+              height: 1.6,
+              color: Colors.white,
+            ),
+          ),
+        ),
+
+        SizedBox(height: screenHeight * 0.03),
+
+        /// Select Country of Resident:
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  "Select Country of Resident:",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                    fontSize: getResponsiveFontSize(context, 12),
+                    height: 1.6,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+
+
+            SizedBox(width: screenWidth * 0.08),
+
+            Expanded(
+              child: CustomDropdown(
+                label: 'Country',
+                items: const ['Dubai', 'USA', 'Bangladesh'],
+                selectedValue: _selectedCountry,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCountry = value;
+                  });
+                  print('Selected country: $_selectedCountry');
+                },
+              ),
+            ),
+          ],
+        ),
+
+        SizedBox(height: screenHeight * 0.05),
+
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "Selected your valid Government-issued document",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+              fontSize: getResponsiveFontSize(context, 12),
+              height: 1.6,
+              color: Colors.white,
+            ),
+          ),
+        ),
+
+
+        SizedBox(height: screenHeight * 0.02),
+
+
+        /// Show User Selected index from _buildStatCard()
+        Container(
+          width: screenWidth,
+          height: screenHeight * 0.05,
+          padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+          decoration: ShapeDecoration(
+            color: Color(0xFF172C4B).withOpacity(0.20),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(width: 0.50, color: Color(0xFF4E4D50)),
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 24,
+                height: 18,
+                decoration: ShapeDecoration(
+                  image: DecorationImage(
+                    image: displayImageProvider,
+                    fit: BoxFit.contain,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0.53),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                submissionText,
+
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: getResponsiveFontSize(context, 14),
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w400,
+                  height: 1.6,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.03),
+
+
+        Center(
+          child: BlockButton(
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.7,
+            label: 'Start Verification',
+            textStyle:  TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              // fontSize: baseSize * 0.040,
+              fontSize: getResponsiveFontSize(context, 15),
+              height: 1.6,
+            ),
+            gradientColors: const [
+              Color(0xFF2680EF),
+              Color(0xFF1CD494)
+              // 1CD494
+            ],
+            onTap: () {},
+            iconPath: 'assets/icons/arrowIcon.svg',
+            iconSize : screenHeight * 0.013,
+          ),
+
+
+        ),
+
+
+
+
+      ],
+    );
+
+  }
 
 
 }
-
-
-
-
 

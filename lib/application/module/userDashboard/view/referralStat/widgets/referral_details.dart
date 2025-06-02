@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../framework/components/referralStatDetailComponenet.dart';
-import '../../../../../../framework/components/transactionDetailsComponent.dart';
 
 
 

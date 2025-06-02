@@ -1,15 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
 
-import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
-import '../../../../../framework/utils/enums/milestone_status.dart';
-import '../../../../domain/model/milestone_list_models.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
-import '../milestone/widget/milestone_lists.dart';
 
 class KycScreen extends StatefulWidget {
   const KycScreen({super.key});
@@ -28,13 +23,6 @@ class _KycScreenState extends State<KycScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final bool isPortrait = screenHeight > screenWidth;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-
-    final containerWidth = screenWidth;
-    final containerHeight = screenHeight * 0.10;
-    final minContainerHeight = screenHeight * 0.002;
-
     final itemSpacing = screenWidth * 0.02;
 
 
@@ -73,7 +61,7 @@ class _KycScreenState extends State<KycScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // App bar row
+              /// App bar row
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,7 +93,7 @@ class _KycScreenState extends State<KycScreen> {
                 ],
               ),
 
-              // Main content area
+              /// Main content area
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -124,15 +112,18 @@ class _KycScreenState extends State<KycScreen> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: Text(
-                          "Select Your Documents:",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                            fontSize: getResponsiveFontSize(context, 12),
-                            height: 1.6,
-                            color: Colors.white,)
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "Select Your Documents:",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              fontSize: getResponsiveFontSize(context, 12),
+                              height: 1.6,
+                              color: Colors.white,)
+                          ),
                         ),
                       ),
 
@@ -209,6 +200,52 @@ class _KycScreenState extends State<KycScreen> {
                               child: SvgPicture.asset(
                                 'assets/icons/timerImg.svg',
                                 width: screenWidth * 0.04,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            SizedBox(width: screenWidth * 0.02),
+                            Flexible(
+                              flex: 5,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  "Estimated Completion Time: 5-10 minutes",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: getResponsiveFontSize(context, 12),
+                                    height: 1.6,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.030),
+
+
+                      Container(
+                        width: screenWidth,
+                        decoration:const BoxDecoration(
+                          image:  DecorationImage(
+                            image: AssetImage('assets/icons/selectDocumentBg.png'),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: SvgPicture.asset(
+                                'assets/icons/kycUser.svg',
+                                width: screenWidth * 0.04,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -216,13 +253,12 @@ class _KycScreenState extends State<KycScreen> {
                             Flexible(
                               flex: 3,
                               child: Text(
-                                "Select Your Documents:",
+                                "KYC Verification",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
-                                  fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: getResponsiveFontSize(context, 12),
+                                   fontWeight: FontWeight.w500,
+                                  fontSize: getResponsiveFontSize(context, 14),
                                   height: 1.6,
                                   color: Colors.white,
                                 ),
@@ -231,7 +267,6 @@ class _KycScreenState extends State<KycScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.030),
 
 
 

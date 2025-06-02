@@ -231,8 +231,6 @@ class _KycScreenState extends State<KycScreen> {
                       /// _kycVerification
                        if (selectedCardIndex >= 0) _kycVerification(),
 
-
-
                     ],
                   ),
                 ),

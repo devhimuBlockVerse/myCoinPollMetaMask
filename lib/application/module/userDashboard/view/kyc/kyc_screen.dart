@@ -229,7 +229,7 @@ class _KycScreenState extends State<KycScreen> {
 
 
                       /// _kycVerification
-                      _kycVerification(),
+                       if (selectedCardIndex >= 0) _kycVerification(),
 
 
 

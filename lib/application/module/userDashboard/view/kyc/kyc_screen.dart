@@ -21,6 +21,7 @@ class KycScreen extends StatefulWidget {
 class _KycScreenState extends State<KycScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectedCardIndex = -1;
 
 
   @override
@@ -35,6 +36,7 @@ class _KycScreenState extends State<KycScreen> {
     final minContainerHeight = screenHeight * 0.002;
 
     final itemSpacing = screenWidth * 0.02;
+
 
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
@@ -146,39 +148,43 @@ class _KycScreenState extends State<KycScreen> {
                           Expanded(
                             child: _buildStatCard(
                               title: 'National Id Card',
-                               gradient: const LinearGradient(
-                                begin: Alignment(0.99, 0.14),
-                                end: Alignment(-0.99, -0.14),
-                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                              ),
-                              emojiIcon: "assets/icons/nid.png",
+                               emojiIcon: "assets/icons/nid.png",
+                              selected: selectedCardIndex == 0,
+                              onTap: () {
+                                print("Tapped card 0, new index: 0");
 
+                                setState(() {
+                                  selectedCardIndex = 0;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(width: itemSpacing),
                           Expanded(
                             child: _buildStatCard(
                               title: 'Passport',
-                               gradient: const LinearGradient(
-                                begin: Alignment(0.99, 0.14),
-                                end: Alignment(-0.99, -0.14),
-                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                              ),
-                              emojiIcon: "assets/icons/passport.png",
 
+                              emojiIcon: "assets/icons/passport.png",
+                              selected: selectedCardIndex == 1,
+                              onTap: () {
+                                setState(() {
+                                  selectedCardIndex = 1;
+                                });
+                              },
                             ),
                           ),
                           SizedBox(width: itemSpacing),
                           Expanded(
                             child: _buildStatCard(
                               title: 'Driving License',
-                               gradient: const LinearGradient(
-                                begin: Alignment(0.99, 0.14),
-                                end: Alignment(-0.99, -0.14),
-                                colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                              ),
-                              emojiIcon: "assets/icons/drivingLicense.png",
 
+                              emojiIcon: "assets/icons/drivingLicense.png",
+                              selected: selectedCardIndex == 2,
+                              onTap: () {
+                                setState(() {
+                                  selectedCardIndex = 2;
+                                });
+                              },
                             ),
                           ),
                         ],
@@ -243,62 +249,74 @@ class _KycScreenState extends State<KycScreen> {
 
   Widget _buildStatCard({
     required String title,
-    required LinearGradient gradient,
-     Color? borderColor,
     String? emojiIcon,
+    required VoidCallback onTap,
+    required bool selected,
+
 
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
     final borderRadius = screenWidth * 0.009;
     final verticalContentPadding = screenWidth * 0.02;
 
-    return Container(
-      width: screenWidth,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(borderRadius),
-        gradient: gradient,
-        border: Border.all(
-          color: borderColor ?? const Color(0xFF2B2D40),
-          width: 1,
-        ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: screenWidth,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius),
+           gradient: selected ? LinearGradient(colors: [
+             Color(0xFF1CD494).withOpacity(0.20),
+             Color(0xFF1CD494).withOpacity(0.20),]
+           ) : const LinearGradient(
+            begin: Alignment(0.99, 0.14),
+            end: Alignment(-0.99, -0.14),
+             colors: [Color(0xFF040C16), Color(0XFF172C4B)],
+          ),
+          border: Border.all(
+             color: selected ? const Color(0xFF1CD494) : const Color(0xFF2B2D40),
 
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.02,
-          vertical: verticalContentPadding,
+            width: 1,
+          ),
+
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
-          children: [
-            if (emojiIcon != null)
-              SizedBox(
-                width: screenWidth * 0.06,
-                height: screenWidth * 0.06,
-                child: Image.asset(
-                  emojiIcon,
-                  fit: BoxFit.contain,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.02,
+            vertical: verticalContentPadding,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            // mainAxisSize: MainAxisSize.min,
+            children: [
+              if (emojiIcon != null)
+                SizedBox(
+                  width: screenWidth * 0.06,
+                  height: screenWidth * 0.06,
+                  child: Image.asset(
+                    emojiIcon,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              SizedBox(height: 2),
+
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: getResponsiveFontSize(context, 12),
+                    color: Colors.white.withOpacity(0.8),
+                    fontWeight: FontWeight.w500,
+                    height: 1.3,
+                  ),
                 ),
               ),
-            SizedBox(height: 2),
 
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: getResponsiveFontSize(context, 12),
-                  color: Colors.white.withOpacity(0.8),
-                  fontWeight: FontWeight.w500,
-                  height: 1.3,
-                ),
-              ),
-            ),
-
-          ],
+            ],
+          ),
         ),
       ),
     );

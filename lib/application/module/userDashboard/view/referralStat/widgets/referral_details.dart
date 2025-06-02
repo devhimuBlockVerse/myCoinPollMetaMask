@@ -65,12 +65,12 @@ class ReferralDetails extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Text(
-                            '\$ 100000.00',
+                            'Jane Cooper',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
                               fontSize: screenWidth * 0.08,
-                              color: const Color(0xff1CD494),
+                              color: const Color(0xffFFF5ED),
                               height: 1.6,
                             ),
                           ),
@@ -81,8 +81,8 @@ class ReferralDetails extends StatelessWidget {
                             value: '07/10/2024; 09:30 PM',
                           ),
                           const ReferralDetailsComponent(
-                            label: 'Block',
-                            value: '20969235',
+                            label: 'User ID',
+                            value: '5320127',
                           ),
                           const ReferralDetailsComponent(
                             label: 'Status',
@@ -93,21 +93,16 @@ class ReferralDetails extends StatelessWidget {
                           SizedBox(height: screenHeight * 0.03),
 
                           const ReferralDetailsComponent(
-                            label: 'Txn Hash',
-                            value: '0xac6d8ae0a1dcX',
+                            label: 'Phone',
+                            value: '(704) 555-0127',
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
                           const ReferralDetailsComponent(
-                            label: 'From',
-                            value: '0xaFODFEC80xaFOFODFEODCaFC8',
+                            label: 'Email',
+                            value: 'deanna.curtis@example.com',
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
-                          const ReferralDetailsComponent(
-                            label: 'To',
-                            value:
-                            '0xaFODFEC80xaFOFODFEODCaFC8',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
+
                         ],
                       ),
                     ),

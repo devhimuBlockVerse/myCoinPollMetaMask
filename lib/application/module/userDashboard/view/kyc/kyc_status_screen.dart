@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_inProgress_screen.dart';
- import 'package:provider/provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import '../dashboard/dashboard_screen.dart';
 
-class KycScreen extends StatefulWidget {
-  const KycScreen({super.key});
+
+class KycStatusScreen extends StatefulWidget {
+  const KycStatusScreen({super.key});
 
   @override
-  State<KycScreen> createState() => _KycScreenState();
+  State<KycStatusScreen> createState() => _KycStatusScreenState();
 }
 
-class _KycScreenState extends State<KycScreen> {
+class _KycStatusScreenState extends State<KycStatusScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedCardIndex = -1;
@@ -95,7 +95,7 @@ class _KycScreenState extends State<KycScreen> {
                       width: screenWidth * 0.04,
                       height: screenWidth * 0.04,
                     ),
-                    onPressed: () => Navigator.pop(context),
+                      onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) =>  DashboardScreen()))
                   ),
                   Expanded(
                     child: Center(
@@ -137,14 +137,14 @@ class _KycScreenState extends State<KycScreen> {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            "Select Your Documents:",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              color: Colors.white,)
+                              "Select Your Documents:",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                                fontSize: getResponsiveFontSize(context, 12),
+                                height: 1.6,
+                                color: Colors.white,)
                           ),
                         ),
                       ),
@@ -171,7 +171,7 @@ class _KycScreenState extends State<KycScreen> {
                                 selected: selectedCardIndex == index,
                                 onTap: () {
                                   setState(() {
-                                    selectedCardIndex = index;
+                                    // selectedCardIndex = index;
                                   });
                                   print("Tapped card $index, new index: $index");
                                 },
@@ -230,7 +230,7 @@ class _KycScreenState extends State<KycScreen> {
 
 
                       /// _kycVerification
-                       if (selectedCardIndex >= 0) _kycVerification(),
+                      if (selectedCardIndex >= 0) _kycVerification(),
 
                     ],
                   ),
@@ -247,7 +247,7 @@ class _KycScreenState extends State<KycScreen> {
   Widget _buildStatCard({
     required String title,
     String? emojiIcon,
-    required VoidCallback onTap,
+    VoidCallback? onTap,
     required bool selected,
 
 
@@ -262,16 +262,16 @@ class _KycScreenState extends State<KycScreen> {
         width: screenWidth,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
-           gradient: selected ? LinearGradient(colors: [
-             Color(0xFF1CD494).withOpacity(0.20),
-             Color(0xFF1CD494).withOpacity(0.20),]
-           ) : const LinearGradient(
+          gradient: selected ? LinearGradient(colors: [
+            Color(0xFF1CD494).withOpacity(0.20),
+            Color(0xFF1CD494).withOpacity(0.20),]
+          ) : const LinearGradient(
             begin: Alignment(0.99, 0.14),
             end: Alignment(-0.99, -0.14),
-             colors: [Color(0xFF040C16), Color(0XFF172C4B)],
+            colors: [Color(0xFF040C16), Color(0XFF172C4B)],
           ),
           border: Border.all(
-             color: selected ? const Color(0xFF1CD494) : const Color(0xFF2B2D40),
+            color: selected ? const Color(0xFF1CD494) : const Color(0xFF2B2D40),
 
             width: 1,
           ),
@@ -384,160 +384,8 @@ class _KycScreenState extends State<KycScreen> {
 
         SizedBox(height: screenHeight * 0.04),
 
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            "Verification requires the following:",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-              fontSize: getResponsiveFontSize(context, 14),
-              height: 1.6,
-              color: Colors.white,
-            ),
-          ),
-        ),
-
-        SizedBox(height: screenHeight * 0.03),
-
-        /// Select Country of Resident:
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  "Select Country of Resident:",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    fontSize: getResponsiveFontSize(context, 12),
-                    height: 1.6,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
 
 
-            SizedBox(width: screenWidth * 0.08),
-
-            Expanded(
-              child: CustomDropdown(
-                label: 'Country',
-                items: const ['Dubai', 'USA', 'Bangladesh'],
-                selectedValue: _selectedCountry,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCountry = value;
-                  });
-                  print('Selected country: $_selectedCountry');
-                },
-              ),
-            ),
-          ],
-        ),
-
-        SizedBox(height: screenHeight * 0.05),
-
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            "Selected your valid Government-issued document",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400,
-              fontSize: getResponsiveFontSize(context, 12),
-              height: 1.6,
-              color: Colors.white,
-            ),
-          ),
-        ),
-
-
-        SizedBox(height: screenHeight * 0.02),
-
-
-        /// Show User Selected index from _buildStatCard()
-        Container(
-          width: screenWidth,
-          height: screenHeight * 0.05,
-          padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          decoration: ShapeDecoration(
-            color: Color(0xFF172C4B).withOpacity(0.20),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 0.50, color: Color(0xFF4E4D50)),
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 24,
-                height: 18,
-                decoration: ShapeDecoration(
-                  image: DecorationImage(
-                    image: displayImageProvider,
-                    fit: BoxFit.contain,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.53),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                submissionText,
-
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: getResponsiveFontSize(context, 14),
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400,
-                  height: 1.6,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: screenHeight * 0.03),
-
-
-        Center(
-          child: BlockButton(
-            height: screenHeight * 0.05,
-            width: screenWidth * 0.7,
-            label: 'Start Verification',
-            textStyle:  TextStyle(
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              // fontSize: baseSize * 0.040,
-              fontSize: getResponsiveFontSize(context, 15),
-              height: 1.6,
-            ),
-            gradientColors: const [
-              Color(0xFF2680EF),
-              Color(0xFF1CD494)
-              // 1CD494
-            ],
-            onTap: () {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
-            },
-            iconPath: 'assets/icons/arrowIcon.svg',
-            iconSize : screenHeight * 0.013,
-          ),
-
-
-        ),
 
 
       ],
@@ -545,6 +393,4 @@ class _KycScreenState extends State<KycScreen> {
 
   }
 
-
 }
-

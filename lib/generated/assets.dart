@@ -50,6 +50,7 @@ class Assets {
   static const String iconsBuildStatCardBG = 'assets/icons/buildStatCardBG.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
+  static const String iconsCTA = 'assets/icons/CTA.png';
   static const String iconsCalender = 'assets/icons/calender.svg';
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';

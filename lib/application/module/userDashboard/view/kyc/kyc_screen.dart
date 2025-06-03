@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_inProgress_screen.dart';
- import 'package:provider/provider.dart';
-
+import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
@@ -12,7 +9,6 @@ import '../../../dashboard_bottom_nav.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
-import '../dashboard/dashboard_screen.dart';
 import 'kyc_upload_image.dart';
 
 class KycScreen extends StatefulWidget {

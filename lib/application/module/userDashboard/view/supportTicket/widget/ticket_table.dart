@@ -1,12 +1,12 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
-import '../../../../../domain/model/ReferralUserListModel.dart';
- import 'referral_details.dart';
+import '../../../../../domain/model/TicketListModel.dart';
+import '../../../../../domain/model/ticket_list_dummy_data.dart';
+import '../../referralStat/widgets/referral_details.dart';
 
-Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, double screenWidth, BuildContext context) {
+Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, BuildContext context) {
   double screenHeight = MediaQuery.of(context).size.height;
   const double designScreenWidth = 375.0;
 
@@ -42,42 +42,48 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            height: screenHeight * 0.45,
+            height: screenHeight * 0.40,
             width: constraints.maxWidth * 1.5,
             child: DataTable2(
+
               dataRowHeight: screenHeight * 0.04,
-              columnSpacing: screenWidth * 0.001,
+              columnSpacing: screenWidth * 0.003,
               horizontalMargin: screenWidth * 0.002,
               headingRowHeight: screenHeight * 0.04,
               dividerThickness: 0,
               headingRowDecoration: const BoxDecoration(
-                color: Color(0xff051121),
+                color: Color(0XFF051121),
               ),
-              columns: [
-                DataColumn2(
-                  label: buildCenteredText('SL', headingStyle),
-                  fixedWidth: screenWidth * (40.0 / designScreenWidth),
-                ),
+               columns: [
+                DataColumn2(label: buildCenteredText('Ticket ID', headingStyle), size: ColumnSize.M),
+                DataColumn2(label: buildCenteredText('Subject', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.L),
-                DataColumn2(label: buildCenteredText('Name', headingStyle), size: ColumnSize.L),
-                DataColumn2(label: buildCenteredText('User ID', headingStyle), size: ColumnSize.M),
                 DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.M),
                 DataColumn2(
                   label: buildCenteredText('Details', headingStyle),
                   fixedWidth: screenWidth * (40.0 / designScreenWidth),
                 ),
               ],
-              rows: userLogData.asMap().entries.map((entry) {
-                ReferralUserListModel data = entry.value; // Use UserLogModel
-                final statusText = data.status;
-                final statusStyle = getReferralUserStatusStyle(statusText);
+              rows: ticketListData.asMap().entries.map((entry) {
+                int index = entry.key;
+                TicketListModel data = entry.value;
+                final statusStyle = getTicketListStatusStyle(data.status);
+
+                final Color rowColor = index % 2 == 0 ? const Color(0XFF051121) :  Colors.transparent;
+
 
                 return DataRow2(
+                  color: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                    if (states.contains(MaterialState.selected)) {
+                      return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+                    }
+                    return rowColor;
+                  }),
+
                   cells: [
-                    DataCell(buildCenteredText(data.sl, cellTextStyle)),
-                    DataCell(buildCenteredText(data.date, cellTextStyle)),
-                    DataCell(buildCenteredText(data.name, cellTextStyle)),
-                    DataCell(buildCenteredText(data.userId, cellTextStyle)),
+                    DataCell(buildCenteredText(data.ticketID, cellTextStyle)),
+                    DataCell(buildCenteredText(data.subject, cellTextStyle)),
+                     DataCell(buildCenteredText(data.date, cellTextStyle)),
                     DataCell(
                       Center(
                         child: Container(
@@ -91,7 +97,7 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
-                            statusText,
+                            data.status,
                             style: cellTextStyle.copyWith(
                               color: statusStyle.textColor,
                               fontSize: getResponsiveFontSize(context, 11),
@@ -112,7 +118,7 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
                               context: context,
                               builder: (_) => const ReferralDetails(),
                             );
-                            print('View details for User ID: ${data.userId}');
+                            print('View details for User ID: ${data.ticketID}');
                           },
                           tooltip: 'View Details',
                         ),
@@ -121,6 +127,10 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
                   ],
                 );
               }).toList(),
+
+
+
+
               empty: Center(
                 child: Container(
                   padding: const EdgeInsets.all(20),
@@ -136,4 +146,10 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
       },
     ),
   );
+
+
+
+
+
+
 }

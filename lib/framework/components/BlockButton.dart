@@ -13,6 +13,7 @@ class BlockButton extends StatelessWidget {
   final List<Color> gradientColors;
 
   final String? iconPath;
+  final String? leadingIconPath;
   final double? iconSize;
   final double iconRotation;
   final TextStyle? textStyle;
@@ -26,7 +27,7 @@ class BlockButton extends StatelessWidget {
     required this.gradientColors,
     this.iconPath,
     this.iconSize,
-    this.iconRotation = 0.0, this.textStyle,
+    this.iconRotation = 0.0, this.textStyle, this.leadingIconPath,
   });
 
   @override
@@ -63,6 +64,18 @@ class BlockButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (leadingIconPath != null)
+                Transform.rotate(
+                    angle: iconRotation * math.pi / 180,
+                    child: SvgPicture.asset(
+                      leadingIconPath!,
+                      width: calculatedIconSize,
+                      height: calculatedIconSize,
+                      color: Colors.white,
+                    ),
+                  ),
+                SizedBox(width: buttonWidth * 0.03),
+
 
                 if (iconPath != null)
                   SizedBox(width: buttonWidth * 0.03),

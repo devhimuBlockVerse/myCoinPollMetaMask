@@ -145,3 +145,46 @@ StatusStyling getKycUserStatusStyle(String status) {
       );
   }
 }
+
+
+
+StatusStyling getTicketListStatusStyle(String status) {
+  switch (status) {
+    case 'In progress':
+      return StatusStyling(
+        backgroundColor: const Color(0XFF2680EF).withOpacity(0.20),
+        borderColor: const Color(0xFF2680EF),
+        textColor: const Color(0xFF2680EF),
+      );
+    case 'Open':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
+        borderColor: const Color(0xFF1CD494),
+        textColor: const Color(0xFF1CD494),
+      );
+    case 'Pending':
+      return StatusStyling(
+        backgroundColor: const Color(0xFFFFB41F).withOpacity(0.20),
+        borderColor: const Color(0xFFFFB41F),
+        textColor: const Color(0xFFFFB41F),
+      );
+    case 'Resolved':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF1B9914).withOpacity(0.20),
+        borderColor: const Color(0xFF1B9914),
+        textColor: const Color(0xFF1B9914),
+      );
+    case 'Closed':
+      return StatusStyling(
+        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
+        borderColor: const Color(0xFFE04043),
+        textColor: const Color(0xFFE04043),
+      );
+    default:
+      return StatusStyling(
+        backgroundColor: const Color(0xFF2A2A2A),
+        borderColor: Colors.grey[600]!,
+        textColor: Colors.white,
+      );
+  }
+}

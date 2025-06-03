@@ -4,6 +4,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/d
 import 'package:provider/provider.dart';
 
 import 'application/module/dashboard_bottom_nav.dart';
+import 'application/module/userDashboard/view/kyc/kyc_upload_image.dart';
 import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart';
 import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+        ChangeNotifierProvider(create: (_) => UploadProvider()),
 
       ],
 

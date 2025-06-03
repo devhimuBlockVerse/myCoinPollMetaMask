@@ -12,6 +12,7 @@ import '../../../side_nav_bar.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../dashboard/dashboard_screen.dart';
+import 'kyc_upload_image.dart';
 
 class KycScreen extends StatefulWidget {
   const KycScreen({super.key});
@@ -543,7 +544,8 @@ class _KycScreenState extends State<KycScreen> {
               // 1CD494
             ],
             onTap: () {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
+              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycUploadImage()), (route) => false);
             },
             iconPath: 'assets/icons/arrowIcon.svg',
             iconSize : screenHeight * 0.013,

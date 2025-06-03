@@ -52,6 +52,7 @@ class Assets {
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCTA = 'assets/icons/CTA.png';
   static const String iconsCalender = 'assets/icons/calender.svg';
+  static const String iconsCamera = 'assets/icons/camera.svg';
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';

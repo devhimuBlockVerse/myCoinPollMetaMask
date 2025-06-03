@@ -16,9 +16,13 @@ import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
  import '../../../../../framework/utils/dynamicFontSize.dart';
- import '../../viewmodel/side_navigation_provider.dart';
+ import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
+import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import '../affiliate/affiliate_screen.dart';
+import '../kyc/kyc_inProgress_screen.dart';
+import '../kyc/kyc_status_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -814,9 +818,32 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     ],
 
                       onTap: () {
-                      debugPrint('Button tapped');
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  KycScreen()));
+                        // final kycProvider = Provider.of<KycNavigationProvider>(context, listen: false);
+                        // final lastScreen = kycProvider.lastVisitedScreen;
 
+                        final lastScreen = Provider.of<KycNavigationProvider>(context, listen: false).lastVisitedScreen;
+
+                        Widget screenToNavigate;
+                        switch (lastScreen) {
+                          case KycScreenType.kycInProgress:
+                            screenToNavigate = KycInProgressScreen();
+                            break;
+                          case KycScreenType.kycStatus:
+                            screenToNavigate = KycStatusScreen();
+                            break;
+                          case KycScreenType.kycScreen:
+                          default:
+                            screenToNavigate = KycScreen();
+                            break;
+                        }
+
+                        debugPrint('Button tapped');
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) =>  KycScreen()));
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => screenToNavigate),
+                        );
                     },
                   ),
                 ),

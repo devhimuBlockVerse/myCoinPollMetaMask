@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../side_nav_bar.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'kyc_status_screen.dart';
 
@@ -19,6 +21,15 @@ class KycInProgressScreen extends StatefulWidget {
 class _KycInProgressScreenState extends State<KycInProgressScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<KycNavigationProvider>(context, listen: false)
+        .setLastVisitedScreen(KycScreenType.kycInProgress);
+
+  }
+
 
   @override
   Widget build(BuildContext context) {

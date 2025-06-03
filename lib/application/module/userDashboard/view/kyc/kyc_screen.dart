@@ -7,8 +7,11 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../side_nav_bar.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import '../dashboard/dashboard_screen.dart';
 
 class KycScreen extends StatefulWidget {
   const KycScreen({super.key});
@@ -40,6 +43,16 @@ class _KycScreenState extends State<KycScreen> {
       'submissionText': 'Driving License Submission Required',
     },
   ];
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<KycNavigationProvider>(context, listen: false)
+        .setLastVisitedScreen(KycScreenType.kycScreen);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +108,7 @@ class _KycScreenState extends State<KycScreen> {
                       width: screenWidth * 0.04,
                       height: screenWidth * 0.04,
                     ),
-                    onPressed: () => Navigator.pop(context),
+                      onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) =>  DashboardScreen()))
                   ),
                   Expanded(
                     child: Center(

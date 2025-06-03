@@ -145,6 +145,7 @@ class Assets {
   static const String iconsReferral = 'assets/icons/referral.svg';
   static const String iconsReferralTransaction = 'assets/icons/referral_transaction.svg';
   static const String iconsReff = 'assets/icons/reff.svg';
+  static const String iconsRejectedStatusBg = 'assets/icons/rejectedStatusBg.png';
   static const String iconsRewardContainerBg = 'assets/icons/rewardContainerBg.png';
   static const String iconsRightArrow = 'assets/icons/rightArrow.svg';
   static const String iconsRoadMaoLine = 'assets/icons/roadMaoLine.png';

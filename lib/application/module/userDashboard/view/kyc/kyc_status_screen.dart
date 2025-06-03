@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../../../framework/utils/status_styling_utils.dart';
 import '../../../side_nav_bar.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../dashboard/dashboard_screen.dart';
 
@@ -41,6 +44,15 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
       'submissionText': 'Driving License Submission Required',
     },
   ];
+
+
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<KycNavigationProvider>(context, listen: false)
+        .setLastVisitedScreen(KycScreenType.kycStatus);
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,7 +341,7 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
 
 
     // This will come from your model/API
-    String _userKycStatus = 'Pending';
+    String _userKycStatus = 'Rejected';
     StatusStyling statusStyle = getKycUserStatusStyle(_userKycStatus);
 
 
@@ -415,58 +427,139 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
               ),
 
               SizedBox(height: screenHeight * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Reference Number: #12542463",
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: getResponsiveFontSize(context, 12),
-                      color: Colors.white70,
-                    ),
-                  ),
 
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final screenWidth = constraints.maxWidth;
 
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.03,
-                      vertical: screenWidth * 0.01,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusStyle.backgroundColor,
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: statusStyle.borderColor,width: 0.5),
-                    ),
-                    child: Text(
-                      _userKycStatus,
-                      style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          fontSize: getResponsiveFontSize(context, 11),
-                          color: statusStyle.textColor,
-                          height: 1.1
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      /// Left side - Reference Number
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          "Reference Number: #12542463",
+                           style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: getResponsiveFontSize(context, 12),
+                            color: Colors.white70,
+                          ),
+                        ),
                       ),
-                    ),
-                  )
 
-                ],
+                      // SizedBox(width: 10),
+
+                      /// Right side - Status label + Container
+                      Flexible(
+                        flex: 1,
+
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Status: ",
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: getResponsiveFontSize(context, 12),
+                                color: Colors.white,
+                              ),
+                            ),
+                             SizedBox(width: screenWidth * 0.01),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.03,
+                                vertical: screenWidth * 0.01,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusStyle.backgroundColor,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: statusStyle.borderColor, width: 0.5),
+                              ),
+                              child: Text(
+                                _userKycStatus,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: getResponsiveFontSize(context, 11),
+                                  color: statusStyle.textColor,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
 
               SizedBox(height: screenHeight * 0.02),
 
               if (_userKycStatus == "Pending")
-                Text(
-                  "Once your request is processed, you'll receive a notification ensure prompt communication to keep you updated on the status and provide timely updates.",
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    fontSize: getResponsiveFontSize(context, 12),
-                    height: 1.6,
-                    color: Colors.white70,
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Once your request is processed, you'll receive a notification ensure prompt communication to keep you updated on the status and provide timely updates.",
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        fontSize: getResponsiveFontSize(context, 12),
+                        height: 1.6,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.03),
+
+                    Container(
+                      width: screenWidth,
+                      decoration:const BoxDecoration(
+                        image:  DecorationImage(
+                          image: AssetImage('assets/icons/estimatedBG.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: SvgPicture.asset(
+                              'assets/icons/timerImg.svg',
+                              width: screenWidth * 0.04,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          SizedBox(width: screenWidth * 0.02),
+                          Flexible(
+                            flex: 5,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "Estimated Processing Time: 24-48 Hours.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  height: 1.6,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
+
 
               if (_userKycStatus == 'Approved')
                 Text(
@@ -475,20 +568,83 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
                 fontFamily: 'Poppins',
                 fontSize: getResponsiveFontSize(context, 12),
                 height: 1.6,
-                color: Colors.white70,
+                color: Colors.white,
 
                 ),
                 )
               else if (_userKycStatus == 'Rejected')
-                Text(
-                "We couldn't verify your details due to inconsistencies in the provided documents. Kindly resubmit with accurate and clear information.",
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: getResponsiveFontSize(context, 12),
-                  height: 1.6,
-                  color: Colors.white70,
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                    "We couldn't verify your details due to inconsistencies in the provided documents. Kindly resubmit with accurate and clear information.",
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: getResponsiveFontSize(context, 12),
+                      height: 1.6,
+                      color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.04),
+                    Container(
+                      width: screenWidth,
+                      decoration:const BoxDecoration(
+                        image:  DecorationImage(
+                          image: AssetImage('assets/icons/rejectedStatusBg.png'),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      child: Flexible(
+                        flex: 5,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            " Please review your information and try again!",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w400,
+                              fontSize: getResponsiveFontSize(context, 12),
+                              height: 1.6,
+                              color: Color(0xFFE2AD36),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: screenHeight * 0.04),
+
+                    BlockButton(
+                      height: screenHeight * 0.05,
+                      width: screenWidth * 0.7,
+                      label: 'Start Verification Again',
+                      textStyle:  TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        // fontSize: baseSize * 0.040,
+                        fontSize: getResponsiveFontSize(context, 15),
+                        height: 1.6,
+                      ),
+                      gradientColors: const [
+                        Color(0xFF2680EF),
+                        Color(0xFF1CD494)
+                        // 1CD494
+                      ],
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycScreen()), (route) => false);
+                      },
+                      iconPath: 'assets/icons/arrowIcon.svg',
+                      iconSize : screenHeight * 0.013,
+                    ),
+
+                  ],
                 ),
+
+
+
 
             ]
           ),

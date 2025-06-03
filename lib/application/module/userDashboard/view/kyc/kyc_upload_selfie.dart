@@ -3,8 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../side_nav_bar.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import 'kyc_upload_image.dart';
 
 
 class KycUploadSelfie extends StatefulWidget {
@@ -19,12 +22,11 @@ class _KycUploadSelfieState extends State<KycUploadSelfie> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
-
   @override
   void initState() {
-     super.initState();
-
+    super.initState();
+    Provider.of<KycNavigationProvider>(context, listen: false)
+        .setLastVisitedScreen(KycScreenType.kycUploadSelfie);
   }
 
   @override
@@ -83,7 +85,7 @@ class _KycUploadSelfieState extends State<KycUploadSelfie> {
                       width: screenWidth * 0.04,
                       height: screenWidth * 0.04,
                     ),
-                    onPressed: () => Navigator.pop(context),
+                      onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) =>  KycUploadImage()))
                   ),
                   Expanded(
                     child: Text(

@@ -8,10 +8,6 @@ class KycNavigationProvider with ChangeNotifier {
 
   KycScreenType? get lastVisitedScreen => _lastVisitedScreen;
 
-  // void setLastVisitedScreen(KycScreenType screen) {
-  //   _lastVisitedScreen = screen;
-  //   notifyListeners();
-  // }
 
   // Call this when any KYC screen is opened
   Future<void> setLastVisitedScreen(KycScreenType screen) async {

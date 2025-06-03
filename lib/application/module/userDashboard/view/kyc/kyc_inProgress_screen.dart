@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../../dashboard_bottom_nav.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -80,7 +81,7 @@ class _KycInProgressScreenState extends State<KycInProgressScreen> {
                   width: screenWidth * 0.04,
                   height: screenWidth * 0.04,
                 ),
-                onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) =>  DashboardScreen()))
+                onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context) =>  DashboardBottomNavBar()))
 
               ),
 

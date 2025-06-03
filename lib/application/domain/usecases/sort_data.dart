@@ -4,6 +4,7 @@ import '../../../framework/utils/enums/sort_option.dart';
 import '../../data/dummyData/referral_transaction_dummy_data.dart';
 import '../model/PurchaseLogModel.dart';
 import '../model/ReferralUserListModel.dart';
+import '../model/TicketListModel.dart';
 import '../model/milestone_list_models.dart';
 import 'package:intl/intl.dart';
 
@@ -168,8 +169,8 @@ class SortReferralTransactionUseCase {
 
 class SortReferralUseListUseCase {
   List<ReferralUserListModel> call(
-      List<ReferralUserListModel> data, // Type changed to List<UserLogModel>
-      SortReferralUserListOption option, // Option type changed
+      List<ReferralUserListModel> data,
+      SortReferralUserListOption option,
       ) {
     final sorted = List<ReferralUserListModel>.from(data);
     final DateFormat parser = DateFormat('MM/dd/yy');
@@ -202,6 +203,37 @@ class SortReferralUseListUseCase {
           return a.userId.toLowerCase().compareTo(b.userId.toLowerCase());
         case SortReferralUserListOption.userIdDesc:
           return b.userId.toLowerCase().compareTo(a.userId.toLowerCase());
+      }
+    });
+
+    return sorted;
+  }
+}
+
+
+
+class SortTableListUseCase {
+  List<TicketListModel> call(
+      List<TicketListModel> data,
+      SortTicketListOption option,
+      ) {
+    final sorted = List<TicketListModel>.from(data);
+
+    sorted.sort((a, b) {
+      switch (option) {
+        case SortTicketListOption.dateLatest:
+          return DateParser.fromReadableFormat(b.date)
+              .compareTo(DateParser.fromReadableFormat(a.date));
+
+        case SortTicketListOption.dateOldest:
+          return DateParser.fromReadableFormat(a.date)
+              .compareTo(DateParser.fromReadableFormat(b.date));
+
+        case SortTicketListOption.statusAsc:
+          return a.status.compareTo(b.status);
+
+        case SortTicketListOption.statusDesc:
+          return b.status.compareTo(a.status);
       }
     });
 

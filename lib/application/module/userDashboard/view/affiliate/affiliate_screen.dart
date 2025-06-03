@@ -79,17 +79,33 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // App bar row
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/back_button.svg',
-                    color: Colors.white,
-                    width: screenWidth * 0.04,
-                    height: screenWidth * 0.04,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/back_button.svg',
+                        color: Colors.white,
+                        width: screenWidth * 0.04,
+                        height: screenWidth * 0.04,
+                      ),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                  Expanded(
+                    child: Text(
+                      ' Your Affiliate Progress',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: getResponsiveFontSize(context, 16),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  SizedBox(width: screenWidth * 0.12),
+                ],
               ),
 
 
@@ -103,17 +119,6 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                   child: ListView(
                     children: [
 
-                      /// Activity Status
-                      Text(
-                        'Your Affiliate Progress',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 16),
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
 
                       SizedBox(height: screenHeight * 0.02),
 

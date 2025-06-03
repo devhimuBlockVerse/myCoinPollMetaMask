@@ -267,7 +267,6 @@ class _KycUploadImageState extends State<KycUploadImage> {
          )
       ],
     );
-    
   }
 
 

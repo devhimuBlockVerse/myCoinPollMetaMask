@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/supportTicket/suppor_ticket_screen.dart';
 
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
@@ -80,15 +81,14 @@ class NavigationProvider extends ChangeNotifier {
       id: 'support_ticket',
       title: 'Support Ticket',
       iconPath: 'assets/icons/support_ticket.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Wallet Screen'),
+      screenBuilder: (context) => const SupportTicketScreen(),
+
     ),
     NavItem(
       id: 'log_out',
       title: 'Logout',
       iconPath: 'assets/icons/logout.svg',
-      screenBuilder: (context) =>
-      const PlaceholderScreen(screenName: 'Wallet Screen'),
+      screenBuilder: (context) => const PlaceholderScreen(screenName: 'Wallet Screen'),
     ),
   ];
 }

@@ -7,7 +7,6 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashbo
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/ecm_ico/Ico_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/staking/staking_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/transaction_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/login/sign_in.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';

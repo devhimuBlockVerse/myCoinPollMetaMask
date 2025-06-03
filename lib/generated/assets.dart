@@ -56,6 +56,7 @@ class Assets {
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';
+  static const String iconsCheckInfo = 'assets/icons/checkInfo.svg';
   static const String iconsCoin = 'assets/icons/coin.png';
   static const String iconsColorPurple = 'assets/icons/colorPurple.png';
   static const String iconsColorYellow = 'assets/icons/colorYellow.png';
@@ -63,6 +64,7 @@ class Assets {
   static const String iconsContactImg = 'assets/icons/contactImg.svg';
   static const String iconsCopyImg = 'assets/icons/copyImg.svg';
   static const String iconsCrossIcon = 'assets/icons/crossIcon.svg';
+  static const String iconsCrossInfo = 'assets/icons/crossInfo.svg';
   static const String iconsCryptoLaunchpad = 'assets/icons/cryptoLaunchpad.png';
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDeadLineImg = 'assets/icons/deadLineImg.svg';

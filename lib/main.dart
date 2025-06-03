@@ -4,9 +4,8 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/d
 import 'package:provider/provider.dart';
 
 import 'application/module/dashboard_bottom_nav.dart';
-import 'application/module/userDashboard/view/kyc/kyc_upload_image.dart';
 import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart';
-import 'application/presentation/screens/bottom_nav_bar.dart';
+import 'application/module/userDashboard/viewmodel/upload_image_provider.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';

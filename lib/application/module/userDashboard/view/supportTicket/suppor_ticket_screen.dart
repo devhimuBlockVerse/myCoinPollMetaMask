@@ -166,8 +166,7 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                     vertical: screenHeight * 0.02,
                   ),
                   child: ListView(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
+
                     children: [
 
                       /// Create New Ticket Button

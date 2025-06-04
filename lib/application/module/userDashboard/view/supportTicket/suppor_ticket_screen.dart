@@ -5,8 +5,6 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../data/dummyData/referral_user_list_dummy_data.dart';
-import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/model/TicketListModel.dart';
 import '../../../../domain/model/ticket_list_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
@@ -256,55 +254,40 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
 
 
                             /// Data Sorting  Button
-                            // Expanded(
-                            //   flex: 1,
-                            //   child: Align(
-                            //       alignment: Alignment.centerRight,
-                            //       child: PopupMenuButton<SortTicketListOption>(
-                            //         icon: SvgPicture.asset(
-                            //           'assets/icons/sortingList.svg',
-                            //           fit: BoxFit.contain,
-                            //         ),
-                            //         onSelected: ( option) {
-                            //           _sortData(option);
-                            //         },
-                            //         itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTicketListOption>>[
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.dateDesc,
-                            //             child: Text('Date: Latest First'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.dateAsc,
-                            //             child: Text('Date: Oldest First'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.nameAsc,
-                            //             child: Text('Status: A-Z'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.nameDesc,
-                            //             child: Text('Status: Z-A'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.userIdAsc,
-                            //             child: Text('Amount: Low to High'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.userIdDesc,
-                            //             child: Text('Amount: High to Low'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.statusAsc,
-                            //             child: Text('Status: Active First'),
-                            //           ),
-                            //           const PopupMenuItem<SortTicketListOption>(
-                            //             value: SortTicketListOption.statusDesc,
-                            //             child: Text('Status: Inactive First'),
-                            //           ),
-                            //         ],
-                            //       )
-                            //   ),
-                            // ),
+                            Expanded(
+                              flex: 1,
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: PopupMenuButton<SortTicketListOption>(
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/sortingList.svg',
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onSelected: ( option) {
+                                      _sortData(option);
+                                    },
+                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTicketListOption>>[
+                                      const PopupMenuItem<SortTicketListOption>(
+                                        value: SortTicketListOption.dateLatest,
+                                        child: Text('Date: Latest First'),
+                                      ),
+                                      const PopupMenuItem<SortTicketListOption>(
+                                        value: SortTicketListOption.dateOldest,
+                                        child: Text('Date: Oldest First'),
+                                      ),
+
+                                      const PopupMenuItem<SortTicketListOption>(
+                                        value: SortTicketListOption.statusAsc,
+                                        child: Text('Status: Active First'),
+                                      ),
+                                      const PopupMenuItem<SortTicketListOption>(
+                                        value: SortTicketListOption.statusDesc,
+                                        child: Text('Status: Inactive First'),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ),
                           ],
                         ),
                       ),

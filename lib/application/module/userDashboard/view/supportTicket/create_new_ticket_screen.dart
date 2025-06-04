@@ -240,8 +240,6 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
                                     controller: descriptionController,
                                     labelText: 'Write here...',
                                     height:  screenHeight * 0.3,
-
-                                    // width: screenWidth* 0.88,
                                     expandable: false,
                                     keyboard: TextInputType.multiline,
                                   ),

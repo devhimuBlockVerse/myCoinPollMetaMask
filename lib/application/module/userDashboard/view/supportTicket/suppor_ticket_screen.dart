@@ -166,6 +166,8 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                     vertical: screenHeight * 0.02,
                   ),
                   child: ListView(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
                     children: [
 
                       /// Create New Ticket Button
@@ -331,97 +333,10 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                       SizedBox(height: screenHeight * 0.05),
 
 
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: faqList.length,
-                        itemBuilder: (context, index) {
-                          final faq = faqList[index];
-                          final isExpanded = _currentlyExpandedIndex == index;
+                      _FaqSection(),
 
-                          return Container(
-                            margin: EdgeInsets.only(bottom: screenHeight * 0.018),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: const Color(0x33FFFFFF),
-                                width: 1,
-                              ),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0x22FFFFFF),
-                                  Colors.transparent,
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                stops: [0.0, 0.09],
-                              ),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Color(0x33000000),
-                                  blurRadius: 2,
-                                  offset: Offset(0, 4),
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                dividerColor: Colors.transparent,
-                              ),
-                              child: ExpansionTile(
-                                key: Key(index.toString()),
-                                tilePadding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.04,
-                                ),
 
-                                collapsedBackgroundColor: Colors.transparent,
-                                backgroundColor: Colors.transparent,
-                                collapsedIconColor: Colors.white,
-                                iconColor: Colors.white,
-                                initiallyExpanded: isExpanded,
-                                onExpansionChanged: (expanded) {
-                                  setState(() {
-                                    _currentlyExpandedIndex = expanded ? index : -1;
-                                  });
-                                },
-                                trailing: Icon(
-                                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                                  size: screenHeight * 0.03,
-                                  color: Colors.white,
-                                ),
-                                title: Text(
-                                  faq.question,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Poppins',
-                                    fontSize: getResponsiveFontSize(context, 14),
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.6,
-                                  ),
-                                ),
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                    child: Text(
-                                      faq.answer,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Poppins',
-                                        fontSize: getResponsiveFontSize(context, 12),
-                                        fontWeight: FontWeight.w400,
-                                        height: 1.6,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-
+                      SizedBox(height: screenHeight * 0.03),
 
 
 
@@ -435,5 +350,111 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
       ),
     );
   }
+
+
+  Widget _FaqSection(){
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return  ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: faqList.length,
+      itemBuilder: (context, index) {
+        final faq = faqList[index];
+        final isExpanded = _currentlyExpandedIndex == index;
+
+        return Container(
+          margin: EdgeInsets.only(bottom: screenHeight * 0.018),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: const Color(0x33FFFFFF),
+              width: 1,
+            ),
+            gradient: const LinearGradient(
+              colors: [
+                Color(0x22FFFFFF),
+                Colors.transparent,
+              ],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              stops: [0.0, 0.09],
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x33000000),
+                blurRadius: 2,
+                offset: Offset(0, 4),
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              dividerColor: Colors.transparent,
+            ),
+            child: ExpansionTile(
+              // key: Key(index.toString()),
+              key:   ValueKey(faq.question + index.toString()),
+              tilePadding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04,
+              ),
+
+              collapsedBackgroundColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              collapsedIconColor: Colors.white,
+              iconColor: Colors.white,
+              initiallyExpanded: isExpanded,
+              onExpansionChanged: (expanded) {
+                setState(() {
+                  _currentlyExpandedIndex = expanded ? index : -1;
+                });
+              },
+              trailing: Icon(
+                isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                size: screenHeight * 0.03,
+                color: Colors.white,
+              ),
+              title: Text(
+                faq.question,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Poppins',
+                  fontSize: getResponsiveFontSize(context, 14),
+                  fontWeight: FontWeight.w500,
+                  height: 1.6,
+                ),
+              ),
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(
+                    left: screenWidth * 0.04,
+                    right: screenWidth * 0.04,
+                    bottom: screenHeight * 0.02,
+                  ),
+                  child: Text(
+                    faq.answer,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Poppins',
+                      fontSize: getResponsiveFontSize(context, 12),
+                      fontWeight: FontWeight.w400,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
 }
+
 

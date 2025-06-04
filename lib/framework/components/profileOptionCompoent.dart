@@ -44,8 +44,8 @@ class ProfileOptionContainer extends StatelessWidget {
             Center(
               child: SvgPicture.asset(
                 leadingIconPath,
-                width: 18 * scaleFactor,
-                height: 18 * scaleFactor,
+                width: 1 * scaleFactor,
+                height: 1 * scaleFactor,
                 color: Colors.white.withOpacity(0.8),
                 // color: Color(0XFFFFF5ED),
               ),

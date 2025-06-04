@@ -5,12 +5,14 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../data/faq_item_data.dart';
 import '../../../../domain/model/TicketListModel.dart';
 import '../../../../domain/model/ticket_list_dummy_data.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../../dashboard_bottom_nav.dart';
 import '../../../side_nav_bar.dart';
  import '../../viewmodel/side_navigation_provider.dart';
+import 'create_new_ticket_screen.dart';
 import 'widget/ticket_table.dart';
 
 class SupportTicketScreen extends StatefulWidget {
@@ -28,6 +30,8 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<TicketListModel> _displayData = [];
 
+
+  int _currentlyExpandedIndex = -1;
 
   @override
   void initState() {
@@ -196,8 +200,9 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                                     // 1CD494
                                   ],
                                   onTap: () {
-                                    // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycInProgressScreen()), (route) => false);
-                                   },
+                                   Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateNewTicketScreen()));
+
+                                  },
                                   leadingIconPath: 'assets/icons/addIcon.svg',
                                   iconSize : screenHeight * 0.019,
                                 ),
@@ -309,6 +314,203 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                         ),
                       ],
 
+
+                      SizedBox(height: screenHeight * 0.05),
+
+                      Text(
+                        "Frequently Asked Questions",
+                        style: TextStyle(
+                          fontSize: getResponsiveFontSize(context, 16),
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          height: 1.1,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.05),
+
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   physics: NeverScrollableScrollPhysics(),
+                      //   itemCount: faqList.length,
+                      //   itemBuilder: (context, index) {
+                      //     final faq = faqList[index];
+                      //     final isExpanded = _currentlyExpandedIndex == index;
+                      //
+                      //     return Container(
+                      //       margin: EdgeInsets.only(bottom: screenHeight * 0.012),
+                      //
+                      //       // padding: EdgeInsets.symmetric(
+                      //       //   vertical: screenHeight * 0.012,
+                      //       //   horizontal: screenWidth * 0.03,
+                      //       // ),
+                      //       decoration: BoxDecoration(
+                      //         borderRadius: BorderRadius.circular(16),
+                      //         border: Border.all(
+                      //           color: const Color(0x33FFFFFF),
+                      //           width: 1,
+                      //         ),
+                      //         gradient: const LinearGradient(
+                      //           colors: [
+                      //             Color(0x22FFFFFF),
+                      //             Colors.transparent,
+                      //           ],
+                      //           begin: Alignment.centerLeft,
+                      //           end: Alignment.centerRight,
+                      //           stops: [0.0, 0.09],
+                      //         ),
+                      //         boxShadow: const [
+                      //           BoxShadow(
+                      //             color: Color(0x33000000),
+                      //             blurRadius: 2,
+                      //             offset: Offset(0, 4),
+                      //             spreadRadius: 1,
+                      //           ),
+                      //         ],
+                      //       ),
+                      //       child: ExpansionTile(
+                      //         collapsedBackgroundColor: Colors.transparent,
+                      //         key: Key(index.toString()),
+                      //         initiallyExpanded: isExpanded,
+                      //         onExpansionChanged: (expanded) {
+                      //           setState(() {
+                      //             _currentlyExpandedIndex = expanded ? index : -1;
+                      //           });
+                      //         },
+                      //
+                      //
+                      //         trailing: Icon(
+                      //           isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                      //           color: Colors.white,
+                      //           size: screenHeight * 0.03,
+                      //         ),
+                      //
+                      //         title: Text(
+                      //           faq.question,
+                      //           style: TextStyle(
+                      //             color: Colors.white,
+                      //             fontFamily: 'Poppins',
+                      //             fontSize: getResponsiveFontSize(context, 14),
+                      //             fontWeight: FontWeight.w500,
+                      //             height: 1.6,
+                      //           ),
+                      //         ),
+                      //         children: [
+                      //           Padding(
+                      //             padding: const EdgeInsets.symmetric( horizontal: 16.0,vertical: 8.0),
+                      //             child: Text(
+                      //               faq.answer,
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontFamily: 'Poppins',
+                      //                 fontWeight: FontWeight.w400,
+                      //                 height: 1.6,
+                      //                 fontSize: getResponsiveFontSize(context, 12),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: faqList.length,
+                        itemBuilder: (context, index) {
+                          final faq = faqList[index];
+                          final isExpanded = _currentlyExpandedIndex == index;
+
+                          return Container(
+                            margin: EdgeInsets.only(bottom: screenHeight * 0.012),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: const Color(0x33FFFFFF),
+                                width: 1,
+                              ),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0x22FFFFFF),
+                                  Colors.transparent,
+                                ],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                stops: [0.0, 0.09],
+                              ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x33000000),
+                                  blurRadius: 2,
+                                  offset: Offset(0, 4),
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                            child: Theme(
+                              data: Theme.of(context).copyWith(
+                                dividerColor: Colors.transparent,
+                              ),
+                              child: ExpansionTile(
+                                key: Key(index.toString()),
+                                tilePadding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.01,
+                                  horizontal: screenWidth * 0.04,
+                                ),
+
+
+                                collapsedBackgroundColor: Colors.transparent,
+                                backgroundColor: Colors.transparent,
+                                collapsedIconColor: Colors.white,
+                                iconColor: Colors.white,
+                                initiallyExpanded: isExpanded,
+                                onExpansionChanged: (expanded) {
+                                  setState(() {
+                                    _currentlyExpandedIndex = expanded ? index : -1;
+                                  });
+                                },
+                                trailing: Icon(
+                                  isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                  size: screenHeight * 0.03,
+                                  color: Colors.white,
+                                ),
+                                title: Text(
+                                  faq.question,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Poppins',
+                                    fontSize: getResponsiveFontSize(context, 14),
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.6,
+                                  ),
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                    child: Text(
+                                      faq.answer,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Poppins',
+                                        fontSize: getResponsiveFontSize(context, 12),
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.6,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+
+
+
                     ],
                   ),
                 ),
@@ -320,3 +522,4 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
     );
   }
 }
+

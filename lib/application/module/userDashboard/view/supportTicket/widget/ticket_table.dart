@@ -38,14 +38,15 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.001),
     child: LayoutBuilder(
+
       builder: (context, constraints) {
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+
           child: SizedBox(
             height: screenHeight * 0.40,
             width: constraints.maxWidth * 1.5,
             child: DataTable2(
-
               dataRowHeight: screenHeight * 0.04,
               columnSpacing: screenWidth * 0.003,
               horizontalMargin: screenWidth * 0.002,
@@ -54,7 +55,8 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
               headingRowDecoration: const BoxDecoration(
                 color: Color(0XFF051121),
               ),
-               columns: [
+
+                columns: [
                 DataColumn2(label: buildCenteredText('Ticket ID', headingStyle), size: ColumnSize.M),
                 DataColumn2(label: buildCenteredText('Subject', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('Date', headingStyle), size: ColumnSize.L),
@@ -81,6 +83,7 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
                   }),
 
                   cells: [
+
                     DataCell(buildCenteredText(data.ticketID, cellTextStyle)),
                     DataCell(buildCenteredText(data.subject, cellTextStyle)),
                      DataCell(buildCenteredText(data.date, cellTextStyle)),

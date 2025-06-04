@@ -330,91 +330,6 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
 
                       SizedBox(height: screenHeight * 0.05),
 
-                      // ListView.builder(
-                      //   shrinkWrap: true,
-                      //   physics: NeverScrollableScrollPhysics(),
-                      //   itemCount: faqList.length,
-                      //   itemBuilder: (context, index) {
-                      //     final faq = faqList[index];
-                      //     final isExpanded = _currentlyExpandedIndex == index;
-                      //
-                      //     return Container(
-                      //       margin: EdgeInsets.only(bottom: screenHeight * 0.012),
-                      //
-                      //       // padding: EdgeInsets.symmetric(
-                      //       //   vertical: screenHeight * 0.012,
-                      //       //   horizontal: screenWidth * 0.03,
-                      //       // ),
-                      //       decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(16),
-                      //         border: Border.all(
-                      //           color: const Color(0x33FFFFFF),
-                      //           width: 1,
-                      //         ),
-                      //         gradient: const LinearGradient(
-                      //           colors: [
-                      //             Color(0x22FFFFFF),
-                      //             Colors.transparent,
-                      //           ],
-                      //           begin: Alignment.centerLeft,
-                      //           end: Alignment.centerRight,
-                      //           stops: [0.0, 0.09],
-                      //         ),
-                      //         boxShadow: const [
-                      //           BoxShadow(
-                      //             color: Color(0x33000000),
-                      //             blurRadius: 2,
-                      //             offset: Offset(0, 4),
-                      //             spreadRadius: 1,
-                      //           ),
-                      //         ],
-                      //       ),
-                      //       child: ExpansionTile(
-                      //         collapsedBackgroundColor: Colors.transparent,
-                      //         key: Key(index.toString()),
-                      //         initiallyExpanded: isExpanded,
-                      //         onExpansionChanged: (expanded) {
-                      //           setState(() {
-                      //             _currentlyExpandedIndex = expanded ? index : -1;
-                      //           });
-                      //         },
-                      //
-                      //
-                      //         trailing: Icon(
-                      //           isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                      //           color: Colors.white,
-                      //           size: screenHeight * 0.03,
-                      //         ),
-                      //
-                      //         title: Text(
-                      //           faq.question,
-                      //           style: TextStyle(
-                      //             color: Colors.white,
-                      //             fontFamily: 'Poppins',
-                      //             fontSize: getResponsiveFontSize(context, 14),
-                      //             fontWeight: FontWeight.w500,
-                      //             height: 1.6,
-                      //           ),
-                      //         ),
-                      //         children: [
-                      //           Padding(
-                      //             padding: const EdgeInsets.symmetric( horizontal: 16.0,vertical: 8.0),
-                      //             child: Text(
-                      //               faq.answer,
-                      //               style: TextStyle(
-                      //                 color: Colors.white,
-                      //                 fontFamily: 'Poppins',
-                      //                 fontWeight: FontWeight.w400,
-                      //                 height: 1.6,
-                      //                 fontSize: getResponsiveFontSize(context, 12),
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
 
                       ListView.builder(
                         shrinkWrap: true,
@@ -425,9 +340,9 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                           final isExpanded = _currentlyExpandedIndex == index;
 
                           return Container(
-                            margin: EdgeInsets.only(bottom: screenHeight * 0.012),
+                            margin: EdgeInsets.only(bottom: screenHeight * 0.018),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color: const Color(0x33FFFFFF),
                                 width: 1,
@@ -457,10 +372,8 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                               child: ExpansionTile(
                                 key: Key(index.toString()),
                                 tilePadding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.01,
-                                  horizontal: screenWidth * 0.04,
+                                    horizontal: screenWidth * 0.04,
                                 ),
-
 
                                 collapsedBackgroundColor: Colors.transparent,
                                 backgroundColor: Colors.transparent,
@@ -488,7 +401,8 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                                   ),
                                 ),
                                 children: [
-                                  Padding(
+                                  Container(
+                                    width: double.infinity,
                                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                                     child: Text(
                                       faq.answer,

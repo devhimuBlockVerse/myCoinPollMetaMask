@@ -1,5 +1,3 @@
-import 'dart:io';
- import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +8,7 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
  import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'suppor_ticket_screen.dart';
+import 'widget/priority_selector.dart';
 import 'widget/upload_file.dart';
 
 class CreateNewTicketScreen extends StatefulWidget {
@@ -281,12 +280,31 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
 
                               SizedBox(height: screenHeight * 0.03),
 
-                              PrioritySelector(
-                                initialPriority: "Medium",
-                                onChanged: (priority) {
-                                  print("Selected priority: $priority");
-                                  // Save it to your model or state as needed
-                                },
+
+
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Priority :",
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: getResponsiveFontSize(context, 14),
+                                      height: 1.6,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
+                                  PrioritySelector(
+                                    initialPriority: "Medium", // Pass API Later Here :: Priority
+                                    onChanged: (priority) {
+                                      print("Selected priority: $priority");
+
+                                    },
+                                  ),
+                                ],
                               ),
 
                               SizedBox(height: screenHeight * 0.05),
@@ -331,188 +349,6 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
     );
   }
 }
-
-
-class PrioritySelector extends StatefulWidget {
-  final Function(String priority) onChanged;
-  final String? initialPriority;
-
-  const PrioritySelector({
-    Key? key,
-    required this.onChanged,
-    this.initialPriority,
-  }) : super(key: key);
-
-  @override
-  State<PrioritySelector> createState() => _PrioritySelectorState();
-}
-
-class _PrioritySelectorState extends State<PrioritySelector> {
-  String? selectedPriority;
-
-  final List<String> priorities = ['High', 'Medium', 'Low'];
-
-  @override
-  void initState() {
-    super.initState();
-    selectedPriority = widget.initialPriority;
-  }
-
-  void _onSelect(String priority) {
-    setState(() {
-      selectedPriority = priority;
-    });
-    widget.onChanged(priority);
-  }
-
-  Widget buildItem(String label) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    bool isSelected = selectedPriority == label;
-
-    return GestureDetector(
-      onTap: () => _onSelect(label),
-      child: Row(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              gradient: isSelected
-                  ? const LinearGradient(
-                begin: Alignment.centerRight,
-                end: Alignment.centerLeft,
-                colors: [Color(0xFF277BF5), Color(0xFF1CD691)],
-              )
-                  : null,
-              color: isSelected ? null : Colors.white.withOpacity(0.02),
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: isSelected
-                    ? Colors.white.withOpacity(0.02)
-                    : const Color(0x4C277BF5),
-                width: 1,
-              ),
-            ),
-            child: isSelected
-                ? const Icon(
-              Icons.check,
-              size: 16,
-              color: Colors.white,
-            )
-                : null,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontFamily: 'Poppins',
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: priorities.map((p) => buildItem(p)).toList(),
-    );
-  }
-}
-
-
-//
-// class PrioritySelector extends StatefulWidget {
-//   final Function(String priority) onChanged;
-//   final String? initialPriority;
-//
-//   const PrioritySelector({
-//     Key? key,
-//     required this.onChanged,
-//     this.initialPriority,
-//   }) : super(key: key);
-//
-//   @override
-//   State<PrioritySelector> createState() => _PrioritySelectorState();
-// }
-//
-// class _PrioritySelectorState extends State<PrioritySelector> {
-//   String? selectedPriority;
-//
-//   final List<String> priorities = ['High', 'Medium', 'Low'];
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     selectedPriority = widget.initialPriority;
-//   }
-//
-//   void _onSelect(String priority) {
-//     setState(() {
-//       selectedPriority = priority;
-//     });
-//     widget.onChanged(priority);
-//   }
-//
-//   Widget buildItem(String label) {
-//     bool isSelected = selectedPriority == label;
-//     return GestureDetector(
-//       onTap: () => _onSelect(label),
-//       child: Row(
-//         children: [
-//           Container(
-//             width: 24,
-//             height: 24,
-//             decoration: BoxDecoration(
-//               gradient: isSelected
-//                   ? const LinearGradient(
-//                 begin: Alignment.centerRight,
-//                 end: Alignment.centerLeft,
-//                 colors: [Color(0xFF277BF5), Color(0xFF1CD691)],
-//               )
-//                   : null,
-//               // color: Colors.transparent,
-//               borderRadius: BorderRadius.circular(5),
-//               border: Border.all(
-//                 color: isSelected
-//                     ? Colors.white.withOpacity(0.02)
-//                     : const Color(0x4C277BF5),
-//                 width: 1,
-//               ),
-//             ),
-//           ),
-//           const SizedBox(width: 8),
-//           Text(
-//             label,
-//             style: const TextStyle(
-//               color: Colors.white,
-//               fontSize: 12,
-//               fontFamily: 'Poppins',
-//               height: 1.4,
-//             ),
-//           ),
-//           const SizedBox(width: 12),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       children: priorities.map((p) => buildItem(p)).toList(),
-//     );
-//   }
-// }
-//
-
 
 
 

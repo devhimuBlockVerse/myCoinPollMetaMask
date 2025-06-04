@@ -10,6 +10,7 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
  import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'suppor_ticket_screen.dart';
+import 'widget/upload_file.dart';
 
 class CreateNewTicketScreen extends StatefulWidget {
   const CreateNewTicketScreen({super.key});
@@ -278,13 +279,17 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
                                 ],
                               ),
 
+                              SizedBox(height: screenHeight * 0.03),
+
+                              PrioritySelector(
+                                initialPriority: "Medium",
+                                onChanged: (priority) {
+                                  print("Selected priority: $priority");
+                                  // Save it to your model or state as needed
+                                },
+                              ),
+
                               SizedBox(height: screenHeight * 0.05),
-
-
-
-
-
-
 
                               BlockButton(
                                 height: screenHeight * 0.045,
@@ -327,300 +332,187 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
   }
 }
 
-class UploadFileWidget extends StatefulWidget {
-  final String title;
-  final bool allowImageOnly;
 
-  const UploadFileWidget({
+class PrioritySelector extends StatefulWidget {
+  final Function(String priority) onChanged;
+  final String? initialPriority;
+
+  const PrioritySelector({
     Key? key,
-    this.title = "Choose a File",
-    this.allowImageOnly = false,
+    required this.onChanged,
+    this.initialPriority,
   }) : super(key: key);
 
   @override
-  State<UploadFileWidget> createState() => _UploadFileWidgetState();
+  State<PrioritySelector> createState() => _PrioritySelectorState();
 }
 
-class _UploadFileWidgetState extends State<UploadFileWidget> {
-  XFile? selectedFile;
+class _PrioritySelectorState extends State<PrioritySelector> {
+  String? selectedPriority;
 
-  Future<void> pickFile() async {
-    List<XTypeGroup> acceptedTypeGroups = [];
+  final List<String> priorities = ['High', 'Medium', 'Low'];
 
-    if (widget.allowImageOnly) {
-      acceptedTypeGroups.add(const XTypeGroup(
-        label: 'Images',
-        extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'],
-        mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'],
-      ));
-    } else {
-      acceptedTypeGroups.add(const XTypeGroup(
-        label: 'All Files',
-        extensions: ['*'],
-      ));
-    }
-
-    final XFile? file = await openFile(acceptedTypeGroups: acceptedTypeGroups);
-    if (file != null) {
-      setState(() {
-        selectedFile = file;
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    selectedPriority = widget.initialPriority;
   }
 
-  void removeFile() {
+  void _onSelect(String priority) {
     setState(() {
-      selectedFile = null;
+      selectedPriority = priority;
     });
+    widget.onChanged(priority);
+  }
+
+  Widget buildItem(String label) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    bool isSelected = selectedPriority == label;
+
+    return GestureDetector(
+      onTap: () => _onSelect(label),
+      child: Row(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? const LinearGradient(
+                begin: Alignment.centerRight,
+                end: Alignment.centerLeft,
+                colors: [Color(0xFF277BF5), Color(0xFF1CD691)],
+              )
+                  : null,
+              color: isSelected ? null : Colors.white.withOpacity(0.02),
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: isSelected
+                    ? Colors.white.withOpacity(0.02)
+                    : const Color(0x4C277BF5),
+                width: 1,
+              ),
+            ),
+            child: isSelected
+                ? const Icon(
+              Icons.check,
+              size: 16,
+              color: Colors.white,
+            )
+                : null,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontFamily: 'Poppins',
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final isSmallScreen = constraints.maxWidth < 400;
-      // final containerWidth = constraints.maxWidth * 0.95;
-      final containerWidth = constraints.maxWidth;
-      final screenHeight = MediaQuery.of(context).size.height;
-
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-            width: containerWidth,
-            height: screenHeight * 0.05,
-
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: const Color(0xFF101A29),
-              border: Border.all(color: const Color(0xFF141317)),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0xFFC7E0FF),
-                  blurRadius: 0,
-                  offset: Offset(0.1, 0.5),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                InkWell(
-                  onTap: pickFile,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white.withOpacity(0.2)),
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.white.withOpacity(0.04),
-                    ),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: getResponsiveFontSize(context, 10),
-                          fontFamily: 'Poppins',
-                          height: 1.3,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    selectedFile != null
-                        ? selectedFile!.path.split('/').last
-                        : "No File Chosen",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: const Color(0XFF7D8FA9),
-                      fontSize: getResponsiveFontSize(context, 12),
-                      fontFamily: 'Poppins',
-                      height: 1.6,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          if (selectedFile != null)
-            GestureDetector(
-              onTap: removeFile,
-              child: Container(
-                height: screenHeight * 0.035,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0XFFE04043).withOpacity(0.20)),
-                  borderRadius: BorderRadius.circular(3),
-                  color: const Color(0xFFE04043).withOpacity(0.04),
-                ),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    "Remove",
-                    style: TextStyle(
-                      color: const Color(0XFFE04043),
-                      fontSize: getResponsiveFontSize(context, 10),
-                      height: 1.3,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      );
-    });
+    return Row(
+      children: priorities.map((p) => buildItem(p)).toList(),
+    );
   }
 }
 
-// class UploadFileWidget extends StatefulWidget {
-//   final String title;
-//   final bool allowImageOnly;
+
 //
-//   const UploadFileWidget({
+// class PrioritySelector extends StatefulWidget {
+//   final Function(String priority) onChanged;
+//   final String? initialPriority;
+//
+//   const PrioritySelector({
 //     Key? key,
-//     this.title = "Choose a File",
-//     this.allowImageOnly = false,
+//     required this.onChanged,
+//     this.initialPriority,
 //   }) : super(key: key);
 //
 //   @override
-//   State<UploadFileWidget> createState() => _UploadFileWidgetState();
+//   State<PrioritySelector> createState() => _PrioritySelectorState();
 // }
 //
-// class _UploadFileWidgetState extends State<UploadFileWidget> {
-//   XFile? selectedFile;
+// class _PrioritySelectorState extends State<PrioritySelector> {
+//   String? selectedPriority;
 //
-//   Future<void> pickFile() async {
-//     List<XTypeGroup> acceptedTypeGroups = [];
+//   final List<String> priorities = ['High', 'Medium', 'Low'];
 //
-//     if (widget.allowImageOnly) {
-//       acceptedTypeGroups.add(const XTypeGroup(
-//         label: 'Images',
-//         extensions: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'],
-//         mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp'],
-//       ));
-//     } else {
-//        // This will allow the native dialog to determine accepted types, or allow all
-//       acceptedTypeGroups.add(const XTypeGroup(
-//         label: 'All Files',
-//         extensions: ['*'], // This means all extensions
-//       ));
-//     }
-//
-//     final XFile? file = await openFile(acceptedTypeGroups: acceptedTypeGroups);
-//
-//     if (file != null) {
-//       setState(() {
-//         selectedFile = file;
-//       });
-//     }
+//   @override
+//   void initState() {
+//     super.initState();
+//     selectedPriority = widget.initialPriority;
 //   }
 //
-//
-//   void removeFile() {
+//   void _onSelect(String priority) {
 //     setState(() {
-//       selectedFile = null;
+//       selectedPriority = priority;
 //     });
+//     widget.onChanged(priority);
+//   }
+//
+//   Widget buildItem(String label) {
+//     bool isSelected = selectedPriority == label;
+//     return GestureDetector(
+//       onTap: () => _onSelect(label),
+//       child: Row(
+//         children: [
+//           Container(
+//             width: 24,
+//             height: 24,
+//             decoration: BoxDecoration(
+//               gradient: isSelected
+//                   ? const LinearGradient(
+//                 begin: Alignment.centerRight,
+//                 end: Alignment.centerLeft,
+//                 colors: [Color(0xFF277BF5), Color(0xFF1CD691)],
+//               )
+//                   : null,
+//               // color: Colors.transparent,
+//               borderRadius: BorderRadius.circular(5),
+//               border: Border.all(
+//                 color: isSelected
+//                     ? Colors.white.withOpacity(0.02)
+//                     : const Color(0x4C277BF5),
+//                 width: 1,
+//               ),
+//             ),
+//           ),
+//           const SizedBox(width: 8),
+//           Text(
+//             label,
+//             style: const TextStyle(
+//               color: Colors.white,
+//               fontSize: 12,
+//               fontFamily: 'Poppins',
+//               height: 1.4,
+//             ),
+//           ),
+//           const SizedBox(width: 12),
+//         ],
+//       ),
+//     );
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     final screenWidth = MediaQuery.of(context).size.width;
-//     final screenHeight = MediaQuery.of(context).size.height;
-//
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.start,
-//       crossAxisAlignment: CrossAxisAlignment.end,
-//       children: [
-//         Container(
-//           width: screenWidth * 0.85,
-//           padding: const EdgeInsets.all(8),
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(4),
-//             color: const Color(0xFF101A29),
-//             border: Border.all(color: const Color(0xFF141317)),
-//             boxShadow: const [
-//               BoxShadow(
-//                 color: Color(0xFFC7E0FF),
-//                 blurRadius: 0,
-//                 offset: Offset(0.1, 0.5),
-//               ),
-//             ],
-//           ),
-//           child: Row(
-//             children: [
-//               InkWell(
-//                 onTap: pickFile,
-//                 child: Container(
-//                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//                   decoration: BoxDecoration(
-//                     border: Border.all(color: Colors.white.withOpacity(0.2)),
-//                     borderRadius: BorderRadius.circular(3),
-//                     color: Colors.white.withOpacity(0.04),
-//                   ),
-//                   child: Text(
-//                     widget.title,
-//                     style: TextStyle(
-//                       color: Colors.white.withOpacity(0.8),
-//                       fontSize:getResponsiveFontSize(context, 10),
-//                       fontFamily: 'Poppins',
-//                       height: 1.3,
-//                       fontWeight: FontWeight.w400,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               const SizedBox(width: 10),
-//               Expanded(
-//                 child: Text(
-//                   selectedFile != null
-//                       ? selectedFile!.path.split('/').last
-//                       : "No File Chosen",
-//                   overflow: TextOverflow.ellipsis,
-//                   style:  TextStyle(
-//                     color: Color(0XFF7D8FA9),
-//                     fontSize: getResponsiveFontSize(context, 12),
-//                     fontFamily: 'Poppins',
-//                     height: 1.6,
-//                     fontWeight: FontWeight.w400,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//         const SizedBox(height: 10),
-//         if (selectedFile != null)
-//           GestureDetector(
-//             onTap: removeFile,
-//             child: Container(
-//               height: screenHeight * 0.03,
-//               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-//               decoration: BoxDecoration(
-//                 border: Border.all(color: const Color(0XFFE04043).withOpacity(0.20)),
-//                 borderRadius: BorderRadius.circular(3),
-//                 color: const Color(0xFFE04043).withOpacity(0.04),
-//               ),
-//               child:  Text(
-//                 "Remove",
-//                 style: TextStyle(
-//                   color: Color(0XFFE04043),
-//                   fontSize: getResponsiveFontSize(context, 10),
-//                   height: 1.3,
-//                   fontWeight: FontWeight.w400,
-//                   fontFamily: 'Poppins',
-//                 ),
-//               ),
-//             ),
-//           ),
-//       ],
+//     return Row(
+//       children: priorities.map((p) => buildItem(p)).toList(),
 //     );
 //   }
 // }
+//
+
+
+
+

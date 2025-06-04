@@ -117,9 +117,11 @@ class _ListingFieldState extends State<ListingField> {
         height: widget.expandable && !widget.isDropdown
             ? null
             : widget.height ?? screenHeight * 0.06,
+
+
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.045,
-          vertical: screenHeight * 0.012,
+          // vertical: screenHeight * 0.012,
         ),
         decoration: ShapeDecoration(
           color: const Color(0XFF101A29),
@@ -137,6 +139,8 @@ class _ListingFieldState extends State<ListingField> {
           ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (prefixWidget != null)
               Padding(
@@ -154,7 +158,7 @@ class _ListingFieldState extends State<ListingField> {
                       item,
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.9),
-                        fontSize: responsiveFontSize, // Already responsive
+                        fontSize: responsiveFontSize,
                         fontFamily: 'Poppins',
                       ),
                     ),
@@ -164,7 +168,7 @@ class _ListingFieldState extends State<ListingField> {
                 dropdownColor: const Color(0XFF101A29),
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.9),
-                  fontSize: responsiveFontSize, // Already responsive
+                  fontSize: responsiveFontSize,
                   fontFamily: 'Poppins',
                 ),
                 decoration: const InputDecoration(
@@ -174,27 +178,38 @@ class _ListingFieldState extends State<ListingField> {
                 iconEnabledColor: Colors.white.withOpacity(0.7),
               )
                   : TextField(
+
                 keyboardType: widget.keyboard,
                 controller: widget.controller,
-                maxLines: widget.expandable ? null : 1,
-                obscureText: widget.isPassword ? _obscureText : false,
+                // maxLines: widget.expandable ? null : 1,
+                // maxLines: null,
+                maxLines: widget.isPassword ? 1 : null,
+
+                minLines: 1,
+                 obscureText: widget.isPassword ? _obscureText : false,
                 readOnly: widget.readOnly,
                 showCursor: !widget.readOnly,
                 onChanged: widget.onChanged,
+                // textAlign: TextAlign.start,
+                textAlignVertical: TextAlignVertical.top,
+                scrollPhysics: const BouncingScrollPhysics(),
+                // scrollPadding: const EdgeInsets.all(5),
+                scrollController: ScrollController(),
+
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
-                  fontSize: responsiveFontSize, // Already responsive
+                  fontSize: responsiveFontSize,
                   height: 1.6,
                   color: Colors.white.withOpacity(0.9),
                 ),
                 decoration: InputDecoration(
-                  isCollapsed: true,
-                  border: InputBorder.none,
+                  isCollapsed: false,
+                   border: InputBorder.none,
                   hintText: widget.labelText,
                   hintStyle: TextStyle(
                     color: const Color(0XFF7D8FA9),
-                    fontSize: responsiveFontSize, // Already responsive
+                    fontSize: responsiveFontSize,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
                     height: 1.6,
@@ -208,7 +223,7 @@ class _ListingFieldState extends State<ListingField> {
                 child: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
                   color: Colors.white.withOpacity(0.5),
-                  size: iconSize, // Already responsive
+                  size: iconSize,
                 ),
               ),
           ],
@@ -217,3 +232,13 @@ class _ListingFieldState extends State<ListingField> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

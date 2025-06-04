@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 class CustomDropdown extends StatelessWidget {
   final String label;
   final List<String> items;
@@ -71,7 +72,9 @@ class CustomDropdown extends StatelessWidget {
             ),
           ),
           onChanged: onChanged,
+
           items: items.map((String value) {
+
             return DropdownMenuItem<String>(
               value: value,
               child: Text(
@@ -82,6 +85,7 @@ class CustomDropdown extends StatelessWidget {
                   fontSize: fontSize,
                   height: 1.6,
                   color: Colors.white.withOpacity(0.8),
+
                 ),
               ),
             );
@@ -91,3 +95,6 @@ class CustomDropdown extends StatelessWidget {
     );
   }
 }
+
+
+

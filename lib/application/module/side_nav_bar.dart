@@ -153,12 +153,22 @@ class _SideNavBarState extends State<SideNavBar> {
       ),
       onTap: () async {
         Navigator.pop(context);
-        widget.onScreenSelected(item.id);
 
-         await Navigator.push(
-          context,
-          MaterialPageRoute(builder: item.screenBuilder!),
-        );
+        if (item.onTap != null) {
+          item.onTap!(context);
+        } else if (item.screenBuilder != null) {
+          widget.onScreenSelected(item.id);
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: item.screenBuilder!),
+          );
+        }
+
+        // widget.onScreenSelected(item.id);
+        //  await Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: item.screenBuilder!),
+        // );
 
       },
     );

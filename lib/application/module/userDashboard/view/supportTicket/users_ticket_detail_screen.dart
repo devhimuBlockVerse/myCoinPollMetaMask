@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
- import '../../../../domain/model/ChatMessage.dart';
+ import '../../../../../framework/components/DialogModalViewComponent.dart';
+import '../../../../domain/model/ChatMessage.dart';
 import '../../../../domain/model/TicketListModel.dart';
 import '../../../../domain/model/ticket_list_dummy_data.dart';
 import '../../../side_nav_bar.dart';
@@ -194,7 +195,7 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
                             showDialog(
                               context: context,
                               barrierDismissible: false,
-                              builder: (context) => CloseTicketDialog(
+                              builder: (context) => DialogModalView(
                                 title: isClosing ? 'Close Ticket' : 'Reopen Ticket',
                                 message: isClosing
                                     ? 'Are you sure you want to Close this ticket?'

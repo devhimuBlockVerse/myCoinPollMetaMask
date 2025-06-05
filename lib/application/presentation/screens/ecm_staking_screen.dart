@@ -257,7 +257,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
 
                       SizedBox(width: screenWidth * 0.03),
                       /// Buy ECM  Button Section
-                      BuyEcm(
+                      BlockButtonV2(
                         text: 'Buy ECM',
                         trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                         onPressed: () {

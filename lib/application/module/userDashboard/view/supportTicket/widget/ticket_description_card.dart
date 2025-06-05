@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../framework/components/BlockButton.dart';
+import '../../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
 class TicketDescriptionCard extends StatelessWidget {
@@ -98,111 +99,6 @@ class TicketDescriptionCard extends StatelessWidget {
 
 
 
-class CloseTicketDialog extends StatelessWidget {
-  final VoidCallback onYes;
-  final VoidCallback onNo;
-  final String title;
-  final String message;
-  final String yesLabel;
-
-  const CloseTicketDialog({
-    super.key,
-    required this.onYes,
-    required this.onNo, required this.title, required this.message, required this.yesLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-
-
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return Dialog(
-      backgroundColor: const Color(0XFF040C16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.white24, width: 1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Title and Close Icon
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                 Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white70),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Message
-             Text(
-              message,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 32),
-            // Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF3EDBF0)),
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: onNo,
-                    child: const Text('No', style: TextStyle(fontSize: 16)),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child:BlockButton(
-                    height: screenHeight * 0.045,
-                    width: screenWidth * 0.7,
-                    label: yesLabel,
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      // fontSize: baseSize * 0.030,
-                      fontSize: getResponsiveFontSize(context, 16),
-                    ),
-                    gradientColors: const [
-                      Color(0xFF2680EF),
-                      Color(0xFF1CD494),
-                    ],
-                    onTap: onYes
-                  ),
-
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 
 

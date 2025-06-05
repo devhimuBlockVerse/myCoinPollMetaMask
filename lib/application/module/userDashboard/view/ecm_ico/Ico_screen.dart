@@ -319,7 +319,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         },
                       ),
 
-                      BuyEcm(
+                      BlockButtonV2(
                         text: 'Official Website',
                          onPressed: () {
                           debugPrint('Button tapped!');

@@ -301,7 +301,7 @@ class MilestoneLists extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: BuyEcm(
+              child: BlockButtonV2(
                 text: 'See Details',
                 onPressed: () {
                   debugPrint('Button tapped!');
@@ -325,7 +325,7 @@ class MilestoneLists extends StatelessWidget {
           children: [
             const SizedBox(width: 14),
             Expanded(
-              child: BuyEcm(
+              child: BlockButtonV2(
                 text: 'Completed',
                 onPressed: () {
                   debugPrint('Button tapped!');
@@ -335,7 +335,7 @@ class MilestoneLists extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: BuyEcm(
+              child: BlockButtonV2(
                 text: 'See Details',
                 onPressed: () {
                   debugPrint('Button tapped!');

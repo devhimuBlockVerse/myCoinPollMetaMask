@@ -643,7 +643,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         ),
                         // alignment: Alignment.topRight,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(

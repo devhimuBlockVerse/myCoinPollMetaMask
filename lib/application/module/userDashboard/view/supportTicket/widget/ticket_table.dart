@@ -5,6 +5,7 @@ import '../../../../../../framework/utils/status_styling_utils.dart';
 import '../../../../../domain/model/TicketListModel.dart';
 import '../../../../../domain/model/ticket_list_dummy_data.dart';
 import '../../referralStat/widgets/referral_details.dart';
+import '../users_ticket_detail_screen.dart';
 
 Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, BuildContext context) {
   double screenHeight = MediaQuery.of(context).size.height;
@@ -117,10 +118,10 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
                           icon: Icon(Icons.visibility_outlined, color: const Color(0xFF7EE4C2), size: getResponsiveFontSize(context, 18)),
 
                           onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => const ReferralDetails(),
-                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) =>  UsersTicketDetailScreen(
+                              ticketData: data,
+
+                            )));
                             print('View details for User ID: ${data.ticketID}');
                           },
                           tooltip: 'View Details',

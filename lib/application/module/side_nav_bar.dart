@@ -157,7 +157,7 @@ class _SideNavBarState extends State<SideNavBar> {
 
          await Navigator.push(
           context,
-          MaterialPageRoute(builder: item.screenBuilder),
+          MaterialPageRoute(builder: item.screenBuilder!),
         );
 
       },

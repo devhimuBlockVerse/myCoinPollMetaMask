@@ -6,9 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../framework/components/AddressFieldComponent.dart';
+import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/InfoCard.dart';
 import '../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../framework/components/badgeComponent.dart';
+import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
@@ -536,23 +538,32 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         ),
                       ),
                       SizedBox(width: baseSize * 0.02),
-
-                      WhitePaperButtonComponent(
-                        label: 'White Paper',
-                        color: Colors.white,
-                        onPressed: () {},
+                      BlockButton(
                         width: screenWidth * 0.3,
                         height: screenHeight * 0.04,
-                      ) ,
-                      // SizedBox(width: baseSize * 0.02),
+                        label: "White Paper",
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: getResponsiveFontSize(context, 12),
+                        ),
+                        gradientColors: const [
+                          Color(0xFF2680EF),
+                          Color(0xFF1CD494),
+                        ],
+                        onTap: () {
+                          debugPrint('Button tapped');
+                        },
+                      ),
 
-                      WhitePaperButtonComponent(
-                        label: 'Official Website',
-                        color: Colors.white,
-                        onPressed: () {},
+                      BuyEcm(
+                        text: 'Official Website',
+                        onPressed: () {
+                          debugPrint('Button tapped!');
+                        },
                         width: screenWidth * 0.3,
                         height: screenHeight * 0.04,
-                      )
+                      ),
 
                     ],
                   ),

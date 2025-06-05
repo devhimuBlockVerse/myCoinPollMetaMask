@@ -5,13 +5,16 @@ class NavItem {
   final String id;
   final String title;
   final String iconPath;
-  final Widget Function(BuildContext) screenBuilder;
+  final Widget Function(BuildContext)? screenBuilder;
+  final void Function(BuildContext)? onTap;
+
 
   NavItem({
     required this.id,
     required this.title,
     required this.iconPath,
-    required this.screenBuilder,
+    this.screenBuilder,
+    this.onTap
   });
 }
 

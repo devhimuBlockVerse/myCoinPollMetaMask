@@ -83,45 +83,29 @@ class _BuyEcmState extends State<BuyEcm> {
               ),
             ),
             // Main Button Content
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 10),
-              curve: Curves.easeInOutCubic,
-              margin: EdgeInsets.all(_isPressed ? 0 : borderWidth),
-              decoration: BoxDecoration(
-                gradient: _isPressed
-                    ? const LinearGradient(
-                  colors: _gradientColors,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-                    : null,
-                color: _isPressed ? null : Colors.transparent,
-                borderRadius: BorderRadius.circular(12 - (_isPressed ? 0 : borderWidth)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          widget.text,
-                          style: const TextStyle(
-                            fontFamily: 'SansSerif',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 20,
-                            color: Colors.white, // Always white
-                          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        widget.text,
+                        style: const TextStyle(
+                          fontFamily: 'SansSerif',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                          color: Colors.white, // Always white
                         ),
                       ),
-                      if (widget.trailingIcon != null) ...[
-                        const SizedBox(width: 8),
-                        widget.trailingIcon!, // No rotation anymore if not needed
-                      ],
+                    ),
+                    if (widget.trailingIcon != null) ...[
+                      const SizedBox(width: 8),
+                      widget.trailingIcon!, // No rotation anymore if not needed
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),

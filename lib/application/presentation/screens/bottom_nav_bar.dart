@@ -32,52 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     const ProfileScreen(),
   ];
 
-  // late final List<Widget> _pages;
-  // final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-  //   GlobalKey<NavigatorState>(),
-  //   GlobalKey<NavigatorState>(),
-  //   GlobalKey<NavigatorState>(),
-  //   GlobalKey<NavigatorState>(),
-  //   GlobalKey<NavigatorState>(),
-  // ];
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _pages = [
-  //     TabNavigator(
-  //       navigatorKey: _navigatorKeys[0],
-  //       tabRootRouteName: TabNavigatorRoutes.root,
-  //       rootPage: const HomeScreen(),
-  //
-  //     ),
-  //     TabNavigator(
-  //       navigatorKey: _navigatorKeys[1],
-  //       tabRootRouteName: TabNavigatorRoutes.root,
-  //       rootPage: const FeaturesScreen(), // Replace with your actual root page
-  //       // routes: { '/ecm_sub_page': (context) => ECMSubPage() },
-  //     ),
-  //     TabNavigator(
-  //       navigatorKey: _navigatorKeys[2],
-  //       tabRootRouteName: TabNavigatorRoutes.root,
-  //       rootPage: const AndroVerseScreen(),
-  //       // routes: { ... },
-  //     ),
-  //     TabNavigator(
-  //       navigatorKey: _navigatorKeys[3],
-  //       tabRootRouteName: TabNavigatorRoutes.root,
-  //       rootPage: const NewsScreen(),
-  //       // routes: { ... },
-  //     ),
-  //     TabNavigator(
-  //       navigatorKey: _navigatorKeys[4],
-  //       tabRootRouteName: TabNavigatorRoutes.root,
-  //       rootPage: const ProfileScreen(),
-  //       // routes: { ... },
-  //     ),
-  //   ];
-  // }
-  //
-  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
+   final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
 
   final List<String> _imgPaths = [
     'assets/icons/home.svg',

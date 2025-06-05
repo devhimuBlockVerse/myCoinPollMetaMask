@@ -171,7 +171,7 @@ class _StakingScreenState extends State<StakingScreen> {
                             SizedBox(height: screenHeight * 0.02),
 
                             Center(
-                              child: BuyEcm(
+                              child: BlockButtonV2(
                                 text: 'Buy ECM',
                                 trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                                 onPressed: () {

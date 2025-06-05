@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/supportTicket/suppor_ticket_screen.dart';
 
+import '../../../../framework/components/DialogModalViewComponent.dart';
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
+import '../../../presentation/screens/bottom_nav_bar.dart';
 import '../view/kyc/kyc_screen.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
@@ -93,12 +95,13 @@ class NavigationProvider extends ChangeNotifier {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => CloseTicketDialog(
+          builder: (context) => DialogModalView(
             title: 'Logout',
             message: 'Are you sure you want to log out?',
             yesLabel: 'Yes',
             onYes: () {
-              Navigator.of(context).pop();
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>  BottomNavBar()));
+
 
             },
             onNo: () {

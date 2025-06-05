@@ -556,7 +556,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         },
                       ),
 
-                      BuyEcm(
+                      BlockButtonV2(
                         text: 'Official Website',
                         onPressed: () {
                           debugPrint('Button tapped!');

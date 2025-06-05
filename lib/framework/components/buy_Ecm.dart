@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-class BuyEcm extends StatefulWidget {
+class BlockButtonV2 extends StatefulWidget {
   final String text;
   final Widget? trailingIcon;
   final VoidCallback? onPressed;
@@ -9,7 +9,7 @@ class BuyEcm extends StatefulWidget {
   final double? width;
 
 
-  const BuyEcm({
+  const BlockButtonV2({
     super.key,
     required this.text,
     this.trailingIcon,
@@ -17,10 +17,10 @@ class BuyEcm extends StatefulWidget {
   });
 
   @override
-  _BuyEcmState createState() => _BuyEcmState();
+  _BlockButtonV2State createState() => _BlockButtonV2State();
 }
 
-class _BuyEcmState extends State<BuyEcm> {
+class _BlockButtonV2State extends State<BlockButtonV2> {
   bool _isPressed = false;
   final double borderWidth = 2.0;
 

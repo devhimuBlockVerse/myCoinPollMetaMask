@@ -4,6 +4,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/login/valid
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
+import '../../../../framework/components/buy_Ecm.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 
 
@@ -255,30 +256,24 @@ class _SignInState extends State<SignIn> {
                                           SizedBox(height: screenHeight * 0.01),
 
 
+
+
                                           /// Connect Wallet
-                                          BlockButton(
-                                            height: screenHeight * 0.05,
-                                            width: screenWidth * 0.88,
-                                            label: 'Connect Wallet',
-                                            textStyle: TextStyle(
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: screenWidth * 0.040 * textScale,
-                                              height: 0.8,
-                                              color: Colors.white,
-                                            ),
-                                            gradientColors: const [
-                                              Color(0xFF2680EF),
-                                              Color(0xFF1CD494),
-                                            ],
-                                            onTap: () {
+                                          BlockButtonV2(
+                                            text:'Connect Wallet',
+                                            onPressed: () {
+                                              debugPrint('Button tapped!');
                                               // Apply the wallet connection from view model and navigate to the Dashboard
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
                                               );
                                             },
+                                            height: screenHeight * 0.05,
+                                            width: screenWidth * 0.88,
                                           ),
+
+
                                         ],
                                       ),
 

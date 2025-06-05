@@ -58,7 +58,8 @@ class _PieChartWidgetState extends State {
           color: color,
           value: percentage,
           title: value.toStringAsFixed(0),
-          radius: 30,
+          // radius: 30,
+          radius: 50,
           borderSide: const BorderSide(
             color: Colors.white,
             width: 1,
@@ -94,12 +95,15 @@ class _PieChartWidgetState extends State {
         : AspectRatio(
       aspectRatio: 1,
       child: PieChart(
+
         PieChartData(
-          sections: _pieChartData,
+           sections: _pieChartData,
           borderData: FlBorderData(show: false),
-          centerSpaceRadius: 46,
+          // centerSpaceRadius: 42,
+          centerSpaceRadius: 30,
             sectionsSpace: 0,
           ),
+
       ),
     );
   }

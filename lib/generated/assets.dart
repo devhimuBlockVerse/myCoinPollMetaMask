@@ -39,6 +39,7 @@ class Assets {
   static const String iconsApplyForLisitngImg1 = 'assets/icons/applyForLisitngImg1.png';
   static const String iconsApplyForListingBG = 'assets/icons/applyForListingBG.png';
   static const String iconsArrowIcon = 'assets/icons/arrowIcon.png';
+  static const String iconsAttatchment = 'assets/icons/attatchment.svg';
   static const String iconsBTC = 'assets/icons/BTC.png';
   static const String iconsBackButton = 'assets/icons/back_button.svg';
   static const String iconsBecomeAffiliate = 'assets/icons/becomeAffiliate.png';

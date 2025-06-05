@@ -324,7 +324,7 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
                                   Color(0xFF1CD494),
                                 ],
                                 onTap: () {
-                                   // Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                                   Navigator.push(context, MaterialPageRoute(builder: (_) => const SupportTicketScreen()));
                                 },
                               ),
 

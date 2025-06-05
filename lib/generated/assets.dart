@@ -53,6 +53,7 @@ class Assets {
   static const String iconsCTA = 'assets/icons/CTA.png';
   static const String iconsCalender = 'assets/icons/calender.svg';
   static const String iconsCamera = 'assets/icons/camera.svg';
+  static const String iconsChatContainerBg = 'assets/icons/chatContainerBg.png';
   static const String iconsCheck = 'assets/icons/check.svg';
   static const String iconsCheckIcon = 'assets/icons/checkIcon.svg';
   static const String iconsCheckIconAffiliate = 'assets/icons/checkIconAffiliate.svg';
@@ -100,6 +101,7 @@ class Assets {
   static const String iconsHeaderbg = 'assets/icons/headerbg.png';
   static const String iconsHome = 'assets/icons/home.svg';
   static const String iconsIco = 'assets/icons/ico.svg';
+  static const String iconsInfoCardBg = 'assets/icons/infoCardBg.png';
   static const String iconsKyc = 'assets/icons/kyc.svg';
   static const String iconsKycStatusBgFrame = 'assets/icons/kycStatusBgFrame.png';
   static const String iconsKycUser = 'assets/icons/kycUser.svg';

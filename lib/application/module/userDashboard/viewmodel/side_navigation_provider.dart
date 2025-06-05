@@ -10,6 +10,7 @@ import '../view/kyc/kyc_screen.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
 import '../view/referralTransaction/referral_transaction_screen.dart';
+import '../view/supportTicket/widget/ticket_description_card.dart';
 import '../view/wallet/wallet_screen.dart';
 
 class NavigationProvider extends ChangeNotifier {
@@ -88,26 +89,25 @@ class NavigationProvider extends ChangeNotifier {
       id: 'log_out',
       title: 'Logout',
       iconPath: 'assets/icons/logout.svg',
-      screenBuilder: (context) => const PlaceholderScreen(screenName: 'Wallet Screen'),
+      onTap: (context) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => CloseTicketDialog(
+            title: 'Logout',
+            message: 'Are you sure you want to log out?',
+            yesLabel: 'Yes',
+            onYes: () {
+              Navigator.of(context).pop();
+
+            },
+            onNo: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
     ),
   ];
 }
 
-
-
-/// Replace With Original Screens
-class PlaceholderScreen extends StatelessWidget {
-  final String screenName;
-  const PlaceholderScreen({Key? key, required this.screenName}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(screenName),
-        backgroundColor: AppColors.drawerGradientEnd,
-      ),
-      body: Center(child: Text("Content for $screenName")),
-    );
-  }
-}

@@ -1,15 +1,16 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
-import '../../../../../framework/utils/status_styling_utils.dart';
-import '../../../../domain/model/TicketListModel.dart';
+ import '../../../../domain/model/TicketListModel.dart';
 import '../../../../domain/model/ticket_list_dummy_data.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'suppor_ticket_screen.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:io';
+import 'dart:math' as Math;
 import 'widget/ticket_description_card.dart';
 import 'widget/ticket_info_card.dart';
 
@@ -44,10 +45,6 @@ class UsersTicketDetailScreen extends StatefulWidget {
 
 class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // final ticketListModel = (ticketListData as List)
-  //     .map((json) => TicketListModel.fromJson(json))
-  //     .toList();
 
   final List<TicketListModel> ticketListModel = ticketListData;
 
@@ -180,75 +177,125 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: Column(
-                    children: [
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                    
+                        // Ticket Info Card
+                        TicketInfoCard(
+                          ticket: widget.ticketData,
+                          width: screenWidth,
+                          height: screenHeight,
+                          onStatusButton: () {
+                            setState(() {
+                              isTicketOpen = !isTicketOpen;
+                            });
+                          },
+                        ),
+                    
+                        SizedBox(height: screenHeight * 0.02),
+                    
+                        // Ticket Description Card
+                        TicketDescriptionCard(
+                          isOpen: isTicketOpen,
+                          width: screenWidth,
+                          height: screenHeight,
+                          onActionButton: () {
+                            // setState(() {
+                            //   isTicketOpen = !isTicketOpen;
+                            // });
+                            final isClosing = isTicketOpen;
 
-                      // Ticket Info Card
-                      TicketInfoCard(
-                        ticket: widget.ticketData,
-                        width: screenWidth,
-                        height: screenHeight,
-                        onStatusButton: () {
-                          setState(() {
-                            isTicketOpen = !isTicketOpen;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: screenHeight * 0.02),
-
-                      // Ticket Description Card
-                      TicketDescriptionCard(
-                        isOpen: isTicketOpen,
-                        width: screenWidth,
-                        height: screenHeight,
-                        onActionButton: () {
-                          setState(() {
-                            isTicketOpen = !isTicketOpen;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: screenHeight * 0.02),
-                      // Chat Section
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: messages.length,
-                          itemBuilder: (context, idx) {
-                            final msg = messages[idx];
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                                    child: Text(
-                                      msg.date,
-                                      style: TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: screenWidth * 0.035,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                ChatBubble(
-                                  message: msg,
-                                  width: screenWidth,
-                                  height: screenHeight,
-                                ),
-                              ],
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) => CloseTicketDialog(
+                                title: isClosing ? 'Close Ticket' : 'Reopen Ticket',
+                                message: isClosing
+                                    ? 'Are you sure you want to Close this ticket?'
+                                    : 'Are you sure you want to Reopen this ticket?',
+                                yesLabel: isClosing ? 'Yes' : 'Yes',
+                                onYes: () {
+                                  setState(() {
+                                    isTicketOpen = !isTicketOpen;
+                                  });
+                                  Navigator.of(context).pop();
+                                },
+                                onNo: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
                             );
                           },
                         ),
-                      ),
+                    
+                        SizedBox(height: screenHeight * 0.01),
+                        // Chat Section
+                        Container(
+                          width: double.infinity,
+                          height: screenHeight * 0.7,
+                          decoration:BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/icons/chatContainerBg.png'),
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          // padding: EdgeInsets.symmetric(
+                          //   horizontal: screenWidth * 0.02,
+                          //  ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: messages.length,
+                                  itemBuilder: (context, idx) {
+                                    final msg = messages[idx];
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                                            child: Text(
+                                              msg.date,
+                                              style: TextStyle(
+                                                color: Colors.white70,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w400,
+                                                 fontSize: getResponsiveFontSize(context, 10),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        ChatBubble(
+                                          message: msg,
+                                          width: screenWidth,
+                                          height: screenHeight,
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                              isTicketOpen
+                                  ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
+                                  : _closedTicketBar(context)
+                                  // : _closedTicketBar(width: screenWidth, height: screenHeight),
 
-
-                      // Input Section
-                      isTicketOpen
-                          ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
-                          : ClosedTicketBar(width: screenWidth, height: screenHeight),
-
-                    ],
+                            ],
+                          ),
+                        ),
+                    
+                    
+                        // Input Section
+                        // isTicketOpen
+                        //     ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
+                        //     : ClosedTicketBar(width: screenWidth, height: screenHeight),
+                    
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -258,12 +305,44 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
       ),
     );
   }
+
+
+  Widget _closedTicketBar(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
+    return Container(
+      margin: EdgeInsets.only(top: height * 0.01),
+      width: width,
+      padding: EdgeInsets.symmetric(vertical: height * 0.018),
+      decoration: BoxDecoration(
+        color: Color(0XFFE04043).withOpacity(0.20),
+        borderRadius: BorderRadius.circular(width * 0.03),
+        border: Border.all(color: Color(0XFFE04043)),
+      ),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            "The ticket is closed",
+            style: TextStyle(
+              color: Color(0XFFE04043),
+              fontWeight: FontWeight.w400,
+              fontFamily: 'Poppins',
+              fontSize: getResponsiveFontSize(context, 12),
+              height: 1.6,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }
 
 // --- Widgets ---
 
-
-///
 class ChatBubble extends StatelessWidget {
   final ChatMessage message;
   final double width;
@@ -277,40 +356,72 @@ class ChatBubble extends StatelessWidget {
   });
 
   bool get isUser => message.sender == "user";
+  String getFileSize(String filePath) {
+    try {
+      final file = File(filePath);
+      final bytes = file.lengthSync(); ///  file size in bytes
+      if (bytes <= 0) return "0 B";
+      const suffixes = ["B", "KB", "MB", "GB", "TB"];
+      int i = (bytes == 0) ? 0 : (Math.log(bytes) / Math.log(1024)).floor();
+      final size = (bytes / Math.pow(1024, i));
+      return "${size.toStringAsFixed(2)} ${suffixes[i]}";
+    } catch (e) {
+       return "N/A";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final screenHeight  = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!isUser)
           Padding(
-            padding: EdgeInsets.only(right: width * 0.025, top: height * 0.01),
-            child: CircleAvatar(
+            padding: EdgeInsets.only(right: screenWidth * 0.025, left: screenHeight * 0.01),
+             child: CircleAvatar(
               backgroundImage: NetworkImage(message.avatarUrl),
-              radius: width * 0.06,
+              radius: screenWidth * 0.05,
+
             ),
           ),
-        Flexible(
+         Flexible(
           child: Column(
             crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Container(
                 margin: EdgeInsets.only(
-                  left: isUser ? width * 0.15 : 0,
-                  right: isUser ? 0 : width * 0.15,
-                  bottom: height * 0.005,
+                  left: isUser ? screenWidth * 0.01 : 0,
+                  right: isUser ? 0 : screenWidth * 0.01,
+                  bottom: screenHeight * 0.005,
                 ),
-                padding: EdgeInsets.all(width * 0.035),
+                padding: EdgeInsets.all(screenWidth * 0.035),
                 decoration: BoxDecoration(
-                  color: isUser ? Color(0xFF1A2B4A) : Color(0xFF22304A),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(width * 0.03),
-                    topRight: Radius.circular(width * 0.03),
-                    bottomLeft: Radius.circular(isUser ? width * 0.03 : 0),
-                    bottomRight: Radius.circular(isUser ? 0 : width * 0.03),
+
+                  gradient: LinearGradient(
+                    colors: isUser
+                        ? [Color(0xFF152743), Color(0xFF101A29)] // Gradient for user
+                        : [Color(0xFF101A29), Color(0xFF101A29)], // Gradient for supporter
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  border: Border.all(
+                    color: Color(0xFF4E4D50),
+                    width: 0.6,
+                  ),
+
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(screenWidth * 0.03),
+                    topRight: Radius.circular(screenWidth * 0.03),
+                    bottomLeft: Radius.circular(isUser ? screenWidth * 0.03 : 0),
+                    bottomRight: Radius.circular(isUser ? 0 : screenWidth * 0.03),
+                  ),
+
+
                 ),
                 child: Column(
                   crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
@@ -319,50 +430,58 @@ class ChatBubble extends StatelessWidget {
                       message.message,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: width * 0.038,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        height: 1.6,
+                        fontSize: getResponsiveFontSize(context, 12),
                       ),
                     ),
-                    SizedBox(height: height * 0.01),
+                    SizedBox(height: screenHeight * 0.01),
                     Text(
                       message.time,
                       style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: width * 0.032,
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        height: 1.6,
+                        fontSize: getResponsiveFontSize(context, 10),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Attachments
+
+
+              /// Attachments
               ...message.attachments.map((file) => Padding(
-                padding: EdgeInsets.only(top: height * 0.008),
+                padding: EdgeInsets.only(top: screenHeight * 0.008),
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: width * 0.03, vertical: height * 0.008),
+                      horizontal: screenWidth * 0.03, vertical: screenHeight * 0.008),
                   decoration: BoxDecoration(
                     color: const Color(0xFF22304A),
-                    borderRadius: BorderRadius.circular(width * 0.02),
+                    borderRadius: BorderRadius.circular(screenWidth * 0.02),
                     border: Border.all(color: Colors.white24),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.insert_drive_file,
-                          color: Colors.white70, size: width * 0.045),
-                      SizedBox(width: width * 0.02),
+                          color: Colors.white70, size: screenWidth * 0.045),
+                      SizedBox(width: screenWidth * 0.02),
                       Text(
-                        file,
+                        file.split('/').last, /// File Name
                         style: TextStyle(
                           color: Colors.white70,
-                          fontSize: width * 0.035,
+                          fontSize: screenWidth * 0.035,
                         ),
                       ),
-                      SizedBox(width: width * 0.02),
+                      SizedBox(width: screenWidth * 0.02),
                       Text(
-                        "105.01 KB",
+                        getFileSize(file), /// File size
                         style: TextStyle(
                           color: Colors.white38,
-                          fontSize: width * 0.032,
+                          fontSize: screenWidth * 0.032,
                         ),
                       ),
                     ],
@@ -374,16 +493,22 @@ class ChatBubble extends StatelessWidget {
         ),
         if (isUser)
           Padding(
-            padding: EdgeInsets.only(left: width * 0.025, top: height * 0.01),
+            padding: EdgeInsets.only(left: screenWidth * 0.025, right: screenHeight * 0.01),
             child: CircleAvatar(
               backgroundImage: NetworkImage(message.avatarUrl),
-              radius: width * 0.06,
+              radius: screenWidth * 0.05,
             ),
           ),
       ],
     );
   }
 }
+
+
+
+
+
+
 
 class ChatInputField extends StatefulWidget {
   final double width;
@@ -405,45 +530,70 @@ class _ChatInputFieldState extends State<ChatInputField> {
   final TextEditingController _controller = TextEditingController();
   List<String> attachments = [];
 
-  void _pickAttachment() async {
+  Future<void> _pickAttachment() async {
+    final List<XTypeGroup> allowedTypes = [
+      const XTypeGroup(
+        label: 'Media & Documents',
+        extensions: [
+          'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp',
+          'pdf', 'doc', 'docx', 'ppt', 'pptx',
+          'xls', 'xlsx', 'txt', 'zip', 'rar'
+        ],
+        mimeTypes: [
+          'image/*',
+          'application/*',
+          'text/plain',
+        ],
+      ),
+    ];
 
-    setState(() {
-      attachments.add("DemoFile.png");
-    });
-  }
+     final List<XFile> file = await openFiles(acceptedTypeGroups: allowedTypes);
 
-  void _send() {
-    if (_controller.text.trim().isNotEmpty || attachments.isNotEmpty) {
-      widget.onSend(_controller.text.trim(), attachments);
-      _controller.clear();
+    if (file.isNotEmpty) {
       setState(() {
-        attachments = [];
+        attachments.addAll(file.map((file) => file.path));
       });
     }
   }
 
+  void _send() {
+    final String message = _controller.text.trim();
+
+     if (message.isEmpty || attachments.isEmpty) return;
+
+    widget.onSend(message, List<String>.from(attachments));
+
+    setState(() {
+      _controller.clear();
+      attachments.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      margin: EdgeInsets.only(top: widget.height * 0.01),
+      margin: EdgeInsets.only(top: screenHeight * 0.01),
       padding: EdgeInsets.symmetric(
-          horizontal: widget.width * 0.01, vertical: widget.height * 0.01),
+          horizontal: screenWidth * 0.01, vertical: screenHeight * 0.01),
       child: Row(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF17223B),
-                borderRadius: BorderRadius.circular(widget.width * 0.02),
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(screenWidth * 0.02),
                 border: Border.all(
-                  color: const Color(0xFF00FFC2),
-                  width: 1,
+                  color: const Color(0xFF1CD691).withOpacity(0.80),
+                  width: 0.8,
                 ),
               ),
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.attach_file, color: Colors.white54),
+                    icon: SvgPicture.asset('assets/icons/attatchment.svg',fit: BoxFit.contain,),
                     onPressed: _pickAttachment,
                   ),
                   Expanded(
@@ -452,7 +602,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: "Write here...",
-                        hintStyle: TextStyle(color: Colors.white54),
+                        hintStyle: TextStyle(
+                            color: Colors.white54,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                             fontSize: getResponsiveFontSize(context, 12),
+                        ),
                         border: InputBorder.none,
                       ),
                     ),
@@ -461,18 +616,18 @@ class _ChatInputFieldState extends State<ChatInputField> {
               ),
             ),
           ),
-          SizedBox(width: widget.width * 0.01),
+          SizedBox(width: screenWidth * 0.01),
           Container(
             decoration: BoxDecoration(
               border: Border.all(
-                color: const Color(0xFF00FFC2),
-                width: 1,
+                color: const Color(0xFF1CD691),
+                width: 0.8,
               ),
-              borderRadius: BorderRadius.circular(widget.width * 0.02),
-              color: const Color(0xFF17223B),
+              borderRadius: BorderRadius.circular(screenWidth * 0.02),
+              color: const Color(0xFF101A29),
             ),
             child: IconButton(
-              icon: Icon(Icons.send, color: Colors.white, size: widget.width * 0.07),
+              icon: Icon(Icons.send, color: Colors.white, size: screenWidth * 0.07),
               onPressed: _send,
             ),
           ),

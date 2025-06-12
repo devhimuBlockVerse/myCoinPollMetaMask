@@ -9,6 +9,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_s
  import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:provider/provider.dart';
+import '../../../framework/components/DialogModalViewComponent.dart';
 import '../../../framework/res/colors.dart';
 import '../viewmodel/bottom_nav_provider.dart';
 
@@ -42,87 +43,31 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     'assets/icons/profileIcon.svg',
   ];
 
+
+
   Future<bool> _onWillPop(double screenWidth, double screenHeight) async {
     final value = await showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
-        return Theme(
-          data: ThemeData(dialogTheme: const DialogThemeData(backgroundColor: Colors.transparent)),
-          child: AlertDialog(
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.02,
-              vertical: screenHeight * 0.02,
-            ),
-            insetPadding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.1,
-              vertical: screenHeight * 0.2,
-            ),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            content: const Text(
-              "  Are you sure you want to exit ?",
-              style: TextStyle(fontSize: 18),
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      exit(0);
-                    },
-                    child: Container(
-                      width: screenWidth * 0.2,
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.011),
-                      decoration: BoxDecoration(
-                        color: AppColors.loginButtonColor,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Yes',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: screenWidth * 0.020),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(false),
-                    child: Container(
-                      width: screenWidth * 0.2,
-                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.011),
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'No',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+        return DialogModalView(
+          title: "Exit MyCoinPoll",
+          message: "Are you sure you want to exit?",
+          yesLabel: "Yes",
+          onYes: () {
+            Navigator.of(context).pop(true);
+          },
+          onNo: () {
+            Navigator.of(context).pop(false);
+          },
         );
       },
     );
-    return value ?? false;
+    if(value == true){
+      exit(0);
+    }
+    return false;
   }
-
 
   @override
   Widget build(BuildContext context) {

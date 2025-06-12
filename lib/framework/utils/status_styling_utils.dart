@@ -215,3 +215,27 @@ StatusStyling getTicketStatusStyle(String status) {
   }
 }
 
+StatusStyling getActionStatusStyle(String status) {
+  switch (status) {
+
+    case 'Accept':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
+        borderColor: const Color(0xFF1CD494),
+        textColor: const Color(0xFF1CD494),
+      );
+    case 'Decline':
+      return StatusStyling(
+        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
+        borderColor: const Color(0xFFE04043),
+        textColor: const Color(0xFFE04043),
+      );
+    default:
+      return StatusStyling(
+        backgroundColor: const Color(0xFF2A2A2A),
+        borderColor: Colors.grey[600]!,
+        textColor: Colors.white,
+      );
+  }
+}
+

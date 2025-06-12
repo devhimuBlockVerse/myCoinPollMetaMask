@@ -43,7 +43,7 @@ class NavigationProvider extends ChangeNotifier {
       id: 'milestone',
       title: 'Milestone',
       iconPath: 'assets/icons/milestone.svg',
-      screenBuilder: (context) => const MilestonScreen(),
+      screenBuilder: (context) => const MilestoneScreen(),
     ),
     NavItem(
       id: 'kyc',

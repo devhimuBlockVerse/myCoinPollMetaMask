@@ -240,7 +240,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                                labelText: 'Full Name',
                                                height: screenHeight * 0.05,
                                                width: screenWidth* 0.88,
-                                               expandable: true,
+                                               expandable: false,
                                                keyboard: TextInputType.name,
                                             ),
                                 
@@ -251,7 +251,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                                labelText: 'Email Address',
                                                height: screenHeight * 0.05,
                                                width: screenWidth* 0.88,
-                                               expandable: true,
+                                               expandable: false,
                                                keyboard: TextInputType.emailAddress,
                                             ),
                                 
@@ -277,7 +277,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                                labelText: 'Project Name',
                                                height: screenHeight * 0.05,
                                                width: screenWidth* 0.88,
-                                               expandable: true,
+                                               expandable: false,
                                                keyboard: TextInputType.name,
                                              ),
                                 

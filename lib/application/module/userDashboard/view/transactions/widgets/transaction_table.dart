@@ -44,7 +44,7 @@ import 'transaction_details.dart';
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            height: screenHeight * 0.4,
+            height: screenHeight * 0.8,
             width: constraints.maxWidth * 1.8,
             child: DataTable2(
 
@@ -77,7 +77,7 @@ import 'transaction_details.dart';
                     // size: ColumnSize.L
 
                     fixedWidth: screenWidth * (40.0 / designScreenWidth)
-        ),
+                ),
               ],
               rows: transactionData.asMap().entries.map((entry) {
                 int idx = entry.key;

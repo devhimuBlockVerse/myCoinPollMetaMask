@@ -99,7 +99,7 @@ class _ListingFieldState extends State<ListingField> {
         widget.prefixSvgPath!,
         height: iconSize,
         width: iconSize,
-        // colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.5), BlendMode.srcIn), // Already commented out
+        // colorFilter: ColorFilter.mode(Colors.white.withOpacity(0.5), BlendMode.srcIn),
       );
     } else if (widget.prefixPngPath != null) {
       prefixWidget = Image.asset(
@@ -121,7 +121,7 @@ class _ListingFieldState extends State<ListingField> {
 
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.045,
-          // vertical: screenHeight * 0.012,
+          vertical: screenHeight * 0.012,
         ),
         decoration: ShapeDecoration(
           color: const Color(0XFF101A29),

@@ -12,7 +12,7 @@ final List<Map<String, String>> stakingData = List.generate(40, (index) {
 });
 
 /// Dummy Data for Transaction History
-final List<Map<String, dynamic>> transactionData = List.generate(10, (index) {
+final List<Map<String, dynamic>> transactionData = List.generate(50, (index) {
   final statuses = ['In', 'Out'];
   // Sample Txn Hashes
   final txnHashes = [
@@ -32,7 +32,8 @@ final List<Map<String, dynamic>> transactionData = List.generate(10, (index) {
 
   return {
     'SL': (index + 1).toString().padLeft(2, '0'),
-    'DateTime': dates[index],
+    // 'DateTime': dates[index],
+    'DateTime': dates[index % dates.length],
     'TxnHash': txnHashes[index % txnHashes.length],
     'Status': statuses[index % statuses.length],
     'Amount': amounts[index % amounts.length],

@@ -33,7 +33,7 @@ final List<String> statuses = [
   'Closed',
 ];
 
-final List<TicketListModel> ticketListData = List.generate(1000, (index) {
+final List<TicketListModel> ticketListData = List.generate(20, (index) {
   final random = Random();
   final subject = subjects[random.nextInt(subjects.length)];
   final status = statuses[random.nextInt(statuses.length)];

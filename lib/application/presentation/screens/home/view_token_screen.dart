@@ -130,6 +130,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+              filterQuality: FilterQuality.medium,
+
             ),
           ),
           child: Column(
@@ -144,7 +146,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     'assets/icons/back_button.svg',
                     color: Colors.white,
                       width: screenWidth * 0.04,
-                      height: screenWidth * 0.04
+                      height: screenWidth * 0.04,
+
+
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -158,129 +162,137 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     right: screenWidth * 0.01,
                     bottom: screenHeight * 0.02,
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
 
 
-                        /// White Paper Section
+                          /// White Paper Section
 
-                        _buildTokenCard(),
-                        SizedBox(height: screenHeight * 0.04),
+                          _buildTokenCard(),
+                          SizedBox(height: screenHeight * 0.04),
 
 
-                        /// Buy ECM section
-                        _buildBuyEcmSection(),
+                          /// Buy ECM section
+                          _buildBuyEcmSection(),
 
-                        SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.04),
 
-                         InfoCard(
-                          label1: 'ECM',
-                          label2: 'eCommerce Coin (ECM)',
-                          description:
-                          'ECM Coin (eCommerce Coin) is a blockchain-based crypto- currency built to transform the e-commerce industry. Powered by Ethereum, it supports a decentralized ecosystem including a crypto exchange, staking platform, and metaverse project. ECM Coin ensures secure, transparent, and efficient transactions. A dedicated blockchain launch is planned for 2025.',
-                          imagePath: 'assets/icons/ecmLogo.png',
-                          backgroundImagePath: 'assets/icons/bg.png',
-                           width: screenWidth ,
-                        ),
+                           InfoCard(
+                            label1: 'ECM',
+                            label2: 'eCommerce Coin (ECM)',
+                            description:
+                            'ECM Coin (eCommerce Coin) is a blockchain-based crypto- currency built to transform the e-commerce industry. Powered by Ethereum, it supports a decentralized ecosystem including a crypto exchange, staking platform, and metaverse project. ECM Coin ensures secure, transparent, and efficient transactions. A dedicated blockchain launch is planned for 2025.',
+                            imagePath: 'assets/icons/ecmLogo.png',
+                            backgroundImagePath: 'assets/icons/bg.png',
+                             width: screenWidth ,
+                          ),
 
-                        /// Submit & Clear Button Section
+                          /// Submit & Clear Button Section
 
-                        SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.04),
 
-                        InfoCard(
-                          label1: 'METAFUSION LABS',
-                          label2: 'Founder',
-                          description: 'METAFUSION LABS LLC, S.R.L. is a token issuance company company based in Republic of Panama, operating under the legal name "METAFUSION LABS LLC, S.R.L." The company is registered at Global Bank Building, 50th Street, 181h Level, Republic of Panama, with Folio No. 15576379.',
-                           imagePath: 'assets/icons/metaFutionImg.png',
-                          // backgroundImagePath: 'assets/icons/bg.png',
-                          width: screenWidth ,
-                        ),
+                          InfoCard(
+                            label1: 'METAFUSION LABS',
+                            label2: 'Founder',
+                            description: 'METAFUSION LABS LLC, S.R.L. is a token issuance company company based in Republic of Panama, operating under the legal name "METAFUSION LABS LLC, S.R.L." The company is registered at Global Bank Building, 50th Street, 181h Level, Republic of Panama, with Folio No. 15576379.',
+                             imagePath: 'assets/icons/metaFutionImg.png',
+                            // backgroundImagePath: 'assets/icons/bg.png',
+                            width: screenWidth ,
+                          ),
 
-                        SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.04),
 
-                        _strategicTokenSection(),
+                          _strategicTokenSection(),
 
-                        Center(
-                          child: Container(
-                            width: screenWidth * 0.7,
-                            height: screenHeight * 0.19,
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/icons/discoverIMG2.png'),
-                                fit: BoxFit.fitWidth,
+                          Center(
+                            child: Container(
+                              width: screenWidth * 0.7,
+                              height: screenHeight * 0.19,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/icons/discoverIMG2.png'),
+                                  fit: BoxFit.fitWidth,
+                                  filterQuality: FilterQuality.medium,
+
+                                ),
                               ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                child:  Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: screenWidth * 0.03),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                                  child:  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: screenWidth * 0.03),
 
-                                    Image.asset(
-                                      // 'assets/icons/discoverIMG.png',
-                                      'assets/icons/ecmLarge.png',
-                                      fit: BoxFit.contain,
-                                      width: screenWidth * 0.17,
-                                    ),
+                                      Image.asset(
+                                        // 'assets/icons/discoverIMG.png',
+                                        'assets/icons/ecmLarge.png',
+                                        fit: BoxFit.contain,
+                                        width: screenWidth * 0.17,
+                                      ),
 
-                                    SizedBox(width: screenWidth * 0.01),
-                                    Flexible(
-                                      child: AutoSizeText(
-                                        "Discover Our Visionary Roadmap",
-                                        textAlign: TextAlign.left,
-                                        maxLines: 2,
+                                      SizedBox(width: screenWidth * 0.01),
+                                      Flexible(
+                                        child: AutoSizeText(
+                                          "Discover Our Visionary Roadmap",
+                                          textAlign: TextAlign.left,
+                                          maxLines: 2,
 
-                                        style:  TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Poppins',
-                                          fontWeight: FontWeight.w500,
-                                          height: 1.3,
-                                          fontSize: baseSize * 0.032,
+                                          style:  TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.3,
+                                            fontSize: baseSize * 0.032,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+
+                                ),
+                              )
+                            ),
+                          ),
+
+
+                          SizedBox(height: screenHeight * 0.06),
+
+                          /// Road Map Component Functionalities
+
+                           SizedBox(
+                            width: double.infinity,
+
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+
+                              children: [
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  child: buildRoadmapSection(context, screenHeight),
                                 ),
 
-                              ),
-                            )
+                              ],
+                            ),
                           ),
-                        ),
-
-
-                        SizedBox(height: screenHeight * 0.06),
-
-                        /// Road Map Component Functionalities
-
-                         SizedBox(
-                          width: double.infinity,
-
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-
-                            children: [
-
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: buildRoadmapSection(context, screenHeight),
-                              ),
-
-                            ],
-                          ),
-                        ),
 
 
 
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -318,6 +330,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
               image:const DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
                 fit: BoxFit.fill,
+                filterQuality: FilterQuality.medium,
+
               ),
             ),
             child: Padding(
@@ -337,6 +351,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                             width: screenWidth * 0.4,
                             height: screenHeight * 0.15,
                             fit: BoxFit.fitWidth,
+                            filterQuality: FilterQuality.medium,
+
                           ),
 
                           Positioned(
@@ -609,6 +625,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
           height: imageSize,
           color: Colors.white,
           fit: BoxFit.contain,
+          filterQuality: FilterQuality.medium,
+
         ),
       ),
     );
@@ -698,6 +716,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                 image:const DecorationImage(
                   image: AssetImage('assets/icons/buyEcmContainerImage.png'),
                   fit: BoxFit.fill,
+                  filterQuality: FilterQuality.medium,
+
                 ),
               ),
               child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
@@ -989,6 +1009,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
               image: const DecorationImage(
                 image: AssetImage('assets/icons/gradientImg.png'),
                 fit: BoxFit.cover,
+                filterQuality: FilterQuality.medium,
+
               ),
               border: Border.all(width: 0.5, color: const Color(0xFF2B2D40)),
               borderRadius: BorderRadius.circular(screenWidth * 0.02),
@@ -1044,6 +1066,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           image: const DecorationImage(
                             image: AssetImage('assets/icons/progressFrameBg.png'),
                             fit: BoxFit.fill,
+                            filterQuality: FilterQuality.medium,
+
                           ),
                           // borderRadius: BorderRadius.circular(screenWidth * 0.02),
                         ),
@@ -1146,6 +1170,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
             image: const DecorationImage(
               image: AssetImage('assets/icons/progressFrameBg.png'),
               fit: BoxFit.cover,
+              filterQuality: FilterQuality.medium,
+
             ),
           ),
           child: ClipRRect(

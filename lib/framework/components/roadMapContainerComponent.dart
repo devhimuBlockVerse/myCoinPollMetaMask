@@ -34,8 +34,8 @@ class RoadmapContainerComponent extends StatelessWidget {
               // Background image that expands with content
               Positioned.fill(
                 child: Image.asset(
-                  // "assets/icons/roadmapFrame.png",
-                  "assets/icons/roadMapBox.png",
+                   // "assets/icons/roadMapBox.png",
+                   "assets/icons/roadmapFrame.png",
                   fit: BoxFit.fill,
                   alignment: Alignment.topCenter,
                 ),

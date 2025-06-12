@@ -100,6 +100,8 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
                           width: baseImageSize,
                           height: baseImageSize,
                           fit: BoxFit.fill,
+                          filterQuality: FilterQuality.medium,
+
                         ),
                       ),
                     ),

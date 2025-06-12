@@ -68,12 +68,14 @@ class FeatureCard extends StatelessWidget {
               iconPath,
               width: iconWidth,
               fit: BoxFit.contain,
+
             )
                 : Image.asset(
               iconPath,
               width: iconWidth,
-              fit: BoxFit.contain,
-            ),
+              fit: BoxFit.contain, filterQuality: FilterQuality.medium,
+
+             ),
             SizedBox(width: screenWidth * 0.01),
             // Text
             Flexible(

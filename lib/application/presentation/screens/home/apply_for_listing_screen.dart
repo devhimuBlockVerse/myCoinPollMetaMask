@@ -22,6 +22,19 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
   TextEditingController projectNameController = TextEditingController();
   TextEditingController projectDetailsController = TextEditingController();
   TextEditingController projectStatusController = TextEditingController();
+
+ TextEditingController backersAndAdvisorsController = TextEditingController();
+ TextEditingController smartContractAuditController = TextEditingController();
+ TextEditingController litepaperLinkController = TextEditingController();
+ TextEditingController websiteLinkController = TextEditingController();
+ TextEditingController mediumLinkController = TextEditingController();
+ TextEditingController githubLinkController = TextEditingController();
+ TextEditingController twitterLinkController = TextEditingController();
+ TextEditingController telegramLinkController = TextEditingController();
+ TextEditingController additionalDetailsController = TextEditingController();
+
+
+
   String selectedOptionPlatform = 'Solana';
   String selectedOptionTeam = 'Solana';
 
@@ -239,7 +252,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                               controller: fullNameController,
                                                labelText: 'Full Name',
                                                height: screenHeight * 0.05,
-                                               width: screenWidth* 0.88,
+                                               // width: screenWidth* 0.88,
                                                expandable: false,
                                                keyboard: TextInputType.name,
                                             ),
@@ -250,7 +263,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                               controller: emailAddressController,
                                                labelText: 'Email Address',
                                                height: screenHeight * 0.05,
-                                               width: screenWidth* 0.88,
+                                               // width: screenWidth* 0.88,
                                                expandable: false,
                                                keyboard: TextInputType.emailAddress,
                                             ),
@@ -276,7 +289,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                                controller: projectNameController,
                                                labelText: 'Project Name',
                                                height: screenHeight * 0.05,
-                                               width: screenWidth* 0.88,
+                                               // width: screenWidth* 0.88,
                                                expandable: false,
                                                keyboard: TextInputType.name,
                                              ),
@@ -286,9 +299,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                              ListingField(
                                                controller: projectDetailsController,
                                                labelText: 'Project Details',
-                                               height: screenHeight * 0.09,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
+                                               height:  screenHeight * 0.2,
+                                               expandable: false,
                                                keyboard: TextInputType.multiline,
                                              ),
                                 
@@ -297,9 +309,9 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                              ListingField(
                                                controller: projectStatusController,
                                                labelText: 'Project Status',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
+                                               height: screenHeight * 0.1,
+                                               // width: screenWidth* 0.88,
+                                               expandable: false,
                                                keyboard: TextInputType.multiline,
                                              ),
                                 
@@ -439,44 +451,40 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                              SizedBox(height: screenHeight * 0.02),
                                 
                                              ListingField(
-                                               // controller: ,
+                                               controller: backersAndAdvisorsController ,
                                                labelText: 'Backers & Advisors',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                 
                                              SizedBox(height: screenHeight * 0.02),
                                 
                                              ListingField(
-                                               // controller: ,
+                                               controller: smartContractAuditController ,
                                                labelText: 'Smart Contract Audit (with link if any)',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                 
                                              SizedBox(height: screenHeight * 0.02),
                                 
                                              ListingField(
-                                               // controller: ,
+                                               controller: litepaperLinkController ,
                                                labelText: 'Litepaper/Whitepaper Link',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                              SizedBox(height: screenHeight * 0.02),
                                 
                                              ListingField(
-                                               // controller: ,
+                                               controller: websiteLinkController,
                                                labelText: 'Website Link (if any)',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                 
                                              SizedBox(height: screenHeight * 0.05),
@@ -497,39 +505,35 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                              SizedBox(height: screenHeight * 0.02),
                                 
                                              ListingField(
-                                               // controller: ,
+                                               controller: mediumLinkController ,
                                                labelText: 'Medium Link:',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                              SizedBox(height: screenHeight * 0.02),
                                              ListingField(
-                                               // controller: ,
+                                               controller: githubLinkController ,
                                                labelText: 'Github Link:',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                              SizedBox(height: screenHeight * 0.02),
                                              ListingField(
-                                               // controller: ,
+                                               controller: twitterLinkController ,
                                                labelText: 'Twitter Link:',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                              SizedBox(height: screenHeight * 0.02),
                                              ListingField(
-                                               // controller: ,
+                                               controller: telegramLinkController ,
                                                labelText: 'Telegram Link:',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                              SizedBox(height: screenHeight * 0.05),
                                 
@@ -547,12 +551,12 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                              ),
                                              SizedBox(height: screenHeight * 0.02),
                                              ListingField(
-                                               // controller: ,
+                                               controller: additionalDetailsController,
                                                labelText: 'Write in details',
-                                               height: screenHeight * 0.12,
-                                               width: screenWidth* 0.88,
-                                               expandable: true,
-                                               keyboard: TextInputType.multiline,
+                                               height: screenHeight * 0.05,
+
+                                               expandable: false,
+                                               keyboard: TextInputType.name,
                                              ),
                                 
                                 
@@ -573,7 +577,29 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                       children: [
                                         TextButton(
                                           onPressed: () {
-                                
+
+                                            setState(() {
+                                              // Clear all text fields
+                                              fullNameController.clear();
+                                              emailAddressController.clear();
+                                              projectNameController.clear();
+                                              projectDetailsController.clear();
+                                              projectStatusController.clear();
+                                              backersAndAdvisorsController.clear();
+                                              smartContractAuditController.clear();
+                                              litepaperLinkController.clear();
+                                              websiteLinkController.clear();
+                                              mediumLinkController.clear();
+                                              githubLinkController.clear();
+                                              twitterLinkController.clear();
+                                              telegramLinkController.clear();
+                                              additionalDetailsController.clear();
+
+                                              // Reset all selected options to their initial values
+                                              selectedOptionPlatform = 'Solana';
+                                              selectedOptionTeam = 'Solana';
+                                            });
+
                                           },
                                           style: TextButton.styleFrom(
                                             padding: EdgeInsets.zero,

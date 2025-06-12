@@ -34,6 +34,7 @@ class _StakingScreenState extends State<StakingScreen> {
   String? _selectedDuration;
   List<Map<String, dynamic>> _filteredData = [];
   String _currentSelectedPercentage = dummyPercentageOptions[0];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -81,7 +82,7 @@ class _StakingScreenState extends State<StakingScreen> {
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
     return  Scaffold(
-        key: navProvider.scaffoldKey,
+        key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(

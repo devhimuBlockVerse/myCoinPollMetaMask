@@ -35,8 +35,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
 
 
 
-  String selectedOptionPlatform = 'Solana';
-  String selectedOptionTeam = 'Solana';
+  String selectedOptionPlatform = '';
+  String selectedOptionTeam = '';
 
   @override
   void initState() {
@@ -622,8 +622,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                         SizedBox(width: screenWidth * 0.03,),
                                 
                                         BlockButton(
-                                          height: screenHeight * 0.039,
-                                          width: screenWidth * 0.32,
+                                          height: screenHeight * 0.046,
+                                          width: screenWidth * 0.38,
                                           label: 'Submit For Apply',
                                           textStyle: TextStyle(
                                             fontFamily: 'Poppins',
@@ -644,7 +644,7 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                       ],
                                     ),
                                 
-                                    SizedBox(height: screenHeight * 0.02),
+                                    SizedBox(height: screenHeight * 0.04),
                                 
                                 
                                   ],

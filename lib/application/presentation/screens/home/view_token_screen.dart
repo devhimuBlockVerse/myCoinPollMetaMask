@@ -561,6 +561,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         onPressed: () {
                           debugPrint('Button tapped!');
                         },
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: getResponsiveFontSize(context, 12),
+                        ),
                         width: screenWidth * 0.3,
                         height: screenHeight * 0.04,
                       ),

@@ -30,6 +30,7 @@ class ECMIcoScreen extends StatefulWidget {
 
 class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final usdtController = TextEditingController();
   final ecmController = TextEditingController();
@@ -101,7 +102,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     final navItems = navProvider.drawerNavItems;
 
     return  Scaffold(
-        key: navProvider.scaffoldKey,
+        key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(

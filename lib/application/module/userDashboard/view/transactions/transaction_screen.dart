@@ -28,6 +28,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _displayData = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -105,7 +106,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final navItems = navProvider.drawerNavItems;
 
     return  Scaffold(
-        key: navProvider.scaffoldKey,
+        key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(

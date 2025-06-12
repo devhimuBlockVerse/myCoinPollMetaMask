@@ -34,6 +34,9 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +74,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
          return false;
       },
       child: Scaffold(
-        key: navProvider.scaffoldKey,
+        // key: navProvider.scaffoldKey,
+        key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
         drawer: SideNavBar(
@@ -111,7 +115,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       
       
                     /// User Name Data & Wallet Address
-                    _headerSection(navProvider),
+                    _headerSection(_scaffoldKey),
                     SizedBox(height: screenHeight * 0.02),
       
                     /// User Graph Chart and Level
@@ -173,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
 
-  Widget _headerSection(NavigationProvider navProvider){
+  Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -206,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                    children: [
                      GestureDetector(
                        onTap: (){
-                         navProvider.scaffoldKey.currentState?.openDrawer();
+                        scaffoldKey.currentState?.openDrawer();
                        },
                        child: SvgPicture.asset(
                          'assets/icons/drawerIcon.svg',

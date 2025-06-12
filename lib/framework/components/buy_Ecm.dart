@@ -7,13 +7,14 @@ class BlockButtonV2 extends StatefulWidget {
   final VoidCallback? onPressed;
   final double? height;
   final double? width;
+  final TextStyle? textStyle;
 
 
   const BlockButtonV2({
     super.key,
     required this.text,
     this.trailingIcon,
-    this.onPressed, this.height, this.width,
+    this.onPressed, this.height, this.width, this.textStyle,
   });
 
   @override
@@ -47,15 +48,25 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
 
 
 
+
+    final calculatedFontSize = buttonHeight * 0.4;
+    final effectiveTextStyle = (widget.textStyle ?? const TextStyle())
+        .copyWith(
+      fontSize: widget.textStyle?.fontSize ?? calculatedFontSize,
+      color: widget.textStyle?.color ?? Colors.white,
+    );
+
+
     return GestureDetector(
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
+      // onTapDown: _handleTapDown,
+      // onTapUp: _handleTapUp,
+      // onTapCancel: _handleTapCancel,
+      onTap: widget.onPressed,
       child: Container(
         width: buttonWidth,
         height: buttonHeight,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(9),
         ),
         child: Stack(
           children: [
@@ -74,7 +85,7 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
               blendMode: BlendMode.srcATop,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(9),
                   border: Border.all(
                     color: Colors.white,
                     width: 0.8,
@@ -84,7 +95,7 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
             ),
             // Main Button Content
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               child: Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -93,12 +104,13 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         widget.text,
-                        style: const TextStyle(
-                          fontFamily: 'SansSerif',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                          color: Colors.white, // Always white
-                        ),
+                        // style: const TextStyle(
+                        //   fontFamily: 'SansSerif',
+                        //   fontWeight: FontWeight.w700,
+                        //   fontSize: 20,
+                        //   color: Colors.white, // Always white
+                        // ),
+                        style: effectiveTextStyle
                       ),
                     ),
                     if (widget.trailingIcon != null) ...[

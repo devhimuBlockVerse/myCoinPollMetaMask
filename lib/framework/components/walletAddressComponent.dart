@@ -19,8 +19,8 @@ class WalletAddressComponent extends StatelessWidget {
     final double scaleFactor = screenSize.width / baseWidth;
 
     final double iconSize = 15.0 * scaleFactor.clamp(0.85, 1.4);
-    final double horizontalPadding = 12.0 * scaleFactor.clamp(0.85, 1.0); // reduced
-    final double verticalPadding = 14.0 * scaleFactor.clamp(0.85, 1.4); // reduced
+    final double horizontalPadding = 12.0 * scaleFactor.clamp(0.85, 1.0);
+    final double verticalPadding = 14.0 * scaleFactor.clamp(0.85, 1.4);
 
     return Container(
       decoration: const BoxDecoration(
@@ -46,13 +46,13 @@ class WalletAddressComponent extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: textColor,
-                fontSize: getResponsiveFontSize(context, 10),
+                fontSize: getResponsiveFontSize(context, 12),
                 fontWeight: FontWeight.w500,
               ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(width: 8.0 * scaleFactor),
+          SizedBox(width: 6.0 * scaleFactor),
           SvgPicture.asset(
             'assets/icons/walletIcon.svg',
             width: iconSize,

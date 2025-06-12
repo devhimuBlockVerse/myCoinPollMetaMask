@@ -11,15 +11,15 @@ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widget/milestone_lists.dart';
 
-class MilestonScreen extends StatefulWidget {
+class MilestoneScreen extends StatefulWidget {
 
-  const MilestonScreen({super.key });
+  const MilestoneScreen({super.key });
 
   @override
-  State<MilestonScreen> createState() => _MilestonScreenState();
+  State<MilestoneScreen> createState() => _MilestoneScreenState();
 }
 
-class _MilestonScreenState extends State<MilestonScreen> {
+class _MilestoneScreenState extends State<MilestoneScreen> {
 
 
 

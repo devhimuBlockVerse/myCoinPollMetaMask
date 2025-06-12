@@ -23,6 +23,7 @@ import '../../../side_nav_bar.dart';
 import '../affiliate/affiliate_screen.dart';
 import '../kyc/kyc_inProgress_screen.dart';
 import '../kyc/kyc_status_screen.dart';
+import '../notification/notification_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -110,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       
       
                     /// User Name Data & Wallet Address
-                    _headerSection(),
+                    _headerSection(navProvider),
                     SizedBox(height: screenHeight * 0.02),
       
                     /// User Graph Chart and Level
@@ -172,7 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
 
-  Widget _headerSection(){
+  Widget _headerSection(NavigationProvider navProvider){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -196,35 +197,55 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
              ),
              child: Row(
                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+               crossAxisAlignment: CrossAxisAlignment.center,
                children: [
-                 /// User Info & Ro Text + Notification
-                 Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text(
-                       greeting,
-                       style: TextStyle(
-                         fontFamily: 'Poppins',
-                         fontWeight: FontWeight.w400,
-                         fontSize: getResponsiveFontSize(context, 14),
-                         height: 1.6,
-                         color: const Color(0xffFFF5ED),
-                       ),
-                     ),
-                     Text(
-                       'User Name', // your Ro text
-                       style: TextStyle(
-                         fontFamily: 'Poppins',
-                         fontWeight: FontWeight.w600,
-                         fontSize: getResponsiveFontSize(context, 18),
-                         height: 1.3,
-                         color: const Color(0xffFFF5ED),
-                       ),
-                     ),
-                     const SizedBox(width: 8),
 
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   crossAxisAlignment: CrossAxisAlignment.center,
+                   children: [
+                     GestureDetector(
+                       onTap: (){
+                         navProvider.scaffoldKey.currentState?.openDrawer();
+                       },
+                       child: SvgPicture.asset(
+                         'assets/icons/drawerIcon.svg',
+                         height: getResponsiveFontSize(context, 16),
+                       ),
+                     ),
+                     SizedBox(width: screenWidth * 0.03),
+                     /// User Info & Ro Text + Notification
+                     Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text(
+                           greeting,
+                           style: TextStyle(
+                             fontFamily: 'Poppins',
+                             fontWeight: FontWeight.w400,
+                             fontSize: getResponsiveFontSize(context, 14),
+                             height: 1.6,
+                             color: const Color(0xffFFF5ED),
+                           ),
+                         ),
+                         Text(
+                           'User Name', // your Ro text
+                           style: TextStyle(
+                             fontFamily: 'Poppins',
+                             fontWeight: FontWeight.w600,
+                             fontSize: getResponsiveFontSize(context, 18),
+                             height: 1.3,
+                             color: const Color(0xffFFF5ED),
+                           ),
+                         ),
+                         const SizedBox(width: 8),
+
+                       ],
+                     ),
                    ],
                  ),
+
+
 
                  /// Wallet Address
                  Column(
@@ -240,7 +261,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                      ),
 
                      GestureDetector(
-                       onTap: (){},
+                       onTap: (){
+                         Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
+
+                       },
                        child: SvgPicture.asset(
                          'assets/icons/nofitication.svg',
                          height: getResponsiveFontSize(context, 24),
@@ -573,7 +597,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               TextButton(
                 onPressed: () {
                   debugPrint('View All button tapped');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  MilestonScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  MilestoneScreen()));
                 },
                 child: Text(
                   'View All',
@@ -878,7 +902,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Transactions & Referral',
+                'Transactions',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
@@ -939,7 +963,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                     const TransactionStatCard(
                       bgImagePath: 'assets/icons/colorPurple.png',
-                      title: 'Referral User',
+                      title: 'Total ECM',
                       value: '205',
                     ),
 
@@ -947,7 +971,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                      SizedBox(height: screenHeight * 0.01),
                      const TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
-                      title: 'Referral Transactions',
+                      title: 'Total ETH',
                       value: '205',
                     ),
 

@@ -121,7 +121,7 @@ class _ListingFieldState extends State<ListingField> {
 
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.045,
-          vertical: screenHeight * 0.012,
+          // vertical: screenHeight * 0.012,
         ),
         decoration: ShapeDecoration(
           color: const Color(0XFF101A29),

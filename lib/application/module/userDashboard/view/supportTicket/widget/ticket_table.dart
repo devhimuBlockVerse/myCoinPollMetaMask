@@ -67,7 +67,7 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
                   fixedWidth: screenWidth * (40.0 / designScreenWidth),
                 ),
               ],
-              rows: ticketListData.asMap().entries.map((entry) {
+              rows: userLogData.asMap().entries.map((entry) {
                 int index = entry.key;
                 TicketListModel data = entry.value;
                 final statusStyle = getTicketListStatusStyle(data.status);
@@ -132,9 +132,6 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
                 );
               }).toList(),
 
-
-
-
               empty: Center(
                 child: Container(
                   padding: const EdgeInsets.all(20),
@@ -150,10 +147,4 @@ Widget buildTicketTable(List<TicketListModel> userLogData, double screenWidth, B
       },
     ),
   );
-
-
-
-
-
-
 }

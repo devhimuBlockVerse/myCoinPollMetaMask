@@ -97,6 +97,8 @@ class InfoCard extends StatelessWidget {
                         image: DecorationImage(
                           image: AssetImage(imagePath),
                           fit: BoxFit.contain,
+                          filterQuality: FilterQuality.medium,
+
                         ),
                       ),
                     ),

@@ -46,6 +46,8 @@ class _TrendingScreenState extends State<TrendingScreen> {
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+              filterQuality: FilterQuality.medium,
+
             ),
           ),
           child: Column(
@@ -89,93 +91,104 @@ class _TrendingScreenState extends State<TrendingScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: screenHeight * 0.01),
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                          Container(
-                      width: screenWidth,
-                       decoration: BoxDecoration(
-                        // color:  Color(0xF2040C16),
-                         image: const DecorationImage(
-                           image: AssetImage('assets/icons/newsFrame.png'),
-                           fit: BoxFit.none,
-                         ),
-                         borderRadius: BorderRadius.circular(12),
-                       ),
-                      child: Padding(
-                        padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.05 , vertical:  screenHeight *0.03),
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: screenHeight * 0.01),
 
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    title,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: responsiveFontSize(15),
-                                        height: 1.3,
-                                        color: Colors.white
+                            Container(
+                        width: screenWidth,
+                         decoration: BoxDecoration(
+                          // color:  Color(0xF2040C16),
+                           image: const DecorationImage(
+                             image: AssetImage('assets/icons/newsFrame.png'),
+                             fit: BoxFit.none,
+                             filterQuality: FilterQuality.medium,
+
+                           ),
+                           borderRadius: BorderRadius.circular(12),
+                         ),
+                        child: Padding(
+                          padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.05 , vertical:  screenHeight *0.03),
+                          child: Column(
+                            children: [
+
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      title,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: responsiveFontSize(15),
+                                          height: 1.3,
+                                          color: Colors.white
+                                      ),
+                                    ),
+                                  ),
+
+                                  CustomShareButton(
+                                    iconPath:'assets/icons/shareIcon.svg',
+                                    color: Colors.white,
+                                    onPressed: ()=> Share.share(
+                                      // Replace the imageUrl with the actual URL/Src link (In Future)
+                                      '$imageUrl\n\n$title\n\n$description',
+                                      subject: title,
+
+                                    ),
+                                    width: screenWidth * 0.07,
+                                    height: screenWidth * 0.07,
+                                  )
+
+                                ],
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+
+
+                              if (imageUrl.isNotEmpty)
+                                Container(
+                                  height: imageHeight,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    image: DecorationImage(
+                                        image: NetworkImage(imageUrl),
+                                        fit: BoxFit.fill,
+                                      filterQuality: FilterQuality.medium,
+
+
                                     ),
                                   ),
                                 ),
 
-                                CustomShareButton(
-                                  iconPath:'assets/icons/shareIcon.svg',
-                                  color: Colors.white,
-                                  onPressed: ()=> Share.share(
-                                    // Replace the imageUrl with the actual URL/Src link (In Future)
-                                    '$imageUrl\n\n$title\n\n$description',
-                                    subject: title,
-
-                                  ),
-                                  width: screenWidth * 0.07,
-                                  height: screenWidth * 0.07,
-                                )
-
-                              ],
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
+                              const SizedBox(height: 20),
 
 
-                            if (imageUrl.isNotEmpty)
-                              Container(
-                                height: imageHeight,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
-                                  image: DecorationImage(
-                                      image: NetworkImage(imageUrl),
-                                      fit: BoxFit.fill
-                                  ),
+                              Text(
+                                _stripHtmlTags(description),
+                                style:  TextStyle(
+                                    fontWeight: FontWeight.w400, // Regular
+                                    fontSize: responsiveFontSize(12),
+                                    height: 1.6, // 130% line height
+                                    color: Colors.white
                                 ),
                               ),
 
-                            const SizedBox(height: 20),
-
-
-                            Text(
-                              _stripHtmlTags(description),
-                              style:  TextStyle(
-                                  fontWeight: FontWeight.w400, // Regular
-                                  fontSize: responsiveFontSize(12),
-                                  height: 1.6, // 130% line height
-                                  color: Colors.white
-                              ),
+                            ],
+                          ),
+                        ),
                             ),
 
+
                           ],
-                        ),
-                      ),
-                          ),
-
-
-                        ],
-                      )
+                        )
+                    ),
                   ),
                 ),
               ),

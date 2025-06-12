@@ -25,16 +25,6 @@ class _NewsScreenState extends State<NewsScreen> {
                 'headline': "Trump crypto soars as president offers dinner to top holders...",
               });
 
-  String getValidImageUrl(
-      Map<String, String> blog) {
-    final url = blog['imageUrl'];
-    if (url == null ||
-        url.isEmpty ||
-        !url.startsWith('http')) {
-      return 'https://via.placeholder.com/200x300.png?text=No+Image';
-    }
-    return url;
-  }
 
   @override
   void dispose() {
@@ -66,6 +56,8 @@ class _NewsScreenState extends State<NewsScreen> {
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+              filterQuality: FilterQuality.medium,
+
             ),
           ),
           child: Column(
@@ -93,21 +85,27 @@ class _NewsScreenState extends State<NewsScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: screenHeight * 0.01),
-                
-                        ///Trending Section
-                        _buildTrendingSection(),
-                
-                        SizedBox(height: screenHeight * 0.02),
-                
-                        ///Grid View News Section
-                
-                        _buildGridViewSection(),
-                      ],
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: screenHeight * 0.01),
+
+                          ///Trending Section
+                          RepaintBoundary(child: _buildTrendingSection()),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          ///Grid View News Section
+
+                          RepaintBoundary(child: _buildGridViewSection()),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -423,41 +421,6 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
           ),
         ),
 
-
-        // Container(
-        //   width: double.infinity,
-        //   child: GridView.builder(
-        //     itemCount: blogList.length,
-        //     shrinkWrap: true,
-        //     physics: const NeverScrollableScrollPhysics(),
-        //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //       crossAxisCount: crossAxisCount,
-        //       crossAxisSpacing: crossAxisSpacing,
-        //       mainAxisSpacing: mainAxisSpacing,
-        //       childAspectRatio: aspectRatio,
-        //
-        //     ),
-        //     itemBuilder: (context, index) {
-        //       final blog = blogList[index];
-        //       return Blog(
-        //         imageUrl: blog['imageUrl']!,
-        //         source: blog['source']!,
-        //         date: blog['date']!,
-        //         title: blog['title']!,
-        //         onTap: (){
-        //           Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //               builder: (_) => TrendingScreen(
-        //                 blogData: blog,
-        //               ),
-        //             ),
-        //           );
-        //         },
-        //       );
-        //     },
-        //   ),
-        // ),
 
       ],
     );

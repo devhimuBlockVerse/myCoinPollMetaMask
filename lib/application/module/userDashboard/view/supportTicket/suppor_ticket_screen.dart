@@ -29,7 +29,7 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
   List<TicketListModel> _displayData = [];
-
+  bool _isLoading = false;
 
   int _currentlyExpandedIndex = -1;
 
@@ -42,6 +42,10 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
   }
 
   void _applyFiltersAndSort() {
+    setState(() {
+      _isLoading = true;
+    });
+
     List<TicketListModel> currentFilteredData = List.from(ticketListData); // Start with the original full data
     String query = _searchController.text.toLowerCase().trim(); // Trim whitespace
 
@@ -63,6 +67,7 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
 
     setState(() {
       _displayData = currentFilteredData;
+      _isLoading = false;
     });
   }
 
@@ -303,7 +308,15 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
 
                       /// Table View
                       ...[
-                        _displayData.isNotEmpty
+                        _isLoading
+                            ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                        ) :  _displayData.isNotEmpty
                             ? buildTicketTable(_displayData, screenWidth, context)
                             : Container(
                           alignment: Alignment.center,

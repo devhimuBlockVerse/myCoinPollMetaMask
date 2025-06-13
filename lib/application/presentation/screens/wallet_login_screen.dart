@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../viewmodel/bottom_nav_provider.dart';
 import '../viewmodel/wallet_view_model.dart';
+import 'digital_model_screen.dart';
 
 class WalletLoginScreen extends StatefulWidget {
   const WalletLoginScreen({super.key});
@@ -86,18 +87,39 @@ class _WalletLoginScreenState
                   width: 240,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: model.isLoading ? null : () async {
-                      try {
-                        await model.connectWallet(context);
-                        if (context.mounted && model.isConnected) {
-                          // Navigator.pushReplacement(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => BottomNavBar(initialIndex: 0), // 👈 0 to show Dashboard tab
-                          //   ),
-                          // );
-                          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                    onPressed:() async {
+                      // try {
+                      //   await model.connectWallet(context);
+                      //   if (context.mounted && model.isConnected) {
+                      //
+                      //     Navigator.push(context, MaterialPageRoute(builder: (context) =>  DigitalModelScreen()));
+                      //
+                      //   } else {
+                      //     if (context.mounted) {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         const SnackBar(
+                      //           content: Text('Wallet not connected. Please try again.'),
+                      //           backgroundColor: Colors.red,
+                      //         ),
+                      //       );
+                      //     }
+                      //   }
+                      //
+                      // } catch (e) {
+                      //   if (context.mounted) {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       SnackBar(
+                      //         content: Text('Connection error: ${e.toString()}'),
+                      //         backgroundColor: Colors.red,
+                      //       ),
+                      //     );
+                      //   }
+                      // }
 
+                        await model.connectWallet(context);
+                        print('Wallet connected: ${model.isConnected}');
+                        if (context.mounted && model.isConnected) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DigitalModelScreen()));
                         } else {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -109,16 +131,7 @@ class _WalletLoginScreenState
                           }
                         }
 
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Connection error: ${e.toString()}'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

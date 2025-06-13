@@ -84,76 +84,73 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
 
 
     return SafeArea(
-      child: WillPopScope(
-        onWillPop: () => _onWillPop(screenWidth, screenHeight),
-        child: Scaffold(
+      child: Scaffold(
 
-          backgroundColor: const Color(0xFF0E0F1A),
-          body: _pages[currentIndex],
-          bottomNavigationBar: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15),
-              topRight: Radius.circular(15),
-            ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-              child: Container(
-                height: screenHeight * 0.085,
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF141521).withOpacity(0.85),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
+        backgroundColor: const Color(0xFF0E0F1A),
+        body: _pages[currentIndex],
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(15),
+            topRight: Radius.circular(15),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              height: screenHeight * 0.085,
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF141521).withOpacity(0.85),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 10,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 10,
-                    ),
-                  ],
-                  border: Border(
-                    top: BorderSide(
-                      color: Colors.white.withOpacity(0.05),
-                      width: 1,
-                    ),
+                ],
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.white.withOpacity(0.05),
+                    width: 1,
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(5, (index) {
-                    bool isSelected = currentIndex == index;
-                    return InkWell(
-                      onTap: () {
-                        Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: screenWidth * 0.14,
-                            child: SvgPicture.asset(
-                              _imgPaths[index],
-                              color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
-                              height: 20,
-                              width: 24,
-                            ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(5, (index) {
+                  bool isSelected = currentIndex == index;
+                  return InkWell(
+                    onTap: () {
+                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: screenWidth * 0.14,
+                          child: SvgPicture.asset(
+                            _imgPaths[index],
+                            color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
+                            height: 20,
+                            width: 24,
                           ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _labels[index],
-                            style: TextStyle(
-                              color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
-                              fontSize: isSelected ? 12 : 10,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _labels[index],
+                          style: TextStyle(
+                            color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
+                            fontSize: isSelected ? 12 : 10,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ),
             ),
           ),

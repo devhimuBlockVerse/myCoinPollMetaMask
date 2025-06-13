@@ -221,10 +221,86 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               const SizedBox(height: 14),
 
                               ///Action Buttons
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //   crossAxisAlignment: CrossAxisAlignment.center,
+                              //
+                              //   children: [
+                              //     //Buy with ETH Button
+                              //     Expanded(
+                              //       child: CustomButton(
+                              //         text: 'Buy with ETH',
+                              //         icon: 'assets/icons/eth.png',
+                              //         isActive: isETHActive,
+                              //         onPressed: ()async {
+                              //           try {
+                              //             final stageInfo = await walletVM.getCurrentStageInfo();
+                              //             final ethPrice = stageInfo['ethPrice'];
+                              //
+                              //              setState(() {
+                              //               _ethPrice = ethPrice;
+                              //               isETHActive = true;
+                              //               isUSDTActive = false;
+                              //
+                              //              });
+                              //             _updatePayableAmount();
+                              //
+                              //           } catch (e) {
+                              //             if (context.mounted) {
+                              //               debugPrint('Error fetching stage info: ${e.toString()}');
+                              //               ScaffoldMessenger.of(context).showSnackBar(
+                              //                 SnackBar(
+                              //                   content: Text('Error fetching stage info: ${e.toString()}'),
+                              //                   backgroundColor: Colors.red,
+                              //                 ),
+                              //               );
+                              //             }
+                              //           }
+                              //
+                              //         },
+                              //       ),
+                              //     ),
+                              //     const SizedBox(width: 14),
+                              //     //Buy with USDT Button
+                              //     Expanded(
+                              //       child:
+                              //           CustomButton(
+                              //         text: 'Buy with USDT',
+                              //         icon: 'assets/icons/usdt.png',
+                              //         isActive: isUSDTActive,
+                              //         onPressed: ()async {
+                              //           try {
+                              //             final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
+                              //              final usdtPrice = stageInfo['usdtPrice'];
+                              //
+                              //              setState(() {
+                              //                _usdtPrice = usdtPrice;
+                              //                isUSDTActive = true;
+                              //                isETHActive = false;
+                              //             });
+                              //             _updatePayableAmount();
+                              //
+                              //             debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
+                              //
+                              //           } catch (e) {
+                              //             if (context.mounted) {
+                              //               ScaffoldMessenger.of(context).showSnackBar(
+                              //                 SnackBar(
+                              //                   content: Text('Error fetching stage info: ${e.toString()}'),
+                              //                   backgroundColor: Colors.red,
+                              //                 ),
+                              //               );
+                              //             }
+                              //           }
+                              //
+                              //         },
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-
                                 children: [
                                   //Buy with ETH Button
                                   Expanded(
@@ -232,21 +308,19 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                       text: 'Buy with ETH',
                                       icon: 'assets/icons/eth.png',
                                       isActive: isETHActive,
-                                      onPressed: ()async {
+                                      onPressed: () async {
                                         try {
                                           final stageInfo = await walletVM.getCurrentStageInfo();
                                           final ethPrice = stageInfo['ethPrice'];
 
-                                           setState(() {
+                                          setState(() {
                                             _ethPrice = ethPrice;
                                             isETHActive = true;
                                             isUSDTActive = false;
-
-                                           });
+                                          });
                                           _updatePayableAmount();
-
                                         } catch (e) {
-                                          if (context.mounted) {
+                                          if (mounted) {
                                             debugPrint('Error fetching stage info: ${e.toString()}');
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
@@ -256,33 +330,32 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                             );
                                           }
                                         }
-
                                       },
                                     ),
                                   ),
                                   const SizedBox(width: 14),
+
                                   //Buy with USDT Button
                                   Expanded(
-                                    child:
-                                        CustomButton(
+                                    child: CustomButton(
                                       text: 'Buy with USDT',
                                       icon: 'assets/icons/usdt.png',
                                       isActive: isUSDTActive,
-                                      onPressed: ()async {
+                                      onPressed: () async {
+                                        // ✅ ADDED THIS LOGIC
                                         try {
-                                          final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
-                                           final usdtPrice = stageInfo['usdtPrice'];
+                                          final stageInfo = await walletVM.getCurrentStageInfo();
+                                          final usdtPrice = stageInfo['usdtPrice'];
 
-                                           setState(() {
-                                             _usdtPrice = usdtPrice;
-                                             isETHActive = false;
-                                             isUSDTActive = true;
+                                          setState(() {
+                                            _usdtPrice = usdtPrice;
+                                            isUSDTActive = true;
+                                            isETHActive = false;
                                           });
                                           _updatePayableAmount();
-                                          debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
-
                                         } catch (e) {
-                                          if (context.mounted) {
+                                          if (mounted) {
+                                            debugPrint('Error fetching stage info: ${e.toString()}');
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
                                                 content: Text('Error fetching stage info: ${e.toString()}'),
@@ -291,7 +364,6 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                             );
                                           }
                                         }
-
                                       },
                                     ),
                                   ),
@@ -327,52 +399,96 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               ),
 
                               const SizedBox(height: 14),
+                              // CustomGradientButton(
+                              //   label: 'Buy ECM',
+                              //   width: MediaQuery.of(context).size.width * 0.8,
+                              //   height: 40,
+                              //   onTap: () async {
+                              //     debugPrint("ECM Purchase triggered");
+                              //     try{
+                              //       final inputEth = ecmController.text.trim();
+                              //       debugPrint("User input: $inputEth");
+                              //       final ethDouble = double.tryParse(inputEth);
+                              //       debugPrint("Parsed double: $ethDouble");
+                              //       if (ethDouble == null || ethDouble <= 0) {
+                              //         ScaffoldMessenger.of(context).showSnackBar(
+                              //           const SnackBar(content: Text('Enter a valid ECM amount')),
+                              //         );
+                              //         return;
+                              //       }
+                              //
+                              //       final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
+                              //       // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
+                              //       final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
+                              //       debugPrint("ETH in Wei: $ecmAmountInWeiETH");
+                              //       debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
+                              //
+                              //       final isETH = isETHActive;
+                              //       final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
+                              //       debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                              //       debugPrint("Purchase Button Pressed");
+                              //
+                              //       if (isETH) {
+                              //         debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
+                              //         await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                              //       } else  {
+                              //         debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
+                              //         await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
+                              //       }
+                              //       debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+                              //
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         const SnackBar(content: Text('Purchase successful')),
+                              //       );
+                              //     }catch (e) {
+                              //       debugPrint("Buy ECM failed: $e");
+                              //      }
+                              //     },
+                              //   gradientColors: const [
+                              //     Color(0xFF2D8EFF),
+                              //     Color(0xFF2EE4A4)
+                              //   ],
+                              // ),
                               CustomGradientButton(
                                 label: 'Buy ECM',
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 height: 40,
                                 onTap: () async {
-                                  debugPrint("ECM Purchase triggered");
+                                  print("ECM Purchase triggered");
+
                                   try{
                                     final inputEth = ecmController.text.trim();
-                                    debugPrint("User input: $inputEth");
                                     final ethDouble = double.tryParse(inputEth);
-                                    debugPrint("Parsed double: $ethDouble");
                                     if (ethDouble == null || ethDouble <= 0) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Enter a valid ECM amount')),
+                                        SnackBar(content: Text('Enter a valid ECM amount')),
+                                      );
+                                      return;
+                                    }
+                                    if (ethDouble == null || ethDouble <= 0) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Enter a valid ECM amount')),
                                       );
                                       return;
                                     }
 
-                                    final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-                                    // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
-                                    final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                                    debugPrint("ETH in Wei: $ecmAmountInWeiETH");
-                                    debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
+                                    final paymentAmount = BigInt.from(ethDouble * 1e18);
 
-                                    final isETH = isETHActive;
-                                    final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                                    debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                                    debugPrint("Purchase Button Pressed");
-
-                                    if (isETH) {
-                                      debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
-                                      await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
-                                    } else  {
-                                      debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
-                                      await walletVM.buyECMWithUSDT(amount,context);
+                                    // await walletVM.buyECMWithETH(EtherAmount.inWei(paymentAmount));
+                                    if (isETHActive) {
+                                      await walletVM.buyECMWithETH(EtherAmount.inWei(paymentAmount),context);
+                                    } else if (isUSDTActive) {
+                                      await walletVM.buyECMWithUSDT(paymentAmount,context);
                                     }
-                                    debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Purchase successful')),
+                                      SnackBar(content: Text('Purchase successful')),
                                     );
                                   }catch (e) {
                                     debugPrint("Buy ECM failed: $e");
-                                   }
-                                  },
-                                gradientColors: const [
+                                  }
+                                },
+                                 gradientColors: const [
                                   Color(0xFF2D8EFF),
                                   Color(0xFF2EE4A4)
                                 ],
@@ -435,76 +551,4 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
 
 }
 
-class _BodyPainter extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = Path();
-    const double notchWidth = 30;
-    const double notchHeight = 10;
-    const double cutSize = 20;
 
-    const double topNotchOffset = 20;
-    const double bottomNotchOffset = 120;
-
-    // Start at top-left (sharp corner, no rounded cut)
-    path.moveTo(0, 0);
-
-    // Move to just before the top-right cut corner
-    path.lineTo(size.width - cutSize, 0);
-
-    // Top-right corner cu-
-    path.lineTo(size.width, cutSize);
-
-    // Right edge down
-    path.lineTo(
-      size.width,
-      size.height,
-    );
-
-    // Bottom-right (sharp corner)
-    path.lineTo(size.width, size.height);
-
-    // Bottom notch (slightly left of center)
-    double bottomNotchCenter =
-        (size.width / 2) + bottomNotchOffset;
-    path.lineTo(
-        bottomNotchCenter + (notchWidth / 2),
-        size.height);
-    path.lineTo(
-        bottomNotchCenter + (notchWidth / 2),
-        size.height - notchHeight);
-    path.lineTo(
-        bottomNotchCenter - (notchWidth / 2),
-        size.height - notchHeight);
-    path.lineTo(
-        bottomNotchCenter - (notchWidth / 2),
-        size.height);
-
-    // Move to bottom-left cut corner
-    path.lineTo(cutSize, size.height);
-    path.lineTo(0, size.height - cutSize);
-
-    // Left edge up (sharp corner)
-    path.lineTo(0, 0);
-
-    // Top notch (slightly right of center)
-    double topNotchCenter =
-        (size.width / 2) + topNotchOffset;
-    path.moveTo(
-        topNotchCenter - (notchWidth / 2), 0);
-    path.lineTo(topNotchCenter - (notchWidth / 2),
-        notchHeight);
-    path.lineTo(topNotchCenter + (notchWidth / 2),
-        notchHeight);
-    path.lineTo(
-        topNotchCenter + (notchWidth / 2), 0);
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(
-          CustomClipper<Path> oldClipper) =>
-      false;
-}

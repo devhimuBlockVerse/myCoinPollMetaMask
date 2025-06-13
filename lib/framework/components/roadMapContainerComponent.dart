@@ -28,7 +28,7 @@ class RoadmapContainerComponent extends StatelessWidget {
       builder: (context, constraints) {
         return SizedBox(
           width: double.infinity,
-           child: Stack(
+            child: Stack(
             clipBehavior: Clip.none,
             children: [
               // Background image that expands with content
@@ -41,14 +41,12 @@ class RoadmapContainerComponent extends StatelessWidget {
                 ),
               ),
 
-
-
               Positioned(
                 top: -baseSize * 0.17,
                 left: (screenWidth - yearImageWidth) / 2.2, // Center horizontally
                 child: Container(
-                        width: yearImageWidth,
-                        height: yearImageHeight,
+                  width: yearImageWidth,
+                  height: yearImageHeight,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/icons/yearCircular.png'),
@@ -81,27 +79,31 @@ class RoadmapContainerComponent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
-                    SizedBox(height: baseSize * 0.015),
+                     SizedBox(height: baseSize * 0.015),
 
-                    Text(
+                     Text(
                       title,
                       textAlign: TextAlign.start,
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Poppins',
+                        // fontSize: screenWidth / 375 * 11,
                         fontSize: screenWidth / 375 * 11,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
 
-                    SizedBox(height: baseSize * 0.015),
+                     SizedBox(height: baseSize * 0.015),
 
-                    ...labels.map(
-                          (label) => Row(
+                     ...labels.map(
+                           (label) => Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.check_box,
-                                  size: baseSize * 0.038, color: Colors.white),
+                              Icon(
+                                  Icons.check_box,
+                                  size: baseSize * 0.038,
+                                  color: Colors.white
+                              ),
                               SizedBox(width: baseSize * 0.015),
                               Expanded(
                                 child: Text(
@@ -118,9 +120,9 @@ class RoadmapContainerComponent extends StatelessWidget {
                               ),
                             ],
                           ),
-                    ),
+                     ),
 
-                    SizedBox(height: baseSize * 0.12),
+                     SizedBox(height: baseSize * 0.12),
                   ],
                 ),
               ),

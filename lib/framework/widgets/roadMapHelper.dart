@@ -16,7 +16,7 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
         'MyCoinPoll.Com Site Create.'
       ],
       'onTap': () => DialogUtils.startWalkingDialog(context),
-      'year':"202",
+      'year':"2022",
 
     },
     {
@@ -152,4 +152,5 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
       children: roadmapWidgets,
     ),
   );
+
 }

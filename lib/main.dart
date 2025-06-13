@@ -7,10 +7,13 @@ import 'application/module/dashboard_bottom_nav.dart';
 import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart';
 import 'application/module/userDashboard/viewmodel/upload_image_provider.dart';
 import 'application/presentation/screens/bottom_nav_bar.dart';
+import 'application/presentation/screens/wallet_login_screen.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
+import 'framework/utils/routes/route_names.dart';
+import 'framework/utils/routes/routes.dart';
 
 
 
@@ -68,7 +71,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
           useMaterial3: true,
         ),
-        // home:  FeaturesScreen(),
+        // home:  WalletLoginScreen(),
         home:  const BottomNavBar(),
         // home:  DashboardBottomNavBar(),
         // onGenerateRoute: Routes.generateRoute,

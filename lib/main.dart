@@ -16,6 +16,7 @@ import 'framework/utils/routes/route_names.dart';
 import 'framework/utils/routes/routes.dart';
 
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 void main() async {
 
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
         ),
         // home:  WalletLoginScreen(),
         home:  const BottomNavBar(),
+        navigatorObservers: [routeObserver],
+
         // home:  DashboardBottomNavBar(),
         // onGenerateRoute: Routes.generateRoute,
         // initialRoute: RoutesName.walletLogin,

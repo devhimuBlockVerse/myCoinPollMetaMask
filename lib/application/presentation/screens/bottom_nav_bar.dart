@@ -14,9 +14,6 @@ import '../../../framework/res/colors.dart';
 import '../viewmodel/bottom_nav_provider.dart';
 
 
-
-
-
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
@@ -42,6 +39,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     'assets/icons/news.svg',
     'assets/icons/profileIcon.svg',
   ];
+  final PageStorageBucket bucket = PageStorageBucket();
 
 
 
@@ -76,6 +74,17 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
 
+    Widget getPage(int index) {
+      switch (index) {
+        case 0: return const HomeScreen();
+        case 1: return const FeaturesScreen();
+        case 2: return const AndroVerseScreen();
+        case 3: return const NewsScreen();
+        case 4: return const ProfileScreen();
+        default: return const HomeScreen();
+      }
+    }
+
     return SafeArea(
       child: WillPopScope(
         onWillPop: () => _onWillPop(screenWidth, screenHeight),
@@ -84,9 +93,9 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           backgroundColor: const Color(0xFF0E0F1A),
 
           body: _pages[currentIndex],
-          // body: IndexedStack(
-          //   index: currentIndex,
-          //   children: _pages,
+          // body: PageStorage(
+          //   bucket: bucket,
+          //   child: getPage(currentIndex), // dynamically built screen
           // ),
           bottomNavigationBar: ClipRRect(
             borderRadius: const BorderRadius.only(

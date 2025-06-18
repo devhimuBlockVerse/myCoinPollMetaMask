@@ -13,8 +13,7 @@ class WalletLoginScreen extends StatefulWidget {
       _WalletLoginScreenState();
 }
 
-class _WalletLoginScreenState
-    extends State<WalletLoginScreen> {
+class _WalletLoginScreenState extends State<WalletLoginScreen> {
   @override
   void initState() {
     super.initState();

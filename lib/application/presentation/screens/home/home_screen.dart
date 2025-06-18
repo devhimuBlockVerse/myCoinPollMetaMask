@@ -1270,9 +1270,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isETHActive = true;
   bool isUSDTActive = false;
 
-
   bool isDisconnecting = false;
-
 
 
   @override
@@ -1280,15 +1278,12 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     ecmController.addListener(_updatePayableAmount);
      WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _initializeWalletData();
+       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+       await walletVM.forceReinitModal(context);
+       await _initializeWalletData();
 
     });
-
   }
-
-
-
-
 
   Future<void> _initializeWalletData() async {
     // final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -1328,7 +1323,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
   }
-
 
 
   /// Helper function to fetch contract data and update the UI state.
@@ -1425,8 +1419,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Consumer<WalletViewModel>(
                               builder: (context, walletVM, _){
-                                // if (model.isConnected) return SizedBox.shrink(); // Hide if connected
-                                return  BlockButton(
+                                 return  BlockButton(
                                   height: screenHeight * 0.040,
                                   width: screenWidth * 0.3,
                                   label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
@@ -1459,14 +1452,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   //     }
                                   //   }
                                   // },
+                                  ///
                                   onTap: walletVM.isLoading ? null : () async {
                                     try {
                                       if (!walletVM.isConnected) {
                                         await walletVM.connectWallet(context);
                                       } else if (walletVM.appKitModal != null) {
                                         try {
-                                          // This will catch both null and exceptions thrown by the getter
-                                          canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                           canOpenModal = walletVM.appKitModal!.selectedChain != null;
                                         } catch (e) {
                                           debugPrint("Error accessing selectedChain: $e");
                                           canOpenModal = false;
@@ -1474,8 +1467,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                         if (!canOpenModal) {
                                           Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
-                                          // Optionally, force a disconnect and reconnect flow here
-                                          await walletVM.connectWallet(context);
+                                           await walletVM.connectWallet(context);
                                           return;
                                         }
 
@@ -1491,7 +1483,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       }
                                     }
                                   },
-                                );}
+                                 );}
                           ),
 
 

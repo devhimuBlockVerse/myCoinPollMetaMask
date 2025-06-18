@@ -1251,7 +1251,7 @@ class HomeScreen extends StatefulWidget {
 //
 // }
 
-/// Beta
+/// Beta V2
 class _HomeScreenState extends State<HomeScreen> {
   String selectedBadge = 'AIRDROP';
 
@@ -1419,6 +1419,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: Consumer<WalletViewModel>(
                               builder: (context, walletVM, _){
+                                if (walletVM.isLoading) {
+                                   return SizedBox(
+                                    height: screenHeight * 0.040,
+                                    width: screenWidth * 0.3,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        strokeWidth: 3,
+                                      ),
+                                    ),
+                                  );
+                                }
                                  return  BlockButton(
                                   height: screenHeight * 0.040,
                                   width: screenWidth * 0.3,
@@ -1432,28 +1444,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Color(0xFF2680EF),
                                     Color(0xFF1CD494)
                                   ],
-                                  // onTap: walletVM.isLoading ? null : () async {
-                                  //   try {
-                                  //     if (!walletVM.isConnected) {
-                                  //       await walletVM.connectWallet(context);
-                                  //
-                                  //       } else if (walletVM.appKitModal != null) {
-                                  //
-                                  //
-                                  //        await Future.delayed(Duration(milliseconds: 200));
-                                  //       walletVM.appKitModal!.openModalView();
-                                  //     } else {
-                                  //       Utils.flushBarErrorMessage("Wallet modal not ready", context);
-                                  //     }
-                                  //   } catch (e, stack) {
-                                  //     debugPrint('Wallet Error: $e\n$stack');
-                                  //     if (context.mounted) {
-                                  //       Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                  //     }
-                                  //   }
-                                  // },
-                                  ///
-                                  onTap: walletVM.isLoading ? null : () async {
+                                   onTap: walletVM.isLoading ? null : () async {
                                     try {
                                       if (!walletVM.isConnected) {
                                         await walletVM.connectWallet(context);

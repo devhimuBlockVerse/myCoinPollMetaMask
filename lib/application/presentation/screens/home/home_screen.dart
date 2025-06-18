@@ -1364,6 +1364,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Dynamic multipliers
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    bool canOpenModal = false;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -1440,14 +1441,47 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Color(0xFF2680EF),
                                     Color(0xFF1CD494)
                                   ],
+                                  // onTap: walletVM.isLoading ? null : () async {
+                                  //   try {
+                                  //     if (!walletVM.isConnected) {
+                                  //       await walletVM.connectWallet(context);
+                                  //
+                                  //       } else if (walletVM.appKitModal != null) {
+                                  //
+                                  //
+                                  //        await Future.delayed(Duration(milliseconds: 200));
+                                  //       walletVM.appKitModal!.openModalView();
+                                  //     } else {
+                                  //       Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                  //     }
+                                  //   } catch (e, stack) {
+                                  //     debugPrint('Wallet Error: $e\n$stack');
+                                  //     if (context.mounted) {
+                                  //       Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                  //     }
+                                  //   }
+                                  // },
                                   onTap: walletVM.isLoading ? null : () async {
                                     try {
                                       if (!walletVM.isConnected) {
                                         await walletVM.connectWallet(context);
+                                      } else if (walletVM.appKitModal != null) {
+                                        try {
+                                          // This will catch both null and exceptions thrown by the getter
+                                          canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                        } catch (e) {
+                                          debugPrint("Error accessing selectedChain: $e");
+                                          canOpenModal = false;
+                                        }
 
-                                        } else if (walletVM.appKitModal != null) {
+                                        if (!canOpenModal) {
+                                          Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                          // Optionally, force a disconnect and reconnect flow here
+                                          await walletVM.connectWallet(context);
+                                          return;
+                                        }
 
-                                         await Future.delayed(Duration(milliseconds: 200));
+                                        await Future.delayed(Duration(milliseconds: 200));
                                         walletVM.appKitModal!.openModalView();
                                       } else {
                                         Utils.flushBarErrorMessage("Wallet modal not ready", context);
@@ -1459,7 +1493,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                       }
                                     }
                                   },
-
                                 );}
                           ),
 

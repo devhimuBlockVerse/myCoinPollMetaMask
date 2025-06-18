@@ -260,11 +260,15 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
               /// Main Scrollable Content
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.01,
-                    left: screenWidth * 0.01,
-                    right: screenWidth * 0.01,
-                    bottom: screenHeight * 0.02,
+                  // padding: EdgeInsets.only(
+                  //   top: screenHeight * 0.01,
+                  //   left: screenWidth * 0.01,
+                  //   right: screenWidth * 0.01,
+                  //   bottom: screenHeight * 0.02,
+                  // ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.02,
+                    vertical: screenHeight * 0.02,
                   ),
                   child: ScrollConfiguration(
                     behavior: const ScrollBehavior().copyWith(overscroll: false),
@@ -319,7 +323,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                           Center(
                             child: Container(
-                              width: screenWidth * 0.7,
+                              width: screenWidth * 0.82,
                               height: screenHeight * 0.19,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
@@ -333,7 +337,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                 alignment: Alignment.centerRight,
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                  child:  Row(
+                                   child:  Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
@@ -358,7 +362,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                             fontFamily: 'Poppins',
                                             fontWeight: FontWeight.w500,
                                             height: 1.3,
-                                            fontSize: baseSize * 0.032,
+                                            // fontSize: baseSize * 0.036,
+                                            fontSize: baseSize * 0.045,
                                           ),
                                         ),
                                       ),

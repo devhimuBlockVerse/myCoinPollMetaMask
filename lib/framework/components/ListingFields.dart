@@ -140,7 +140,8 @@ class _ListingFieldState extends State<ListingField> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (prefixWidget != null)
               Padding(

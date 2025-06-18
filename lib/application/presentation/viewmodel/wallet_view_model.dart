@@ -1804,6 +1804,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   ReownAppKitModal? appKitModal;
+  bool _isSessionSettling = false;
   String _walletAddress = '';
   bool _isLoading = false;
   bool _isConnected = false;
@@ -1837,6 +1838,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String get walletAddress => _walletAddress;
   bool get isConnected => _isConnected;
   bool get isLoading => _isLoading;
+  bool get isSessionSettling => _isSessionSettling;
 
   static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/FPbP1-XUOoRxMpYioocm5i4rdPSJSGKU";
    static const String SALE_CONTRACT_ADDRESS = '0x02f2aA15675aED44A117aC0c55E795Be9908543D';

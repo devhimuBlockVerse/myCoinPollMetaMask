@@ -1863,52 +1863,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
 
-
-  //  @override
-  // Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-  //   if (state == AppLifecycleState.resumed) {
-  //     print("App resumed from background. Checking wallet connection status.");
-  //     if (appKitModal != null) {
-  //       print("Attempting to re-initialize AppKitModal session.");
-  //       try {
-  //         await appKitModal?.init();
-  //
-  //          if (appKitModal!.session != null && appKitModal!.selectedChain != null) {
-  //           final chainId = appKitModal!.selectedChain!.chainId;
-  //           final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-  //           _walletAddress = appKitModal!.session!.getAddress(namespace)!;
-  //           _isConnected = true; // Mark as connected if session and chain are present
-  //           print("Wallet successfully re-connected on resume. Wallet Address: $_walletAddress");
-  //
-  //            await fetchConnectedWalletData(isReconnecting: true);
-  //           await getCurrentStageInfo();
-  //         } else {
-  //           // If session or selectedChain is not available after init,
-  //           // check if it was previously connected and clear state if necessary.
-  //           final prefs = await SharedPreferences.getInstance();
-  //           final wasConnectedInPrefs = prefs.getBool('isConnected') ?? false;
-  //
-  //           if (wasConnectedInPrefs) {
-  //             print("App resumed: Session not active after re-initialization despite prior connection. Clearing state.");
-  //             await _clearWalletAndStageInfo(shouldNotify: true);
-  //           } else {
-  //             print("App resumed: Wallet was not connected, and session is still not active after re-initialization. No action needed.");
-  //           }
-  //         }
-  //       } catch (e, stack) {
-  //         // Catch any exception during re-initialization or data fetching
-  //         print("Error during app resume processing: $e");
-  //         print("Stack trace: $stack");
-  //         await _clearWalletAndStageInfo(shouldNotify: true);
-  //       } finally {
-  //         notifyListeners();
-  //       }
-  //     } else {
-  //       print("App resumed, but AppKitModal is not initialized. Cannot re-connect.");
-  //     }
-  //   }
-  // }
-
   Future<void> init(BuildContext context) async {
 
     if (_isLoading) return;
@@ -2067,6 +2021,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     });
   }
 
+  ///LifeCycle Functions
   Future<void> _handleAppResume() async {
     debugPrint("App resumed. Handling reconnection...");
     if (appKitModal == null || appKitModal!.session == null) {
@@ -2100,6 +2055,60 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     }
   }
+  Future<void> forceReinitModal(BuildContext context) async {
+     try {
+      // If the modal has a dispose method, call it (if not, just set to null)
+      await appKitModal?.dispose();
+    } catch (e) {
+      print("Error disposing previous AppKitModal: $e");
+    }
+    appKitModal = null;
+    _isModalEventsSubscribed = false;
+    _isConnected = false;
+    _walletAddress = '';
+    _balance = null;
+    _minimumStake = null;
+    _maximumStake = null;
+    _ethPrice = 0.0;
+    _usdtPrice = 0.0;
+    _stageIndex = 0;
+    _currentECM = 0.0;
+    _maxECM = 0.0;
+    _ecmRefBonus = 0;
+    _paymentRefBonus = 0;
+    _isCompleted = false;
+
+    // Optionally clear SharedPreferences if you want a full reset
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    } catch (e) {
+      print("Error clearing SharedPreferences: $e");
+    }
+
+    notifyListeners();
+
+    // Re-initialize the modal as if the app just started
+    await init(context);
+  }
+  Future<void> recoverWallet(BuildContext context) async {
+    // 1. Dispose and nullify the modal
+    try {
+      await appKitModal?.dispose();
+    } catch (_) {}
+    appKitModal = null;
+    _isModalEventsSubscribed = false;
+
+    // 2. Clear all wallet state
+    await _clearWalletAndStageInfo();
+
+    // 3. Re-initialize the modal
+    await init(context);
+
+    // 4. Prompt user to reconnect
+    await connectWallet(context);
+  }
+
 
   /// Connect the wallet using the ReownAppKitModal UI.
   Future<bool> connectWallet(BuildContext context) async {

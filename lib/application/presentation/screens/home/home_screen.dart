@@ -2262,9 +2262,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Purchase successful')),
-                          );
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
                         }

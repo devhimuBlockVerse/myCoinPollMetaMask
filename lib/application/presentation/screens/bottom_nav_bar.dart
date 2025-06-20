@@ -92,7 +92,11 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
           backgroundColor: const Color(0xFF0E0F1A),
 
-          body: _pages[currentIndex],
+          // body: _pages[currentIndex],
+          body: IndexedStack(
+            index: currentIndex,
+            children: _pages,
+          ),
           // body: PageStorage(
           //   bucket: bucket,
           //   child: getPage(currentIndex), // dynamically built screen

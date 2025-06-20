@@ -7,6 +7,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
+import 'package:reown_appkit/modal/pages/public/appkit_modal_all_wallets_page.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
@@ -258,10 +259,16 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                    children: [
                      Transform.translate(
                        offset: Offset(screenWidth * 0.025, 0),
-                       child: const WalletAddressComponent(
-                         // address: formatAddress(model.walletAddress),
-                         address: "0xe2...e094",
+                       child: WalletAddressComponent(
+                         address: formatAddress(model.walletAddress),
+                         // onTap:() => model.appKitModal!.openModalView(),
+                          onTap: () async {
+                           await model.ensureModalWithValidContext(context);
+                           await model.appKitModal?.openModalView();
+                         },
+
                        ),
+
                      ),
 
                      GestureDetector(

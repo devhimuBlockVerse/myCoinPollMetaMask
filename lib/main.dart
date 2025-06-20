@@ -11,6 +11,7 @@ import 'application/presentation/screens/wallet_login_screen.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
+import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 import 'framework/utils/routes/route_names.dart';
 import 'framework/utils/routes/routes.dart';
@@ -65,23 +66,25 @@ class MyApp extends StatelessWidget {
       ],
 
 
-      child: MaterialApp(
-
-        title: 'MyCoinPoll',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-          useMaterial3: true,
+      child: WalletAppInitializer(
+        child: MaterialApp(
+        
+          title: 'MyCoinPoll',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+            useMaterial3: true,
+          ),
+          // home:  WalletLoginScreen(),
+          home:  const BottomNavBar(),
+          navigatorObservers: [routeObserver],
+        
+          // home:  DashboardBottomNavBar(),
+          // onGenerateRoute: Routes.generateRoute,
+          // initialRoute: RoutesName.walletLogin,
+        
+        
         ),
-        // home:  WalletLoginScreen(),
-        home:  const BottomNavBar(),
-        navigatorObservers: [routeObserver],
-
-        // home:  DashboardBottomNavBar(),
-        // onGenerateRoute: Routes.generateRoute,
-        // initialRoute: RoutesName.walletLogin,
-
-
       ),
     );
   }

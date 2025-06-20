@@ -9,6 +9,7 @@ import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:reown_appkit/modal/appkit_modal_impl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
@@ -1279,49 +1280,109 @@ class _HomeScreenState extends State<HomeScreen> {
     ecmController.addListener(_updatePayableAmount);
      WidgetsBinding.instance.addPostFrameCallback((_) async {
        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-       await walletVM.forceReinitModal(context);
+       // await walletVM.forceReinitModal(context);
+
+       final prefs = await SharedPreferences.getInstance();
+       final wasConnected = prefs.getBool('isConnected') ?? false;
+       print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
+
+
+       if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
+         debugPrint("Attempting silent reconnect...");
+         await walletVM.init(context); // Only reinitialize if not connected
+       }
+
        await _initializeWalletData();
 
     });
   }
 
-  Future<void> _initializeWalletData() async {
-    // final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    // await walletVM.init(context);
-    //
-    // try {
-    //   await walletVM.getCurrentStageInfo();
-    //   _updatePayableAmount();
-    // } catch (e) {
-    //   if (mounted) {
-    //     Utils.flushBarErrorMessage("Failed to fetch initial stage info", context);
-    //   }
-    // }
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-     await walletVM.init(context);
+  // Future<void> _initializeWalletData() async {
+  //   // final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //   // await walletVM.init(context);
+  //   //
+  //   // try {
+  //   //   await walletVM.getCurrentStageInfo();
+  //   //   _updatePayableAmount();
+  //   // } catch (e) {
+  //   //   if (mounted) {
+  //   //     Utils.flushBarErrorMessage("Failed to fetch initial stage info", context);
+  //   //   }
+  //   // }
+  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //
+  //
+  //    await walletVM.init(context);
+  //    if (!walletVM.isConnected) {
+  //     debugPrint("Wallet not connected on app start/resume. Attempting to connect.");
+  //     await walletVM.connectWallet(context); // This will open the modal
+  //   }
+  //
+  //
+  //
+  //    if (walletVM.isConnected) {
+  //     try {
+  //       await walletVM.fetchConnectedWalletData();
+  //       await walletVM.getCurrentStageInfo();
+  //       _updatePayableAmount();
+  //     } catch (e) {
+  //       if (mounted) {
+  //         Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info: $e", context);
+  //         debugPrint("Error during post-connection data fetch: $e");
+  //       }
+  //     }
+  //   } else {
+  //     if (mounted) {
+  //         debugPrint("Wallet connection is mandatory but failed/cancelled.");
+  //     }
+  //   }
+  //
+  // }
 
-     if (!walletVM.isConnected) {
-      debugPrint("Wallet not connected on app start/resume. Attempting to connect.");
-      await walletVM.connectWallet(context); // This will open the modal
+
+  Future<void> _initializeWalletData() async {
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+    // Step 1: Ensure the wallet modal is initialized
+    if (walletVM.appKitModal == null) {
+      debugPrint("AppKitModal is null. Initializing...");
+      await walletVM.init(context);
     }
 
-     if (walletVM.isConnected) {
+    // Step 2: Check if user was previously connected (using shared prefs)
+    final prefs = await SharedPreferences.getInstance();
+    final wasConnected = prefs.getBool('isConnected') ?? false;
+    debugPrint("wasConnected (from prefs): $wasConnected");
+    debugPrint("walletVM.isConnected: ${walletVM.isConnected}");
+
+    // Step 3: Reconnect silently if needed
+    if (!walletVM.isConnected && wasConnected) {
+      debugPrint("Attempting silent reconnect...");
+      try {
+        await walletVM.fetchConnectedWalletData(isReconnecting: true);
+        await walletVM.getCurrentStageInfo();
+        _updatePayableAmount();
+      } catch (e) {
+        debugPrint("Silent reconnect failed: $e");
+      }
+      return;
+    }
+
+    // Step 4: If already connected, fetch wallet info and stage data
+    if (walletVM.isConnected) {
       try {
         await walletVM.fetchConnectedWalletData();
         await walletVM.getCurrentStageInfo();
         _updatePayableAmount();
       } catch (e) {
+        debugPrint("Error fetching wallet data after connection: $e");
         if (mounted) {
-          Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info: $e", context);
-          debugPrint("Error during post-connection data fetch: $e");
+          Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info", context);
         }
       }
     } else {
-      if (mounted) {
-          debugPrint("Wallet connection is mandatory but failed/cancelled.");
-      }
+      debugPrint("Wallet is not connected. Skipping wallet data fetch.");
     }
-
   }
 
 
@@ -1444,36 +1505,71 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Color(0xFF2680EF),
                                     Color(0xFF1CD494)
                                   ],
+                                  //  onTap: walletVM.isLoading ? null : () async {
+                                  //   try {
+                                  //     if (!walletVM.isConnected) {
+                                  //       await walletVM.connectWallet(context);
+                                  //     } else if (walletVM.appKitModal != null) {
+                                  //
+                                  //       try {
+                                  //          canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                  //       } catch (e) {
+                                  //         debugPrint("Error accessing selectedChain: $e");
+                                  //         canOpenModal = false;
+                                  //       }
+                                  //
+                                  //       if (!canOpenModal) {
+                                  //         Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                  //          await walletVM.connectWallet(context);
+                                  //         return;
+                                  //       }
+                                  //
+                                  //       await Future.delayed(Duration(milliseconds: 200));
+                                  //       walletVM.appKitModal!.openModalView();
+                                  //     } else {
+                                  //       Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                  //     }
+                                  //   } catch (e, stack) {
+                                  //     debugPrint('Wallet Error: $e\n$stack');
+                                  //     if (context.mounted) {
+                                  //       Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                  //     }
+                                  //   }
+                                  // },
                                    onTap: walletVM.isLoading ? null : () async {
-                                    try {
-                                      if (!walletVM.isConnected) {
-                                        await walletVM.connectWallet(context);
-                                      } else if (walletVM.appKitModal != null) {
-                                        try {
-                                           canOpenModal = walletVM.appKitModal!.selectedChain != null;
-                                        } catch (e) {
-                                          debugPrint("Error accessing selectedChain: $e");
-                                          canOpenModal = false;
-                                        }
+                                     try {
+                                       if (!walletVM.isConnected) {
+                                         await walletVM.connectWallet(context);
+                                       } else {
+                                         if (walletVM.appKitModal != null) {
+                                           try {
+                                             canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                           } catch (e) {
+                                             debugPrint("Error accessing selectedChain: $e");
+                                             canOpenModal = false;
+                                           }
 
-                                        if (!canOpenModal) {
-                                          Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
-                                           await walletVM.connectWallet(context);
-                                          return;
-                                        }
+                                           if (!canOpenModal) {
+                                             Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                             await walletVM.connectWallet(context);
+                                             return;
+                                           }
 
-                                        await Future.delayed(Duration(milliseconds: 200));
-                                        walletVM.appKitModal!.openModalView();
-                                      } else {
-                                        Utils.flushBarErrorMessage("Wallet modal not ready", context);
-                                      }
-                                    } catch (e, stack) {
-                                      debugPrint('Wallet Error: $e\n$stack');
-                                      if (context.mounted) {
-                                        Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                      }
-                                    }
-                                  },
+                                           await walletVM.ensureModalWithValidContext(context);
+                                           await Future.delayed(const Duration(milliseconds: 200));
+                                           await walletVM.appKitModal!.openModalView();
+                                         } else {
+                                           Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                         }
+                                       }
+                                     } catch (e, stack) {
+                                       debugPrint('Wallet Error: $e\n$stack');
+                                       if (context.mounted) {
+                                         Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                       }
+                                     }
+                                   },
+
                                  );}
                           ),
 

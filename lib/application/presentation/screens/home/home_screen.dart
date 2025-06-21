@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
@@ -1339,6 +1340,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     } else {
+      await walletVM.getCurrentStageInfo();
       debugPrint("Wallet is not connected. Skipping wallet data fetch.");
     }
   }
@@ -2039,10 +2041,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
-                // WidgetsBinding.instance.addPostFrameCallback((_) {
-                //
-                //   _updatePayableAmount();
-                // });
+
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -2066,60 +2065,62 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     /// Address Section
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Your Address:',
-                            // hintText: walletVM.walletAddress,
-                            hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
-                                ? walletVM.walletAddress
-                                : 'Not connected',
-                            controller: readingMoreController,
-                            isReadOnly: true,
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          CustomLabeledInputField(
-                            labelText: 'Referral Link:',
-                            hintText: ' https://mycoinpoll.com?ref=125482458661',
-                            controller: referredController,
-                            isReadOnly: true,
-                            trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
-                              debugPrint('Trailing icon tapped');
-                              Clipboard.setData(ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('TxnHash copied to clipboard'),
-                                  duration: Duration(seconds: 1),
-                                ),
-                              );
-                            },
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Referred By:',
-                            hintText: 'Show and Enter Referred id..',
-                            controller: referredController,
-                            isReadOnly:
-                            false, // or false
-                          ),
+                    if (walletVM.isConnected)...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                            CustomLabeledInputField(
+                              labelText: 'Your Address:',
+                              // hintText: walletVM.walletAddress,
+                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                                  ? walletVM.walletAddress
+                                  : 'Not connected',
+                              controller: readingMoreController,
+                              isReadOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referral Link:',
+                              hintText: ' https://mycoinpoll.com?ref=125482458661',
+                              controller: referredController,
+                              isReadOnly: true,
+                              trailingIconAsset: 'assets/icons/copyImg.svg',
+                              onTrailingIconTap: () {
+                                debugPrint('Trailing icon tapped');
+                                Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('TxnHash copied to clipboard'),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referred By:',
+                              hintText: '0x0000000000000000000000000000000000000000',
+                              controller: referredController,
+                              isReadOnly:
+                              false, // or false
+                            ),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.9,
-                      child: const Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                        height: 20,
+                      SizedBox(
+                        width: screenWidth * 0.9,
+                        child: const Divider(
+                          color: Colors.white12,
+                          thickness: 1,
+                          height: 20,
+                        ),
                       ),
-                    ),
+                    ],
+
 
                     ///Action Buttons
                     Padding(
@@ -2248,6 +2249,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
+                          Fluttertoast.showToast(
+                            msg: "Wallet not Connected",
+                            backgroundColor: Colors.red,
+                          );
                         }
                       },
                       gradientColors: const [

@@ -2321,22 +2321,22 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _usdtPrice = (_safeParseBigInt(result[3]).toDouble() / 1e6);
 
     // Only update connected-specific info if connected
-    if (isConnected) {
+    // if (isConnected) {
       _stageIndex = _safeParseBigInt(result[0]).toInt();
       _maxECM = (_safeParseBigInt(result[1]).toDouble() / 1e18);
       _ecmRefBonus = _safeParseBigInt(result[4]).toInt();
       _paymentRefBonus = _safeParseBigInt(result[5]).toInt();
       _currentECM = (_safeParseBigInt(result[6]).toDouble() / 1e18);
       _isCompleted = result[7] as bool;
-    } else {
+    // } else {
       // Clear connected-specific info if not connected
-      _stageIndex = 0;
-      _maxECM = 0.0;
-      _ecmRefBonus = 0;
-      _paymentRefBonus = 0;
-      _currentECM = 0.0;
-      _isCompleted = false;
-    }
+      // _stageIndex = 0;
+      // _maxECM = 0.0;
+      // _ecmRefBonus = 0;
+      // _paymentRefBonus = 0;
+      // _currentECM = 0.0;
+      // _isCompleted = false;
+    // }
 
     print("Stage info successfully parsed and updated:");
     print('stageIndex: $_stageIndex');

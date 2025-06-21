@@ -985,6 +985,7 @@ class _StakingScreenState extends State<StakingScreen> {
               SizedBox(height: screenHeight * 0.005),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
+
                 children: [
                   // Left side: Max + Input Amount
                   Expanded(
@@ -1025,7 +1026,7 @@ class _StakingScreenState extends State<StakingScreen> {
                     ),
                   ),
 
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 8),
 
                   // Right side: Dropdown
                   Expanded(

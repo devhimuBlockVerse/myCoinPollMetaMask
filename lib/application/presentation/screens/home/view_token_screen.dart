@@ -18,6 +18,7 @@ import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
+import '../../countdown_timer_helper.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'home_screen.dart';
 
@@ -388,6 +389,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+    double scaleWidth(double size) => size * screenWidth / baseWidth;
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -490,49 +496,58 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                             /// Timer Section
                             Padding(
-                              padding: EdgeInsets.all(baseSize * 0.01),
-                              child: Container(
-                                // width: double.infinity,
-                                width: screenWidth,
-                                padding: EdgeInsets.symmetric(
-                                  // horizontal: baseSize * 0.01,
-                                  // vertical: baseSize * 0.015,
-                                  horizontal: baseSize * 0.02,
-                                  vertical: baseSize * 0.015,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0x4D1F1F1F),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    width: 0.3,
-                                    color: const Color(0x4DFFFFFF),
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      _timeBlock(label: 'Days', value: '02'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Hours', value: '23'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Minutes', value: '05'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Seconds', value: '56'),
-                                    ],
-                                  ),
-                                ),
+                              padding: EdgeInsets.symmetric(horizontal:baseSize * 0.02, vertical: baseSize * 0.01),
+                              child: CountdownTimer(
+                                scaleWidth: scaleWidth,
+                                scaleHeight: scaleHeight,
+                                scaleText: scaleText,
                               ),
                             ),
+
+                            // Padding(
+                            //   padding: EdgeInsets.all(baseSize * 0.01),
+                            //   child: Container(
+                            //     // width: double.infinity,
+                            //     width: screenWidth,
+                            //     padding: EdgeInsets.symmetric(
+                            //       // horizontal: baseSize * 0.01,
+                            //       // vertical: baseSize * 0.015,
+                            //       horizontal: baseSize * 0.02,
+                            //       vertical: baseSize * 0.015,
+                            //     ),
+                            //     decoration: BoxDecoration(
+                            //       color: const Color(0x4D1F1F1F),
+                            //       borderRadius: BorderRadius.circular(8),
+                            //       border: Border.all(
+                            //         width: 0.3,
+                            //         color: const Color(0x4DFFFFFF),
+                            //       ),
+                            //       boxShadow: [
+                            //         BoxShadow(
+                            //           color: Colors.black.withOpacity(0.2),
+                            //           blurRadius: 10,
+                            //           offset: const Offset(0, 4),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //     child: IntrinsicHeight(
+                            //       child: Row(
+                            //         crossAxisAlignment: CrossAxisAlignment.center,
+                            //         mainAxisAlignment: MainAxisAlignment.center,
+                            //         mainAxisSize: MainAxisSize.min,
+                            //         children: [
+                            //           _timeBlock(label: 'Days', value: '02'),
+                            //           _timerColon(baseSize),
+                            //           _timeBlock(label: 'Hours', value: '23'),
+                            //           _timerColon(baseSize),
+                            //           _timeBlock(label: 'Minutes', value: '05'),
+                            //           _timerColon(baseSize),
+                            //           _timeBlock(label: 'Seconds', value: '56'),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -708,63 +723,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
       ),
     );
   }
-  /// Countdown Widget
-  Widget _timerColon(double baseSize) {
-    return Baseline(
-      baseline: baseSize * 0.01,
-      baselineType: TextBaseline.alphabetic,
-      child: Text(
-        ":",
-        style: TextStyle(
-          fontSize: baseSize * 0.045,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-  Widget _timeBlock({required String label, required String value}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 4),
-
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
-            border: Border.all(color: const Color(0xFF2B2D40), width: 0.25),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-              height: 0.2,
-              letterSpacing: 0.16,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        const SizedBox(height: 1),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontSize: 8,
-            height: 1.2,
-            color: Colors.grey,
-          ),
-        ),
-      ],
-    );
-  }
-
-
 
   /// Buy ECM Section
   Widget _buildBuyEcmSection() {

@@ -7,7 +7,6 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_t
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
-import 'package:reown_appkit/modal/appkit_modal_impl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
@@ -19,11 +18,7 @@ import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
 import '../../../../framework/widgets/animated_blockchain_images.dart';
-import '../../../../main.dart';
-import '../../../module/dashboard_bottom_nav.dart';
-import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
-import '../bottom_nav_bar.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -1289,7 +1284,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
        if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
          debugPrint("Attempting silent reconnect...");
-         await walletVM.init(context); // Only reinitialize if not connected
+         await walletVM.init(context);
        }
 
        await _initializeWalletData();

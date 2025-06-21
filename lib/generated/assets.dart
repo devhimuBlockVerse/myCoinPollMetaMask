@@ -204,6 +204,7 @@ class Assets {
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsTransfer = 'assets/icons/transfer.svg';
+  static const String iconsUnderMaintainance = 'assets/icons/underMaintainance.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsUserActivityLogBg = 'assets/icons/userActivityLogBg.png';
   static const String iconsUserActivityLogBg2 = 'assets/icons/userActivityLogBg2.png';

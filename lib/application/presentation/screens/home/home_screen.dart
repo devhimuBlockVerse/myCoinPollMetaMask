@@ -1252,7 +1252,7 @@ class HomeScreen extends StatefulWidget {
 //
 // }
 
-/// Beta V4
+/// Beta V6
 class _HomeScreenState extends State<HomeScreen> {
   String selectedBadge = 'AIRDROP';
 

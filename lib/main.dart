@@ -8,7 +8,7 @@ import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart'
 import 'application/module/userDashboard/viewmodel/upload_image_provider.dart';
 import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/wallet_login_screen.dart';
-import 'application/presentation/support_helper.dart';
+import 'application/presentation/under_maintenance.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';

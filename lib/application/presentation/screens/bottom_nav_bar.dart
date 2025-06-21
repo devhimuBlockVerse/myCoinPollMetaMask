@@ -11,7 +11,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/pro
 import 'package:provider/provider.dart';
 import '../../../framework/components/DialogModalViewComponent.dart';
 import '../../../framework/res/colors.dart';
-import '../support_helper.dart';
+import '../under_maintenance.dart';
 import '../viewmodel/bottom_nav_provider.dart';
 
 

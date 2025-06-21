@@ -140,8 +140,8 @@ class _ListingFieldState extends State<ListingField> {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (prefixWidget != null)
               Padding(
@@ -152,7 +152,7 @@ class _ListingFieldState extends State<ListingField> {
               child: widget.isDropdown
                   ? DropdownButtonFormField<String>(
                 value: _currentSelectedItem,
-                items: widget.dropdownItems?.map((item) {
+                 items: widget.dropdownItems?.map((item) {
                   return DropdownMenuItem<String>(
                     value: item,
                     child: Text(
@@ -165,6 +165,13 @@ class _ListingFieldState extends State<ListingField> {
                     ),
                   );
                 }).toList(),
+                hint: Text(
+                  'Select Duration',
+                  style: TextStyle(
+                  color: Colors.white.withOpacity(0.9),
+                  fontSize: responsiveFontSize,
+                  fontFamily: 'Poppins',),
+                ),
                 onChanged: widget.onDropdownChanged,
                 dropdownColor: const Color(0XFF101A29),
                 style: TextStyle(
@@ -198,6 +205,7 @@ class _ListingFieldState extends State<ListingField> {
                 scrollController: ScrollController(),
 
                 style: TextStyle(
+
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
                   fontSize: responsiveFontSize,
@@ -208,7 +216,7 @@ class _ListingFieldState extends State<ListingField> {
                   isCollapsed: false,
                    border: InputBorder.none,
                   hintText: widget.labelText,
-                  hintStyle: TextStyle(
+                    hintStyle: TextStyle(
                     color: const Color(0XFF7D8FA9),
                     fontSize: responsiveFontSize,
                     fontFamily: 'Poppins',

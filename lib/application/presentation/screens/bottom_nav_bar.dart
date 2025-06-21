@@ -11,6 +11,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/pro
 import 'package:provider/provider.dart';
 import '../../../framework/components/DialogModalViewComponent.dart';
 import '../../../framework/res/colors.dart';
+import '../support_helper.dart';
 import '../viewmodel/bottom_nav_provider.dart';
 
 
@@ -27,7 +28,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     const FeaturesScreen(),
     const AndroVerseScreen(),
     const NewsScreen(),
-    const ProfileScreen(),
+    // const ProfileScreen(),
+    UnderMaintenance(),
   ];
 
    final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];

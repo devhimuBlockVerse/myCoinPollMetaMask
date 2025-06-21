@@ -10,6 +10,7 @@ import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/wallet_login_screen.dart';
 import 'application/presentation/under_maintenance.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
+import 'application/presentation/viewmodel/countdown_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
@@ -68,6 +69,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
         ChangeNotifierProvider(create: (_) => UploadProvider()),
+        ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
+          targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
+        ),),
 
       ],
 

@@ -1,6 +1,7 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
@@ -114,12 +115,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     await walletVM.init(context);
     try {
-      // final stageInfo = await walletVM.getCurrentStageInfo();
-      // final ethPrice = stageInfo['ethPrice'];
-      // final usdtPrice = stageInfo['usdtPrice'];
-      // final currentECM = stageInfo['ecmSold'];
-      // final maxECM = stageInfo['target'];
-      // final stageIndex = stageInfo['stageIndex'];
 
       final ethPrice = walletVM.ethPrice;
       final usdtPrice = walletVM.usdtPrice;
@@ -128,22 +123,34 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
       final stageIndex = walletVM.stageIndex;
 
 
-      if(walletVM.isConnected){
-        setState(() {
-          _stageIndex = stageIndex;
-          _currentECM = currentECM;
-          _maxECM = maxECM;
-          _ethPrice = ethPrice;
-          _usdtPrice = usdtPrice;
+      setState(() {
+        _stageIndex = stageIndex;
+        _currentECM = currentECM;
+        _maxECM = maxECM;
+        _ethPrice = ethPrice;
+        _usdtPrice = usdtPrice;
 
-        });
-      }else{
-        setState(() {
-          _ethPrice = ethPrice;
-          _usdtPrice = usdtPrice;
+      });
 
-        });
-      }
+      // if(walletVM.isConnected){
+      //   setState(() {
+      //     _stageIndex = stageIndex;
+      //     _currentECM = currentECM;
+      //     _maxECM = maxECM;
+      //     _ethPrice = ethPrice;
+      //     _usdtPrice = usdtPrice;
+      //
+      //   });
+      // }else{
+      //   setState(() {
+      //     _stageIndex = stageIndex;
+      //     _currentECM = currentECM;
+      //     _maxECM = maxECM;
+      //     _ethPrice = ethPrice;
+      //     _usdtPrice = usdtPrice;
+      //
+      //   });
+      // }
 
     } catch (e) {
       if (mounted) {
@@ -229,12 +236,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
               /// Main Scrollable Content
               Expanded(
                 child: Padding(
-                  // padding: EdgeInsets.only(
-                  //   top: screenHeight * 0.01,
-                  //   left: screenWidth * 0.01,
-                  //   right: screenWidth * 0.01,
-                  //   bottom: screenHeight * 0.02,
-                  // ),
+
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.02,
                     vertical: screenHeight * 0.02,
@@ -780,13 +782,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     const SizedBox(height: 18),
 
                     // Stage &  MAx Section
+
                     ECMProgressIndicator(
-                      // stageIndex: 1,
-                      // currentECM: 8,
-                      // maxECM: 10,
-                      stageIndex: _stageIndex,
-                      currentECM: _currentECM,
-                      maxECM: _maxECM,
+                      stageIndex: walletVM.stageIndex,
+                      currentECM: walletVM.currentECM,
+                      maxECM:  walletVM.maxECM,
                     ),
 
 
@@ -799,53 +799,109 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       ),
                     ),
                     /// Address Section
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Your Address:',
-                            // hintText: walletVM.walletAddress,
-                            hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
-                                ? walletVM.walletAddress
-                                : 'Not connected',
-                            controller: readingMoreController,
-                            isReadOnly: true,
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          CustomLabeledInputField(
-                            labelText: 'Referral Link:',
-                            hintText: ' https://mycoinpoll.com?ref=125482458661',
-                            controller: referredController,
-                            isReadOnly: true,
-                            trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
-                              debugPrint('Trailing icon tapped');
-                            },
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Referred By:',
-                            hintText: 'Show and Enter Referred id..',
-                            controller: referredController,
-                            isReadOnly:
-                            false, // or false
-                          ),
+                    if (walletVM.isConnected)...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                            CustomLabeledInputField(
+                              labelText: 'Your Address:',
+                              // hintText: walletVM.walletAddress,
+                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                                  ? walletVM.walletAddress
+                                  : 'Not connected',
+                              controller: readingMoreController,
+                              isReadOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referral Link:',
+                              hintText: ' https://mycoinpoll.com?ref=125482458661',
+                              controller: referredController,
+                              isReadOnly: true,
+                              trailingIconAsset: 'assets/icons/copyImg.svg',
+                              onTrailingIconTap: () {
+                                debugPrint('Trailing icon tapped');
+                                Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('TxnHash copied to clipboard'),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referred By:',
+                              hintText: '0x0000000000000000000000000000000000000000',
+                              controller: referredController,
+                              isReadOnly:
+                              false, // or false
+                            ),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.9,
-                      child: const Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                        height: 20,
+                      SizedBox(
+                        width: screenWidth * 0.9,
+                        child: const Divider(
+                          color: Colors.white12,
+                          thickness: 1,
+                          height: 20,
+                        ),
                       ),
-                    ),
+                    ],
+
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Column(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: [
+                    //       // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                    //       CustomLabeledInputField(
+                    //         labelText: 'Your Address:',
+                    //         // hintText: walletVM.walletAddress,
+                    //         hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                    //             ? walletVM.walletAddress
+                    //             : 'Not connected',
+                    //         controller: readingMoreController,
+                    //         isReadOnly: true,
+                    //       ),
+                    //       SizedBox(height: screenHeight * 0.02),
+                    //       CustomLabeledInputField(
+                    //         labelText: 'Referral Link:',
+                    //         hintText: ' https://mycoinpoll.com?ref=125482458661',
+                    //         controller: referredController,
+                    //         isReadOnly: true,
+                    //         trailingIconAsset: 'assets/icons/copyImg.svg',
+                    //         onTrailingIconTap: () {
+                    //           debugPrint('Trailing icon tapped');
+                    //         },
+                    //       ),
+                    //       SizedBox(height: screenHeight * 0.02),
+                    //       // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                    //       CustomLabeledInputField(
+                    //         labelText: 'Referred By:',
+                    //         hintText: 'Show and Enter Referred id..',
+                    //         controller: referredController,
+                    //         isReadOnly:
+                    //         false, // or false
+                    //       ),
+                    //
+                    //     ],
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   width: screenWidth * 0.9,
+                    //   child: const Divider(
+                    //     color: Colors.white12,
+                    //     thickness: 1,
+                    //     height: 20,
+                    //   ),
+                    // ),
 
                     ///Action Buttons
                     Padding(

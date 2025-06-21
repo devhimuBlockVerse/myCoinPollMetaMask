@@ -6,9 +6,11 @@ import 'package:provider/provider.dart';
 
 import '../../framework/components/BlockButton.dart';
 import '../../framework/utils/dynamicFontSize.dart';
+import 'viewmodel/countdown_provider.dart';
 
 class UnderMaintenance extends StatelessWidget {
   const UnderMaintenance({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class UnderMaintenance extends StatelessWidget {
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
+
 
     return SafeArea(
       child: Container(
@@ -140,6 +143,8 @@ class _MaintenanceCountdownTimer extends StatelessWidget {
   final double Function(double) scaleHeight;
   final double Function(double) scaleText;
 
+  String _format(int n) => n.toString().padLeft(2, '0');
+
   const _MaintenanceCountdownTimer({
     required this.scaleWidth,
     required this.scaleHeight,
@@ -149,6 +154,15 @@ class _MaintenanceCountdownTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final timer = context.watch<CountdownTimerProvider>();
+    final remaining = timer.remaining;
+
+    final days = _format(remaining.inDays);
+    final hours = _format(remaining.inHours.remainder(24));
+    final minutes = _format(remaining.inMinutes.remainder(60));
+    final seconds = _format(remaining.inSeconds.remainder(60));
+
+
     Widget timeUnit(String value, String label) => Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -222,8 +236,7 @@ class _MaintenanceCountdownTimer extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: scaleWidth(12), vertical: scaleHeight(10)),
           decoration: BoxDecoration(
-             // color: Colors.white.withOpacity(0.15),
-            gradient: LinearGradient(
+             gradient: LinearGradient(
               colors: [
                 Color(0xFF2F384D),
                 Color(0xFF0A0F11).withOpacity(0.5),
@@ -231,14 +244,7 @@ class _MaintenanceCountdownTimer extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            // gradient: RadialGradient(
-            //   colors: [
-            //     Colors.blue.withOpacity(0.05),
-            //     Colors.purple.withOpacity(0.05),
-            //   ],
-            //   center: Alignment.center, // Where the gradient emanates from
-            //   radius: 0.8, // How far the gradient extends from the center
-            // ),
+
               border: Border.all(
               color: Colors.white.withOpacity(0.2),
               width: 1,
@@ -249,13 +255,13 @@ class _MaintenanceCountdownTimer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
              crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              timeUnit('02', 'Days'),
+              timeUnit(days, 'Days'),
               dotSeparator(),
-              timeUnit('23', 'Hours'),
+              timeUnit(hours, 'Hours'),
               dotSeparator(),
-              timeUnit('05', 'Minutes'),
+              timeUnit(minutes, 'Minutes'),
               dotSeparator(),
-              timeUnit('56', 'Seconds'),
+              timeUnit(seconds, 'Seconds'),
             ],
           ),
         ),

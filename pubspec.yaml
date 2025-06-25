@@ -62,17 +62,14 @@ dependencies:
   data_table_2: ^2.6.0
   file_selector: ^1.0.3
 #  url_launcher: ^6.0.20
-  device_preview: ^1.1.0 #remove before testing on real device
+
+  mobile_scanner: ^3.5.5
 
 
-#remove before testing on real device
-dependency_overrides:
-  intl: 0.19.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  device_preview: ^1.1.0 #remove before testing on real device
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

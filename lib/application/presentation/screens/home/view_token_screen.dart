@@ -9,7 +9,6 @@ import 'package:web3dart/web3dart.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/InfoCard.dart';
-import '../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../framework/components/badgeComponent.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
@@ -21,7 +20,6 @@ import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
 import '../../countdown_timer_helper.dart';
 import '../../viewmodel/wallet_view_model.dart';
-import 'home_screen.dart';
 
 
 class ViewTokenScreen extends StatefulWidget {
@@ -484,7 +482,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             ),
                             SizedBox(height: baseSize * 0.01),
                             Text(
-                              'Join the ECM Token ICO to revolutionize e-commerce with blockchain.',
+                              'Join the ECM Token ICO to revolutionize e-commerce',
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
@@ -765,7 +763,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  // image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),

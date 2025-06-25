@@ -162,23 +162,27 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         horizontal: screenWidth * 0.01,
                         vertical: screenHeight * 0.02,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(height: screenHeight * 0.02),
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(height: screenHeight * 0.02),
 
 
-                            _buildTokenCard(),
-                            SizedBox(height: screenHeight * 0.04),
+                              _buildTokenCard(),
+                              SizedBox(height: screenHeight * 0.04),
 
 
-                            /// Buy ECM section
-                            _buildBuyEcmSection(),
+                              /// Buy ECM section
+                              _buildBuyEcmSection(),
 
-                            SizedBox(height: screenHeight * 0.04),
+                              SizedBox(height: screenHeight * 0.04),
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -406,7 +410,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                 ),
               ),

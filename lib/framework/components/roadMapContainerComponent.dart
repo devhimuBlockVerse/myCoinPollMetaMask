@@ -290,8 +290,8 @@ class RoadmapContainerComponent extends StatelessWidget {
                     child: BlockButtonV2(
                       text: 'Show Other Roadmap',
                       onPressed: onTap,
-                      height: screenHeight * 0.035,
-                      width: screenWidth * 0.30,
+                      height: screenHeight * 0.036,
+                      width: screenWidth * 0.31,
                     ),
                   ),
               ],

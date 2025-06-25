@@ -10,12 +10,12 @@ class CustomDialog extends StatelessWidget {
   final List<DialogItem> items;
   final String title;
   final String subtitle;
-
+  final String? image;
   const CustomDialog({
     super.key,
     required this.items,
     required this.title,
-    required this.subtitle,
+    required this.subtitle,  this.image,
   });
 
   @override
@@ -37,13 +37,15 @@ class CustomDialog extends StatelessWidget {
               // Center Dialog
               Center(
                 child: GestureDetector(
-                  onTap: () {}, // Prevent dismiss when tapping dialog
+                  onTap: () {},
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                    decoration: const BoxDecoration(
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/icons/dialogBg.png'),
+                        // image: AssetImage('assets/icons/dialogBg.png'),
+                        image: AssetImage(image ?? 'assets/icons/dialogBgv.png'),
                         fit: BoxFit.fill,
+                        // fit: BoxFit.contain,
                       ),
                     ),
 
@@ -56,24 +58,30 @@ class CustomDialog extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  color: const Color(0xFFFFF5ED),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: getResponsiveFontSize(context, 14),
-                                  height: 1.3,
+                              Flexible(
+                                flex: 2,
+                                child: Text(
+                                  title,
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: getResponsiveFontSize(context, 20),
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 2,
                                 ),
                               ),
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                  color: const Color(0xFFFFF5ED),
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: getResponsiveFontSize(context, 14),
-                                  height: 1.3,
+                              Flexible(
+                                child: Text(
+                                  subtitle,
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: getResponsiveFontSize(context, 20),
+                                    height: 1.3,
+                                  ),
                                 ),
                               ),
                             ],
@@ -108,7 +116,7 @@ class CustomDialog extends StatelessWidget {
                 color: const Color(0xFFFFF5ED),
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
-                fontSize: getResponsiveFontSize(context, 12),
+                fontSize: getResponsiveFontSize(context, 16),
                 height: 1.6,
               ),
             ),

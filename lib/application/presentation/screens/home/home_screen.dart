@@ -28,7 +28,7 @@ import '../../viewmodel/wallet_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static const String routeName = '/home'; // Example route name
+  static const String routeName = '/home';
 
   @override
   State<HomeScreen> createState() =>
@@ -1287,7 +1287,8 @@ class _HomeScreenState extends State<HomeScreen> {
        print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
 
 
-       if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
+       // if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
+       if (!walletVM.isConnected && wasConnected) {
          debugPrint("Attempting silent reconnect...");
          await walletVM.init(context);
        }
@@ -1758,8 +1759,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(height: baseSize * 0.02),
                             Text(
-                              'Join the ECM Token ICO to revolutionize e-commerce with blockchain.',
-                              style: TextStyle(
+                              'Join the ECM Token ICO to revolutionize e-commerce',
+                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                                 // fontSize: baseSize * 0.028,
@@ -2035,7 +2036,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  // image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),

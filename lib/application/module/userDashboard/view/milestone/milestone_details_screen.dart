@@ -118,91 +118,99 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ListView(
-                    children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                      /// Activity Status
-                      headerStatistic(),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
 
-                      SizedBox(height: screenHeight * 0.03),
+                      child: Column(
+                        children: [
 
-                      ///Progress Bar
-                      Container(
-                        width: double.infinity,
-                        // height: screenHeight,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/icons/userActivityProgressBg.png'),
-                            fit: BoxFit.fill,
-                           ),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
+                          /// Activity Status
+                          headerStatistic(),
 
-                        child: UserActivityProgressBar(
-                          title: "Progress",
-                          currentValue: 2,
-                          maxValue: 5,
-                          barColor: Color(0xff1CD494),
-                          ),
-                      ),
+                          SizedBox(height: screenHeight * 0.03),
 
-                      SizedBox(height: screenHeight * 0.03),
+                          ///Progress Bar
+                          Container(
+                            width: double.infinity,
+                            // height: screenHeight,
+                            decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/icons/userActivityProgressBg.png'),
+                                fit: BoxFit.fill,
+                               ),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
 
-                      /// Reward section
-                      rewardInfoCard(),
-
-
-                      SizedBox(height: screenHeight * 0.03),
-
-
-                      Container(
-                        width: double.infinity,
-                         padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/icons/userActivityLogBg2.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
-
-                        ),
-
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-
-                            Text(
-                              'User Activity Log',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.6,
-                                color: Colors.white,
+                            child: UserActivityProgressBar(
+                              title: "Progress",
+                              currentValue: 2,
+                              maxValue: 5,
+                              barColor: Color(0xff1CD494),
                               ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+                          /// Reward section
+                          rewardInfoCard(),
+
+
+                          SizedBox(height: screenHeight * 0.03),
+
+
+                          Container(
+                            width: double.infinity,
+                             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/icons/userActivityLogBg2.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
+
                             ),
 
-                            SizedBox(height: screenHeight * 0.02),
-                            ...[
-                              _filteredData.isNotEmpty
-                                  ? buildUserActivity(_filteredData, screenWidth, context)
-                                  : Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(20),
-                                child: const Text(
-                                  'No data found',
-                                  style: TextStyle(color: Colors.white70),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+
+                                Text(
+                                  'User Activity Log',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: getResponsiveFontSize(context, 16),
+                                    height: 1.6,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
 
-                          ],
-                        ),
+                                SizedBox(height: screenHeight * 0.02),
+                                ...[
+                                  _filteredData.isNotEmpty
+                                      ? buildUserActivity(_filteredData, screenWidth, context)
+                                      : Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(20),
+                                    child: const Text(
+                                      'No data found',
+                                      style: TextStyle(color: Colors.white70),
+                                    ),
+                                  ),
+                                ],
 
+                              ],
+                            ),
+
+                          ),
+
+
+                        ],
                       ),
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

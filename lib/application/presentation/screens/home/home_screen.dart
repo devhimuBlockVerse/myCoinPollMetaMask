@@ -1611,7 +1611,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     SizedBox(height: screenHeight * 0.03),
 
-                    RepaintBoundary(child: _buildTokenCard()),
+                    _buildTokenCard(),
 
                     SizedBox(height: screenHeight * 0.05),
 
@@ -1694,7 +1694,6 @@ class _HomeScreenState extends State<HomeScreen> {
               image:const DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
                 fit: BoxFit.fill,
-                filterQuality: FilterQuality.medium,
 
               ),
             ),
@@ -1715,6 +1714,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             width: screenWidth * 0.4,
                             height: screenHeight * 0.15,
                             fit: BoxFit.fitWidth,
+                            filterQuality: FilterQuality.high,
                           ),
 
                           Positioned(

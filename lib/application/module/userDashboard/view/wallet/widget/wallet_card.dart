@@ -114,7 +114,7 @@ class WalletCard extends StatelessWidget {
                                 horizontal: screenWidth * 0.01,
                                 vertical: screenHeight * 0.003,
                               ),
-                              margin: EdgeInsets.only(left: screenWidth * 0.001), // Add margin to separate from wallet info
+                              margin: EdgeInsets.only(left: screenWidth * 0.001),
                               decoration: BoxDecoration(
                                 color: const Color(0x1915FF10),
                                 borderRadius: BorderRadius.circular(screenWidth * 0.06),
@@ -124,7 +124,7 @@ class WalletCard extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: screenWidth * 0.05), // Original was 24
+                                  Icon(Icons.arrow_drop_up_sharp, color: Color(0xFF37CAB0), size: screenWidth * 0.05),
                                   Text(
                                     '+0.8%',
                                     textAlign: TextAlign.start,

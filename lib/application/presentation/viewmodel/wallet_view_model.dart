@@ -1808,6 +1808,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await init(context);
     }
   }
+
+
+
    ReownAppKitModal? appKitModal;
   bool _isSessionSettling = false;
   String _walletAddress = '';
@@ -1853,7 +1856,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   WalletViewModel() {
      _web3Client = Web3Client(ALCHEMY_URL, Client());
      WidgetsBinding.instance.addObserver(this);
-  }
+   }
 
   @override
   void dispose() {
@@ -1874,6 +1877,12 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     _isLoading = true;
     notifyListeners();
+
+     final prefs = await SharedPreferences.getInstance();
+    final wasConnected = prefs.getBool('isConnected') ?? false;
+    final savedAddress = prefs.getString('walletAddress');
+    final savedChainId = prefs.getInt('chainId');
+
 
 
     if (appKitModal == null) {
@@ -1914,30 +1923,64 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       try {
-
-        await appKitModal?.init();
-
-         if (appKitModal != null && !_isModalEventsSubscribed) {
-          final prefs = await SharedPreferences.getInstance();
-          _subscribeToModalEvents(prefs);
-          _isModalEventsSubscribed = true;
-        }
-
+        await appKitModal!.init();
       } catch (e) {
-        print("Error initializing ReownAppKitModal: $e");
+        debugPrint("Error initializing modal: $e");
         _isLoading = false;
         notifyListeners();
         return;
       }
-    }else{
-      if (!_isModalEventsSubscribed) {
-        final prefs = await SharedPreferences.getInstance();
-        _subscribeToModalEvents(prefs);
-        _isModalEventsSubscribed = true;
-      }
     }
 
-    await getCurrentStageInfo();
+    if (!_isModalEventsSubscribed) {
+      _subscribeToModalEvents(prefs);
+      _isModalEventsSubscribed = true;
+    }
+
+    // Simulate connection
+    if (wasConnected && savedAddress != null && savedChainId != null) {
+      debugPrint("⚡ Simulating auto-connect flow...");
+      _walletAddress = savedAddress;
+      _isConnected = true;
+
+      // Try opening the modal quietly, then fetch data
+      try {
+        await appKitModal!.openModalView();
+        await fetchConnectedWalletData(isReconnecting: true);
+        await getCurrentStageInfo();
+      } catch (e) {
+        debugPrint("Silent modal trigger failed: $e");
+      }
+    } else {
+       await getCurrentStageInfo();
+    }
+
+    //   try {
+    //     await appKitModal?.init();
+    //     if (appKitModal != null && !_isModalEventsSubscribed) {
+    //        _subscribeToModalEvents(prefs);
+    //       _isModalEventsSubscribed = true;
+    //     }
+    //
+    //   } catch (e) {
+    //     print("Error initializing ReownAppKitModal: $e");
+    //     _isLoading = false;
+    //     notifyListeners();
+    //     return;
+    //   }
+    // }else{
+    //   if (!_isModalEventsSubscribed) {
+    //     final prefs = await SharedPreferences.getInstance();
+    //     _subscribeToModalEvents(prefs);
+    //     _isModalEventsSubscribed = true;
+    //   }
+    // }
+    // await getCurrentStageInfo();
+
+
+
+
+
     _isLoading = false;
     notifyListeners();
   }
@@ -1960,7 +2003,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
         await prefs.setInt('chainId', int.parse(chainId));
-
+        // Save the session data
+        final sessionJson = appKitModal!.session?.toJson();
+        await prefs.setString('walletSession', jsonEncode(sessionJson));
          await Future.wait([
           fetchConnectedWalletData(),
           getCurrentStageInfo(),
@@ -2177,8 +2222,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _ecmRefBonus = 0;
     _paymentRefBonus = 0;
     _isCompleted = false;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
     print("Wallet state and storage have been reset.");
     if (shouldNotify) {
       notifyListeners();
@@ -2612,6 +2657,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
+
+
+
 
   Future<String> buyECMWithETH(EtherAmount ethAmount, BuildContext context) async {
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {

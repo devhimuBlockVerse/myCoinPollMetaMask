@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/repository/pei_chart.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/kyc/kyc_screen.dart';
@@ -25,6 +26,7 @@ import '../affiliate/affiliate_screen.dart';
 import '../kyc/kyc_inProgress_screen.dart';
 import '../kyc/kyc_status_screen.dart';
 import '../notification/notification_screen.dart';
+import '../transactions/transaction_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -103,70 +105,82 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 alignment: Alignment.topRight,
               ),
             ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.01,
-                  vertical: screenHeight * 0.02,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-      
-      
-                    /// User Name Data & Wallet Address
-                    _headerSection(_scaffoldKey),
-                    SizedBox(height: screenHeight * 0.02),
-      
-                    /// User Graph Chart and Level
-                    _EcmWithGraphChart(),
-                    SizedBox(height: screenHeight * 0.03),
-      
-      
-                    /// Referral Link
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color(0xff040C16),
-                      borderRadius: BorderRadius.circular(12)
-                      ),
-      
-                      child: ClipRRect(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: CustomLabeledInputField(
-                          labelText: 'Referral Link:',
-                          hintText: ' https://mycoinpoll.com?ref=125482458661',
-                           isReadOnly: true,
-                          trailingIconAsset: 'assets/icons/copyImg.svg',
-                          onTrailingIconTap: () {
-                            debugPrint('Trailing icon tapped');
-                          },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.01,
+                vertical: screenHeight * 0.02,
+              ),
+              child: ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(overscroll: false),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+
+
+                      /// User Name Data & Wallet Address
+                      _headerSection(_scaffoldKey),
+                      SizedBox(height: screenHeight * 0.02),
+
+                      /// User Graph Chart and Level
+                      _EcmWithGraphChart(),
+                      SizedBox(height: screenHeight * 0.03),
+
+
+                      /// Referral Link
+                      Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xff040C16),
+                        borderRadius: BorderRadius.circular(12)
+                        ),
+
+                        child: ClipRRect(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: CustomLabeledInputField(
+                            labelText: 'Referral Link:',
+                            hintText: 'https://mycoinpoll.com?ref=125482458661',
+                             isReadOnly: true,
+                            trailingIconAsset: 'assets/icons/copyImg.svg',
+                            onTrailingIconTap: () {
+                              debugPrint('Trailing icon tapped');
+                              Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('TxnHash copied to clipboard'),
+                                  duration: Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                         ),
                       ),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.03),
-      
-      
-      
-                    _joinPromoteEarn(),
-                    SizedBox(height: screenHeight * 0.03),
-      
-                    _milestoneSection(),
-                    SizedBox(height: screenHeight * 0.03),
-      
-      
-                    _kycStatus(),
-                    SizedBox(height: screenHeight * 0.03),
-      
-      
-                    _transactionsReferral(),
-                    // SizedBox(height: screenHeight * 0.03),
-      
-      
-                  ],
+                      SizedBox(height: screenHeight * 0.03),
+
+
+
+                      _joinPromoteEarn(),
+                      SizedBox(height: screenHeight * 0.03),
+
+                      _milestoneSection(),
+                      SizedBox(height: screenHeight * 0.03),
+
+
+                      _kycStatus(),
+                      SizedBox(height: screenHeight * 0.03),
+
+
+                      _transactionsReferral(),
+                      // SizedBox(height: screenHeight * 0.03),
+
+
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -873,7 +887,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         }
 
                         debugPrint('Button tapped');
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) =>  KycScreen()));
 
                         Navigator.push(
                           context,
@@ -925,7 +938,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               SizedBox(width: screenWidth * 0.01),
 
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
+
+                },
                 child: Text(
                   'View All',
                   style: TextStyle(

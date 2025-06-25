@@ -92,117 +92,122 @@ class _ContactScreenState extends State<ContactScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
 
-                          SizedBox(height: screenHeight * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
 
-
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).size.width * 0.05,
-                              vertical: MediaQuery.of(context).size.height * 0.02,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff040C16),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min, // Content height
-                              children: [
-
-                                ListingField(
-                                  controller: fullNameController,
-                                  labelText: 'Full Name',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.name,
-                                ),
-
-                                SizedBox(height: screenHeight * 0.02),
-
-                                ListingField(
-                                  controller: emailAddressController,
-                                  labelText: 'Email',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.emailAddress,
-                                ),
+                            SizedBox(height: screenHeight * 0.02),
 
 
-                                SizedBox(height: screenHeight * 0.02),
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.05,
+                                vertical: MediaQuery.of(context).size.height * 0.02,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff040C16),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min, // Content height
+                                children: [
 
-                                ListingField(
-                                  controller: subjectController,
-                                  labelText: 'Subject',
-                                  height: screenHeight * 0.049,
-                                  width: screenWidth* 0.88,
-                                  expandable: false,
-                                  keyboard: TextInputType.multiline,
-                                ),
-
-                                SizedBox(height: screenHeight * 0.02),
-
-                                ListingField(
-                                  controller: messageController,
-                                  labelText: 'Message',
-                                  height: screenHeight * 0.3,
-                                  width: screenWidth* 0.88,
-                                  expandable: true,
-                                  keyboard: TextInputType.multiline,
-                                ),
-
-                                SizedBox(height: screenHeight * 0.03),
-
-                                BlockButton(
-                                  height: screenHeight * 0.045,
-                                  width: screenWidth * 0.6,
-                                  label: 'Submit',
-                                  textStyle: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    fontSize: baseSize * 0.044,
+                                  ListingField(
+                                    controller: fullNameController,
+                                    labelText: 'Full Name',
+                                    height: screenHeight * 0.049,
+                                    width: screenWidth* 0.88,
+                                    expandable: false,
+                                    keyboard: TextInputType.name,
                                   ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494),
-                                  ],
-                                  onTap: () {
 
-                                  },
-                                ),
+                                  SizedBox(height: screenHeight * 0.02),
 
-                                SizedBox(height: screenHeight * 0.01),
+                                  ListingField(
+                                    controller: emailAddressController,
+                                    labelText: 'Email',
+                                    height: screenHeight * 0.049,
+                                    width: screenWidth* 0.88,
+                                    expandable: false,
+                                    keyboard: TextInputType.emailAddress,
+                                  ),
+
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  ListingField(
+                                    controller: subjectController,
+                                    labelText: 'Subject',
+                                    height: screenHeight * 0.049,
+                                    width: screenWidth* 0.88,
+                                    expandable: false,
+                                    keyboard: TextInputType.multiline,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  ListingField(
+                                    controller: messageController,
+                                    labelText: 'Message',
+                                    height: screenHeight * 0.2,
+                                    width: screenWidth* 0.88,
+                                    expandable: false,
+                                    keyboard: TextInputType.multiline,
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.03),
+
+                                  BlockButton(
+                                    height: screenHeight * 0.045,
+                                    width: screenWidth * 0.6,
+                                    label: 'Submit',
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontSize: baseSize * 0.044,
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494),
+                                    ],
+                                    onTap: () {
+
+                                    },
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.01),
 
 
 
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
 
 
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).size.width * 0.02,
-                              vertical: MediaQuery.of(context).size.height * 0.02,
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: MediaQuery.of(context).size.width * 0.02,
+                                vertical: MediaQuery.of(context).size.height * 0.02,
+                              ),
+                              child: const CustomContactInfo(
+                                phoneNumber: '012 3456 789',
+                                emailAddress: 'info@mycoinpoll.com',
+                              ),
                             ),
-                            child: const CustomContactInfo(
-                              phoneNumber: '012 3456 789',
-                              emailAddress: 'info@mycoinpoll.com',
-                            ),
-                          ),
 
 
 
-                        ],
-                      )
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),

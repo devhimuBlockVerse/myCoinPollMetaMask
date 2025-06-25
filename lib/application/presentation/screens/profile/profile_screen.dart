@@ -67,139 +67,144 @@ class _ProfileScreenState extends State<ProfileScreen> {
                        horizontal: screenWidth * 0.04,
                        vertical: screenHeight * 0.02,
                      ),
-                     child: SingleChildScrollView(
-                       child: Column(
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: [
-                           SizedBox(height: screenHeight * 0.02),
+                     child: ScrollConfiguration(
+                       behavior: const ScrollBehavior().copyWith(overscroll: false),
+                       child: SingleChildScrollView(
+                         physics: const BouncingScrollPhysics(),
 
-                           _profileHeaderSection(),
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             SizedBox(height: screenHeight * 0.02),
 
-                           SizedBox(height: screenHeight * 0.03),
+                             _profileHeaderSection(),
 
-                           /// Profile Action Buttons =>
-                           Container(
-                             width: double.infinity,
+                             SizedBox(height: screenHeight * 0.03),
 
-                             decoration: BoxDecoration(
-                               // color: const Color(0xFF01090B),
-                               image: const DecorationImage(
-                                  image: AssetImage('assets/icons/profileFrameBg.png'),
-                                 fit: BoxFit.fill,
-                                ),
-                               borderRadius: BorderRadius.circular(14),
-                               border: Border.all(
-                                 color: const Color(0XFFFFF5ED),
-                                 width: 0.1,
+                             /// Profile Action Buttons =>
+                             Container(
+                               width: double.infinity,
+
+                               decoration: BoxDecoration(
+                                 // color: const Color(0xFF01090B),
+                                 image: const DecorationImage(
+                                    image: AssetImage('assets/icons/profileFrameBg.png'),
+                                   fit: BoxFit.fill,
+                                  ),
+                                 borderRadius: BorderRadius.circular(14),
+                                 border: Border.all(
+                                   color: const Color(0XFFFFF5ED),
+                                   width: 0.1,
+                                 ),
                                ),
-                             ),
 
-                             child: Padding(
-                               padding: EdgeInsets.symmetric(
-                                 horizontal: screenWidth * 0.05,
-                                 vertical: screenHeight * 0.02,
-                               ),
-                               child: Column(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
+                               child: Padding(
+                                 padding: EdgeInsets.symmetric(
+                                   horizontal: screenWidth * 0.05,
+                                   vertical: screenHeight * 0.02,
+                                 ),
+                                 child: Column(
+                                   mainAxisSize: MainAxisSize.min,
+                                   children: [
 
-                                   // Personal ,
-                                   ProfileOptionContainer(
-                                    labelText: 'Personal Information',
-                                    leadingIconPath: 'assets/icons/profile.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Personal ,
+                                     ProfileOptionContainer(
+                                      labelText: 'Personal Information',
+                                      leadingIconPath: 'assets/icons/profile.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Trade Confirmation,
-                                   ProfileOptionContainer(
-                                    labelText: 'Trade Confirmation',
-                                    leadingIconPath: 'assets/icons/tared.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Trade Confirmation,
+                                     ProfileOptionContainer(
+                                      labelText: 'Trade Confirmation',
+                                      leadingIconPath: 'assets/icons/tared.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Tax Statements,
-                                   ProfileOptionContainer(
-                                    labelText: 'Tax Statements',
-                                    leadingIconPath: 'assets/icons/taxStatement.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Tax Statements,
+                                     ProfileOptionContainer(
+                                      labelText: 'Tax Statements',
+                                      leadingIconPath: 'assets/icons/taxStatement.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Notification Settings,
-                                   ProfileOptionContainer(
-                                     labelText: 'Notification Settings',
-                                     leadingIconPath: 'assets/icons/notify.svg',
-                                     trailingIconPath: 'assets/icons/rightArrow.svg',
-                                     onTrailingIconTap: () {
-                                       debugPrint("Trailing icon tapped");
-                                       Navigator.of(context).push(
-                                       MaterialPageRoute(builder: (context) => const NotificationsScreen()),
-                                     );
-                                     },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
-
-                                   // Settings
-                                   ProfileOptionContainer(
-                                     labelText: 'Settings',
-                                     leadingIconPath: 'assets/icons/settings.svg',
-                                     trailingIconPath: 'assets/icons/rightArrow.svg',
-                                     onTrailingIconTap: () {
-                                       debugPrint("Trailing icon tapped");
-                                       Navigator.of(context).push(
-                                         MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                     // Notification Settings,
+                                     ProfileOptionContainer(
+                                       labelText: 'Notification Settings',
+                                       leadingIconPath: 'assets/icons/notify.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         debugPrint("Trailing icon tapped");
+                                         Navigator.of(context).push(
+                                         MaterialPageRoute(builder: (context) => const NotificationsScreen()),
                                        );
-                                     },
-                                   ),
+                                       },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Settings
+                                     ProfileOptionContainer(
+                                       labelText: 'Settings',
+                                       leadingIconPath: 'assets/icons/settings.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         debugPrint("Trailing icon tapped");
+                                         Navigator.of(context).push(
+                                           MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                         );
+                                       },
+                                     ),
 
-                                   SizedBox(
-                                     width: screenWidth * 0.8, // Responsive width
-                                     child: Opacity(
-                                       opacity: 0.50,
-                                       child: Text(
-                                         'This service is provided by Team.',
-                                         textAlign: TextAlign.center,
-                                         style: TextStyle(
-                                           color: Colors.white,
-                                           fontSize: screenWidth * 0.028,
-                                           fontFamily: 'Poppins',
-                                           fontWeight: FontWeight.w400,
-                                           height: 1.6,
+                                     SizedBox(height: screenHeight * 0.02),
+
+                                     SizedBox(
+                                       width: screenWidth * 0.8, // Responsive width
+                                       child: Opacity(
+                                         opacity: 0.50,
+                                         child: Text(
+                                           'This service is provided by Team.',
+                                           textAlign: TextAlign.center,
+                                           style: TextStyle(
+                                             color: Colors.white,
+                                             fontSize: screenWidth * 0.028,
+                                             fontFamily: 'Poppins',
+                                             fontWeight: FontWeight.w400,
+                                             height: 1.6,
+                                           ),
                                          ),
                                        ),
                                      ),
-                                   ),
-                                   SizedBox(height: screenHeight * 0.04),
+                                     SizedBox(height: screenHeight * 0.04),
 
 
-                                 ],
+                                   ],
+                                 ),
                                ),
                              ),
-                           ),
 
-                         ],
+                           ],
+                         ),
                        ),
                      ),
                    ),

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
+import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -34,6 +35,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
   String? _selectedGender;
   String? _selectedCountry;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,306 +102,307 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                 ],
               ),
 
-              // SizedBox(height: screenHeight * 0.01),
-
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
 
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: screenHeight * 0.01),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                          Center(
-                              child: _profileHeaderSection(context)
-                          ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: screenHeight * 0.01),
 
-                          SizedBox(height: screenHeight * 0.03),
-
-                          Container(
-                            width: double.infinity,
-                            height: screenHeight ,
-
-                            decoration: BoxDecoration(
-                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/profileFrameBg.png'),
-                                fit: BoxFit.fill,
-                              ),
-                              borderRadius: BorderRadius.circular(14),
-
-                              border: const Border(
-                                top: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
-                                left: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
-                                right: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
-                                bottom: BorderSide.none,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 6,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                            Center(
+                                child: _profileHeaderSection(context)
                             ),
 
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.05,
-                                vertical: screenHeight * 0.02,
-                              ),
-                              child: Column(
-                                // mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
+                            SizedBox(height: screenHeight * 0.03),
 
-                                  /// First & last Name
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                     children: [
-                                      Expanded(
-                                        child: ListingField(
-                                          controller: firstNameController,
-                                          labelText: 'First Name',
-                                          height: screenHeight * 0.05,
-                                           expandable: false,
-                                          keyboard: TextInputType.name,
-                                        ),
-                                      ),
+                            Container(
+                              width: double.infinity,
+                              height: screenHeight ,
 
-                                       SizedBox(width: screenWidth * 0.01),
+                              decoration: BoxDecoration(
+                                 image: const DecorationImage(
+                                  image: AssetImage('assets/icons/profileFrameBg.png'),
+                                  fit: BoxFit.fill,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
 
-                                       Expanded(
-                                         child: ListingField(
-                                           controller: lastNameController,
-                                           labelText: 'Last Name',
-                                           height: screenHeight * 0.05,
-                                            expandable: false,
-                                           keyboard: TextInputType.name,
-                                         ),
-                                       ),
-
-                                    ],
+                                border: const Border(
+                                  top: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                  left: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                  right: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                  bottom: BorderSide.none,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
                                   ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                  /// Email Address
-                                  ListingField(
-                                    controller: emailAddressController,
-                                    labelText: 'Email Address',
-                                    height: screenHeight * 0.05,
-                                    width: screenWidth* 0.88,
-                                    expandable: false,
-                                    keyboard: TextInputType.name,
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: ListingField(
-                                          // controller: firstNameController,
-                                          labelText: '+880',
-                                          height: screenHeight * 0.05,
-                                          expandable: false,
-                                          keyboard: TextInputType.name,
-                                        ),
-                                      ),
-
-                                      SizedBox(width: screenWidth * 0.01),
-
-                                      Expanded(
-                                        flex: 4,
-                                         child: ListingField(
-                                          controller: lastNameController,
-                                          labelText: 'Contract Number',
-                                          height: screenHeight * 0.05,
-                                          expandable: false,
-                                          keyboard: TextInputType.number,
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-
-
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                   /// Country and Address
-                                   Row(
-                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                     crossAxisAlignment: CrossAxisAlignment.center,
-
-                                     children: [
-                                       Expanded(
-                                         child: CustomDropdown(
-                                           label: 'Country',
-                                           items: const ['Dubai', 'USA', 'Bangladesh'],
-                                           selectedValue: _selectedCountry,
-                                           onChanged: (value) {
-                                             setState(() {
-                                               _selectedCountry = value;
-                                             });
-                                           },
-                                         ),
-                                       ),
-                                       SizedBox(width: screenWidth * 0.01),
-
-                                       Expanded(
-                                         child: CustomDropdown(
-                                           label: 'Gender',
-                                           items: const ['Male', 'Female', 'Other'],
-                                           selectedValue: _selectedGender,
-                                           onChanged: (value) {
-                                             setState(() {
-                                               _selectedGender = value;
-                                             });
-                                           },
-                                         ),
-                                       ),
-                                     ],
-                                   ),
-
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                  /// Address
-                                  ListingField(
-                                    controller: addressController,
-                                    labelText: 'Address',
-                                    height: screenHeight * 0.05,
-                                    width: screenWidth* 0.88,
-                                    expandable: false,
-                                    keyboard: TextInputType.emailAddress,
-                                  ),
-
-
-
-
-                                   SizedBox(height: screenHeight * 0.05),
-
-                                  BlockButton(
-                                    height: screenHeight * 0.045,
-                                    width: screenWidth * 0.7,
-                                    label: 'Update Profile',
-                                    textStyle: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      // fontSize: baseSize * 0.030,
-                                      fontSize: getResponsiveFontSize(context, 16),
-                                    ),
-                                    gradientColors: const [
-                                      Color(0xFF2680EF),
-                                      Color(0xFF1CD494),
-                                    ],
-                                    onTap: () {
-                                      // Update Personal Information , Save & Navigate back to Profile Screen
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const ProfileScreen(),
-                                        ),
-                                      );
-                                    },
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.05),
-
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      'Update Your Password',
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: getResponsiveFontSize(context, 16),
-                                        height: 1.6,
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.03),
-
-                                  ListingField(
-                                    controller: oldPasswordController,
-                                    labelText: 'Old Password',
-                                    height: screenHeight * 0.05,
-                                    expandable: false,
-                                    keyboard: TextInputType.name,
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-                                  ListingField(
-                                    controller: newPasswordController,
-                                    labelText: 'New Password',
-                                    height: screenHeight * 0.05,
-                                    expandable: false,
-                                    keyboard: TextInputType.name,
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.02),
-
-                                  ListingField(
-                                    controller: confirmPasswordController,
-                                    labelText: 'Confirm Password',
-                                    height: screenHeight * 0.05,
-                                    expandable: false,
-                                    keyboard: TextInputType.name,
-                                  ),
-
-                                  SizedBox(height: screenHeight * 0.05),
-
-                                  BlockButton(
-                                    height: screenHeight * 0.045,
-                                    width: screenWidth * 0.7,
-                                    label: 'Update Password',
-                                    textStyle: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      // fontSize: baseSize * 0.030,
-                                      fontSize: getResponsiveFontSize(context, 16),
-                                    ),
-                                    gradientColors: const [
-                                      Color(0xFF2680EF),
-                                      Color(0xFF1CD494),
-                                    ],
-                                    onTap: () {
-                                      // Update Personal Information , Save & Navigate back to Profile Screen
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const ProfileScreen(),
-                                        ),
-                                      );
-                                    },
-                                  ),
-
-
                                 ],
                               ),
+
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.05,
+                                  vertical: screenHeight * 0.02,
+                                ),
+                                child: Column(
+                                  // mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+
+                                    /// First & last Name
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                       children: [
+                                        Expanded(
+                                          child: ListingField(
+                                            controller: firstNameController,
+                                            labelText: 'First Name',
+                                            height: screenHeight * 0.05,
+                                             expandable: false,
+                                            keyboard: TextInputType.name,
+                                          ),
+                                        ),
+
+                                         SizedBox(width: screenWidth * 0.01),
+
+                                         Expanded(
+                                           child: ListingField(
+                                             controller: lastNameController,
+                                             labelText: 'Last Name',
+                                             height: screenHeight * 0.05,
+                                              expandable: false,
+                                             keyboard: TextInputType.name,
+                                           ),
+                                         ),
+
+                                      ],
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+                                    /// Email Address
+                                    ListingField(
+                                      controller: emailAddressController,
+                                      labelText: 'Email Address',
+                                      height: screenHeight * 0.05,
+                                      width: screenWidth* 0.88,
+                                      expandable: false,
+                                      keyboard: TextInputType.name,
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: ListingField(
+                                            // controller: firstNameController,
+                                            labelText: '+880',
+                                            height: screenHeight * 0.05,
+                                            expandable: false,
+                                            keyboard: TextInputType.name,
+                                          ),
+                                        ),
+
+                                        SizedBox(width: screenWidth * 0.01),
+
+                                        Expanded(
+                                          flex: 4,
+                                           child: ListingField(
+                                            controller: phoneNumberController,
+                                            labelText: 'Contract Number',
+                                            height: screenHeight * 0.05,
+                                            expandable: false,
+                                            keyboard: TextInputType.number,
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+
+
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+                                     /// Country and Address
+                                     Row(
+                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                       crossAxisAlignment: CrossAxisAlignment.center,
+
+                                       children: [
+                                         Expanded(
+                                           child: CustomDropdown(
+                                             label: 'Country',
+                                             items: const ['Dubai', 'USA', 'Bangladesh'],
+                                             selectedValue: _selectedCountry,
+                                             onChanged: (value) {
+                                               setState(() {
+                                                 _selectedCountry = value;
+                                               });
+                                             },
+                                           ),
+                                         ),
+                                         SizedBox(width: screenWidth * 0.01),
+
+                                         Expanded(
+                                           child: CustomDropdown(
+                                             label: 'Gender',
+                                             items: const ['Male', 'Female', 'Other'],
+                                             selectedValue: _selectedGender,
+                                             onChanged: (value) {
+                                               setState(() {
+                                                 _selectedGender = value;
+                                               });
+                                             },
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+                                    /// Address
+                                    ListingField(
+                                      controller: addressController,
+                                      labelText: 'Address',
+                                      height: screenHeight * 0.05,
+                                      width: screenWidth* 0.88,
+                                      expandable: false,
+                                      keyboard: TextInputType.emailAddress,
+                                    ),
+
+
+
+
+                                     SizedBox(height: screenHeight * 0.05),
+
+                                    BlockButton(
+                                      height: screenHeight * 0.045,
+                                      width: screenWidth * 0.7,
+                                      label: 'Update Profile',
+                                      textStyle: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        // fontSize: baseSize * 0.030,
+                                        fontSize: getResponsiveFontSize(context, 16),
+                                      ),
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494),
+                                      ],
+                                        onTap: () {
+                                          Navigator.popUntil(context, (route) => route.isFirst); // go back to main screen
+
+                                          Future.delayed(Duration(milliseconds: 100), () {
+                                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
+                                          });
+                                        }
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.05),
+
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        'Update Your Password',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: getResponsiveFontSize(context, 16),
+                                          height: 1.6,
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.03),
+
+                                    ListingField(
+                                      controller: oldPasswordController,
+                                      labelText: 'Old Password',
+                                      height: screenHeight * 0.05,
+                                      expandable: false,
+                                      keyboard: TextInputType.name,
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.02),
+                                    ListingField(
+                                      controller: newPasswordController,
+                                      labelText: 'New Password',
+                                      height: screenHeight * 0.05,
+                                      expandable: false,
+                                      keyboard: TextInputType.name,
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.02),
+
+                                    ListingField(
+                                      controller: confirmPasswordController,
+                                      labelText: 'Confirm Password',
+                                      height: screenHeight * 0.05,
+                                      expandable: false,
+                                      keyboard: TextInputType.name,
+                                    ),
+
+                                    SizedBox(height: screenHeight * 0.05),
+
+                                    BlockButton(
+                                      height: screenHeight * 0.045,
+                                      width: screenWidth * 0.7,
+                                      label: 'Update Password',
+                                      textStyle: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        // fontSize: baseSize * 0.030,
+                                        fontSize: getResponsiveFontSize(context, 16),
+                                      ),
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494),
+                                      ],
+                                      onTap: () {
+                                        // Update Personal Information , Save & Navigate back to Profile Screen
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const ProfileScreen(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+
+
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
 
 
-                        ],
-                      )
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),

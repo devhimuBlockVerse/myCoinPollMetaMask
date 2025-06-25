@@ -170,189 +170,196 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: ListView(
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
 
-                    children: [
+                      child: Column(
 
-                      /// Create New Ticket Button
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
-                        child: Container(
-                           height: screenHeight * 0.14,
-                          decoration: ShapeDecoration(
-                            color: const Color(0x66040C16),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(width: 0.50, color: Color(0xFFB2B0B6)),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Center(
-                                child: BlockButton(
-                                  height: screenHeight * 0.05,
-                                  width: screenWidth * 0.6,
-                                  label: 'Create New Ticket',
-                                  textStyle:  TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                     fontSize: getResponsiveFontSize(context, 15),
-                                    height: 1.6,
-                                  ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494),
-                                    // 1CD494
-                                  ],
-                                  onTap: () {
-                                   Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateNewTicketScreen()));
+                        children: [
 
-                                  },
-                                  leadingIconPath: 'assets/icons/addIcon.svg',
-                                  iconSize : screenHeight * 0.019,
+                          /// Create New Ticket Button
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                            child: Container(
+                               height: screenHeight * 0.14,
+                              decoration: ShapeDecoration(
+                                color: const Color(0x66040C16),
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(width: 0.50, color: Color(0xFFB2B0B6)),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                            ],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: BlockButton(
+                                      height: screenHeight * 0.05,
+                                      width: screenWidth * 0.6,
+                                      label: 'Create New Ticket',
+                                      textStyle:  TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                         fontSize: getResponsiveFontSize(context, 15),
+                                        height: 1.6,
+                                      ),
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494),
+                                        // 1CD494
+                                      ],
+                                      onTap: () {
+                                       Navigator.push(context, MaterialPageRoute(builder: (context) =>  CreateNewTicketScreen()));
+
+                                      },
+                                      leadingIconPath: 'assets/icons/addIcon.svg',
+                                      iconSize : screenHeight * 0.019,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ),
                           ),
 
-                        ),
-                      ),
+
+                          /// Ticket Table
+                          SizedBox(height: screenHeight * 0.030),
+                          Text(
+                            'Ticket List',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              fontSize: getResponsiveFontSize(context, 17),
+                              height: 1.6,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.020),
 
 
-                      /// Ticket Table
-                      SizedBox(height: screenHeight * 0.030),
-                      Text(
-                        'Ticket List',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 17),
-                          height: 1.6,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.020),
-
-
-                      /// Search Controller with Data Sorting Button
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff040C16),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02,
-                            vertical:  screenHeight * 0.001
-                        ),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: ResponsiveSearchField(
-                                controller: _searchController,
-                                 onChanged:  (value) => _applyFiltersAndSort(),
-                                svgAssetPath: 'assets/icons/search.svg',
-
-                              ),
+                          /// Search Controller with Data Sorting Button
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff040C16),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                                vertical:  screenHeight * 0.001
                             ),
 
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ResponsiveSearchField(
+                                    controller: _searchController,
+                                     onChanged:  (value) => _applyFiltersAndSort(),
+                                    svgAssetPath: 'assets/icons/search.svg',
 
-                            /// Data Sorting  Button
-                            Expanded(
-                              flex: 1,
-                              child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: PopupMenuButton<SortTicketListOption>(
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/sortingList.svg',
-                                      fit: BoxFit.contain,
-                                    ),
-                                    onSelected: ( option) {
-                                      _sortData(option);
-                                    },
-                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTicketListOption>>[
-                                      const PopupMenuItem<SortTicketListOption>(
-                                        value: SortTicketListOption.dateLatest,
-                                        child: Text('Date: Latest First'),
-                                      ),
-                                      const PopupMenuItem<SortTicketListOption>(
-                                        value: SortTicketListOption.dateOldest,
-                                        child: Text('Date: Oldest First'),
-                                      ),
+                                  ),
+                                ),
 
-                                      const PopupMenuItem<SortTicketListOption>(
-                                        value: SortTicketListOption.statusAsc,
-                                        child: Text('Status: Active First'),
-                                      ),
-                                      const PopupMenuItem<SortTicketListOption>(
-                                        value: SortTicketListOption.statusDesc,
-                                        child: Text('Status: Inactive First'),
-                                      ),
-                                    ],
-                                  )
+
+                                /// Data Sorting  Button
+                                Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: PopupMenuButton<SortTicketListOption>(
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/sortingList.svg',
+                                          fit: BoxFit.contain,
+                                        ),
+                                        onSelected: ( option) {
+                                          _sortData(option);
+                                        },
+                                        itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTicketListOption>>[
+                                          const PopupMenuItem<SortTicketListOption>(
+                                            value: SortTicketListOption.dateLatest,
+                                            child: Text('Date: Latest First'),
+                                          ),
+                                          const PopupMenuItem<SortTicketListOption>(
+                                            value: SortTicketListOption.dateOldest,
+                                            child: Text('Date: Oldest First'),
+                                          ),
+
+                                          const PopupMenuItem<SortTicketListOption>(
+                                            value: SortTicketListOption.statusAsc,
+                                            child: Text('Status: Active First'),
+                                          ),
+                                          const PopupMenuItem<SortTicketListOption>(
+                                            value: SortTicketListOption.statusDesc,
+                                            child: Text('Status: Inactive First'),
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.016),
+
+
+                          /// Table View
+                          ...[
+                            _isLoading
+                                ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              ),
+                            ) :  _displayData.isNotEmpty
+                                ? buildTicketTable(_displayData, screenWidth, context)
+                                : Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(20),
+                              child: const Text(
+                                'No data found',
+                                style: TextStyle(color: Colors.white70),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.016),
 
 
-                      /// Table View
-                      ...[
-                        _isLoading
-                            ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          SizedBox(height: screenHeight * 0.05),
+
+                          Text(
+                            "Frequently Asked Questions",
+                            style: TextStyle(
+                              fontSize: getResponsiveFontSize(context, 16),
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              height: 1.1,
+                              fontFamily: 'Poppins',
                             ),
                           ),
-                        ) :  _displayData.isNotEmpty
-                            ? buildTicketTable(_displayData, screenWidth, context)
-                            : Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(20),
-                          child: const Text(
-                            'No data found',
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                        ),
-                      ],
+
+                          SizedBox(height: screenHeight * 0.05),
 
 
-                      SizedBox(height: screenHeight * 0.05),
+                          _FaqSection(),
 
-                      Text(
-                        "Frequently Asked Questions",
-                        style: TextStyle(
-                          fontSize: getResponsiveFontSize(context, 16),
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                          height: 1.1,
-                          fontFamily: 'Poppins',
-                        ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+
+
+                        ],
                       ),
-
-                      SizedBox(height: screenHeight * 0.05),
-
-
-                      _FaqSection(),
-
-
-                      SizedBox(height: screenHeight * 0.03),
-
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

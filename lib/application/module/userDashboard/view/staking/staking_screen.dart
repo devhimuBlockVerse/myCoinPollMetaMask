@@ -741,155 +741,162 @@ class _StakingScreenState extends State<StakingScreen> {
                         horizontal: screenWidth * 0.01,
                         vertical: screenHeight * 0.02,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            // SizedBox(height: screenHeight * 0.01),
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                            _header(),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
 
-                            SizedBox(height: screenHeight * 0.02),
 
-                            _stakingDetails(),
-                            SizedBox(height: screenHeight * 0.04),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              // SizedBox(height: screenHeight * 0.01),
 
-                            Center(
-                              child: BlockButton(
-                                height: baseSize * 0.12,
-                                width: screenWidth * 0.7,
-                                label: "Stake Now",
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.w700,
+                              _header(),
+
+                              SizedBox(height: screenHeight * 0.02),
+
+                              _stakingDetails(),
+                              SizedBox(height: screenHeight * 0.04),
+
+                              Center(
+                                child: BlockButton(
+                                  height: baseSize * 0.12,
+                                  width: screenWidth * 0.7,
+                                  label: "Stake Now",
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontSize: baseSize * 0.048,
+                                  ),
+                                  gradientColors: const [
+                                    Color(0xFF2680EF),
+                                    Color(0xFF1CD494),
+                                  ],
+                                  onTap: () {
+                                    debugPrint('Button tapped');
+                                  },
+                                ),
+                              ),
+
+                              SizedBox(height: screenHeight * 0.02),
+
+                              Center(
+                                child: BlockButtonV2(
+                                  text: 'Buy ECM',
+                                  trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
+                                  onPressed: () {
+                                    debugPrint('Button tapped!');
+                                  },
+                                  height: baseSize * 0.12,
+                                  width: screenWidth * 0.7,
+                                ),
+                              ),
+
+
+                              SizedBox(height: screenHeight * 0.030),
+                              Text(
+                                'Staking History',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: getResponsiveFontSize(context, 18),
+                                  height: 1.6,
                                   color: Colors.white,
-                                  fontSize: baseSize * 0.048,
-                                ),
-                                gradientColors: const [
-                                  Color(0xFF2680EF),
-                                  Color(0xFF1CD494),
-                                ],
-                                onTap: () {
-                                  debugPrint('Button tapped');
-                                },
-                              ),
-                            ),
-
-                            SizedBox(height: screenHeight * 0.02),
-
-                            Center(
-                              child: BlockButtonV2(
-                                text: 'Buy ECM',
-                                trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
-                                onPressed: () {
-                                  debugPrint('Button tapped!');
-                                },
-                                height: baseSize * 0.12,
-                                width: screenWidth * 0.7,
-                              ),
-                            ),
-
-
-                            SizedBox(height: screenHeight * 0.030),
-                            Text(
-                              'Staking History',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                                fontSize: getResponsiveFontSize(context, 18),
-                                height: 1.6,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: screenHeight * 0.030),
-
-
-
-
-                            Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: const Color(0xff040C16),
-                                borderRadius: BorderRadius.circular(5),
-
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.02,
-                                  vertical:  screenHeight * 0.001
-                              ),
-
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: ResponsiveSearchField(
-                                      controller: _searchController,
-                                      onChanged:  (value) => _onSearchChanged(),
-                                      svgAssetPath: 'assets/icons/search.svg',
-
-                                    ),
-                                  ),
-
-
-                                  Expanded(
-                                    flex: 1,
-                                    child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: PopupMenuButton<SortOption>(
-                                          icon: SvgPicture.asset(
-                                            'assets/icons/sortingList.svg',
-                                            fit: BoxFit.contain,
-                                          ),
-                                          onSelected: (SortOption option) {
-                                            _sortData(option);
-                                          },
-                                          itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.dateLatest,
-                                              child: Text('Date: Latest First'),
-                                            ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.dateOldest,
-                                              child: Text('Date: Oldest First'),
-                                            ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.statusAsc,
-                                              child: Text('Status: A-Z'),
-                                            ),
-                                            const PopupMenuItem<SortOption>(
-                                              value: SortOption.statusDesc,
-                                              child: Text('Status: Z-A'),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: screenHeight * 0.016),
-                            ...[
-                              _filteredData.isNotEmpty
-                                  ? buildStakingTable(_filteredData, screenWidth, context)
-                                  : Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(20),
-                                child: const Text(
-                                  'No data found',
-                                  style: TextStyle(color: Colors.white70),
                                 ),
                               ),
+                              SizedBox(height: screenHeight * 0.030),
+
+
+
+
+                              Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff040C16),
+                                  borderRadius: BorderRadius.circular(5),
+
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.02,
+                                    vertical:  screenHeight * 0.001
+                                ),
+
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: ResponsiveSearchField(
+                                        controller: _searchController,
+                                        onChanged:  (value) => _onSearchChanged(),
+                                        svgAssetPath: 'assets/icons/search.svg',
+
+                                      ),
+                                    ),
+
+
+                                    Expanded(
+                                      flex: 1,
+                                      child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: PopupMenuButton<SortOption>(
+                                            icon: SvgPicture.asset(
+                                              'assets/icons/sortingList.svg',
+                                              fit: BoxFit.contain,
+                                            ),
+                                            onSelected: (SortOption option) {
+                                              _sortData(option);
+                                            },
+                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
+                                              const PopupMenuItem<SortOption>(
+                                                value: SortOption.dateLatest,
+                                                child: Text('Date: Latest First'),
+                                              ),
+                                              const PopupMenuItem<SortOption>(
+                                                value: SortOption.dateOldest,
+                                                child: Text('Date: Oldest First'),
+                                              ),
+                                              const PopupMenuItem<SortOption>(
+                                                value: SortOption.statusAsc,
+                                                child: Text('Status: A-Z'),
+                                              ),
+                                              const PopupMenuItem<SortOption>(
+                                                value: SortOption.statusDesc,
+                                                child: Text('Status: Z-A'),
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: screenHeight * 0.016),
+                              ...[
+                                _filteredData.isNotEmpty
+                                    ? buildStakingTable(_filteredData, screenWidth, context)
+                                    : Container(
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.all(20),
+                                  child: const Text(
+                                    'No data found',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                ),
+                              ],
+
+
+
+
+
+
                             ],
-
-
-
-
-
-
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -1222,7 +1229,6 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
 }
-
 
 
 

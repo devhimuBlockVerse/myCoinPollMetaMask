@@ -91,13 +91,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/icons/
     - assets/app_icon.png
     - assets/abi/MyContract.json
     - assets/abi/SaleContractABI.json
     - assets/abi/ECMStakingContractABI.json
     - assets/abi/IERC20ABI.json
     - assets/abi/ECMContractABI.json
-    - assets/icons/
+    - assets/icons/tokens.png
     - assets/icons/frame.png
     - assets/icons/copyImg.svg
     - assets/icons/distribution_image.png

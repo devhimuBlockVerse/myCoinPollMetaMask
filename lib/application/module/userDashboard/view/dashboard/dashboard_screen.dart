@@ -939,7 +939,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
               TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
 
                 },
                 child: Text(

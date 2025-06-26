@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../../../framework/res/colors.dart';
 import '../../framework/components/DialogModalViewComponent.dart';
 import '../presentation/screens/ecm_staking_screen.dart';
+import '../presentation/under_maintenance.dart';
 
 
 
@@ -28,7 +29,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ECMIcoScreen(),
     const StakingScreen(),
     const TransactionScreen(),
-    const ProfileScreen(),
+    UnderMaintenance(),
+
   ];
 
   final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Profile'];
@@ -81,7 +83,11 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFF0E0F1A),
-        body: _pages[currentIndex],
+        // body: _pages[currentIndex],
+        body: IndexedStack(
+          index: currentIndex,
+          children: _pages,
+        ),
         bottomNavigationBar: ClipRRect(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(15),

@@ -182,7 +182,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     const FeaturesScreen(),
     const AndroVerseScreen(),
     const NewsScreen(),
-    UnderMaintenance(),
+    const ProfileScreen(),
+
    ];
 
   final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];

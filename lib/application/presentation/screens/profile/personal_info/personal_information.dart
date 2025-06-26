@@ -5,14 +5,17 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/pro
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
+import '../../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {
+
   const PersonalInformationScreen({super.key});
 
   @override
@@ -20,6 +23,8 @@ class PersonalInformationScreen extends StatefulWidget {
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+
+
 
 
   TextEditingController emailAddressController = TextEditingController();
@@ -31,11 +36,248 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  String _selectedGender = 'Male';
+  String _selectedCountry = 'USA';
+  bool _isProfileUpdated = false;
+  bool _isLoading = false;
+  String fullName = '';
 
 
-  String? _selectedGender;
-  String? _selectedCountry;
 
+
+  // Store original values to check for changes
+  String _originalFirstName = '';
+  String _originalLastName = '';
+  String _originalEmailAddress = '';
+  String _originalPhoneNumber = '';
+  String _originalAddress = '';
+  String _originalSelectedGender = '';
+  String _originalSelectedCountry = '';
+  String _storedPassword = '';
+
+
+  @override
+  void initState() {
+    super.initState();
+    fullName = '${firstNameController.text} ${lastNameController.text}';
+
+    _loadInitialProfileData().then((_) {
+      firstNameController.addListener(_onFieldChanged);
+      lastNameController.addListener(_onFieldChanged);
+      emailAddressController.addListener(_onFieldChanged);
+      phoneNumberController.addListener(_onFieldChanged);
+      addressController.addListener(_onFieldChanged);
+    });
+  }
+
+  @override
+  void dispose() {
+    firstNameController.removeListener(_onFieldChanged);
+    lastNameController.removeListener(_onFieldChanged);
+    emailAddressController.removeListener(_onFieldChanged);
+    phoneNumberController.removeListener(_onFieldChanged);
+    addressController.removeListener(_onFieldChanged);
+
+    // Dispose controllers to free up resources
+    emailAddressController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneNumberController.dispose();
+    addressController.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadInitialProfileData() async {
+    final prefs = await SharedPreferences.getInstance();
+    // For demonstration, let's pre-fill some data
+    // In a real api fetch this from an API
+    firstNameController.text = prefs.getString('firstName') ?? 'John';
+    lastNameController.text = prefs.getString('lastName') ?? 'Doe';
+    emailAddressController.text = prefs.getString('emailAddress') ?? 'john.doe@example.com';
+    phoneNumberController.text = prefs.getString('phoneNumber') ?? '1234567890';
+    addressController.text = prefs.getString('address') ?? '123 Main St, Anytown';
+    _storedPassword = prefs.getString('password') ?? '123456';  // fallback
+    oldPasswordController.text = _storedPassword;
+
+    String? loadedGender = prefs.getString('gender');
+    String? loadedCountry = prefs.getString('country');
+    setState(() {
+      _selectedGender = (loadedGender != null && ['Male', 'Female', 'Other'].contains(loadedGender))
+          ? loadedGender
+          : 'Male';
+      _selectedCountry = (loadedCountry != null && ['Dubai', 'USA', 'Bangladesh'].contains(loadedCountry))
+          ? loadedCountry
+          : 'USA';
+
+      // Store original values from loaded data (ensuring they are non-nullable)
+      _originalFirstName = firstNameController.text;
+      _originalLastName = lastNameController.text;
+      _originalEmailAddress = emailAddressController.text;
+      _originalPhoneNumber = phoneNumberController.text;
+      _originalAddress = addressController.text;
+      _originalSelectedGender = _selectedGender; // Now directly assign non-nullable
+      _originalSelectedCountry = _selectedCountry; // Now directly assign non-nullable
+
+      // Initially, no changes have been made after loading
+      _isProfileUpdated = false;
+    });
+  }
+
+  void _onFieldChanged() {
+    bool hasChanges =
+        firstNameController.text != _originalFirstName ||
+            lastNameController.text != _originalLastName ||
+            emailAddressController.text != _originalEmailAddress ||
+            phoneNumberController.text != _originalPhoneNumber ||
+            addressController.text != _originalAddress ||
+            _selectedGender != _originalSelectedGender ||
+            _selectedCountry != _originalSelectedCountry;
+
+    if (hasChanges != _isProfileUpdated) {
+      setState(() {
+        _isProfileUpdated = hasChanges;
+      });
+    }
+  }
+
+  Future<void> _updateProfile() async {
+    if (!_isProfileUpdated) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No changes to update."),
+          backgroundColor: Colors.blueGrey,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    // Collect all data
+    final Map<String, dynamic> updatedProfile = {
+      "firstName": firstNameController.text.trim(),
+      "lastName": lastNameController.text.trim(),
+      "emailAddress": emailAddressController.text.trim(),
+      "phoneNumber": phoneNumberController.text.trim(),
+      "country": _selectedCountry ?? '',
+      "gender": _selectedGender ?? '',
+      "address": addressController.text.trim(),
+    };
+
+    try {
+      await Future.delayed(const Duration(seconds: 1));
+
+      // ✅ Save to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('firstName', updatedProfile['firstName']);
+      await prefs.setString('lastName', updatedProfile['lastName']);
+      await prefs.setString('emailAddress', updatedProfile['emailAddress']);
+      await prefs.setString('phoneNumber', updatedProfile['phoneNumber']);
+      await prefs.setString('country', updatedProfile['country']);
+      await prefs.setString('gender', updatedProfile['gender']);
+      await prefs.setString('address', updatedProfile['address']);
+
+      // ✅ Update originals
+      _originalFirstName = updatedProfile['firstName'];
+      _originalLastName = updatedProfile['lastName'];
+      _originalEmailAddress = updatedProfile['emailAddress'];
+      _originalPhoneNumber = updatedProfile['phoneNumber'];
+      _originalSelectedCountry = updatedProfile['country'];
+      _originalSelectedGender = updatedProfile['gender'];
+      _originalAddress = updatedProfile['address'];
+
+
+      setState(() {
+        _isProfileUpdated = false;
+      });
+
+
+      if (mounted) {
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Profile updated successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // ✅ Navigate back
+        Provider.of<BottomNavProvider>(context, listen: false).setFullName(
+          '${updatedProfile['firstName']} ${updatedProfile['lastName']}',
+        );
+        Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
+
+
+      }
+
+
+    } catch (e) {
+      print("Error updating profile: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to update profile: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> validateAndUpdatePassword() async {
+    String oldPass = oldPasswordController.text.trim();
+    String newPass = newPasswordController.text.trim();
+    String confirmPass = confirmPasswordController.text.trim();
+
+    if (oldPass != _storedPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Old password is incorrect."), backgroundColor: Colors.red),
+      );
+      return;
+    }
+
+    if (newPass.isEmpty || newPass.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("New password must be at least 6 characters."), backgroundColor: Colors.orange),
+      );
+      return;
+    }
+
+    if (newPass != confirmPass) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match."), backgroundColor: Colors.orange),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('password', newPass);
+
+    setState(() {
+      _storedPassword = newPass;
+      oldPasswordController.text = newPass;
+      newPasswordController.clear();
+      confirmPasswordController.clear();
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password updated successfully!"), backgroundColor: Colors.green),
+      );
+      Navigator.popUntil(context, (route) => route.isFirst);
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
+      });
+    }
+  }
 
 
   @override
@@ -176,6 +418,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                             height: screenHeight * 0.05,
                                              expandable: false,
                                             keyboard: TextInputType.name,
+                                            onChanged: (value) => _onFieldChanged(),
+
                                           ),
                                         ),
 
@@ -188,6 +432,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                              height: screenHeight * 0.05,
                                               expandable: false,
                                              keyboard: TextInputType.name,
+                                             onChanged: (value) => _onFieldChanged(),
+
                                            ),
                                          ),
 
@@ -204,6 +450,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       width: screenWidth* 0.88,
                                       expandable: false,
                                       keyboard: TextInputType.name,
+                                      onChanged: (value) => _onFieldChanged(),
+
                                     ),
 
                                     SizedBox(height: screenHeight * 0.02),
@@ -216,11 +464,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                         Expanded(
                                           flex: 2,
                                           child: ListingField(
-                                            // controller: firstNameController,
-                                            labelText: '+880',
+                                            controller: TextEditingController(text: '+880'), // Fixed country code prefix
+                                            labelText: '',
                                             height: screenHeight * 0.05,
                                             expandable: false,
                                             keyboard: TextInputType.name,
+                                            onChanged: (value) {
+                                              // later implement
+                                            },
                                           ),
                                         ),
 
@@ -234,7 +485,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                             height: screenHeight * 0.05,
                                             expandable: false,
                                             keyboard: TextInputType.number,
-                                          ),
+                                             onChanged: (value) => _onFieldChanged(),
+                                           ),
                                         ),
 
                                       ],
@@ -257,7 +509,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                              selectedValue: _selectedCountry,
                                              onChanged: (value) {
                                                setState(() {
-                                                 _selectedCountry = value;
+                                                 _selectedCountry = value ?? _selectedCountry;
+                                                 _onFieldChanged();
+
                                                });
                                              },
                                            ),
@@ -271,7 +525,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                              selectedValue: _selectedGender,
                                              onChanged: (value) {
                                                setState(() {
-                                                 _selectedGender = value;
+                                                 _selectedGender = value ?? _selectedCountry;
+                                                 _onFieldChanged();
                                                });
                                              },
                                            ),
@@ -290,14 +545,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       width: screenWidth* 0.88,
                                       expandable: false,
                                       keyboard: TextInputType.emailAddress,
+                                      onChanged: (value) => _onFieldChanged(),
+
                                     ),
-
-
-
 
                                      SizedBox(height: screenHeight * 0.05),
 
-                                    BlockButton(
+                                    if (_isLoading)
+                                      const Center(child: CircularProgressIndicator(color: Colors.white))
+                                    else
+                                      BlockButton(
                                       height: screenHeight * 0.045,
                                       width: screenWidth * 0.7,
                                       label: 'Update Profile',
@@ -311,13 +568,15 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                         Color(0xFF2680EF),
                                         Color(0xFF1CD494),
                                       ],
-                                        onTap: () {
-                                          Navigator.popUntil(context, (route) => route.isFirst); // go back to main screen
 
-                                          Future.delayed(Duration(milliseconds: 100), () {
-                                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
-                                          });
-                                        }
+                                        onTap: _isProfileUpdated ? _updateProfile : () {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text("No changes to update."),
+                                              backgroundColor: Colors.blueGrey,
+                                            ),
+                                          );
+                                        },
                                     ),
 
                                     SizedBox(height: screenHeight * 0.05),
@@ -382,15 +641,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                         Color(0xFF2680EF),
                                         Color(0xFF1CD494),
                                       ],
-                                      onTap: () {
-                                        // Update Personal Information , Save & Navigate back to Profile Screen
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => const ProfileScreen(),
-                                          ),
-                                        );
-                                      },
+
+                                      onTap: () => validateAndUpdatePassword(),
+
                                     ),
 
 
@@ -421,6 +674,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
     final profileVM = Provider.of<PersonalViewModel>(context);
     final pickedImage = profileVM.pickedImage;
+
+    final fullName = (firstNameController.text.isNotEmpty || lastNameController.text.isNotEmpty)
+        ? "${firstNameController.text} ${lastNameController.text}".trim()
+        : "Your Name";
+
     return Column(
       children: [
         Container(
@@ -464,7 +722,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
               ),
               SizedBox(height: 10 * scale),
               Text(
-                'Abdur Salam',
+                // 'Abdur Salam',
+                fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,

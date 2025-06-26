@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 //
 // class BlockButtonV2 extends StatefulWidget {
@@ -137,6 +138,7 @@ class BlockButtonV2 extends StatefulWidget {
   final double? height;
   final double? width;
   final TextStyle? textStyle;
+  final String? leadingImagePath;
 
   const BlockButtonV2({
     super.key,
@@ -145,7 +147,7 @@ class BlockButtonV2 extends StatefulWidget {
     this.onPressed,
     this.height,
     this.width,
-    this.textStyle,
+    this.textStyle, this.leadingImagePath,
   });
 
   @override
@@ -158,6 +160,23 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
   void _handleTapUp(TapUpDetails _) {
     setState(() => _isPressed = false);
     widget.onPressed?.call();
+  }
+  Widget _buildImage(String path, double size) {
+    if (path.toLowerCase().endsWith('.svg')) {
+      return SvgPicture.asset(
+        path,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+      );
+    } else {
+      return Image.asset(
+        path,
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+      );
+    }
   }
 
   void _handleTapCancel() => setState(() => _isPressed = false);
@@ -186,6 +205,7 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
     // Padding scales with button height
     final horizontalPadding = buttonWidth * 0.02;
     final verticalPadding = buttonHeight * 0.25;
+    final imageSize = buttonHeight * 0.5;
 
     return GestureDetector(
       onTapDown: _handleTapDown,
@@ -228,7 +248,10 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
+                    if (widget.leadingImagePath != null) ...[
+                      _buildImage(widget.leadingImagePath!, imageSize),
+                      const SizedBox(width: 8),
+                    ],
                     Flexible(
                       child: FittedBox(
                         fit: BoxFit.scaleDown,

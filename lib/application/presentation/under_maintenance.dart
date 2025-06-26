@@ -123,7 +123,9 @@ class UnderMaintenance extends StatelessWidget {
                       // 1CD494
                     ],
                     onTap: () {
-                      Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);  // Go to Home Screen
+                      Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                     iconPath: 'assets/icons/arrowIcon.svg',
                     iconSize : screenHeight * 0.013,

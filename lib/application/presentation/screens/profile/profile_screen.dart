@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
+import '../../viewmodel/bottom_nav_provider.dart';
 import 'notification/notifications.dart';
 import 'personal_info/personal_information.dart';
 
@@ -222,6 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _profileHeaderSection(){
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final fullName = Provider.of<BottomNavProvider>(context).fullName;
 
     // Scale factors (tweak if needed)
     double scale = screenWidth / 375;
@@ -252,7 +255,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               // Name
               Text(
-                'Abdur Salam',
+                // 'Abdur Salam',
+                fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,

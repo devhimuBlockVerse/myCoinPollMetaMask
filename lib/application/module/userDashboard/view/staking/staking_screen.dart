@@ -778,6 +778,8 @@ class _StakingScreenState extends State<StakingScreen> {
                                   onTap: () {
                                     debugPrint('Button tapped');
                                   },
+                                  leadingIconPath: 'assets/icons/arrowIcon.svg',
+                                  iconSize : screenHeight * 0.013,
                                 ),
                               ),
 
@@ -786,7 +788,8 @@ class _StakingScreenState extends State<StakingScreen> {
                               Center(
                                 child: BlockButtonV2(
                                   text: 'Buy ECM',
-                                  trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
+                                  leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
+                                  // trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                                   onPressed: () {
                                     debugPrint('Button tapped!');
                                   },

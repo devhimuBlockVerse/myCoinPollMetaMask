@@ -1515,7 +1515,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     Container(
                       width: screenWidth,
-                      height: screenHeight * 0.16,
+                      // height: screenHeight * 0.16,
+                      height: screenHeight * 0.17,
                       // height: screenHeight * 0.30,
                       decoration: BoxDecoration(
                         border: Border.all(

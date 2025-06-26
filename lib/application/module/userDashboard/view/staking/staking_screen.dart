@@ -790,6 +790,11 @@ class _StakingScreenState extends State<StakingScreen> {
                                   onPressed: () {
                                     debugPrint('Button tapped!');
                                   },
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    fontSize: baseSize * 0.048,
+                                  ),
                                   height: baseSize * 0.12,
                                   width: screenWidth * 0.7,
                                 ),

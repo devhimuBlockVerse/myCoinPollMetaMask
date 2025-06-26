@@ -496,7 +496,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                             /// Timer Section
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal:baseSize * 0.02, vertical: baseSize * 0.01),
+                              padding: EdgeInsets.symmetric(horizontal:baseSize * 0.01, vertical: baseSize * 0.01),
                               child: CountdownTimer(
                                 scaleWidth: scaleWidth,
                                 scaleHeight: scaleHeight,
@@ -504,51 +504,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               ),
                             ),
 
-                            // Padding(
-                            //   padding: EdgeInsets.all(baseSize * 0.01),
-                            //   child: Container(
-                            //     // width: double.infinity,
-                            //     width: screenWidth,
-                            //     padding: EdgeInsets.symmetric(
-                            //       // horizontal: baseSize * 0.01,
-                            //       // vertical: baseSize * 0.015,
-                            //       horizontal: baseSize * 0.02,
-                            //       vertical: baseSize * 0.015,
-                            //     ),
-                            //     decoration: BoxDecoration(
-                            //       color: const Color(0x4D1F1F1F),
-                            //       borderRadius: BorderRadius.circular(8),
-                            //       border: Border.all(
-                            //         width: 0.3,
-                            //         color: const Color(0x4DFFFFFF),
-                            //       ),
-                            //       boxShadow: [
-                            //         BoxShadow(
-                            //           color: Colors.black.withOpacity(0.2),
-                            //           blurRadius: 10,
-                            //           offset: const Offset(0, 4),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     child: IntrinsicHeight(
-                            //       child: Row(
-                            //         crossAxisAlignment: CrossAxisAlignment.center,
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         children: [
-                            //           _timeBlock(label: 'Days', value: '02'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Hours', value: '23'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Minutes', value: '05'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Seconds', value: '56'),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
+                           ],
                         ),
                       ),
                     ],

@@ -64,12 +64,17 @@ dependencies:
 #  url_launcher: ^6.0.20
 
   mobile_scanner: ^3.5.5
+  intl: ^0.20.1
 
+dependency_overrides:
+  intl: ^0.20.1
 
 
 dev_dependencies:
+  device_preview: ^1.1.0
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

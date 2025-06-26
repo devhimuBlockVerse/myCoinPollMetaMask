@@ -191,53 +191,59 @@ class _ListingFieldState extends State<ListingField> {
                   ),
                   iconEnabledColor: Colors.white.withOpacity(0.7),
                 )
-                    : Column(
-                      children: [
-                        TextField(
+                    : Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center, // helps avoid overflow
 
-                                          keyboardType: widget.keyboard,
-                                          controller: widget.controller,
-                                          // maxLines: widget.expandable ? null : 1,
-                                          // maxLines: null,
-                                          maxLines: widget.isPassword ? 1 : null,
-
-                                          minLines: 1,
-                                           obscureText: widget.isPassword ? _obscureText : false,
-                                          readOnly: widget.readOnly,
-                                          showCursor: !widget.readOnly,
-                                          onChanged: widget.onChanged,
-
-                                          // textAlign: TextAlign.start,
-                                          textAlignVertical: TextAlignVertical.top,
-                                          scrollPhysics: const BouncingScrollPhysics(),
-                                          // scrollPadding: const EdgeInsets.all(5),
-                                          scrollController: ScrollController(),
-                                          style: TextStyle(
-
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        fontSize: responsiveFontSize,
-                        height: 1.6,
-                        color: Colors.white.withOpacity(0.9),
-                                          ),
-                                          decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 11), // key to vertical centering
-
-                        isDense: true,
-                        isCollapsed: false,
-                         border: InputBorder.none,
-                        hintText: widget.labelText,
-                        hintStyle: TextStyle(
-
-                          color: const Color(0XFF7D8FA9),
-                          fontSize: responsiveFontSize,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          height: 1.6,
-                        ),
-                                          ),
-                                        ),
-                      ],
+                        children: [
+                          Expanded(
+                            child: TextField(
+                            
+                                              keyboardType: widget.keyboard,
+                                              controller: widget.controller,
+                                              // maxLines: widget.expandable ? null : 1,
+                                              // maxLines: null,
+                                              maxLines: widget.isPassword ? 1 : null,
+                            
+                                              minLines: 1,
+                                               obscureText: widget.isPassword ? _obscureText : false,
+                                              readOnly: widget.readOnly,
+                                              showCursor: !widget.readOnly,
+                                              onChanged: widget.onChanged,
+                            
+                                              // textAlign: TextAlign.start,
+                                              textAlignVertical: TextAlignVertical.top,
+                                              scrollPhysics: const BouncingScrollPhysics(),
+                                              // scrollPadding: const EdgeInsets.all(5),
+                                              scrollController: ScrollController(),
+                                              style: TextStyle(
+                            
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: responsiveFontSize,
+                            height: 1.6,
+                            color: Colors.white.withOpacity(0.9),
+                                              ),
+                                              decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(vertical: 11), // key to vertical centering
+                            
+                            isDense: true,
+                            isCollapsed: false,
+                             border: InputBorder.none,
+                            hintText: widget.labelText,
+                            hintStyle: TextStyle(
+                            
+                              color: const Color(0XFF7D8FA9),
+                              fontSize: responsiveFontSize,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              height: 1.6,
+                            ),
+                                              ),
+                                            ),
+                          ),
+                        ],
+                      ),
                     ),
               ),
               if (widget.isPassword)

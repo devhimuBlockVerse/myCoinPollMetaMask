@@ -68,6 +68,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'Launching ICO or Androverse',
+          image: 'assets/icons/dialogBgvv.png',
 
           subtitle: '2024-Q1',
           items: [
@@ -93,6 +94,8 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'ECM Coin',
+          image: 'assets/icons/dialogBgvv.png',
+
           subtitle: '2024-Q2',
           items: [
 
@@ -199,6 +202,8 @@ class DialogUtils {
         return  CustomDialog(
           title: 'More Project Launching',
           subtitle: '2025-Q2',
+          image: 'assets/icons/dialogBgvv.png',
+
           items: [
 
              DialogItem(text: 'Launching Multi Copy Trading Platform', icon: Icons.timer),

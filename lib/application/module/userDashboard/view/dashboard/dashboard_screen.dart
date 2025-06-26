@@ -8,8 +8,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
-import 'package:reown_appkit/modal/pages/public/appkit_modal_all_wallets_page.dart';
-import '../../../../../framework/components/AddressFieldComponent.dart';
+ import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/milestoneLegendtemComponent.dart';
@@ -305,6 +304,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
      );
     });
   }
+
 
   Widget _EcmWithGraphChart(){
     double screenWidth = MediaQuery.of(context).size.width;
@@ -659,9 +659,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 Flexible(
                   flex: 2,
                   child: Container(
-                    height: screenHeight * 0.18,
+                    height: screenHeight * 0.20,
                     constraints: BoxConstraints(
-                      maxWidth: screenHeight * 0.18,
+                      maxWidth: screenHeight * 0.20,
                     ),
                     child: const PieChartWidget(),
                   ),

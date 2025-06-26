@@ -22,14 +22,7 @@ class DashboardBottomNavBar extends StatefulWidget {
   @override
   State<DashboardBottomNavBar> createState() => _DashboardBottomNavBarState();
 }
-
-class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
-
-
-
-
-
-
+class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
   final List<Widget> _pages = [
     const DashboardScreen(),
     const ECMIcoScreen(),
@@ -47,9 +40,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
     'assets/icons/transaction.svg',
     'assets/icons/profileIcon.svg',
   ];
-
-
-
 
   Future<bool> _onWillPop(double screenWidth, double screenHeight) async {
     final value = await showDialog<bool>(
@@ -69,24 +59,27 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
         );
       },
     );
-    if(value == true){
+    if (value == true) {
       exit(0);
     }
     return false;
   }
 
-
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width * 1;
-    double screenHeight = MediaQuery.of(context).size.height * 1;
+    final media = MediaQuery.of(context);
+    final screenWidth = media.size.width;
+    final screenHeight = media.size.height;
+
+    // Scaling factors
+    double scaleFont(double size) => size * (screenWidth + screenHeight) / 1700;
+    double scaleWidth(double size) => size * screenWidth / 375;
+    double scaleHeight(double size) => size * screenHeight / 812;
+
     final currentIndex = Provider.of<DashboardNavProvider>(context).currentIndex;
-
-
 
     return SafeArea(
       child: Scaffold(
-
         backgroundColor: const Color(0xFF0E0F1A),
         body: _pages[currentIndex],
         bottomNavigationBar: ClipRRect(
@@ -97,8 +90,11 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
-              height: screenHeight * 0.085,
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              height: scaleHeight(70),
+              padding: EdgeInsets.symmetric(
+                horizontal: scaleWidth(15),
+                vertical: scaleHeight(8),
+              ),
               decoration: BoxDecoration(
                 color: const Color(0xFF141521).withOpacity(0.85),
                 borderRadius: const BorderRadius.only(
@@ -121,8 +117,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(5, (index) {
-                  bool isSelected = currentIndex == index;
+                children: List.generate(_labels.length, (index) {
+                  final isSelected = currentIndex == index;
                   return InkWell(
                     onTap: () {
                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
@@ -131,20 +127,20 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: screenWidth * 0.14,
+                          width: scaleWidth(50),
                           child: SvgPicture.asset(
                             _imgPaths[index],
                             color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
-                            height: 20,
-                            width: 24,
+                            height: scaleHeight(18),
+                            width: scaleWidth(10),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: scaleHeight(4)),
                         Text(
                           _labels[index],
                           style: TextStyle(
                             color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
-                            fontSize: isSelected ? 12 : 10,
+                            fontSize: isSelected ? scaleFont(18) : scaleFont(16),
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                           ),
                         ),
@@ -160,3 +156,4 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar>  {
     );
   }
 }
+

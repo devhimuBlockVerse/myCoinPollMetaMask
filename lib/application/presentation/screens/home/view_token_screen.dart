@@ -1,8 +1,13 @@
 
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -18,6 +23,7 @@ import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
+import '../../../data/services/download_white_paper.dart';
 import '../../countdown_timer_helper.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
@@ -158,8 +164,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     }
   }
 
-
-
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
     double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
@@ -168,6 +172,46 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
 
   }
+
+
+  Future<void> downloadWhitepaperPdf(BuildContext context) async {
+    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper.pdf';
+    const String fileName = 'ECM-Whitepaper.pdf';
+
+    try {
+      // Request permission
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Storage permission is required.')),
+        );
+        return;
+      }
+
+      // ✅ Save to Download folder directly
+      final directory = Directory('/storage/emulated/0/Download');
+
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
+
+      final filePath = '${directory!.path}/$fileName';
+
+      // Start downloading
+      final dio = Dio();
+      await dio.download(fileUrl, filePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Downloaded to: $filePath')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Download failed: $e')),
+      );
+    }
+  }
+
 
   @override
   void dispose() {
@@ -394,6 +438,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
+    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper.pdf';
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -615,8 +660,10 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           Color(0xFF2680EF),
                           Color(0xFF1CD494),
                         ],
-                        onTap: () {
-                          debugPrint('Button tapped');
+
+                        onTap: () async {
+                           await DownloadService.downloadWhitepaperPdf(context);
+
                         },
                       ),
 

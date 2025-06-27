@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
@@ -335,8 +336,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                       BlockButtonV2(
                         text: 'Official Website',
-                         onPressed: () {
+                         onPressed: () async{
                           debugPrint('Button tapped!');
+                          const url = 'https://ecmcoin.com/';
+                          if (await canLaunchUrl(Uri.parse(url))) {
+                           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                           } else {
+                           debugPrint('Could not launch $url');
+                           }
                         },
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,

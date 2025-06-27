@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
@@ -5,6 +7,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tra
 import 'package:provider/provider.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
+import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'notification/notifications.dart';
 import 'personal_info/personal_information.dart';
 
@@ -225,7 +228,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final fullName = Provider.of<BottomNavProvider>(context).fullName;
-
+    final profileVM = Provider.of<PersonalViewModel>(context);
+    final pickedImage = profileVM.pickedImage;
     // Scale factors (tweak if needed)
     double scale = screenWidth / 375;
     return Column(
@@ -241,9 +245,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: screenWidth * 0.26,
                 height: screenWidth * 0.26,
                 decoration: ShapeDecoration(
-                  image: const DecorationImage(
-                    image: NetworkImage("https://picsum.photos/90/90"), // Show User Profile
-                    fit: BoxFit.fill,
+                  image: DecorationImage(
+                   image: pickedImage != null
+                      ? FileImage(pickedImage)
+                      : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
+                      ? FileImage(File(profileVM.originalImagePath!))
+                      : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+
+                  fit: BoxFit.fill,
                   ),
                   shape: OvalBorder(
                     side: BorderSide(width: 1 * scale, color: Colors.white),

@@ -11,6 +11,7 @@ import '../../../../../framework/components/searchControllerComponent.dart';
  import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
+import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widgets/staking_table.dart';
@@ -792,6 +793,8 @@ class _StakingScreenState extends State<StakingScreen> {
                                   // trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
                                   onPressed: () {
                                     debugPrint('Button tapped!');
+                                    Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+
                                   },
                                   textStyle: TextStyle(
                                     fontWeight: FontWeight.w700,

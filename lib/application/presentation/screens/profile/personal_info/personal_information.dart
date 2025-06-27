@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
@@ -24,9 +26,6 @@ class PersonalInformationScreen extends StatefulWidget {
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
-
-
-
   TextEditingController emailAddressController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -40,7 +39,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   String _selectedCountry = 'USA';
   bool _isProfileUpdated = false;
   bool _isLoading = false;
-  String fullName = '';
+  // String fullName = '';
 
 
 
@@ -59,7 +58,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   @override
   void initState() {
     super.initState();
-    fullName = '${firstNameController.text} ${lastNameController.text}';
+    // fullName = '${firstNameController.text} ${lastNameController.text}';
 
     _loadInitialProfileData().then((_) {
       firstNameController.addListener(_onFieldChanged);
@@ -67,6 +66,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       emailAddressController.addListener(_onFieldChanged);
       phoneNumberController.addListener(_onFieldChanged);
       addressController.addListener(_onFieldChanged);
+
+      Provider.of<PersonalViewModel>(context, listen: false).addListener(_onImageChanged);
+
+
     });
   }
 
@@ -77,6 +80,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     emailAddressController.removeListener(_onFieldChanged);
     phoneNumberController.removeListener(_onFieldChanged);
     addressController.removeListener(_onFieldChanged);
+
+    Provider.of<PersonalViewModel>(context, listen: false).removeListener(_onImageChanged);
+
 
     // Dispose controllers to free up resources
     emailAddressController.dispose();
@@ -118,15 +124,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       _originalEmailAddress = emailAddressController.text;
       _originalPhoneNumber = phoneNumberController.text;
       _originalAddress = addressController.text;
-      _originalSelectedGender = _selectedGender; // Now directly assign non-nullable
-      _originalSelectedCountry = _selectedCountry; // Now directly assign non-nullable
-
+      _originalSelectedGender = _selectedGender;
+      _originalSelectedCountry = _selectedCountry;
       // Initially, no changes have been made after loading
       _isProfileUpdated = false;
     });
   }
 
   void _onFieldChanged() {
+    final profileVM = Provider.of<PersonalViewModel>(context, listen: false);
+
     bool hasChanges =
         firstNameController.text != _originalFirstName ||
             lastNameController.text != _originalLastName ||
@@ -135,6 +142,29 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             addressController.text != _originalAddress ||
             _selectedGender != _originalSelectedGender ||
             _selectedCountry != _originalSelectedCountry;
+            profileVM.hasImageChanged();
+
+    if (hasChanges != _isProfileUpdated) {
+      setState(() {
+        _isProfileUpdated = hasChanges;
+      });
+    }
+  }
+  void _onImageChanged() {
+    _checkForProfileChanges();
+  }
+
+  void _checkForProfileChanges() {
+    final profileVM = Provider.of<PersonalViewModel>(context, listen: false);
+
+    bool hasChanges = firstNameController.text != _originalFirstName ||
+        lastNameController.text != _originalLastName ||
+        emailAddressController.text != _originalEmailAddress ||
+        phoneNumberController.text != _originalPhoneNumber ||
+        addressController.text != _originalAddress ||
+        _selectedGender != _originalSelectedGender ||
+        _selectedCountry != _originalSelectedCountry ||
+        profileVM.hasImageChanged();
 
     if (hasChanges != _isProfileUpdated) {
       setState(() {
@@ -181,6 +211,11 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       await prefs.setString('country', updatedProfile['country']);
       await prefs.setString('gender', updatedProfile['gender']);
       await prefs.setString('address', updatedProfile['address']);
+
+      final profileVM = Provider.of<PersonalViewModel>(context, listen: false);
+      if (profileVM.hasImageChanged()) {
+        await profileVM.saveImageToPrefs();
+      }
 
       // ✅ Update originals
       _originalFirstName = updatedProfile['firstName'];
@@ -693,9 +728,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     height: screenWidth * 0.26,
                     decoration: ShapeDecoration(
                       image: DecorationImage(
+                        // image: pickedImage != null
+                        //     ? FileImage(pickedImage)
+                        //     : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+
                         image: pickedImage != null
                             ? FileImage(pickedImage)
+                            : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
+                            ? FileImage(File(profileVM.originalImagePath!))
                             : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+
                         fit: BoxFit.contain,
                       ),
                       shape: OvalBorder(

@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../framework/components/AddressFieldComponent.dart';
@@ -669,8 +670,14 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                       BlockButtonV2(
                         text: 'Official Website',
-                        onPressed: () {
+                        onPressed: () async{
                           debugPrint('Button tapped!');
+                          const url = 'https://ecmcoin.com/';
+                          if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                          } else {
+                          debugPrint('Could not launch $url');
+                          }
                         },
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,

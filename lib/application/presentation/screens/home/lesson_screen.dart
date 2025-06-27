@@ -100,8 +100,13 @@ class _LessonScreenState extends State<LessonScreen> {
 
                             SizedBox(height: screenHeight * 0.03),
                             const VideoPlayerService(
-                              videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
-                            ),
+                              // videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
+                              videoUrl: 'https://youtu.be/ACDyJ2sbCbk',
+                             ),
+                            // const YouTubePlayerService(
+                            //   youtubeUrl: 'https://youtu.be/ACDyJ2sbCbk',
+                            // ),
+
 
                             SizedBox(height: screenHeight * 0.03),
 

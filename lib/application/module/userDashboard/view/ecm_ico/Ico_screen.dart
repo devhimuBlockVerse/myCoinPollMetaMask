@@ -13,6 +13,7 @@ import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/general_utls.dart';
 import '../../../../../framework/utils/routes/route_names.dart';
+import '../../../../data/services/download_white_paper.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -326,8 +327,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           Color(0xFF2680EF),
                           Color(0xFF1CD494),
                         ],
-                        onTap: () {
-                          debugPrint('Button tapped');
+                        onTap: () async {
+                          await DownloadService.downloadWhitepaperPdf(context);
+
                         },
                       ),
 

@@ -49,6 +49,7 @@ class Assets {
   static const String iconsBlockChainBg = 'assets/icons/blockChainBg.png';
   static const String iconsBuildStatCardBG = 'assets/icons/buildStatCardBG.png';
   static const String iconsBuyEcmContainerImage = 'assets/icons/buyEcmContainerImage.png';
+  static const String iconsBuyEcmContainerImageV = 'assets/icons/buyEcmContainerImageV.png';
   static const String iconsBuyEcmLeadingImg = 'assets/icons/buyEcmLeadingImg.svg';
   static const String iconsCTA = 'assets/icons/CTA.png';
   static const String iconsCalender = 'assets/icons/calender.svg';
@@ -71,7 +72,8 @@ class Assets {
   static const String iconsDasboard = 'assets/icons/dasboard.svg';
   static const String iconsDeadLineImg = 'assets/icons/deadLineImg.svg';
   static const String iconsDetailsBg = 'assets/icons/detailsBg.png';
-  static const String iconsDialogBg = 'assets/icons/dialogBg.png';
+  static const String iconsDialogBgv = 'assets/icons/dialogBgv.png';
+  static const String iconsDialogBgvv = 'assets/icons/dialogBgvv.png';
   static const String iconsDialogFrame = 'assets/icons/dialogFrame.png';
   static const String iconsDisconnected = 'assets/icons/disconnected.svg';
   static const String iconsDiscoverIMG = 'assets/icons/discoverIMG.png';
@@ -204,6 +206,7 @@ class Assets {
   static const String iconsTransactionBgContainer = 'assets/icons/transactionBgContainer.png';
   static const String iconsTransactionLoading = 'assets/icons/transactionLoading.png';
   static const String iconsTransfer = 'assets/icons/transfer.svg';
+  static const String iconsUnderMaintainance = 'assets/icons/underMaintainance.png';
   static const String iconsUsdt = 'assets/icons/usdt.png';
   static const String iconsUserActivityLogBg = 'assets/icons/userActivityLogBg.png';
   static const String iconsUserActivityLogBg2 = 'assets/icons/userActivityLogBg2.png';

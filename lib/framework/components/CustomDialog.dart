@@ -10,12 +10,12 @@ class CustomDialog extends StatelessWidget {
   final List<DialogItem> items;
   final String title;
   final String subtitle;
-
+  final String? image;
   const CustomDialog({
     super.key,
     required this.items,
     required this.title,
-    required this.subtitle,
+    required this.subtitle,  this.image,
   });
 
   @override
@@ -24,67 +24,79 @@ class CustomDialog extends StatelessWidget {
       onTap: () => Navigator.of(context).pop(), // Close when tapped outside
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            // Background blur
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-              child: Container(color: Colors.transparent),
-            ),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Stack(
+            children: [
+              // Background blur
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(color: Colors.transparent),
+              ),
 
-            // Center Dialog
-            Center(
-              child: GestureDetector(
-                onTap: () {}, // Prevent dismiss when tapping dialog
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/icons/dialogBg.png'),
-                      fit: BoxFit.fill,
+              // Center Dialog
+              Center(
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        // image: AssetImage('assets/icons/dialogBg.png'),
+                        image: AssetImage(image ?? 'assets/icons/dialogBgv.png'),
+                        fit: BoxFit.fill,
+                        // fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                  padding: const EdgeInsets.all(20.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Title Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                color: const Color(0xFFFFF5ED),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 14),
-                                height: 1.3,
+
+                    padding: const EdgeInsets.all(20.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Title Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 2,
+                                child: Text(
+                                  title,
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: getResponsiveFontSize(context, 20),
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 2,
+                                ),
                               ),
-                            ),
-                            Text(
-                              subtitle,
-                              style: TextStyle(
-                                color: const Color(0xFFFFF5ED),
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 14),
-                                height: 1.3,
+                              Flexible(
+                                child: Text(
+                                  subtitle,
+                                  style: TextStyle(
+                                    color: const Color(0xFFFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: getResponsiveFontSize(context, 20),
+                                    height: 1.3,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        // Dynamic Items
-                        ...items.map((item) => _buildItem(context, item.icon, item.text)),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          // Dynamic Items
+                          ...items.map((item) => _buildItem(context, item.icon, item.text)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -104,7 +116,7 @@ class CustomDialog extends StatelessWidget {
                 color: const Color(0xFFFFF5ED),
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w400,
-                fontSize: getResponsiveFontSize(context, 10),
+                fontSize: getResponsiveFontSize(context, 16),
                 height: 1.6,
               ),
             ),

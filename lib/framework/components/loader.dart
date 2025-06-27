@@ -46,7 +46,7 @@ class ECMProgressIndicator extends StatelessWidget {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       // fontSize: 12 * textScale,
-                      fontSize: getResponsiveFontSize(context, 12),
+                      fontSize: getResponsiveFontSize(context, 14),
                       color: Colors.white,
                       height: 1.0,
                       fontWeight: FontWeight.w400,
@@ -65,7 +65,7 @@ class ECMProgressIndicator extends StatelessWidget {
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       // fontSize: 12 * textScale,
-                      fontSize: getResponsiveFontSize(context, 12),
+                      fontSize: getResponsiveFontSize(context, 14),
                       color: Colors.white,
                       height: 1.0,
                       fontWeight: FontWeight.w400,
@@ -107,7 +107,7 @@ class ECMProgressIndicator extends StatelessWidget {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         // fontSize: 12 * textScale,
-                        fontSize: getResponsiveFontSize(context, 12),
+                        fontSize: getResponsiveFontSize(context, 13),
                         fontFamily: 'Poppins',
                       ),
                       textAlign: TextAlign.end,
@@ -124,7 +124,7 @@ class ECMProgressIndicator extends StatelessWidget {
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     // fontSize: 12 * textScale,
-                    fontSize: getResponsiveFontSize(context, 12),
+                    fontSize: getResponsiveFontSize(context, 13),
 
                     fontFamily: 'Poppins',
                   ),

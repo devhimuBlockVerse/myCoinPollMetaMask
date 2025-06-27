@@ -214,221 +214,227 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ListView(
-                    children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
 
 
-                      Container(
-                        width: screenWidth,
-                        height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+                          Container(
+                            width: screenWidth,
+                            height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-                        decoration: BoxDecoration(
-                          // color: const Color(0xFF01090B),
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/buildStatCardBG.png'),
-                            fit: BoxFit.fill,
-                          ),
-                          borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
-                            vertical: screenHeight * 0.016,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Total ECM Earn with Refer :',
-                                  value: '202',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                  ),
-                                  imageUrl: "assets/icons/totalEcommerceBG.png",
-                                ),
+                            decoration: BoxDecoration(
+                              // color: const Color(0xFF01090B),
+                              image: const DecorationImage(
+                                image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                fit: BoxFit.fill,
                               ),
-                              SizedBox(width: itemSpacing),
-
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Total ETH Earn with Refer :',
-                                  value: '30.000',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                  ),
-                                  imageUrl: "assets/icons/totalEthereumBG.png",
-                                ),
+                              borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding,
+                                vertical: screenHeight * 0.016,
                               ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Total ECM Earn with Refer :',
+                                      value: '202',
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(0.99, 0.14),
+                                        end: Alignment(-0.99, -0.14),
+                                        colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                      ),
+                                      imageUrl: "assets/icons/totalEcommerceBG.png",
+                                    ),
+                                  ),
+                                  SizedBox(width: itemSpacing),
 
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.020),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: const Color(0xff040C16),
-                            borderRadius: BorderRadius.circular(10)
-                        ),
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Total ETH Earn with Refer :',
+                                      value: '30.000',
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(0.99, 0.14),
+                                        end: Alignment(-0.99, -0.14),
+                                        colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                      ),
+                                      imageUrl: "assets/icons/totalEthereumBG.png",
+                                    ),
+                                  ),
 
-                        child: ClipRRect(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: CustomLabeledInputField(
-                              labelText: 'Referral Link:',
-                              hintText: ' https://mycoinpoll.com?ref=125482458661',
-                              isReadOnly: true,
-                              trailingIconAsset: 'assets/icons/copyImg.svg',
-                              onTrailingIconTap: () {
-                                debugPrint('Trailing icon tapped');
-                              },
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-
-
-
-                      SizedBox(height: screenHeight * 0.030),
-
-                      Text(
-                        'Referral Transactions',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 16),
-                          height: 1.6,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.020),
-
-
-                      /// Search Controller with Data Sorting Button
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff040C16),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02,
-                            vertical:  screenHeight * 0.001
-                        ),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: ResponsiveSearchField(
-                                controller: _searchController,
-                                // onChanged:  (value) => _onSearchChanged(),
-                                onChanged:  (value) => _applyFiltersAndSort(),
-                                svgAssetPath: 'assets/icons/search.svg',
-
-                              ),
+                          SizedBox(height: screenHeight * 0.020),
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: const Color(0xff040C16),
+                                borderRadius: BorderRadius.circular(10)
                             ),
 
-
-                            /// Data Sorting  Button
-                            Expanded(
-                              flex: 1,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: PopupMenuButton<SortReferralTransactionOption>(
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/sortingList.svg',
-                                    fit: BoxFit.contain,
-                                  ),
-                                  onSelected: _sortData,
-                                  itemBuilder: (context) {
-                                    final items = <PopupMenuEntry<SortReferralTransactionOption>>[
-                                      const PopupMenuItem(
-                                        value: SortReferralTransactionOption.dateLatest,
-                                        child: Text('Date: Latest First'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortReferralTransactionOption.dateOldest,
-                                        child: Text('Date: Oldest First'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortReferralTransactionOption.amountHighToLow,
-                                        child: Text('Amount: High to Low'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortReferralTransactionOption.amountLowToHigh,
-                                        child: Text('Amount: Low to High'),
-                                      ),
-                                    ];
-
-                                    if (_currentSort != null) {
-                                      items.add(const PopupMenuDivider());
-                                      items.add(
-                                        PopupMenuItem(
-                                          value: _currentSort!,
-                                          child: const Text('Clear Sort'),
-                                          onTap: () {
-                                            Future(() {
-                                              setState(() {
-                                                _currentSort = null;
-                                                _applyFiltersAndSort();
-                                              });
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }
-
-                                    return items;
+                            child: ClipRRect(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: CustomLabeledInputField(
+                                  labelText: 'Referral Link:',
+                                  hintText: ' https://mycoinpoll.com?ref=125482458661',
+                                  isReadOnly: true,
+                                  trailingIconAsset: 'assets/icons/copyImg.svg',
+                                  onTrailingIconTap: () {
+                                    debugPrint('Trailing icon tapped');
                                   },
                                 ),
                               ),
-                            )
+                            ),
+                          ),
 
-                          ],
-                        ),
+
+
+                          SizedBox(height: screenHeight * 0.030),
+
+                          Text(
+                            'Referral Transactions',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              fontSize: getResponsiveFontSize(context, 16),
+                              height: 1.6,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.020),
+
+
+                          /// Search Controller with Data Sorting Button
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff040C16),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                                vertical:  screenHeight * 0.001
+                            ),
+
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ResponsiveSearchField(
+                                    controller: _searchController,
+                                    // onChanged:  (value) => _onSearchChanged(),
+                                    onChanged:  (value) => _applyFiltersAndSort(),
+                                    svgAssetPath: 'assets/icons/search.svg',
+
+                                  ),
+                                ),
+
+
+                                /// Data Sorting  Button
+                                Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: PopupMenuButton<SortReferralTransactionOption>(
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/sortingList.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                      onSelected: _sortData,
+                                      itemBuilder: (context) {
+                                        final items = <PopupMenuEntry<SortReferralTransactionOption>>[
+                                          const PopupMenuItem(
+                                            value: SortReferralTransactionOption.dateLatest,
+                                            child: Text('Date: Latest First'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortReferralTransactionOption.dateOldest,
+                                            child: Text('Date: Oldest First'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortReferralTransactionOption.amountHighToLow,
+                                            child: Text('Amount: High to Low'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortReferralTransactionOption.amountLowToHigh,
+                                            child: Text('Amount: Low to High'),
+                                          ),
+                                        ];
+
+                                        if (_currentSort != null) {
+                                          items.add(const PopupMenuDivider());
+                                          items.add(
+                                            PopupMenuItem(
+                                              value: _currentSort!,
+                                              child: const Text('Clear Sort'),
+                                              onTap: () {
+                                                Future(() {
+                                                  setState(() {
+                                                    _currentSort = null;
+                                                    _applyFiltersAndSort();
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }
+
+                                        return items;
+                                      },
+                                    ),
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.016),
+
+                          /// Lists
+                          isLoading
+                              ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
+                              : errorMessage != null
+                              ? Center(
+                            child: Text(
+                              errorMessage!,
+                              style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+                            ),
+                          )
+                              : RefreshIndicator(
+                            onRefresh: _fetchTransactions,
+                            color: AppColors.accentOrange,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: _transactionData.length,
+                              itemBuilder: (context, index) {
+                                return ReferralTransactionCard(transaction: _transactionData[index]);
+                              },
+                            ),
+                          ),
+
+
+
+
+                        ],
                       ),
-
-                      SizedBox(height: screenHeight * 0.016),
-
-                      /// Lists
-                      isLoading
-                          ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
-                          : errorMessage != null
-                          ? Center(
-                        child: Text(
-                          errorMessage!,
-                          style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-                        ),
-                      )
-                          : RefreshIndicator(
-                        onRefresh: _fetchTransactions,
-                        color: AppColors.accentOrange,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _transactionData.length,
-                          itemBuilder: (context, index) {
-                            return ReferralTransactionCard(transaction: _transactionData[index]);
-                          },
-                        ),
-                      ),
-
-
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

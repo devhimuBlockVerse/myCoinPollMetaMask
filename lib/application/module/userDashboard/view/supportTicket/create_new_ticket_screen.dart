@@ -123,222 +123,228 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: ListView(
-                    children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
 
-                      /// Create New Ticket Fields
+                          /// Create New Ticket Fields
 
-                      Container(
-                        width: double.infinity,
-                        height: screenHeight ,
+                          Container(
+                            width: double.infinity,
+                            height: screenHeight ,
 
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/createTicketBg.png'),
-                            fit: BoxFit.fill,
-                          ),
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage('assets/icons/createTicketBg.png'),
+                                fit: BoxFit.fill,
+                              ),
 
-                        ),
+                            ),
 
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05,
-                            vertical: screenHeight * 0.02,
-                          ),
-                          child: Column(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-
-                              /// Select Department
-                              Column(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.05,
+                                vertical: screenHeight * 0.02,
+                              ),
+                              child: Column(
+                                // mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "Department",
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: getResponsiveFontSize(context, 14),
-                                      height: 1.6,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  CustomDropdown(
-                                    height: screenHeight * 0.05,
-                                    width: screenWidth,
-                                    label: 'Select Department',
-                                    items: const [
 
-                                      "Billing & Payments",
-                                      "Technical Support",
-                                      "Account & Login Issues",
-                                      "General Inquiries",
-                                      "Security & Fraud",
-                                      "Subscription & Plans",
+                                  /// Select Department
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Department",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: getResponsiveFontSize(context, 14),
+                                          height: 1.6,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+                                      CustomDropdown(
+                                        height: screenHeight * 0.05,
+                                        width: screenWidth,
+                                        label: 'Select Department',
+                                        items: const [
+
+                                          "Billing & Payments",
+                                          "Technical Support",
+                                          "Account & Login Issues",
+                                          "General Inquiries",
+                                          "Security & Fraud",
+                                          "Subscription & Plans",
+                                        ],
+                                        selectedValue: _selectedDepartment,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedDepartment = value;
+                                          });
+                                        },
+                                      ),
                                     ],
-                                    selectedValue: _selectedDepartment,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedDepartment = value;
-                                      });
+                                  ),
+
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  ///Enter the news title / Subject
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Subject",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: getResponsiveFontSize(context, 14),
+                                          height: 1.6,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+                                      ListingField(
+                                        controller: subjectController,
+                                        labelText: 'Enter the news title',
+                                        height: screenHeight * 0.05,
+                                        // width: screenWidth* 0.88,
+                                        expandable: false,
+                                        keyboard: TextInputType.name,
+                                      ),
+                                    ],
+                                  ),
+
+
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  /// Address
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Description",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: getResponsiveFontSize(context, 14),
+                                          height: 1.6,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+                                      ListingField(
+                                        controller: descriptionController,
+                                        labelText: 'Write here...',
+                                        height:  screenHeight * 0.3,
+                                        expandable: false,
+                                        keyboard: TextInputType.multiline,
+                                      ),
+                                    ],
+                                  ),
+
+
+
+                                  SizedBox(height: screenHeight * 0.03),
+
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Upload an Image",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: getResponsiveFontSize(context, 14),
+                                          height: 1.6,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+
+                                      /// If False then User Can Upload Any File format :: true -> Only Image
+                                      UploadFileWidget(
+                                        title: "Choose a File",
+                                        allowImageOnly: false,
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.03),
+
+
+
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Priority :",
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: getResponsiveFontSize(context, 14),
+                                          height: 1.6,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+                                      PrioritySelector(
+                                        initialPriority: "Medium", // Pass API Later Here :: Priority
+                                        onChanged: (priority) {
+                                          print("Selected priority: $priority");
+
+                                        },
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.05),
+
+                                  BlockButton(
+                                    height: screenHeight * 0.045,
+                                    width: screenWidth * 0.7,
+                                    label: 'Submit',
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      // fontSize: baseSize * 0.030,
+                                      fontSize: getResponsiveFontSize(context, 16),
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494),
+                                    ],
+                                    onTap: () {
+                                       Navigator.push(context, MaterialPageRoute(builder: (_) => const SupportTicketScreen()));
                                     },
                                   ),
+
+
                                 ],
                               ),
-
-
-                              SizedBox(height: screenHeight * 0.02),
-
-                              ///Enter the news title / Subject
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Subject",
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: getResponsiveFontSize(context, 14),
-                                      height: 1.6,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  ListingField(
-                                    controller: subjectController,
-                                    labelText: 'Enter the news title',
-                                    height: screenHeight * 0.05,
-                                    // width: screenWidth* 0.88,
-                                    expandable: false,
-                                    keyboard: TextInputType.name,
-                                  ),
-                                ],
-                              ),
-
-
-
-                              SizedBox(height: screenHeight * 0.02),
-
-                              /// Address
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Description",
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: getResponsiveFontSize(context, 14),
-                                      height: 1.6,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  ListingField(
-                                    controller: descriptionController,
-                                    labelText: 'Write here...',
-                                    height:  screenHeight * 0.3,
-                                    expandable: false,
-                                    keyboard: TextInputType.multiline,
-                                  ),
-                                ],
-                              ),
-
-
-
-                              SizedBox(height: screenHeight * 0.03),
-
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Upload an Image",
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: getResponsiveFontSize(context, 14),
-                                      height: 1.6,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-
-                                  /// If False then User Can Upload Any File format :: true -> Only Image
-                                  UploadFileWidget(
-                                    title: "Choose a File",
-                                    allowImageOnly: false,
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: screenHeight * 0.03),
-
-
-
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Priority :",
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: getResponsiveFontSize(context, 14),
-                                      height: 1.6,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(height: screenHeight * 0.01),
-                                  PrioritySelector(
-                                    initialPriority: "Medium", // Pass API Later Here :: Priority
-                                    onChanged: (priority) {
-                                      print("Selected priority: $priority");
-
-                                    },
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: screenHeight * 0.05),
-
-                              BlockButton(
-                                height: screenHeight * 0.045,
-                                width: screenWidth * 0.7,
-                                label: 'Submit',
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  // fontSize: baseSize * 0.030,
-                                  fontSize: getResponsiveFontSize(context, 16),
-                                ),
-                                gradientColors: const [
-                                  Color(0xFF2680EF),
-                                  Color(0xFF1CD494),
-                                ],
-                                onTap: () {
-                                   Navigator.push(context, MaterialPageRoute(builder: (_) => const SupportTicketScreen()));
-                                },
-                              ),
-
-
-                            ],
+                            ),
                           ),
-                        ),
+
+
+
+
+
+                        ],
                       ),
-
-
-
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

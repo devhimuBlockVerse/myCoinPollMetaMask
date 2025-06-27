@@ -94,7 +94,7 @@ class FieldContainer extends StatelessWidget {
           fontSize: getResponsiveFontSize(context, 16),
           fontWeight: FontWeight.w300,
         ),
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.zero,

@@ -1801,9 +1801,17 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
   }
 
+  BuildContext? _lastContext;
+  Future<void> ensureModalWithValidContext(BuildContext context) async {
+    if (appKitModal == null || _lastContext != context) {
+      _lastContext = context;
+      await init(context);
+    }
+  }
 
 
-  ReownAppKitModal? appKitModal;
+
+   ReownAppKitModal? appKitModal;
   bool _isSessionSettling = false;
   String _walletAddress = '';
   bool _isLoading = false;
@@ -1848,7 +1856,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   WalletViewModel() {
      _web3Client = Web3Client(ALCHEMY_URL, Client());
      WidgetsBinding.instance.addObserver(this);
-  }
+   }
 
   @override
   void dispose() {
@@ -1870,9 +1878,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _isLoading = true;
     notifyListeners();
 
+     final prefs = await SharedPreferences.getInstance();
+    final wasConnected = prefs.getBool('isConnected') ?? false;
+    final savedAddress = prefs.getString('walletAddress');
+    final savedChainId = prefs.getInt('chainId');
+
+
 
     if (appKitModal == null) {
       appKitModal = ReownAppKitModal(
+
         context: context,
         projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
         metadata: const PairingMetadata(
@@ -1908,30 +1923,64 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       try {
-
-        await appKitModal?.init();
-
-         if (appKitModal != null && !_isModalEventsSubscribed) {
-          final prefs = await SharedPreferences.getInstance();
-          _subscribeToModalEvents(prefs);
-          _isModalEventsSubscribed = true;
-        }
-
+        await appKitModal!.init();
       } catch (e) {
-        print("Error initializing ReownAppKitModal: $e");
+        debugPrint("Error initializing modal: $e");
         _isLoading = false;
         notifyListeners();
         return;
       }
-    }else{
-      if (!_isModalEventsSubscribed) {
-        final prefs = await SharedPreferences.getInstance();
-        _subscribeToModalEvents(prefs);
-        _isModalEventsSubscribed = true;
-      }
     }
 
-    await getCurrentStageInfo();
+    if (!_isModalEventsSubscribed) {
+      _subscribeToModalEvents(prefs);
+      _isModalEventsSubscribed = true;
+    }
+
+    // Simulate connection
+    if (wasConnected && savedAddress != null && savedChainId != null) {
+      debugPrint("⚡ Simulating auto-connect flow...");
+      _walletAddress = savedAddress;
+      _isConnected = true;
+
+      // Try opening the modal quietly, then fetch data
+      try {
+        await appKitModal!.openModalView();
+        await fetchConnectedWalletData(isReconnecting: true);
+        await getCurrentStageInfo();
+      } catch (e) {
+        debugPrint("Silent modal trigger failed: $e");
+      }
+    } else {
+       await getCurrentStageInfo();
+    }
+
+    //   try {
+    //     await appKitModal?.init();
+    //     if (appKitModal != null && !_isModalEventsSubscribed) {
+    //        _subscribeToModalEvents(prefs);
+    //       _isModalEventsSubscribed = true;
+    //     }
+    //
+    //   } catch (e) {
+    //     print("Error initializing ReownAppKitModal: $e");
+    //     _isLoading = false;
+    //     notifyListeners();
+    //     return;
+    //   }
+    // }else{
+    //   if (!_isModalEventsSubscribed) {
+    //     final prefs = await SharedPreferences.getInstance();
+    //     _subscribeToModalEvents(prefs);
+    //     _isModalEventsSubscribed = true;
+    //   }
+    // }
+    // await getCurrentStageInfo();
+
+
+
+
+
     _isLoading = false;
     notifyListeners();
   }
@@ -1954,7 +2003,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
         await prefs.setInt('chainId', int.parse(chainId));
-
+        // Save the session data
+        final sessionJson = appKitModal!.session?.toJson();
+        await prefs.setString('walletSession', jsonEncode(sessionJson));
          await Future.wait([
           fetchConnectedWalletData(),
           getCurrentStageInfo(),
@@ -2020,6 +2071,54 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     });
   }
+
+  /// Connect the wallet using the ReownAppKitModal UI.
+  Future<bool> connectWallet(BuildContext context) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      if (appKitModal == null) {
+        await init(context);
+      }else{
+        appKitModal!.updateContext(context);
+      }
+       await appKitModal?.openModalView();
+
+
+      return _isConnected;
+    } catch (e, stack) {
+      if (e is ReownAppKitModalException) {
+        print('Wallet connect error: ${e.message}');
+      } else {
+        print('Unexpected wallet connect error: $e');
+      }
+      print('Stack trace: $stack');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Disconnect from the wallet and clear stored wallet info.
+  Future<void> disconnectWallet(BuildContext context) async {
+    if (appKitModal == null) return;
+    _isLoading = true;
+    notifyListeners();
+    try {
+      if (_isConnected && appKitModal!.session != null) {
+        await appKitModal!.disconnect();
+      }
+    } catch (e) {
+      print("Error during disconnect: $e");
+    } finally {
+      await _clearWalletAndStageInfo();
+      await getCurrentStageInfo();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
 
   ///LifeCycle Functions
   Future<void> _handleAppResume() async {
@@ -2109,52 +2208,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     await connectWallet(context);
   }
 
-
-  /// Connect the wallet using the ReownAppKitModal UI.
-  Future<bool> connectWallet(BuildContext context) async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      if (appKitModal == null) {
-        await init(context);
-      }
-      await appKitModal?.openModalView();
-
-
-      return _isConnected;
-    } catch (e, stack) {
-      if (e is ReownAppKitModalException) {
-        print('Wallet connect error: ${e.message}');
-      } else {
-        print('Unexpected wallet connect error: $e');
-      }
-      print('Stack trace: $stack');
-      return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  /// Disconnect from the wallet and clear stored wallet info.
-  Future<void> disconnectWallet(BuildContext context) async {
-    if (appKitModal == null) return;
-    _isLoading = true;
-    notifyListeners();
-    try {
-      if (_isConnected && appKitModal!.session != null) {
-        await appKitModal!.disconnect();
-      }
-    } catch (e) {
-      print("Error during disconnect: $e");
-    } finally {
-      await _clearWalletAndStageInfo();
-      await getCurrentStageInfo();
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
   Future<void> _clearWalletAndStageInfo({bool shouldNotify = true}) async {
     _walletAddress = '';
     _isConnected = false;
@@ -2169,13 +2222,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _ecmRefBonus = 0;
     _paymentRefBonus = 0;
     _isCompleted = false;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs.clear();
     print("Wallet state and storage have been reset.");
     if (shouldNotify) {
       notifyListeners();
     }
   }
+
 
   Future<void> reset() async {
     _walletAddress = '';
@@ -2312,22 +2366,22 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _usdtPrice = (_safeParseBigInt(result[3]).toDouble() / 1e6);
 
     // Only update connected-specific info if connected
-    if (isConnected) {
+    // if (isConnected) {
       _stageIndex = _safeParseBigInt(result[0]).toInt();
       _maxECM = (_safeParseBigInt(result[1]).toDouble() / 1e18);
       _ecmRefBonus = _safeParseBigInt(result[4]).toInt();
       _paymentRefBonus = _safeParseBigInt(result[5]).toInt();
       _currentECM = (_safeParseBigInt(result[6]).toDouble() / 1e18);
       _isCompleted = result[7] as bool;
-    } else {
+    // } else {
       // Clear connected-specific info if not connected
-      _stageIndex = 0;
-      _maxECM = 0.0;
-      _ecmRefBonus = 0;
-      _paymentRefBonus = 0;
-      _currentECM = 0.0;
-      _isCompleted = false;
-    }
+      // _stageIndex = 0;
+      // _maxECM = 0.0;
+      // _ecmRefBonus = 0;
+      // _paymentRefBonus = 0;
+      // _currentECM = 0.0;
+      // _isCompleted = false;
+    // }
 
     print("Stage info successfully parsed and updated:");
     print('stageIndex: $_stageIndex');
@@ -2604,6 +2658,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+
+
+
   Future<String> buyECMWithETH(EtherAmount ethAmount, BuildContext context) async {
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
       throw Exception("Wallet not Connected or selected chain not available.");
@@ -2642,10 +2699,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
-      Fluttertoast.showToast(
-        msg: "Transaction sent successfully!",
-        backgroundColor: Colors.green,
-      );
+      // Fluttertoast.showToast(
+      //   msg: "Transaction sent successfully!",
+      //   backgroundColor: Colors.green,
+      // );
       await fetchConnectedWalletData();
       await getCurrentStageInfo();
       return result;
@@ -2701,10 +2758,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
-      Fluttertoast.showToast(
-        msg: "Transaction sent successfully!",
-        backgroundColor: Colors.green,
-      );
+      // Fluttertoast.showToast(
+      //   msg: "Transaction sent successfully!",
+      //   backgroundColor: Colors.green,
+      // );
       await fetchConnectedWalletData();
       await getCurrentStageInfo();
       return result;
@@ -2741,3 +2798,14 @@ class _LifecycleHandler extends WidgetsBindingObserver {
     }
   }
 }
+
+extension AppKitModalContextFix on ReownAppKitModal {
+  void updateContext(BuildContext context) {
+     try {
+       (this as dynamic).context = context;
+    } catch (e) {
+      debugPrint("updateContext failed: $e");
+    }
+  }
+}
+

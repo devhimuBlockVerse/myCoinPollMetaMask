@@ -138,96 +138,125 @@ class _ListingFieldState extends State<ListingField> {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (prefixWidget != null)
-              Padding(
-                padding: EdgeInsets.only(right: prefixIconRightPadding), // Made responsive
-                child: prefixWidget,
-              ),
-            Expanded(
-              child: widget.isDropdown
-                  ? DropdownButtonFormField<String>(
-                value: _currentSelectedItem,
-                items: widget.dropdownItems?.map((item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: responsiveFontSize,
-                        fontFamily: 'Poppins',
+        child: IntrinsicHeight(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (prefixWidget != null)
+                Padding(
+                  padding: EdgeInsets.only(right: prefixIconRightPadding), // Made responsive
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: prefixWidget),
+                ),
+              Expanded(
+                child: widget.isDropdown
+                    ? DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  value: _currentSelectedItem,
+                   items: widget.dropdownItems?.map((item) {
+                    return DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        overflow: TextOverflow.ellipsis,
+
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: responsiveFontSize,
+                          fontFamily: 'Poppins',
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
-                onChanged: widget.onDropdownChanged,
-                dropdownColor: const Color(0XFF101A29),
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: responsiveFontSize,
-                  fontFamily: 'Poppins',
-                ),
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  isCollapsed: true,
-                ),
-                iconEnabledColor: Colors.white.withOpacity(0.7),
-              )
-                  : TextField(
-
-                keyboardType: widget.keyboard,
-                controller: widget.controller,
-                // maxLines: widget.expandable ? null : 1,
-                // maxLines: null,
-                maxLines: widget.isPassword ? 1 : null,
-
-                minLines: 1,
-                 obscureText: widget.isPassword ? _obscureText : false,
-                readOnly: widget.readOnly,
-                showCursor: !widget.readOnly,
-                onChanged: widget.onChanged,
-                // textAlign: TextAlign.start,
-                textAlignVertical: TextAlignVertical.top,
-                scrollPhysics: const BouncingScrollPhysics(),
-                // scrollPadding: const EdgeInsets.all(5),
-                scrollController: ScrollController(),
-
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400,
-                  fontSize: responsiveFontSize,
-                  height: 1.6,
-                  color: Colors.white.withOpacity(0.9),
-                ),
-                decoration: InputDecoration(
-                  isCollapsed: false,
-                   border: InputBorder.none,
-                  hintText: widget.labelText,
-                  hintStyle: TextStyle(
-                    color: const Color(0XFF7D8FA9),
+                    );
+                  }).toList(),
+                  hint: Text(
+                    'Select Duration',
+                    style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: responsiveFontSize,
+                    fontFamily: 'Poppins',),
+                  ),
+                  onChanged: widget.onDropdownChanged,
+                  dropdownColor: const Color(0XFF101A29),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
                     fontSize: responsiveFontSize,
                     fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    height: 1.6,
+                  ),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    isCollapsed: true,
+                  ),
+                  iconEnabledColor: Colors.white.withOpacity(0.7),
+                )
+                    : Flexible(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center, // helps avoid overflow
+
+                        children: [
+                          Expanded(
+                            child: TextField(
+                            
+                                              keyboardType: widget.keyboard,
+                                              controller: widget.controller,
+                                              // maxLines: widget.expandable ? null : 1,
+                                              // maxLines: null,
+                                              maxLines: widget.isPassword ? 1 : null,
+                            
+                                              minLines: 1,
+                                               obscureText: widget.isPassword ? _obscureText : false,
+                                              readOnly: widget.readOnly,
+                                              showCursor: !widget.readOnly,
+                                              onChanged: widget.onChanged,
+                            
+                                              // textAlign: TextAlign.start,
+                                              textAlignVertical: TextAlignVertical.top,
+                                              scrollPhysics: const BouncingScrollPhysics(),
+                                              // scrollPadding: const EdgeInsets.all(5),
+                                              scrollController: ScrollController(),
+                                              style: TextStyle(
+                            
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: responsiveFontSize,
+                            height: 1.6,
+                            color: Colors.white.withOpacity(0.9),
+                                              ),
+                                              decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(vertical: 11), // key to vertical centering
+                            
+                            isDense: true,
+                            isCollapsed: false,
+                             border: InputBorder.none,
+                            hintText: widget.labelText,
+                            hintStyle: TextStyle(
+                            
+                              color: const Color(0XFF7D8FA9),
+                              fontSize: responsiveFontSize,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w400,
+                              height: 1.6,
+                            ),
+                                              ),
+                                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+              ),
+              if (widget.isPassword)
+                GestureDetector(
+                  onTap: () => setState(() => _obscureText = !_obscureText),
+                  child: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white.withOpacity(0.5),
+                    size: iconSize,
                   ),
                 ),
-              ),
-            ),
-            if (widget.isPassword)
-              GestureDetector(
-                onTap: () => setState(() => _obscureText = !_obscureText),
-                child: Icon(
-                  _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.white.withOpacity(0.5),
-                  size: iconSize,
-                ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

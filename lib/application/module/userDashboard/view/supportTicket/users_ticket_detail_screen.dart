@@ -163,124 +163,129 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                    
-                        // Ticket Info Card
-                        TicketInfoCard(
-                          ticket: widget.ticketData,
-                          width: screenWidth,
-                          height: screenHeight,
-                          onStatusButton: () {
-                            setState(() {
-                              isTicketOpen = !isTicketOpen;
-                            });
-                          },
-                        ),
-                    
-                        SizedBox(height: screenHeight * 0.02),
-                    
-                        // Ticket Description Card
-                        TicketDescriptionCard(
-                          isOpen: isTicketOpen,
-                          width: screenWidth,
-                          height: screenHeight,
-                          onActionButton: () {
-                            // setState(() {
-                            //   isTicketOpen = !isTicketOpen;
-                            // });
-                            final isClosing = isTicketOpen;
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) => DialogModalView(
-                                title: isClosing ? 'Close Ticket' : 'Reopen Ticket',
-                                message: isClosing
-                                    ? 'Are you sure you want to Close this ticket?'
-                                    : 'Are you sure you want to Reopen this ticket?',
-                                yesLabel: isClosing ? 'Yes' : 'Yes',
-                                onYes: () {
-                                  setState(() {
-                                    isTicketOpen = !isTicketOpen;
-                                  });
-                                  Navigator.of(context).pop();
-                                },
-                                onNo: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                    
-                        SizedBox(height: screenHeight * 0.01),
-                        // Chat Section
-                        Container(
-                          width: double.infinity,
-                          height: screenHeight * 0.7,
-                          decoration:BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/icons/chatContainerBg.png'),
-                              fit: BoxFit.fill,
-                            ),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+
+                          // Ticket Info Card
+                          TicketInfoCard(
+                            ticket: widget.ticketData,
+                            width: screenWidth,
+                            height: screenHeight,
+                            onStatusButton: () {
+                              setState(() {
+                                isTicketOpen = !isTicketOpen;
+                              });
+                            },
                           ),
-                          // padding: EdgeInsets.symmetric(
-                          //   horizontal: screenWidth * 0.02,
-                          //  ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                  itemCount: messages.length,
-                                  itemBuilder: (context, idx) {
-                                    final msg = messages[idx];
-                                    return Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: [
-                                        Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                                            child: Text(
-                                              msg.date,
-                                              style: TextStyle(
-                                                color: Colors.white70,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w400,
-                                                 fontSize: getResponsiveFontSize(context, 10),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // Ticket Description Card
+                          TicketDescriptionCard(
+                            isOpen: isTicketOpen,
+                            width: screenWidth,
+                            height: screenHeight,
+                            onActionButton: () {
+                              // setState(() {
+                              //   isTicketOpen = !isTicketOpen;
+                              // });
+                              final isClosing = isTicketOpen;
+
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => DialogModalView(
+                                  title: isClosing ? 'Close Ticket' : 'Reopen Ticket',
+                                  message: isClosing
+                                      ? 'Are you sure you want to Close this ticket?'
+                                      : 'Are you sure you want to Reopen this ticket?',
+                                  yesLabel: isClosing ? 'Yes' : 'Yes',
+                                  onYes: () {
+                                    setState(() {
+                                      isTicketOpen = !isTicketOpen;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  onNo: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+
+                          SizedBox(height: screenHeight * 0.01),
+                          // Chat Section
+                          Container(
+                            width: double.infinity,
+                            height: screenHeight * 0.7,
+                            decoration:BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/icons/chatContainerBg.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            // padding: EdgeInsets.symmetric(
+                            //   horizontal: screenWidth * 0.02,
+                            //  ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: messages.length,
+                                    itemBuilder: (context, idx) {
+                                      final msg = messages[idx];
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                                              child: Text(
+                                                msg.date,
+                                                style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w400,
+                                                   fontSize: getResponsiveFontSize(context, 10),
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        ChatBubble(
-                                          message: msg,
-                                          width: screenWidth,
-                                          height: screenHeight,
-                                        ),
-                                      ],
-                                    );
-                                  },
+                                          ChatBubble(
+                                            message: msg,
+                                            width: screenWidth,
+                                            height: screenHeight,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                              isTicketOpen
-                                  ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
-                                  : _closedTicketBar(context)
-                                  // : _closedTicketBar(width: screenWidth, height: screenHeight),
+                                isTicketOpen
+                                    ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
+                                    : _closedTicketBar(context)
+                                    // : _closedTicketBar(width: screenWidth, height: screenHeight),
 
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                    
-                    
-                        // Input Section
-                        // isTicketOpen
-                        //     ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
-                        //     : ClosedTicketBar(width: screenWidth, height: screenHeight),
-                    
-                      ],
+
+
+                          // Input Section
+                          // isTicketOpen
+                          //     ? ChatInputField(width: screenWidth, height: screenHeight, onSend: _handleSend ,)
+                          //     : ClosedTicketBar(width: screenWidth, height: screenHeight),
+
+                        ],
+                      ),
                     ),
                   ),
                 ),

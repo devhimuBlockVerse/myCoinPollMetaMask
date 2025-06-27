@@ -84,33 +84,44 @@ class _LessonScreenState extends State<LessonScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
 
-                          _headerSection(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                          SizedBox(height: screenHeight * 0.03),
-                          const VideoPlayerService(
-                            videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
-                          ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
 
-                          SizedBox(height: screenHeight * 0.03),
+                            _headerSection(context),
 
-                          _description(),
+                            SizedBox(height: screenHeight * 0.03),
+                            const VideoPlayerService(
+                              // videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
+                              videoUrl: 'https://youtu.be/ACDyJ2sbCbk',
+                             ),
+                            // const YouTubePlayerService(
+                            //   youtubeUrl: 'https://youtu.be/ACDyJ2sbCbk',
+                            // ),
 
-                          SizedBox(height: screenHeight * 0.03),
 
-                          _disclaimerSection(),
+                            SizedBox(height: screenHeight * 0.03),
 
-                          SizedBox(height: screenHeight * 0.03),
+                            _description(),
+
+                            SizedBox(height: screenHeight * 0.03),
+
+                            _disclaimerSection(),
+
+                            SizedBox(height: screenHeight * 0.03),
 
 
-                        ],
-                      )
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),

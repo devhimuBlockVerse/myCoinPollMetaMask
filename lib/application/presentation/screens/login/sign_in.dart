@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
+import '../../../../framework/utils/general_utls.dart';
 import '../../../module/dashboard_bottom_nav.dart';
+import '../../viewmodel/wallet_view_model.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -21,10 +25,23 @@ class _SignInState extends State<SignIn> {
   TextEditingController passwordController = TextEditingController();
 
 
-
   @override
   void initState() {
     super.initState();
+     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+      final prefs = await SharedPreferences.getInstance();
+      final wasConnected = prefs.getBool('isConnected') ?? false;
+      print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
+
+
+      if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
+        debugPrint("Attempting silent reconnect...");
+        await walletVM.init(context);
+      }
+
+    });
   }
 
   @override
@@ -259,18 +276,46 @@ class _SignInState extends State<SignIn> {
 
 
                                           /// Connect Wallet
-                                          BlockButtonV2(
-                                            text:'Connect Wallet',
-                                            onPressed: () {
-                                              debugPrint('Button tapped!');
-                                              // Apply the wallet connection from view model and navigate to the Dashboard
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+                                          Consumer<WalletViewModel>(
+                                            builder: (context, walletVM, _) {
+                                              return BlockButtonV2(
+                                                text: walletVM.isConnected ? 'Go To Dashboard':'Connect Wallet',
+                                                // onPressed: () {
+                                                //
+                                                //   debugPrint('Button tapped!');
+                                                //   // Apply the wallet connection from view model and navigate to the Dashboard
+                                                //   Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+                                                //   );
+                                                // },
+                                                onPressed:  walletVM.isLoading ? null : () async {
+                                                  try {
+                                                    if (!walletVM.isConnected) {
+                                                      await walletVM.connectWallet(context);
+                                                    }
+                                                    // After successful connection, navigate
+                                                    if (walletVM.isConnected && context.mounted) {
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => const DashboardBottomNavBar(),
+                                                        ),
+                                                      );
+                                                    }
+                                                  } catch (e, stack) {
+                                                    debugPrint('Wallet Error: $e\n$stack');
+                                                    if (context.mounted) {
+                                                      Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                                    }
+                                                  }
+                                                },
+
+                                                height: screenHeight * 0.05,
+                                                width: screenWidth * 0.88,
                                               );
-                                            },
-                                            height: screenHeight * 0.05,
-                                            width: screenWidth * 0.88,
+                                            }
+
                                           ),
 
 

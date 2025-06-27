@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
@@ -13,13 +14,19 @@ import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/general_utls.dart';
 import '../../../../../framework/utils/routes/route_names.dart';
+import '../../../../data/services/download_white_paper.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
+import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
+import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import '../../viewmodel/dashboard_nav_provider.dart';
+import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../side_nav_bar.dart';
+import '../../viewmodel/upload_image_provider.dart';
 
 
 
@@ -157,23 +164,27 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         horizontal: screenWidth * 0.01,
                         vertical: screenHeight * 0.02,
                       ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(height: screenHeight * 0.02),
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(height: screenHeight * 0.02),
 
 
-                            _buildTokenCard(),
-                            SizedBox(height: screenHeight * 0.04),
+                              _buildTokenCard(),
+                              SizedBox(height: screenHeight * 0.04),
 
 
-                            /// Buy ECM section
-                            _buildBuyEcmSection(),
+                              /// Buy ECM section
+                              _buildBuyEcmSection(),
 
-                            SizedBox(height: screenHeight * 0.04),
+                              SizedBox(height: screenHeight * 0.04),
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -317,16 +328,28 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           Color(0xFF2680EF),
                           Color(0xFF1CD494),
                         ],
-                        onTap: () {
-                          debugPrint('Button tapped');
+                        onTap: () async {
+                          await DownloadService.downloadWhitepaperPdf(context);
+
                         },
                       ),
 
                       BlockButtonV2(
                         text: 'Official Website',
-                         onPressed: () {
+                         onPressed: () async{
                           debugPrint('Button tapped!');
+                          const url = 'https://ecmcoin.com/';
+                          if (await canLaunchUrl(Uri.parse(url))) {
+                           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                           } else {
+                           debugPrint('Could not launch $url');
+                           }
                         },
+                        textStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: getResponsiveFontSize(context, 12),
+                        ),
                         width: screenWidth * 0.3,
                         height: screenHeight * 0.04,
                       ),
@@ -401,7 +424,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                 ),
               ),
@@ -644,26 +667,73 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         label: 'Disconnect',
                         color: const Color(0xffE04043),
                         icon: 'assets/icons/disconnected.svg',
+                        // onPressed: () async {
+                        //   setState(() {
+                        //     isDisconnecting = true;
+                        //   });
+                        //   try {
+                        //     await walletVM.disconnectWallet(context);
+                        //      walletVM.reset();
+                        //
+                        //     if (context.mounted && !walletVM.isConnected) {
+                        //
+                        //       Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                        //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                        //           builder: (context) => const BottomNavBar()),
+                        //             (Route<dynamic> route) => false,
+                        //       );
+                        //
+                        //     }
+                        //
+                        //
+                        //   } catch (e) {
+                        //     if (context.mounted) {
+                        //       print('Error disconnecting: $e');
+                        //       ScaffoldMessenger.of(context).showSnackBar(
+                        //         SnackBar(
+                        //           content: Text('Error disconnecting: ${e.toString()}'),
+                        //           backgroundColor: Colors.red,
+                        //         ),
+                        //       );
+                        //     }
+                        //   }finally{
+                        //     if (mounted) {
+                        //       setState(() {
+                        //         isDisconnecting = false;
+                        //       });
+                        //     }
+                        //   }
+                        // },
                         onPressed: () async {
                           setState(() {
                             isDisconnecting = true;
                           });
                           try {
                             await walletVM.disconnectWallet(context);
-                            walletVM.reset();
+                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
 
-                            if (context.mounted && !walletVM.isConnected) {
-
+                            if (context.mounted) {
                               Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(builder: (context) => const BottomNavBar()),
+                                MaterialPageRoute(
+                                  builder: (context) => MultiProvider(
+                                    providers: [
+                                      ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                      ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                      ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                      ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                      ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                      ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                      ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                    ],
+                                    child: const BottomNavBar(),
+                                  ),
+                                ),
                                     (Route<dynamic> route) => false,
                               );
-
                             }
-
-
-                          } catch (e) {
+                          }catch (e) {
                             if (context.mounted) {
+                              print('Error disconnecting: $e');
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Error disconnecting: ${e.toString()}'),

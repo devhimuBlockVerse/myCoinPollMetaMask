@@ -91,88 +91,94 @@ class _KycInProgressScreenState extends State<KycInProgressScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: ListView(
-                    children: [
-
-                      SizedBox(height: screenHeight * 0.1),
-
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
                         children: [
-                          Container(
-                            width: screenWidth * 0.5,
-                            height: screenWidth * 0.5,
-                            child: Image.asset("assets/icons/CTA.png",filterQuality: FilterQuality.high,fit: BoxFit.contain,),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
+
+                          SizedBox(height: screenHeight * 0.1),
+
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Verification in Progress',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  // fontSize: screenWidth * 0.07,
-                                  fontSize: getResponsiveFontSize(context, 24),
-                                  fontFamily: 'Poppins',
-                                  height: 1.3,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              Container(
+                                width: screenWidth * 0.5,
+                                height: screenWidth * 0.5,
+                                child: Image.asset("assets/icons/CTA.png",filterQuality: FilterQuality.high,fit: BoxFit.contain,),
                               ),
-                              SizedBox(height: screenHeight * 0.01),
-                              SizedBox(
-                                width: screenWidth * 0.85,
-                                child: Text(
-                                  'Your documents are being reviewed. This usually takes a few minutes. Stay tuned!',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF787A8D),
-                                    // fontSize: screenWidth * 0.035,
-                                    fontSize: getResponsiveFontSize(context, 14),
-
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.5,
+                              SizedBox(height: screenHeight * 0.02),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Verification in Progress',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      // fontSize: screenWidth * 0.07,
+                                      fontSize: getResponsiveFontSize(context, 24),
+                                      fontFamily: 'Poppins',
+                                      height: 1.3,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                ),
-                              ),
+                                  SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(
+                                    width: screenWidth * 0.85,
+                                    child: Text(
+                                      'Your documents are being reviewed. This usually takes a few minutes. Stay tuned!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: const Color(0xFF787A8D),
+                                        // fontSize: screenWidth * 0.035,
+                                        fontSize: getResponsiveFontSize(context, 14),
 
-                              SizedBox(height: screenHeight * 0.04),
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                  ),
 
-                              BlockButton(
-                                height: screenHeight * 0.05,
-                                width: screenWidth * 0.7,
-                                label: 'Complete',
-                                textStyle:  TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                  // fontSize: baseSize * 0.040,
-                                  fontSize: getResponsiveFontSize(context, 15),
-                                  height: 1.6,
-                                ),
-                                gradientColors: const [
-                                  Color(0xFF2680EF),
-                                  Color(0xFF1CD494)
-                                  // 1CD494
+                                  SizedBox(height: screenHeight * 0.04),
+
+                                  BlockButton(
+                                    height: screenHeight * 0.05,
+                                    width: screenWidth * 0.7,
+                                    label: 'Complete',
+                                    textStyle:  TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      // fontSize: baseSize * 0.040,
+                                      fontSize: getResponsiveFontSize(context, 15),
+                                      height: 1.6,
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494)
+                                      // 1CD494
+                                    ],
+                                    onTap: () {
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycStatusScreen()), (route) => false);
+                                    },
+
+                                  ),
+
                                 ],
-                                onTap: () {
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => KycStatusScreen()), (route) => false);
-                                },
-
                               ),
-
                             ],
                           ),
+
+
                         ],
                       ),
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

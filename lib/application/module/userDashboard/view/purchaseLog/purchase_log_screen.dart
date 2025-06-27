@@ -198,140 +198,147 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ListView(
-                    children: [
-                      SizedBox(height: screenHeight * 0.010),
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
 
-                      Text(
-                        'Purchase History',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 16),
-                          height: 1.6,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.020),
+                      child: Column(
+                        children: [
+                          SizedBox(height: screenHeight * 0.010),
+
+                          Text(
+                            'Purchase History',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              fontSize: getResponsiveFontSize(context, 16),
+                              height: 1.6,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.020),
 
 
-                      /// Search Controller with Data Sorting Button
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff040C16),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02,
-                            vertical:  screenHeight * 0.001
-                        ),
+                          /// Search Controller with Data Sorting Button
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff040C16),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                                vertical:  screenHeight * 0.001
+                            ),
 
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: ResponsiveSearchField(
-                                controller: _searchController,
-                                // onChanged:  (value) => _onSearchChanged(),
-                                onChanged:  (value) => _applyFiltersAndSort(),
-                                svgAssetPath: 'assets/icons/search.svg',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ResponsiveSearchField(
+                                    controller: _searchController,
+                                    // onChanged:  (value) => _onSearchChanged(),
+                                    onChanged:  (value) => _applyFiltersAndSort(),
+                                    svgAssetPath: 'assets/icons/search.svg',
 
+                                  ),
+                                ),
+
+
+                                /// Data Sorting  Button
+                                 Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: PopupMenuButton<SortPurchaseLogOption>(
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/sortingList.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                      onSelected: _sortData,
+                                      itemBuilder: (context) {
+                                        final items = <PopupMenuEntry<SortPurchaseLogOption>>[
+                                          const PopupMenuItem(
+                                            value: SortPurchaseLogOption.dateLatest,
+                                            child: Text('Date: Latest First'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortPurchaseLogOption.dateOldest,
+                                            child: Text('Date: Oldest First'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortPurchaseLogOption.amountHighToLow,
+                                            child: Text('Amount: High to Low'),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: SortPurchaseLogOption.amountLowToHigh,
+                                            child: Text('Amount: Low to High'),
+                                          ),
+                                        ];
+
+                                        if (_currentSort != null) {
+                                          items.add(const PopupMenuDivider());
+                                          items.add(
+                                            PopupMenuItem(
+                                              value: _currentSort!,
+                                              child: const Text('Clear Sort'),
+                                              onTap: () {
+                                                Future(() {
+                                                  setState(() {
+                                                    _currentSort = null;
+                                                    _applyFiltersAndSort();
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }
+
+                                        return items;
+                                      },
+                                    ),
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.016),
+
+                            isLoading
+                                ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
+                                : errorMessage != null
+                                ? Center(
+                              child: Text(
+                                errorMessage!,
+                                style: const TextStyle(color: Colors.redAccent, fontSize: 16),
+                              ),
+                            )
+                                : RefreshIndicator(
+                              onRefresh: _fetchTransactions,
+                              color: AppColors.accentOrange,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: _transactionData.length,
+                                itemBuilder: (context, index) {
+                                  return PurchaseCard(transaction: _transactionData[index]);
+                                },
                               ),
                             ),
 
 
-                            /// Data Sorting  Button
-                             Expanded(
-                              flex: 1,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: PopupMenuButton<SortPurchaseLogOption>(
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/sortingList.svg',
-                                    fit: BoxFit.contain,
-                                  ),
-                                  onSelected: _sortData,
-                                  itemBuilder: (context) {
-                                    final items = <PopupMenuEntry<SortPurchaseLogOption>>[
-                                      const PopupMenuItem(
-                                        value: SortPurchaseLogOption.dateLatest,
-                                        child: Text('Date: Latest First'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortPurchaseLogOption.dateOldest,
-                                        child: Text('Date: Oldest First'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortPurchaseLogOption.amountHighToLow,
-                                        child: Text('Amount: High to Low'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: SortPurchaseLogOption.amountLowToHigh,
-                                        child: Text('Amount: Low to High'),
-                                      ),
-                                    ];
 
-                                    if (_currentSort != null) {
-                                      items.add(const PopupMenuDivider());
-                                      items.add(
-                                        PopupMenuItem(
-                                          value: _currentSort!,
-                                          child: const Text('Clear Sort'),
-                                          onTap: () {
-                                            Future(() {
-                                              setState(() {
-                                                _currentSort = null;
-                                                _applyFiltersAndSort();
-                                              });
-                                            });
-                                          },
-                                        ),
-                                      );
-                                    }
 
-                                    return items;
-                                  },
-                                ),
-                              ),
-                            )
-
-                          ],
-                        ),
+                        ],
                       ),
-
-                      SizedBox(height: screenHeight * 0.016),
-
-                        isLoading
-                            ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
-                            : errorMessage != null
-                            ? Center(
-                          child: Text(
-                            errorMessage!,
-                            style: const TextStyle(color: Colors.redAccent, fontSize: 16),
-                          ),
-                        )
-                            : RefreshIndicator(
-                          onRefresh: _fetchTransactions,
-                          color: AppColors.accentOrange,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _transactionData.length,
-                            itemBuilder: (context, index) {
-                              return PurchaseCard(transaction: _transactionData[index]);
-                            },
-                          ),
-                        ),
-
-
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

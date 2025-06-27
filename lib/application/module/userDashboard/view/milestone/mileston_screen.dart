@@ -170,183 +170,190 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ListView(
-                    children: [
-                      // Stat Cards
-                      Container(
-                        width: screenWidth,
-                        height: containerHeight < minContainerHeight
-                            ? minContainerHeight
-                            : containerHeight,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/buildStatCardBG.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Total Milestone',
-                                  value: '1250',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: itemSpacing),
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Active Milestone',
-                                  value: '1200',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: itemSpacing),
-                              Expanded(
-                                child: _buildStatCard(
-                                  title: 'Complete',
-                                  value: '1000',
-                                  gradient: const LinearGradient(
-                                    begin: Alignment(0.99, 0.14),
-                                    end: Alignment(-0.99, -0.14),
-                                    colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
 
-                      ),
-
-                      SizedBox(height: screenHeight * 0.030),
-
-                      Text(
-                        'Milestone List',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                          fontSize: getResponsiveFontSize(context, 18),
-                          height: 1.6,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.010),
-                      /// Search And Sorting
-
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff040C16),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.02,
-                            vertical:  screenHeight * 0.001
-                        ),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: ResponsiveSearchField(
-                                controller: _searchController,
-                                svgAssetPath: 'assets/icons/search.svg',
-
+                      child: Column(
+                        children: [
+                          // Stat Cards
+                          Container(
+                            width: screenWidth,
+                            height: containerHeight < minContainerHeight
+                                ? minContainerHeight
+                                : containerHeight,
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                fit: BoxFit.fill,
                               ),
                             ),
-
-
-                            /// Data Sorting  Button
-                            Expanded(
-                              flex: 1,
-                              child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: PopupMenuButton<SortMilestoneLists>(
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/sortingList.svg',
-                                      fit: BoxFit.contain,
-
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Total Milestone',
+                                      value: '1250',
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(0.99, 0.14),
+                                        end: Alignment(-0.99, -0.14),
+                                        colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                      ),
                                     ),
-                                    tooltip: "Sort Milestones",
-                                    onSelected: (SortMilestoneLists option) {
-                                      _sortData(option);
-                                    },
-                                    itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.active,
-                                        child: Text('Priority: Active'),
+                                  ),
+                                  SizedBox(width: itemSpacing),
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Active Milestone',
+                                      value: '1200',
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(0.99, 0.14),
+                                        end: Alignment(-0.99, -0.14),
+                                        colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                       ),
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.onGoing,
-                                        child: Text('Priority: Ongoing'),
+                                    ),
+                                  ),
+                                  SizedBox(width: itemSpacing),
+                                  Expanded(
+                                    child: _buildStatCard(
+                                      title: 'Complete',
+                                      value: '1000',
+                                      gradient: const LinearGradient(
+                                        begin: Alignment(0.99, 0.14),
+                                        end: Alignment(-0.99, -0.14),
+                                        colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                       ),
-                                      const PopupMenuItem<SortMilestoneLists>(
-                                        value: SortMilestoneLists.completed,
-                                        child: Text('Priority: Completed'),
-                                      ),
-                                      if (_currentSort != null) const PopupMenuDivider(),
-                                      if (_currentSort != null)
-                                         PopupMenuItem<SortMilestoneLists>(
-                                          child: const Text('Clear Sort'),
-                                          onTap: () => Future(() => _sortData(_currentSort!)),
-                                      ),
-                                    ],
-                                  )
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
 
-                      SizedBox(height: screenHeight * 0.016),
-
-                      // Milestone list
-                      _displayData.isEmpty
-                          ? Center(
-                        child: Text(
-                          _searchController.text.isNotEmpty
-                              ? 'No milestones match your search.'
-                              : 'No milestones available.',
-                          style:TextStyle(
-                            fontFamily: 'Poppins',
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: screenWidth * 0.04,
                           ),
-                        ),
-                      )
-                          : ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _displayData.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              MilestoneLists(task: _displayData[index]),
-                              SizedBox(height: screenHeight * 0.020),
 
-                            ],
-                          );
-                        },
+                          SizedBox(height: screenHeight * 0.030),
+
+                          Text(
+                            'Milestone List',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                              fontSize: getResponsiveFontSize(context, 18),
+                              height: 1.6,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.010),
+                          /// Search And Sorting
+
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xff040C16),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                                vertical:  screenHeight * 0.001
+                            ),
+
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: ResponsiveSearchField(
+                                    controller: _searchController,
+                                    svgAssetPath: 'assets/icons/search.svg',
+
+                                  ),
+                                ),
+
+
+                                /// Data Sorting  Button
+                                Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: PopupMenuButton<SortMilestoneLists>(
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/sortingList.svg',
+                                          fit: BoxFit.contain,
+
+                                        ),
+                                        tooltip: "Sort Milestones",
+                                        onSelected: (SortMilestoneLists option) {
+                                          _sortData(option);
+                                        },
+                                        itemBuilder: (BuildContext context) => <PopupMenuEntry<SortMilestoneLists>>[
+                                          const PopupMenuItem<SortMilestoneLists>(
+                                            value: SortMilestoneLists.active,
+                                            child: Text('Priority: Active'),
+                                          ),
+                                          const PopupMenuItem<SortMilestoneLists>(
+                                            value: SortMilestoneLists.onGoing,
+                                            child: Text('Priority: Ongoing'),
+                                          ),
+                                          const PopupMenuItem<SortMilestoneLists>(
+                                            value: SortMilestoneLists.completed,
+                                            child: Text('Priority: Completed'),
+                                          ),
+                                          if (_currentSort != null) const PopupMenuDivider(),
+                                          if (_currentSort != null)
+                                             PopupMenuItem<SortMilestoneLists>(
+                                              child: const Text('Clear Sort'),
+                                              onTap: () => Future(() => _sortData(_currentSort!)),
+                                          ),
+                                        ],
+                                      )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.016),
+
+                          // Milestone list
+                          _displayData.isEmpty
+                              ? Center(
+                            child: Text(
+                              _searchController.text.isNotEmpty
+                                  ? 'No milestones match your search.'
+                                  : 'No milestones available.',
+                              style:TextStyle(
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: screenWidth * 0.04,
+                              ),
+                            ),
+                          )
+                              : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _displayData.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  MilestoneLists(task: _displayData[index]),
+                                  SizedBox(height: screenHeight * 0.020),
+
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

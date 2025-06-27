@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/sign_in.dart';
-
+import 'package:provider/provider.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/CustomRadioSelection.dart';
 import '../../../../framework/components/ListingFields.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import '../../viewmodel/wallet_view_model.dart';
+
 
 class ApplyForListingScreen extends StatefulWidget {
   const ApplyForListingScreen({super.key});
@@ -41,6 +46,91 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
   @override
   void initState() {
     super.initState();
+  }
+  Future<void> submitApplication(String apiUrl) async {
+    final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+
+     if (!walletProvider.isConnected) {
+      Fluttertoast.showToast(
+        msg: "Please connect your wallet before submitting.",
+        backgroundColor: Colors.orange,
+      );
+      return;
+    }
+
+    final data = {
+      "full_name": fullNameController.text.trim(),
+      "email": emailAddressController.text.trim(),
+      "project_name": projectNameController.text.trim(),
+      "project_details": projectDetailsController.text.trim(),
+      "project_status": projectStatusController.text.trim(),
+      "platform": selectedOptionPlatform,
+      "team_type": selectedOptionTeam,
+      "backers_advisors": backersAndAdvisorsController.text.trim(),
+      "smart_contract_audit": smartContractAuditController.text.trim(),
+      "litepaper": litepaperLinkController.text.trim(),
+      "website": websiteLinkController.text.trim(),
+      "medium": mediumLinkController.text.trim(),
+      "github": githubLinkController.text.trim(),
+      "twitter": twitterLinkController.text.trim(),
+      "telegram": telegramLinkController.text.trim(),
+      "additional_comments": additionalDetailsController.text.trim(),
+    };
+
+     print(">>> User Input:");
+    data.forEach((key, value) {
+      print("$key: $value");
+    });
+
+    print(">>> JSON Body to Submit: ${jsonEncode(data)}");
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
+      );
+
+      print(">>> API Response Status: ${response.statusCode}");
+      print(">>> API Response Body: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+
+        Fluttertoast.showToast(msg: "Application submitted successfully!");
+        // Reset All Fields
+        fullNameController.clear();
+        emailAddressController.clear();
+        projectNameController.clear();
+        projectDetailsController.clear();
+        projectStatusController.clear();
+        backersAndAdvisorsController.clear();
+        smartContractAuditController.clear();
+        litepaperLinkController.clear();
+        websiteLinkController.clear();
+        mediumLinkController.clear();
+        githubLinkController.clear();
+        twitterLinkController.clear();
+        telegramLinkController.clear();
+        additionalDetailsController.clear();
+
+        // Reset radio buttons
+        setState(() {
+          selectedOptionPlatform = '';
+          selectedOptionTeam = '';
+        });
+      } else {
+        Fluttertoast.showToast(
+          msg: "Failed to submit. Error: ${response.statusCode}",
+          backgroundColor: Colors.red,
+        );
+      }
+    } catch (e) {
+      print(">>> Submission error: $e");
+      Fluttertoast.showToast(
+        msg: "Something went wrong: $e",
+        backgroundColor: Colors.red,
+      );
+    }
   }
 
   @override
@@ -647,6 +737,8 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
                                             ],
                                             onTap: () {
                                               // Action
+                                              const apiUrl = 'https://webhook.site/3d35d38b-ed13-4460-8c0e-a3b465e6fde3'; // replace later easily
+                                              submitApplication(apiUrl);
                                             },
                                           ),
 

@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
+import 'package:provider/provider.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
+import '../../viewmodel/bottom_nav_provider.dart';
+import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'notification/notifications.dart';
 import 'personal_info/personal_information.dart';
 
@@ -67,139 +72,144 @@ class _ProfileScreenState extends State<ProfileScreen> {
                        horizontal: screenWidth * 0.04,
                        vertical: screenHeight * 0.02,
                      ),
-                     child: SingleChildScrollView(
-                       child: Column(
-                         crossAxisAlignment: CrossAxisAlignment.center,
-                         children: [
-                           SizedBox(height: screenHeight * 0.02),
+                     child: ScrollConfiguration(
+                       behavior: const ScrollBehavior().copyWith(overscroll: false),
+                       child: SingleChildScrollView(
+                         physics: const BouncingScrollPhysics(),
 
-                           _profileHeaderSection(),
+                         child: Column(
+                           crossAxisAlignment: CrossAxisAlignment.center,
+                           children: [
+                             SizedBox(height: screenHeight * 0.02),
 
-                           SizedBox(height: screenHeight * 0.03),
+                             _profileHeaderSection(),
 
-                           /// Profile Action Buttons =>
-                           Container(
-                             width: double.infinity,
+                             SizedBox(height: screenHeight * 0.03),
 
-                             decoration: BoxDecoration(
-                               // color: const Color(0xFF01090B),
-                               image: const DecorationImage(
-                                  image: AssetImage('assets/icons/profileFrameBg.png'),
-                                 fit: BoxFit.fill,
-                                ),
-                               borderRadius: BorderRadius.circular(14),
-                               border: Border.all(
-                                 color: const Color(0XFFFFF5ED),
-                                 width: 0.1,
+                             /// Profile Action Buttons =>
+                             Container(
+                               width: double.infinity,
+
+                               decoration: BoxDecoration(
+                                 // color: const Color(0xFF01090B),
+                                 image: const DecorationImage(
+                                    image: AssetImage('assets/icons/profileFrameBg.png'),
+                                   fit: BoxFit.fill,
+                                  ),
+                                 borderRadius: BorderRadius.circular(14),
+                                 border: Border.all(
+                                   color: const Color(0XFFFFF5ED),
+                                   width: 0.1,
+                                 ),
                                ),
-                             ),
 
-                             child: Padding(
-                               padding: EdgeInsets.symmetric(
-                                 horizontal: screenWidth * 0.05,
-                                 vertical: screenHeight * 0.02,
-                               ),
-                               child: Column(
-                                 mainAxisSize: MainAxisSize.min,
-                                 children: [
+                               child: Padding(
+                                 padding: EdgeInsets.symmetric(
+                                   horizontal: screenWidth * 0.05,
+                                   vertical: screenHeight * 0.02,
+                                 ),
+                                 child: Column(
+                                   mainAxisSize: MainAxisSize.min,
+                                   children: [
 
-                                   // Personal ,
-                                   ProfileOptionContainer(
-                                    labelText: 'Personal Information',
-                                    leadingIconPath: 'assets/icons/profile.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Personal ,
+                                     ProfileOptionContainer(
+                                      labelText: 'Personal Information',
+                                      leadingIconPath: 'assets/icons/profile.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Trade Confirmation,
-                                   ProfileOptionContainer(
-                                    labelText: 'Trade Confirmation',
-                                    leadingIconPath: 'assets/icons/tared.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Trade Confirmation,
+                                     ProfileOptionContainer(
+                                      labelText: 'Trade Confirmation',
+                                      leadingIconPath: 'assets/icons/tared.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Tax Statements,
-                                   ProfileOptionContainer(
-                                    labelText: 'Tax Statements',
-                                    leadingIconPath: 'assets/icons/taxStatement.svg',
-                                    trailingIconPath: 'assets/icons/rightArrow.svg',
-                                    onTrailingIconTap: () {
-                                      debugPrint("Trailing icon tapped");
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
-                                      );
-                                    },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Tax Statements,
+                                     ProfileOptionContainer(
+                                      labelText: 'Tax Statements',
+                                      leadingIconPath: 'assets/icons/taxStatement.svg',
+                                      trailingIconPath: 'assets/icons/rightArrow.svg',
+                                      onTrailingIconTap: () {
+                                        debugPrint("Trailing icon tapped");
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
+                                        );
+                                      },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   // Notification Settings,
-                                   ProfileOptionContainer(
-                                     labelText: 'Notification Settings',
-                                     leadingIconPath: 'assets/icons/notify.svg',
-                                     trailingIconPath: 'assets/icons/rightArrow.svg',
-                                     onTrailingIconTap: () {
-                                       debugPrint("Trailing icon tapped");
-                                       Navigator.of(context).push(
-                                       MaterialPageRoute(builder: (context) => const NotificationsScreen()),
-                                     );
-                                     },
-                                   ),
-                                   SizedBox(height: screenHeight * 0.02),
-
-                                   // Settings
-                                   ProfileOptionContainer(
-                                     labelText: 'Settings',
-                                     leadingIconPath: 'assets/icons/settings.svg',
-                                     trailingIconPath: 'assets/icons/rightArrow.svg',
-                                     onTrailingIconTap: () {
-                                       debugPrint("Trailing icon tapped");
-                                       Navigator.of(context).push(
-                                         MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                     // Notification Settings,
+                                     ProfileOptionContainer(
+                                       labelText: 'Notification Settings',
+                                       leadingIconPath: 'assets/icons/notify.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         debugPrint("Trailing icon tapped");
+                                         Navigator.of(context).push(
+                                         MaterialPageRoute(builder: (context) => const NotificationsScreen()),
                                        );
-                                     },
-                                   ),
+                                       },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
 
-                                   SizedBox(height: screenHeight * 0.02),
+                                     // Settings
+                                     ProfileOptionContainer(
+                                       labelText: 'Settings',
+                                       leadingIconPath: 'assets/icons/settings.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         debugPrint("Trailing icon tapped");
+                                         Navigator.of(context).push(
+                                           MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                         );
+                                       },
+                                     ),
 
-                                   SizedBox(
-                                     width: screenWidth * 0.8, // Responsive width
-                                     child: Opacity(
-                                       opacity: 0.50,
-                                       child: Text(
-                                         'This service is provided by Team.',
-                                         textAlign: TextAlign.center,
-                                         style: TextStyle(
-                                           color: Colors.white,
-                                           fontSize: screenWidth * 0.028,
-                                           fontFamily: 'Poppins',
-                                           fontWeight: FontWeight.w400,
-                                           height: 1.6,
+                                     SizedBox(height: screenHeight * 0.02),
+
+                                     SizedBox(
+                                       width: screenWidth * 0.8, // Responsive width
+                                       child: Opacity(
+                                         opacity: 0.50,
+                                         child: Text(
+                                           'This service is provided by Team.',
+                                           textAlign: TextAlign.center,
+                                           style: TextStyle(
+                                             color: Colors.white,
+                                             fontSize: screenWidth * 0.028,
+                                             fontFamily: 'Poppins',
+                                             fontWeight: FontWeight.w400,
+                                             height: 1.6,
+                                           ),
                                          ),
                                        ),
                                      ),
-                                   ),
-                                   SizedBox(height: screenHeight * 0.04),
+                                     SizedBox(height: screenHeight * 0.04),
 
 
-                                 ],
+                                   ],
+                                 ),
                                ),
                              ),
-                           ),
 
-                         ],
+                           ],
+                         ),
                        ),
                      ),
                    ),
@@ -217,7 +227,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _profileHeaderSection(){
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
+    final fullName = Provider.of<BottomNavProvider>(context).fullName;
+    final profileVM = Provider.of<PersonalViewModel>(context);
+    final pickedImage = profileVM.pickedImage;
     // Scale factors (tweak if needed)
     double scale = screenWidth / 375;
     return Column(
@@ -233,9 +245,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: screenWidth * 0.26,
                 height: screenWidth * 0.26,
                 decoration: ShapeDecoration(
-                  image: const DecorationImage(
-                    image: NetworkImage("https://picsum.photos/90/90"), // Show User Profile
-                    fit: BoxFit.fill,
+                  image: DecorationImage(
+                   image: pickedImage != null
+                      ? FileImage(pickedImage)
+                      : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
+                      ? FileImage(File(profileVM.originalImagePath!))
+                      : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+
+                  fit: BoxFit.fill,
                   ),
                   shape: OvalBorder(
                     side: BorderSide(width: 1 * scale, color: Colors.white),
@@ -247,7 +264,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               // Name
               Text(
-                'Abdur Salam',
+                // 'Abdur Salam',
+                fullName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,

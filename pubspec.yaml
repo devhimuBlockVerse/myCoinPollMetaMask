@@ -62,12 +62,24 @@ dependencies:
   data_table_2: ^2.6.0
   file_selector: ^1.0.3
 #  url_launcher: ^6.0.20
+  youtube_player_flutter: ^9.1.1
+  flutter_inappwebview: ^6.0.0
+  open_file: ^3.2.1
 
+  mobile_scanner: ^3.5.5
+  dio: ^5.4.0
+
+  intl: ^0.20.1
+
+dependency_overrides:
+  intl: ^0.20.1
 
 
 dev_dependencies:
+  device_preview: ^1.1.0
   flutter_test:
     sdk: flutter
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -89,13 +101,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/icons/
     - assets/app_icon.png
     - assets/abi/MyContract.json
     - assets/abi/SaleContractABI.json
     - assets/abi/ECMStakingContractABI.json
     - assets/abi/IERC20ABI.json
     - assets/abi/ECMContractABI.json
-    - assets/icons/
+    - assets/icons/tokens.png
     - assets/icons/frame.png
     - assets/icons/copyImg.svg
     - assets/icons/distribution_image.png

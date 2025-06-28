@@ -454,7 +454,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       ),
                     ),
                     /// Address Section
-                    Padding(
+                if (walletVM.isConnected)...[
+                  Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -498,7 +499,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         height: 20,
                       ),
                     ),
-
+                ],
                     ///Action Buttons
                     Padding(
                       padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),

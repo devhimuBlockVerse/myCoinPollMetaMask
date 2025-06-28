@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/news/trending_screen.dart';
 import '../../../../framework/components/BlogCompoment.dart';
 import '../../../../framework/components/CardNewsComponent.dart';
-import '../../../data/model/blogModel.dart';
+import '../../../domain/model/blogModel.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});

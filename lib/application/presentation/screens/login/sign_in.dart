@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/utils/general_utls.dart';
+import '../../../data/services/api_service.dart';
+import '../../../domain/constants/api_constants.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
@@ -23,7 +27,8 @@ class _SignInState extends State<SignIn> {
 
   TextEditingController userNameOrIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  bool isLoading = false;
+  bool _isNavigating = false;
 
   @override
   void initState() {
@@ -43,6 +48,37 @@ class _SignInState extends State<SignIn> {
 
     });
   }
+
+   Future<void> login() async {
+    final username = userNameOrIdController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final response = await ApiService().login(username, password);
+      print('Logged in as: ${response.user.name}, Token: ${response.token}');
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +229,9 @@ class _SignInState extends State<SignIn> {
                                         children: [
 
                                           /// Login Button adn navigate to validation screen
-                                          BlockButton(
+                                          isLoading
+                                              ? const Center(child: CircularProgressIndicator())
+                                              :BlockButton(
                                             height: screenHeight * 0.05,
                                             width: screenWidth * 0.88,
                                             label: 'Login Now',
@@ -208,15 +246,15 @@ class _SignInState extends State<SignIn> {
                                               Color(0xFF2680EF),
                                               Color(0xFF1CD494),
                                             ],
-                                            onTap: () {
-                                              // Check / Read the user Email and password and navigate
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => ValidationScreen(
-                                                  getUserNameOrId: userNameOrIdController.text,
-                                                )),
-                                              );
-                                            },
+                                            // onTap: () {
+                                            //    Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(builder: (context) => ValidationScreen(
+                                            //       getUserNameOrId: userNameOrIdController.text,
+                                            //     )),
+                                            //   );
+                                            // },
+                                            onTap: login,
                                           ),
                                           SizedBox(height: screenHeight * 0.01),
 
@@ -278,24 +316,20 @@ class _SignInState extends State<SignIn> {
                                           /// Connect Wallet
                                           Consumer<WalletViewModel>(
                                             builder: (context, walletVM, _) {
+                                              if (walletVM.isLoading || _isNavigating) {
+                                                return const Center(child: CircularProgressIndicator());
+                                              }
                                               return BlockButtonV2(
                                                 text: walletVM.isConnected ? 'Go To Dashboard':'Connect Wallet',
-                                                // onPressed: () {
-                                                //
-                                                //   debugPrint('Button tapped!');
-                                                //   // Apply the wallet connection from view model and navigate to the Dashboard
-                                                //   Navigator.push(
-                                                //     context,
-                                                //     MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
-                                                //   );
-                                                // },
+
                                                 onPressed:  walletVM.isLoading ? null : () async {
+                                                  setState(() => _isNavigating = true);
+
                                                   try {
                                                     if (!walletVM.isConnected) {
                                                       await walletVM.connectWallet(context);
                                                     }
-                                                    // After successful connection, navigate
-                                                    if (walletVM.isConnected && context.mounted) {
+                                                     if (walletVM.isConnected && context.mounted) {
                                                       Navigator.pushReplacement(
                                                         context,
                                                         MaterialPageRoute(
@@ -308,6 +342,9 @@ class _SignInState extends State<SignIn> {
                                                     if (context.mounted) {
                                                       Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
                                                     }
+                                                  }finally{
+                                                    if (mounted) setState(() => _isNavigating = false);
+
                                                   }
                                                 },
 

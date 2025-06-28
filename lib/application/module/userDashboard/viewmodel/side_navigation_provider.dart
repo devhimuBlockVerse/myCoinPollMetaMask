@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/supportTicket/suppor_ticket_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../framework/components/DialogModalViewComponent.dart';
 import '../../../../framework/res/colors.dart';
@@ -92,6 +93,8 @@ class NavigationProvider extends ChangeNotifier {
       title: 'Logout',
       iconPath: 'assets/icons/logout.svg',
       onTap: (context) {
+
+
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -99,7 +102,10 @@ class NavigationProvider extends ChangeNotifier {
             title: 'Logout',
             message: 'Are you sure you want to log out?',
             yesLabel: 'Yes',
-            onYes: () {
+            onYes: ()async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('token');
+              await prefs.remove('user');
               Navigator.push(context, MaterialPageRoute(builder: (context) =>  BottomNavBar()));
 
 

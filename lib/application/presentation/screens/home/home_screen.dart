@@ -13,6 +13,7 @@ import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
 import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
@@ -22,7 +23,9 @@ import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
 import '../../../../framework/widgets/animated_blockchain_images.dart';
+import '../../../data/services/api_service.dart';
 import '../../countdown_timer_helper.dart';
+import '../../models/token_model.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 
@@ -1270,13 +1273,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isETHActive = true;
   bool isUSDTActive = false;
-
   bool isDisconnecting = false;
 
+  List<TokenModel> tokens = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    fetchTokens();
     ecmController.addListener(_updatePayableAmount);
      WidgetsBinding.instance.addPostFrameCallback((_) async {
        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -1297,8 +1302,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     });
   }
-
-
+  Future<void> fetchTokens() async {
+    try {
+      final response = await ApiService().fetchTokens();
+      setState(() {
+        tokens = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching tokens: $e');
+      setState(() => isLoading = false);
+    }
+  }
 
   Future<void> _initializeWalletData() async {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -1612,7 +1627,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     SizedBox(height: screenHeight * 0.03),
 
-                    _buildTokenCard(),
+                    // _buildTokenCard(),
+                    ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
                     SizedBox(height: screenHeight * 0.05),
 
@@ -1635,7 +1651,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  Widget _buildTokenCard() {
+  Widget _buildTokenCard(BuildContext context, TokenModel token) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -1669,7 +1685,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const ViewTokenScreen()),
+                  );
+
+                },
                 child: Text(
                   'View All',
                   style: TextStyle(
@@ -1709,13 +1730,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       /// Token image with badges
                       Stack(
                         children: [
-
-                          Image.asset(
-                            'assets/icons/tokens.png',
+                          // Image.asset(
+                          //   'assets/icons/tokens.png',
+                          //   width: screenWidth * 0.4,
+                          //   height: screenHeight * 0.15,
+                          //   fit: BoxFit.fitWidth,
+                          //   filterQuality: FilterQuality.high,
+                          // ),
+                          Image.network(
+                            token.featureImage,
                             width: screenWidth * 0.4,
                             height: screenHeight * 0.15,
-                            fit: BoxFit.fitWidth,
-                            filterQuality: FilterQuality.high,
+                            fit: BoxFit.cover,
                           ),
 
                           Positioned(
@@ -1723,19 +1749,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             left: screenWidth * 0.02,
                             right: screenWidth * 0.01,
                             child: Row(
-                              children: [
-                                BadgeComponent(
-                                  text: 'AIRDROP',
-                                  isSelected: selectedBadge == 'AIRDROP',
-                                  onTap: () => _onBadgeTap('AIRDROP'),
-                                ),
-                                SizedBox(width: screenWidth * 0.01),
-                                BadgeComponent(
-                                  text: 'INITIAL',
-                                  isSelected: selectedBadge == 'INITIAL',
-                                  onTap: () => _onBadgeTap('INITIAL'),
-                                ),
-                              ],
+                              children: token.tags.map((tag) {
+                                final normalizedTag = tag.toUpperCase();
+                                return Padding(
+                                  padding: EdgeInsets.only(right: screenWidth * 0.01),
+                                  child: BadgeComponent(
+                                    text: normalizedTag,
+                                    isSelected: selectedBadge == normalizedTag,
+                                    onTap: () => _onBadgeTap(normalizedTag),
+                                  ),
+                                );
+                              }).toList(),
+                              // children: [
+                              //   BadgeComponent(
+                              //     text: 'AIRDROP',
+                              //     isSelected: selectedBadge == 'AIRDROP',
+                              //     onTap: () => _onBadgeTap('AIRDROP'),
+                              //   ),
+                              //   SizedBox(width: screenWidth * 0.01),
+                              //   BadgeComponent(
+                              //     text: 'INITIAL',
+                              //     isSelected: selectedBadge == 'INITIAL',
+                              //     onTap: () => _onBadgeTap('INITIAL'),
+                              //   ),
+                              // ],
                             ),
                           ),
 
@@ -1749,7 +1786,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'eCommerce Coin (ECM)',
+                              // 'eCommerce Coin (ECM)',
+                              token.fullName,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
@@ -1760,7 +1798,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(height: baseSize * 0.02),
                             Text(
-                              'Join the ECM Token ICO to revolutionize e-commerce',
+                              token.shortDescription,
                                style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
@@ -1783,52 +1821,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
 
-                            // Padding(
-                            //   padding: EdgeInsets.all(baseSize * 0.01),
-                            //   child:
-                            //   Container(
-                            //     // width: double.infinity,
-                            //     width: screenWidth,
-                            //     padding: EdgeInsets.symmetric(
-                            //       // horizontal: baseSize * 0.01,
-                            //       // vertical: baseSize * 0.015,
-                            //       horizontal: baseSize * 0.02,
-                            //       vertical: baseSize * 0.015,
-                            //     ),
-                            //     decoration: BoxDecoration(
-                            //       color: const Color(0x4D1F1F1F),
-                            //       borderRadius: BorderRadius.circular(8),
-                            //       border: Border.all(
-                            //         width: 0.3,
-                            //         color: const Color(0x4DFFFFFF),
-                            //       ),
-                            //       boxShadow: [
-                            //         BoxShadow(
-                            //           color: Colors.black.withOpacity(0.2),
-                            //           blurRadius: 10,
-                            //           offset: const Offset(0, 4),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     child: IntrinsicHeight(
-                            //       child: Row(
-                            //         crossAxisAlignment: CrossAxisAlignment.center,
-                            //         mainAxisAlignment: MainAxisAlignment.center,
-                            //         mainAxisSize: MainAxisSize.min,
-                            //         children: [
-                            //           _timeBlock(label: 'Days', value: '02'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Hours', value: '23'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Minutes', value: '05'),
-                            //           _timerColon(baseSize),
-                            //           _timeBlock(label: 'Seconds', value: '56'),
-                            //         ],
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
+                           ],
                         ),
                       ),
 
@@ -1841,7 +1834,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Supporter: 726',
+                         'Supporters: ${token.supporter}',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -1857,7 +1850,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Raised: 1.12%',
+                            'Raised: ${token.sellPercentage.toStringAsFixed(2)}%',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -1870,7 +1863,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Text(
-                            '1118527.50 / 10000000.00',
+                            // '1118527.50 / 10000000.00',
+                            '${token.alreadySell} / ${token.sellTarget}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -1888,8 +1882,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   SizedBox(height: baseSize * 0.02),
 
-                  const LinearProgressIndicator(
-                    value: 0.5,
+                  LinearProgressIndicator(
+                    // value: 0.5,
+                    value: token.sellPercentage / 100,
                     minHeight: 2,
                     backgroundColor: Colors.white24,
                     color: Colors.cyanAccent,
@@ -1907,20 +1902,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           children: [
                             SizedBox(width: baseSize * 0.02),
-                            _imageButton(
+                            if (token.socialMedia?.twitter != null && token.socialMedia!.twitter!.isNotEmpty)
+                              _imageButton(
                               context,
                               'assets/icons/xIcon.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            ),
+                                token.socialMedia!.twitter!,
+
+                              ),
                             SizedBox(width: baseSize * 0.02),
-                            _imageButton(
+                            if (token.socialMedia?.telegram != null && token.socialMedia!.telegram!.isNotEmpty)
+                              _imageButton(
                               context,
                               'assets/icons/teleImage.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
+                                token.socialMedia!.telegram!,
                             )
                           ],
                         ),
@@ -1966,14 +1960,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// _imageButton Widget
-  Widget _imageButton(BuildContext context, String imagePath, VoidCallback onTap) {
+  Widget _imageButton(BuildContext context, String imagePath, String url) {
     final screenWidth = MediaQuery.of(context).size.width;
     final imageSize = screenWidth * 0.05; // 5% of screen width
 
     final isSvg = imagePath.toLowerCase().endsWith('.svg');
 
     return InkWell(
-      onTap: onTap,
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not open the link')),
+          );
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white12,

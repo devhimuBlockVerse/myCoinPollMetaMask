@@ -1828,8 +1828,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   int _paymentRefBonus = 0;
   bool _isCompleted = false;
 
-   Web3Client? _web3Client;
+  Web3Client? _web3Client;
   bool _isModalEventsSubscribed = false;
+
+  bool _walletConnectedManually = false;
+  bool get walletConnectedManually => _walletConnectedManually;
 
   // Getters
   double get ethPrice => _ethPrice;
@@ -2074,6 +2077,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   /// Connect the wallet using the ReownAppKitModal UI.
   Future<bool> connectWallet(BuildContext context) async {
+    _walletConnectedManually = true;
     _isLoading = true;
     notifyListeners();
     try {

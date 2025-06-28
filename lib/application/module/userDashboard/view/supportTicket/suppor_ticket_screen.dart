@@ -176,6 +176,7 @@ class _SupportTicketScreenState extends State<SupportTicketScreen> {
                       physics: const BouncingScrollPhysics(),
 
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
 
                         children: [
 

@@ -471,7 +471,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         ),
                         Text(
 
-                          model.walletConnectedManually || currentUser == null ? 'Wallet Connected': currentUser!.name,
+                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,

@@ -204,6 +204,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                       physics: const BouncingScrollPhysics(),
 
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: screenHeight * 0.010),
 

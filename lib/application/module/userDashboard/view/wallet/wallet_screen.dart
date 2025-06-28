@@ -175,6 +175,8 @@ class _WalletScreenState extends State<WalletScreen> {
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
 
                           WalletCard(),

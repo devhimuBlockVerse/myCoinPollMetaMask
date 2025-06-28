@@ -176,6 +176,7 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                       physics: const BouncingScrollPhysics(),
 
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Stat Cards
                           Container(

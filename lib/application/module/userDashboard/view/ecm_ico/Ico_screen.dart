@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,6 +16,7 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/general_utls.dart';
 import '../../../../../framework/utils/routes/route_names.dart';
 import '../../../../data/services/download_white_paper.dart';
+import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -58,6 +60,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   double _maxECM = 0.0;
   bool isDisconnecting = false;
 
+  List<TokenModel> tokens = [];
 
   @override
   void initState() {
@@ -174,7 +177,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                               SizedBox(height: screenHeight * 0.02),
 
 
-                              _buildTokenCard(),
+                              _buildTokenCard(context),
+
                               SizedBox(height: screenHeight * 0.04),
 
 
@@ -197,11 +201,12 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   }
 
   /// White Paper section With timer
-  Widget _buildTokenCard() {
+  Widget _buildTokenCard(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    // final socialMedia = tokens.first.socialMedia;
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -213,29 +218,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           Container(
             width: screenWidth,
              decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xff010219),
-                  Color(0xff050A7F)],
-                begin: Alignment(-1.0, 0.0),
-                end: Alignment(1.0, 1.0),
-                stops: [0.68, 1.0],
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x80FFFFFF),
-                  offset: Offset(0, 1),
-                  blurRadius: 1,
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Color(0x80010227),
-                  offset: Offset(0, 0.75),
-                  blurRadius: 0,
-                  spreadRadius: 0,
-                ),
-              ],
+               border: Border.all(
+                   color: Colors.transparent
+               ),
+               image:const DecorationImage(
+                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                 fit: BoxFit.fill,
+
+               ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.030),
@@ -294,21 +284,23 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             // SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/xIcon.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            ),
+                            // if (socialMedia?.twitter != null && socialMedia!.twitter!.isNotEmpty)
+                              _imageButton(
+                                context,
+                                'assets/icons/xIcon.svg',
+                                'https://x.com/ecmcoin'
+
+                                // socialMedia!.twitter!,
+
+                              ),
                             SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/teleImage.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            )
+                            // if (socialMedia?.telegram != null && socialMedia!.telegram!.isNotEmpty)
+                              _imageButton(
+                                context,
+                                'assets/icons/teleImage.svg',
+                                'https://t.me/ecmcoin'
+                                // socialMedia!.telegram!,
+                              )
                           ],
                         ),
                       ),
@@ -367,14 +359,23 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   }
 
   /// _imageButton Widget
-  Widget _imageButton(BuildContext context, String imagePath, VoidCallback onTap) {
+  Widget _imageButton(BuildContext context, String imagePath,  String url) {
     final screenWidth = MediaQuery.of(context).size.width;
     final imageSize = screenWidth * 0.04; // 5% of screen width
 
     final isSvg = imagePath.toLowerCase().endsWith('.svg');
 
     return InkWell(
-      onTap: onTap,
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not open the link')),
+          );
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white12,
@@ -476,6 +477,10 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             trailingIconAsset: 'assets/icons/copyImg.svg',
                             onTrailingIconTap: () {
                               debugPrint('Trailing icon tapped');
+                              Clipboard.setData(ClipboardData(text: 'https://mycoinpoll.com?ref=125482458661' ));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Copied to clipboard')),
+                              );
                             },
                           ),
                           SizedBox(height: screenHeight * 0.02),

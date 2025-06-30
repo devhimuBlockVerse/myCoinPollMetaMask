@@ -1891,7 +1891,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   LinearProgressIndicator(
                     // value: 0.5,
                     value: token.sellPercentage / 100,
-                    minHeight: 2,
+                    minHeight: 3,
                     backgroundColor: Colors.white24,
                     color: Colors.cyanAccent,
                   ),

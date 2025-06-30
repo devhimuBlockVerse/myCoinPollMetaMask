@@ -163,7 +163,6 @@ class _SignInState extends State<SignIn> {
                                    ),
                                 ),
 
-
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: screenWidth * 0.06,
@@ -394,6 +393,25 @@ class _SignInState extends State<SignIn> {
                         ),
 
                         SizedBox(height: screenHeight * 0.02),
+
+                        // const ToastMessage(
+                        //   type: MessageType.info,
+                        //   title: 'Charger is under maintenance',
+                        //   subtitle: 'Please select another charger.',
+                        // ),
+                        //
+                        // const ToastMessage(
+                        //   type: MessageType.success,
+                        //   title: 'Payment successful!',
+                        //   subtitle: 'Your transaction has been completed.',
+                        // ),
+                        //
+                        // const ToastMessage(
+                        //   type: MessageType.error,
+                        //   title: 'Connection Lost',
+                        //   subtitle: 'Please check your internet connection.',
+                        // ),
+
                       ],
                     ),
                   ),
@@ -445,4 +463,106 @@ class _SignInState extends State<SignIn> {
 
 
 
+
+
+
+
+
+// class Frame1413377636 extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     final double screenWidth = MediaQuery.of(context).size.width;
+//     final double cardWidth = screenWidth * 0.9 > 400 ? 400 : screenWidth * 0.9;
+//     final double baseTitleFontSize = 14.0;
+//     final double baseSubtitleFontSize = 12.0;
+//
+//     final double titleFontSize = baseTitleFontSize * (screenWidth / 375);
+//     final double subtitleFontSize = baseSubtitleFontSize * (screenWidth / 375);
+//
+//     return Center(
+//       child: Column(
+//         children: [
+//           Container(
+//             width: cardWidth,
+//             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+//             decoration: ShapeDecoration(
+//               gradient: const LinearGradient(
+//                 begin: Alignment.topRight,
+//                 end: Alignment.bottomLeft,
+//                  colors: [Color(0xFF2C1F2C), Color(0xFF101A29)],
+//               ),
+//               shape: RoundedRectangleBorder(
+//                 side: BorderSide(width: 1, color: Color(0xFF2B2D40)),
+//                 borderRadius: BorderRadius.circular(5),
+//               ),
+//             ),
+//             child: Row(
+//               mainAxisSize: MainAxisSize.max,
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                  Container(
+//                   height: 40,
+//                   width: 40,
+//                   padding: const EdgeInsets.all(4),
+//                   decoration: ShapeDecoration(
+//                     color: Color(0xFF303746),
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(43),
+//                     ),
+//                   ),
+//                   child: Center(
+//                     child: Icon(
+//                       Icons.build_circle_outlined,
+//                       color: Colors.white,
+//                       size: 24,
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(width: 10),
+//
+//                 // Vertical Divider
+//                 VerticalDivider(
+//                   width: 2,
+//                   thickness: 1,
+//                   color: Colors.white.withOpacity(0.5),
+//                   indent: 5,
+//                   endIndent: 5,
+//                 ),
+//                 const SizedBox(width: 10),
+//
+//                  Expanded(
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     mainAxisAlignment: MainAxisAlignment.start,
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         'Charger is under maintenance',
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontSize: titleFontSize,
+//                           fontFamily: 'Poppins',
+//                         ),
+//                       ),
+//                       const SizedBox(height: 5),
+//                       Text(
+//                         'Please select another charger.',
+//                         style: TextStyle(
+//                           color: Color(0xFFC7C5C5),
+//                           fontSize: subtitleFontSize,
+//                           fontFamily: 'Poppins',
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 

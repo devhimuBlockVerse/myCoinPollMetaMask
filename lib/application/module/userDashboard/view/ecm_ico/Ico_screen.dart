@@ -283,8 +283,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            // SizedBox(width: baseSize * 0.02),
-                            // if (socialMedia?.twitter != null && socialMedia!.twitter!.isNotEmpty)
+
                               _imageButton(
                                 context,
                                 'assets/icons/xIcon.svg',
@@ -294,8 +293,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                               ),
                             SizedBox(width: baseSize * 0.02),
-                            // if (socialMedia?.telegram != null && socialMedia!.telegram!.isNotEmpty)
-                              _imageButton(
+                               _imageButton(
                                 context,
                                 'assets/icons/teleImage.svg',
                                 'https://t.me/ecmcoin'

@@ -292,7 +292,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
 
                         /// White Paper Section
-
                           // _buildTokenCard(),
                           ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
@@ -303,7 +302,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           _buildBuyEcmSection(),
 
                           SizedBox(height: screenHeight * 0.04),
-                          // if (tokens.isNotEmpty) ...[
 
                             InfoCard(
                               label1: tokens.first.symbol,
@@ -336,7 +334,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             _strategicTokenSection(tokens.first),
 
 
-                          // ],
 
 
 
@@ -444,7 +441,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
-    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper.pdf';
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -455,23 +451,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
           /// Token Card
           Container(
             width: screenWidth,
-            // constraints: BoxConstraints(maxWidth: screenWidth * 0.95),
-            decoration: BoxDecoration(
-
-              border: Border.all(
-                  color: Colors.transparent
-              ),
-              image:const DecorationImage(
+            decoration:const BoxDecoration(
+              image: DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
-                fit: BoxFit.fill,
-                filterQuality: FilterQuality.medium,
-
+                 fit: BoxFit.fill,
               ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.025),
               child: Column(
                 children: [
+
                   /// Image and Info
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,13 +470,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       Stack(
                         children: [
 
-
-                          Image.network(
-                            token.featureImage,
-                            width: screenWidth * 0.4,
-                            height: screenHeight * 0.15,
-                            fit: BoxFit.fitWidth,
+                          ClipRRect(
+                             child: Image.network(
+                              token.featureImage,
+                              width: screenWidth * 0.4,
+                              height: screenHeight * 0.15,
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.high,
+                            ),
                           ),
+
 
                           Positioned(
                             top: screenHeight * 0.01,
@@ -504,28 +497,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                   ),
                                 );
                               }).toList(),
-                              // children: [
-                              //   BadgeComponent(
-                              //     text: 'AIRDROP',
-                              //     isSelected: selectedBadge == 'AIRDROP',
-                              //     onTap: () => _onBadgeTap('AIRDROP'),
-                              //   ),
-                              //   SizedBox(width: screenWidth * 0.01),
-                              //   BadgeComponent(
-                              //     text: 'INITIAL',
-                              //     isSelected: selectedBadge == 'INITIAL',
-                              //     onTap: () => _onBadgeTap('INITIAL'),
-                              //   ),
-                              // ],
+
                             ),
                           ),
 
                         ],
                       ),
-                      SizedBox(width: baseSize * 0.02),
+
+                       SizedBox(width: baseSize * 0.02),
 
                       /// Token details
-                      Expanded(
+                      Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -558,14 +540,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             SizedBox(height: baseSize * 0.01),
 
                             /// Timer Section
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal:baseSize * 0.01, vertical: baseSize * 0.01),
-                            //   child: CountdownTimer(
-                            //     scaleWidth: scaleWidth,
-                            //     scaleHeight: scaleHeight,
-                            //     scaleText: scaleText,
-                            //   ),
-                            // ),
+
                             if (tokens.isNotEmpty && tokens.first.stageStatus) ...[
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: baseSize * 0.01, vertical: baseSize * 0.01),

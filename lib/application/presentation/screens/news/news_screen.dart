@@ -52,73 +52,6 @@ class _NewsScreenState extends State<NewsScreen> {
     super.dispose();
   }
 
-//   Future<List<BlogModel>> fetchBlogList() async {
-//
-//     await Future.delayed(const Duration(seconds: 2));
-//     const description = '''
-// Blockchain technology is a decentralized, distributed ledger system that records transactions across multiple computers, ensuring data integrity, transparency, and security. Unlike traditional databases managed by a central authority, blockchain relies on a peer-to-peer network, making it resistant to tampering and fraud.
-//
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-//
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-// Key features include:
-//
-// - **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-// - **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-// - **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-// - **Security**: Transactions are secured through cryptographic algorithms.
-// - **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-//
-//
-// Blockchain's applications extend beyond cryptocurrencies. In finance, it streamlines processes by eliminating intermediaries, reducing costs, and increasing transaction speed. Supply chains benefit from enhanced traceability and transparency, ensuring product authenticity and reducing fraud. In healthcare, blockchain can securely store patient records, ensuring data integrity and privacy.
-//
-// Despite its advantages, blockchain faces challenges such as scalability issues and energy consumption concerns, especially with consensus mechanisms like Proof of Work. However, ongoing developments, including the adoption of Proof of Stake, aim to address these challenges, making blockchain a transformative technology across various industries.
-// ''';
-//
-//     return List.generate(
-//       50,
-//           (index) => BlogModel(
-//         imageUrl: 'https://picsum.photos/id/${index + 30}/200/300',
-//         source: 'mycoinpoll',
-//         date: 'Oct ${20 + index % 10}, 2024',
-//         title: 'Understanding Blockchain: The Backbone of Cryptocurrencies',
-//         description: description,
-//       ),
-//     );
-//   }
 
 
   @override
@@ -209,24 +142,7 @@ class _NewsScreenState extends State<NewsScreen> {
                           ),
                         );
                       },
-                      // child: SingleChildScrollView(
-                      //   physics: const BouncingScrollPhysics(),
-                      //   child: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     children: [
-                      //       SizedBox(height: screenHeight * 0.01),
-                      //
-                      //       ///Trending Section
-                      //       RepaintBoundary(child: _buildTrendingSection()),
-                      //
-                      //       SizedBox(height: screenHeight * 0.02),
-                      //
-                      //       ///Grid View News Section
-                      //
-                      //       RepaintBoundary(child: _buildGridViewSection()),
-                      //     ],
-                      //   ),
-                      // ),
+
                     ),
                   ),
                 ),
@@ -269,9 +185,9 @@ class _NewsScreenState extends State<NewsScreen> {
               controller: _pageController,
               itemCount: trendingNews.length,
               onPageChanged: (index) => setState(() => _currentPage = index),
-
               itemBuilder: (context, index) {
                 final news = trendingNews[index];
+
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
@@ -295,6 +211,23 @@ class _NewsScreenState extends State<NewsScreen> {
                               source: 'Mycoinpoll',
                               timeAgo: news.createdAt,
                               headline: news.title,
+
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => TrendingScreen(
+                                      blogData: {
+                                        'imageUrl': news.image,
+                                        'source': 'Mycoinpoll',
+                                        'date': news.createdAt,
+                                        'title': news.title,
+                                        'description': news.description,
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
 
                             ),
                           ),

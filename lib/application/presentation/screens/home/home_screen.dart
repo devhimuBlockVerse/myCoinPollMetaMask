@@ -1709,14 +1709,10 @@ class _HomeScreenState extends State<HomeScreen> {
           /// Token Card
           Container(
             width: screenWidth,
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: Colors.transparent
-              ),
-              image:const DecorationImage(
+            decoration:const BoxDecoration(
+              image: DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
                 fit: BoxFit.fill,
-
               ),
             ),
             child: Padding(
@@ -1737,11 +1733,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           //   fit: BoxFit.fitWidth,
                           //   filterQuality: FilterQuality.high,
                           // ),
-                          Image.network(
-                            token.featureImage,
-                            width: screenWidth * 0.4,
-                            height: screenHeight * 0.15,
-                            fit: BoxFit.cover,
+                          // Image.network(
+                          //   token.featureImage,
+                          //   width: screenWidth * 0.4,
+                          //   height: screenHeight * 0.15,
+                          //   fit: BoxFit.cover,
+                          // ),
+
+                          ClipRRect(
+                            child: Image.network(
+                              token.featureImage,
+                              width: screenWidth * 0.4,
+                              height: screenHeight * 0.15,
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.high,
+                            ),
                           ),
 
                           Positioned(
@@ -2040,8 +2046,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  // image: AssetImage('assets/icons/buyEcmContainerImage.png'),
-                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
+                   image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),

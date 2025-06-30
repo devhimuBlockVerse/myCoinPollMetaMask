@@ -18,6 +18,7 @@ class Assets {
   static const String assetsIconsCopyImg = 'assets/icons/copyImg.svg';
   static const String assetsIconsDistributionImage = 'assets/icons/distribution_image.png';
   static const String assetsIconsFrame = 'assets/icons/frame.png';
+  static const String assetsIconsTokens = 'assets/icons/tokens.png';
   static const String fontsMontserratMedium = 'assets/fonts/Montserrat-Medium.ttf';
   static const String fontsOxaniumRegular = 'assets/fonts/Oxanium-Regular.ttf';
   static const String fontsPoppinsMedium = 'assets/fonts/Poppins-Medium.ttf';
@@ -95,6 +96,7 @@ class Assets {
   static const String iconsEthCoin = 'assets/icons/EthCoin.png';
   static const String iconsFeatures = 'assets/icons/features.svg';
   static const String iconsFeedbackImg = 'assets/icons/feedbackImg.svg';
+  static const String iconsForgotpassbg = 'assets/icons/forgotpassbg.png';
   static const String iconsFrame = 'assets/icons/frame.png';
   static const String iconsFrameBg = 'assets/icons/frameBg.png';
   static const String iconsGift = 'assets/icons/gift.svg';
@@ -134,6 +136,7 @@ class Assets {
   static const String iconsMilestoneBG = 'assets/icons/milestoneBG.png';
   static const String iconsMilestoneStatFrameBg = 'assets/icons/milestoneStatFrameBg.png';
   static const String iconsMoney = 'assets/icons/money.png';
+  static const String iconsMycoinLOGO = 'assets/icons/mycoinLOGO.png';
   static const String iconsMycoinpolllogo = 'assets/icons/mycoinpolllogo.png';
   static const String iconsNews = 'assets/icons/news.svg';
   static const String iconsNewsFrame = 'assets/icons/newsFrame.png';

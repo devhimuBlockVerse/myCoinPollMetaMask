@@ -14,6 +14,7 @@ import '../../../data/services/api_service.dart';
 import '../../../domain/constants/api_constants.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../viewmodel/wallet_view_model.dart';
+import 'forgot_password.dart';
 
 
 class SignIn extends StatefulWidget {
@@ -222,7 +223,32 @@ class _SignInState extends State<SignIn> {
                                         keyboard: TextInputType.emailAddress,
                                         isPassword: true,
                                       ),
+                                      SizedBox(height: screenHeight * 0.02),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const ForgotPassword()),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: baseSize * 0.032,
+                                              height: 0.80,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(height: screenHeight * 0.04),
+
+
 
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -358,8 +384,6 @@ class _SignInState extends State<SignIn> {
 
                                         ],
                                       ),
-
-
 
                                     ],
                                   ),

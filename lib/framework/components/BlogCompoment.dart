@@ -28,7 +28,6 @@ class Blog extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-
       child: Container(
         // width: containerWidth,
          clipBehavior: Clip.none,

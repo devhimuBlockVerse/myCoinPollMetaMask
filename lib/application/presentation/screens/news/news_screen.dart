@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/news/trending_screen.dart';
-
 import '../../../../framework/components/BlogCompoment.dart';
 import '../../../../framework/components/CardNewsComponent.dart';
+import '../../../domain/constants/api_constants.dart';
+import '../../../domain/model/blogModel.dart';
+import '../../models/news_model.dart';
+import 'package:http/http.dart'as http;
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -13,17 +18,32 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+
+
   final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentPage = 0;
+  bool _showAllBlogs = false;
+  late Future<List<NewsModel>> _newsFuture;
 
-  final List<Map<String, String>> _trendingNews = List.generate(
-          4,
-          (index) => {
-                'imageUrl': "assets/icons/addSourceImage.png",
-                'source': "Mycoinpoll",
-                'timeAgo': "47mnt ago",
-                'headline': "Trump crypto soars as president offers dinner to top holders...",
-              });
+
+
+  @override
+  void initState() {
+    super.initState();
+    _newsFuture = fetchNewsData();
+  }
+
+  Future<List<NewsModel>> fetchNewsData() async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/get-news');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      return jsonData.map((e) => NewsModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to fetch news');
+    }
+  }
 
 
   @override
@@ -31,6 +51,8 @@ class _NewsScreenState extends State<NewsScreen> {
     _pageController.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,25 +109,40 @@ class _NewsScreenState extends State<NewsScreen> {
                   ),
                   child: ScrollConfiguration(
                     behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: FutureBuilder<List<NewsModel>>(
+                      future: _newsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator(color: Colors.white));
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text("Error: \${snapshot.error}", style: TextStyle(color: Colors.red)));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text("No news available", style: TextStyle(color: Colors.white)));
+                        }
+                        final newsList = snapshot.data!;
+                        final trendingNews = newsList.take(5).toList();
+                        final blogsToShow = _showAllBlogs ? newsList : newsList.take(10).toList();
 
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
+                        return SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(height: screenHeight * 0.01),
 
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: screenHeight * 0.01),
+                              ///Trending Section
+                              _buildTrendingSection(trendingNews),
 
-                          ///Trending Section
-                          RepaintBoundary(child: _buildTrendingSection()),
+                              SizedBox(height: screenHeight * 0.02),
 
-                          SizedBox(height: screenHeight * 0.02),
+                              ///Grid View News Section
 
-                          ///Grid View News Section
+                              _buildGridViewSection(blogsToShow),
+                            ],
+                          ),
+                        );
+                      },
 
-                          RepaintBoundary(child: _buildGridViewSection()),
-                        ],
-                      ),
                     ),
                   ),
                 ),
@@ -117,25 +154,18 @@ class _NewsScreenState extends State<NewsScreen> {
     );
   }
 
-  Widget _buildTrendingSection() {
-    double screenWidth =
-        MediaQuery.of(context).size.width;
-    double screenHeight =
-        MediaQuery.of(context).size.height;
+  Widget _buildTrendingSection(List<NewsModel> trendingNews) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
-    final baseSize =
-        isPortrait ? screenWidth : screenHeight;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+    double dotSize = baseSize * 0.025;
 
-    double dotSize =
-        baseSize * 0.025; // Responsive dot size
-
-    return Padding(
+   return Padding(
       padding: const EdgeInsets.all(1.0),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Trending Text
           Text(
             'Trending',
             style: TextStyle(
@@ -149,64 +179,56 @@ class _NewsScreenState extends State<NewsScreen> {
 
           SizedBox(height: screenHeight * 0.02),
 
-          // Card View with Fade and Scale
           SizedBox(
             height: screenHeight * 0.28,
             child: PageView.builder(
               controller: _pageController,
-              itemCount: _trendingNews.length,
-              onPageChanged: (index) {
-                setState(
-                    () => _currentPage = index);
-              },
+              itemCount: trendingNews.length,
+              onPageChanged: (index) => setState(() => _currentPage = index),
               itemBuilder: (context, index) {
+                final news = trendingNews[index];
+
                 return AnimatedBuilder(
                   animation: _pageController,
                   builder: (context, child) {
                     double value = 1.0;
-                    if (_pageController.position
-                        .haveDimensions) {
-                      value =
-                          (_pageController.page! -
-                                  index)
-                              .abs();
+                    if (_pageController.position.haveDimensions) {
+                      value = (_pageController.page! - index).abs();
                     }
 
-                    final scale =
-                        (1 - (value * 0.7))
-                            .clamp(0.8, 1.0);
-                    final opacity =
-                        (1 - (value * 0.5))
-                            .clamp(0.5, 1.0);
+                    final scale = (1 - (value * 0.7)).clamp(0.8, 1.0);
+                    final opacity = (1 - (value * 0.5)).clamp(0.5, 1.0);
 
                     return Center(
                       child: Opacity(
                         opacity: opacity,
                         child: Transform.scale(
-                          scale: Curves.easeOut
-                              .transform(scale),
+                          scale: Curves.easeOut.transform(scale),
                           child: Padding(
-                            padding: EdgeInsets
-                                .symmetric(
-                                    horizontal:
-                                        screenWidth *
-                                            0.02),
-                            child:
-                                CardNewsComponent(
-                              imageUrl:
-                                  _trendingNews[index]['imageUrl']!,
-                              source:
-                                  _trendingNews[
-                                          index]
-                                      ['source']!,
-                              timeAgo:
-                                  _trendingNews[
-                                          index][
-                                      'timeAgo']!,
-                              headline:
-                                  _trendingNews[
-                                          index][
-                                      'headline']!,
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                            child: CardNewsComponent(
+                              imageUrl: news.image,
+                              source: 'Mycoinpoll',
+                              timeAgo: news.createdAt,
+                              headline: news.title,
+
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => TrendingScreen(
+                                      blogData: {
+                                        'imageUrl': news.image,
+                                        'source': 'Mycoinpoll',
+                                        'date': news.createdAt,
+                                        'title': news.title,
+                                        'description': news.description,
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+
                             ),
                           ),
                         ),
@@ -217,28 +239,24 @@ class _NewsScreenState extends State<NewsScreen> {
               },
             ),
           ),
+
           SizedBox(height: screenHeight * 0.02),
 
-          // Dot Indicator
           SizedBox(
-            height: dotSize +
-                10, // slightly more than dot size
+            height: dotSize + 10,
             child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                _trendingNews.length,
-                (index) => Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: dotSize * 0.3),
+                trendingNews.length,
+                    (index) => Container(
+                  margin: EdgeInsets.symmetric(horizontal: dotSize * 0.3),
                   width: dotSize,
                   height: dotSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _currentPage == index
                         ? Colors.white
-                        : Colors.white
-                            .withOpacity(0.3),
+                        : Colors.white.withOpacity(0.3),
                   ),
                 ),
               ),
@@ -251,91 +269,23 @@ class _NewsScreenState extends State<NewsScreen> {
     );
   }
 
-  Widget _buildGridViewSection() {
+
+  Widget _buildGridViewSection(List<NewsModel> blogsToShow) {
 
 
-    var description = '''
-Blockchain technology is a decentralized, distributed ledger system that records transactions across multiple computers, ensuring data integrity, transparency, and security. Unlike traditional databases managed by a central authority, blockchain relies on a peer-to-peer network, making it resistant to tampering and fraud.
-
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-Key features include:
-
-- **Decentralization**: No central authority controls the data; all participants in the network share responsibility.
-- **Transparency**: All transactions are recorded on a public ledger accessible to all participants.
-- **Immutability**: Once data is recorded, it cannot be altered without consensus from the network.
-- **Security**: Transactions are secured through cryptographic algorithms.
-- **Smart Contracts**: Self-executing contracts with predefined rules that automate processes.
-
-
-Blockchain's applications extend beyond cryptocurrencies. In finance, it streamlines processes by eliminating intermediaries, reducing costs, and increasing transaction speed. Supply chains benefit from enhanced traceability and transparency, ensuring product authenticity and reducing fraud. In healthcare, blockchain can securely store patient records, ensuring data integrity and privacy.
-
-Despite its advantages, blockchain faces challenges such as scalability issues and energy consumption concerns, especially with consensus mechanisms like Proof of Work. However, ongoing developments, including the adoption of Proof of Stake, aim to address these challenges, making blockchain a transformative technology across various industries.
-''' ;
-
-    double screenWidth =
-        MediaQuery.of(context).size.width;
-    double screenHeight =
-        MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
-    final baseSize =
-        isPortrait ? screenWidth : screenHeight;
+    final baseSize = isPortrait ? screenWidth : screenHeight;
 
     final int crossAxisCount = screenWidth > 900 ? 4 : screenWidth > 600 ? 3 : 2;
-
     final double aspectRatio = isPortrait ? 166 / 216 : 180 / 200;
     final crossAxisSpacing = baseSize * 0.03;
     final mainAxisSpacing = baseSize * 0.015;
 
-     final List<Map<String, String>> blogList = List.generate(
-      10, (index) => {
-        'imageUrl': 'https://picsum.photos/id/${index + 30}/200/300',
-        'source': 'mycoinpoll',
-        'date': 'Oct ${20 + index % 10}, 2024',
-        'title': 'Understanding Blockchain: The Backbone of Cryptocurrencies',
-        'description': description,
-       },
-    );
-
-
 
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Align(
@@ -356,7 +306,7 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () => setState(() => _showAllBlogs = true),
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   minimumSize: const Size(0, 0),
@@ -379,17 +329,15 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
             ],
           ),
         ),
-
         SizedBox(height: screenHeight * 0.02),
 
-
-      /// ✅ Add a tiny spacing to control vertical gap
-
+        /// ✅ Add a tiny spacing to control vertical gap
         // GridView section
+
         SizedBox(
           width: double.infinity,
           child: GridView.builder(
-            itemCount: blogList.length,
+            itemCount: blogsToShow.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -400,28 +348,32 @@ Despite its advantages, blockchain faces challenges such as scalability issues a
 
             ),
             itemBuilder: (context, index) {
-              final blog = blogList[index];
+              final blog = blogsToShow[index];
               return Blog(
-                imageUrl: blog['imageUrl']!,
-                source: blog['source']!,
-                date: blog['date']!,
-                title: blog['title']!,
+                imageUrl: blog.image,
+                source: 'Mycoinpoll',
+                date: blog.createdAt,
+                title: blog.title,
                 onTap: (){
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => TrendingScreen(
-                        blogData: blog,
+                        blogData: {
+                          'imageUrl': blog.image,
+                          'source': 'Mycoinpoll',
+                          'date': blog.createdAt,
+                          'title': blog.title,
+                          'description': blog.description,
+                        },
                       ),
                     ),
                   );
-                  },
+                },
               );
-              },
+            },
           ),
         ),
-
-
       ],
     );
   }

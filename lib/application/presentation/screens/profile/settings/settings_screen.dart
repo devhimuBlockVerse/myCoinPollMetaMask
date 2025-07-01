@@ -95,134 +95,138 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(height: screenHeight * 0.05),
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: screenHeight * 0.05),
 
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
 
-                            child: Column(
-                              children: [
+                              child: Column(
+                                children: [
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/languageImg.svg',
-                                  text: 'Language',
-                                  onPressed: (){},
-                                ),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/languageImg.svg',
+                                    text: 'Language',
+                                    onPressed: (){},
+                                  ),
 
-                                SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/rateImg.svg',
-                                  text: 'Rate App',
-                                  onPressed: (){},
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/rateImg.svg',
+                                    text: 'Rate App',
+                                    onPressed: (){},
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/shareImg.svg',
-                                  text: 'Share App',
-                                  onPressed: (){},
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/shareImg.svg',
+                                    text: 'Share App',
+                                    onPressed: (){},
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/privecyImg.svg',
-                                  text: 'Privacy Policy',
-                                  onPressed: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/privecyImg.svg',
+                                    text: 'Privacy Policy',
+                                    onPressed: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/termsImg.svg',
-                                  text: 'Terms and Conditions',
-                                  onPressed: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/termsImg.svg',
+                                    text: 'Terms and Conditions',
+                                    onPressed: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/contactImg.svg',
-                                  text: 'Contact',
-                                  onPressed: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const ContactScreen()),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/contactImg.svg',
+                                    text: 'Contact',
+                                    onPressed: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const ContactScreen()),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/feedbackImg.svg',
-                                  text: 'Feedback',
-                                  onPressed: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const FeedbackScreen()),
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: screenHeight * 0.01),
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/feedbackImg.svg',
+                                    text: 'Feedback',
+                                    onPressed: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: screenHeight * 0.01),
 
-                                CustomSettingsActionButton(
-                                  icon: 'assets/icons/logoutImg.svg',
-                                  text: 'Logout',
-                                  onPressed: ()async{
-                                    setState(() {
-                                      isDisconnecting = true;
-                                    });
+                                  CustomSettingsActionButton(
+                                    icon: 'assets/icons/logoutImg.svg',
+                                    text: 'Logout',
+                                    onPressed: ()async{
+                                      setState(() {
+                                        isDisconnecting = true;
+                                      });
 
-                                    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                                      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
-                                    try{
-                                      await walletVM.disconnectWallet(context);
-                                      walletVM.reset();
-                                      if (context.mounted && !walletVM.isConnected) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => const BottomNavBar()),
-                                        );
+                                      try{
+                                        await walletVM.disconnectWallet(context);
+                                        walletVM.reset();
+                                        if (context.mounted && !walletVM.isConnected) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => const BottomNavBar()),
+                                          );
+                                        }
+                                      }catch(e){
+                                        debugPrint("Error Wallet Disconnecting : $e");
+                                      }finally{
+                                        if (mounted) {
+                                          setState(() {
+                                            isDisconnecting = false;
+                                          });
+                                        }
                                       }
-                                    }catch(e){
-                                      debugPrint("Error Wallet Disconnecting : $e");
-                                    }finally{
-                                      if (mounted) {
-                                        setState(() {
-                                          isDisconnecting = false;
-                                        });
-                                      }
-                                    }
-                                    // DisConnect The User Session and Navigate Back to Home Screen .
+                                      // DisConnect The User Session and Navigate Back to Home Screen .
 
 
 
 
-                                  },
-                                ),
+                                    },
+                                  ),
 
 
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
 
 
-                        ],
-                      )
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),

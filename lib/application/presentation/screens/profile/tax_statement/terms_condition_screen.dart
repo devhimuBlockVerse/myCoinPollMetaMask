@@ -85,136 +85,140 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
 
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
 
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "1. Types data we collect",
-                              textAlign: TextAlign.left,
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "1. Types data we collect",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  color: const Color(0xffFEFEFE),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  height: 1.3,
+                                  letterSpacing: 0.1,
+                                ),),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+
+
+                            AutoSizeText(
+                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: const Color(0xffFEFEFE),
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.3,
-                                letterSpacing: 0.1,
-                              ),),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-
-
-                          AutoSizeText(
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-
-
-                          SizedBox(height: screenHeight * 0.02),
-
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "2. Use of your personal data",
+                                fontWeight: FontWeight.w400,
+                                fontSize: getResponsiveFontSize(context, 12),
+                                height: 1.6,
+                                letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
+                                color: Colors.white,
+                              ),
                               textAlign: TextAlign.left,
+                            ),
+
+
+                            SizedBox(height: screenHeight * 0.02),
+
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "2. Use of your personal data",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  color: const Color(0xffFEFEFE),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  height: 1.3,
+                                  letterSpacing: 0.1,
+                                ),),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            AutoSizeText(
+                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: const Color(0xffFEFEFE),
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.3,
-                                letterSpacing: 0.1,
-                              ),),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          AutoSizeText(
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-
-                          SizedBox(height: screenHeight * 0.02),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "3. Disclosure of your personal data",
+                                fontWeight: FontWeight.w400,
+                                fontSize: getResponsiveFontSize(context, 12),
+                                height: 1.6,
+                                letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
+                                color: Colors.white,
+                              ),
                               textAlign: TextAlign.left,
+                            ),
+
+                            SizedBox(height: screenHeight * 0.02),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "3. Disclosure of your personal data",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  color: const Color(0xffFEFEFE),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  height: 1.3,
+                                  letterSpacing: 0.1,
+                                ),),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            AutoSizeText(
+
+                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                color: const Color(0xffFEFEFE),
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.3,
-                                letterSpacing: 0.1,
-                              ),),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          AutoSizeText(
-
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "4. Disclosure of your personal data",
+                                fontWeight: FontWeight.w400,
+                                fontSize: getResponsiveFontSize(context, 12),
+                                height: 1.6,
+                                letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
+                                color: Colors.white,
+                              ),
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                color: const Color(0xffFEFEFE),
-                                fontWeight: FontWeight.w600,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.3,
-                                letterSpacing: 0.1,
-                              ),),
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
-                          AutoSizeText(
-                            "Lorem ipsum dolor sit amen, consectetur adipescent alit, sed do eiusmod temper incident ut labored et dolore magna aliquant. Ut enim ad minim veniam, quips nostrum exercitation ullamco laboris nisi ut aliquip ex ea commode consequent.",
-                             style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
-                              color: Colors.white,
                             ),
-                            textAlign: TextAlign.left,
-                          ),
+                            SizedBox(height: screenHeight * 0.02),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "4. Disclosure of your personal data",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  color: const Color(0xffFEFEFE),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: getResponsiveFontSize(context, 16),
+                                  height: 1.3,
+                                  letterSpacing: 0.1,
+                                ),),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            AutoSizeText(
+                              "Lorem ipsum dolor sit amen, consectetur adipescent alit, sed do eiusmod temper incident ut labored et dolore magna aliquant. Ut enim ad minim veniam, quips nostrum exercitation ullamco laboris nisi ut aliquip ex ea commode consequent.",
+                               style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w400,
+                                fontSize: getResponsiveFontSize(context, 12),
+                                height: 1.6,
+                                letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
 
 
-                        ],
-                      )
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),

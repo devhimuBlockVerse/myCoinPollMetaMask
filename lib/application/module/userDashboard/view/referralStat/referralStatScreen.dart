@@ -171,233 +171,237 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                         horizontal: screenWidth * 0.01,
                         vertical: screenHeight * 0.02,
                       ),
-                      child: SingleChildScrollView(
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                        child: ConstrainedBox(
+                        child: SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: ConstrainedBox(
 
-                          constraints: BoxConstraints(
-                            minHeight: screenHeight - kToolbarHeight,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // SizedBox(height: screenHeight * 0.01),
-                              _buildHeader(context),
+                            constraints: BoxConstraints(
+                              minHeight: screenHeight - kToolbarHeight,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // SizedBox(height: screenHeight * 0.01),
+                                _buildHeader(context),
 
-                              SizedBox(height: screenHeight * 0.03),
+                                SizedBox(height: screenHeight * 0.03),
 
-                               /// Referral Link
-                              Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: const Color(0xff040C16).withOpacity(0.50),
-                                    borderRadius: BorderRadius.circular(12)
-                                ),
+                                 /// Referral Link
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xff040C16).withOpacity(0.50),
+                                      borderRadius: BorderRadius.circular(12)
+                                  ),
 
-                                child: ClipRRect(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: CustomLabeledInputField(
-                                      labelText: 'Referral Link:',
-                                      hintText: ' https://mycoinpoll.com?ref=125482458661',
-                                      isReadOnly: true,
-                                      trailingIconAsset: 'assets/icons/copyImg.svg',
-                                      onTrailingIconTap: () {
-                                        debugPrint('Trailing icon tapped');
-                                      },
+                                  child: ClipRRect(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: CustomLabeledInputField(
+                                        labelText: 'Referral Link:',
+                                        hintText: ' https://mycoinpoll.com?ref=125482458661',
+                                        isReadOnly: true,
+                                        trailingIconAsset: 'assets/icons/copyImg.svg',
+                                        onTrailingIconTap: () {
+                                          debugPrint('Trailing icon tapped');
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              SizedBox(height: screenHeight * 0.03),
+                                SizedBox(height: screenHeight * 0.03),
 
 
-                              Container(
-                                width: double.infinity,
-                                height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+                                Container(
+                                  width: double.infinity,
+                                  height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-                                decoration: BoxDecoration(
-                                  // color: const Color(0xFF01090B),
-                                  image: const DecorationImage(
-                                    image: AssetImage('assets/icons/buildStatCardBG.png'),
-                                    fit: BoxFit.fill,
+                                  decoration: BoxDecoration(
+                                    // color: const Color(0xFF01090B),
+                                    image: const DecorationImage(
+                                      image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
                                   ),
-                                  borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: horizontalPadding,
+                                      vertical: screenHeight * 0.014,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: _buildStatCard(
+                                            title: 'Total \nTransactions',
+                                            value: '202',
+                                            gradient: const LinearGradient(
+                                              begin: Alignment(0.99, 0.14),
+                                              end: Alignment(-0.99, -0.14),
+                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                            ),
+                                            imageUrl: "assets/icons/totalTransactionRefBg.png",
+                                          ),
+                                        ),
+                                        SizedBox(width: itemSpacing),
+                                        Expanded(
+                                          child: _buildStatCard(
+                                            title: 'Total ECM Bought',
+                                            value: '30.000',
+                                            gradient: const LinearGradient(
+                                              begin: Alignment(0.99, 0.14),
+                                              end: Alignment(-0.99, -0.14),
+                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                            ),
+                                            imageUrl: "assets/icons/totalEcmRefBg.png",
+                                          ),
+                                        ),
+                                        SizedBox(width: itemSpacing),
+                                        Expanded(
+                                          child: _buildStatCard(
+                                            title: 'Total Referral User',
+                                            value: '450',
+                                            gradient: const LinearGradient(
+                                              begin: Alignment(0.99, 0.14),
+                                              end: Alignment(-0.99, -0.14),
+                                              colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                            ),
+                                            imageUrl: "assets/icons/totalRefUserBg.png",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: horizontalPadding,
-                                    vertical: screenHeight * 0.014,
+
+
+                                SizedBox(height: screenHeight * 0.030),
+                                Text(
+                                  'Referral User List',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: getResponsiveFontSize(context, 17),
+                                    height: 1.6,
+                                    color: Colors.white,
                                   ),
+                                ),
+                                SizedBox(height: screenHeight * 0.030),
+
+
+                                /// Search Controller with Data Sorting Button
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff040C16),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.02,
+                                      vertical:  screenHeight * 0.001
+                                  ),
+
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Expanded(
-                                        child: _buildStatCard(
-                                          title: 'Total \nTransactions',
-                                          value: '202',
-                                          gradient: const LinearGradient(
-                                            begin: Alignment(0.99, 0.14),
-                                            end: Alignment(-0.99, -0.14),
-                                            colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                          ),
-                                          imageUrl: "assets/icons/totalTransactionRefBg.png",
+                                        flex: 2,
+                                        child: ResponsiveSearchField(
+                                          controller: _searchController,
+                                          // onChanged:  (value) => _onSearchChanged(),
+                                          onChanged:  (value) => _applyFiltersAndSort(),
+                                          svgAssetPath: 'assets/icons/search.svg',
+
                                         ),
                                       ),
-                                      SizedBox(width: itemSpacing),
+
+
+                                      /// Data Sorting  Button
                                       Expanded(
-                                        child: _buildStatCard(
-                                          title: 'Total ECM Bought',
-                                          value: '30.000',
-                                          gradient: const LinearGradient(
-                                            begin: Alignment(0.99, 0.14),
-                                            end: Alignment(-0.99, -0.14),
-                                            colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                          ),
-                                          imageUrl: "assets/icons/totalEcmRefBg.png",
-                                        ),
-                                      ),
-                                      SizedBox(width: itemSpacing),
-                                      Expanded(
-                                        child: _buildStatCard(
-                                          title: 'Total Referral User',
-                                          value: '450',
-                                          gradient: const LinearGradient(
-                                            begin: Alignment(0.99, 0.14),
-                                            end: Alignment(-0.99, -0.14),
-                                            colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                          ),
-                                          imageUrl: "assets/icons/totalRefUserBg.png",
+                                        flex: 1,
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: PopupMenuButton<SortReferralUserListOption>(
+                                              icon: SvgPicture.asset(
+                                                'assets/icons/sortingList.svg',
+                                                fit: BoxFit.contain,
+                                              ),
+                                              onSelected: (SortReferralUserListOption option) {
+                                                _sortData(option);
+                                              },
+                                              itemBuilder: (BuildContext context) => <PopupMenuEntry<SortReferralUserListOption>>[
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.dateDesc,
+                                                  child: Text('Date: Latest First'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.dateAsc,
+                                                  child: Text('Date: Oldest First'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.nameAsc,
+                                                  child: Text('Status: A-Z'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.nameDesc,
+                                                  child: Text('Status: Z-A'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.userIdAsc,
+                                                  child: Text('Amount: Low to High'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.userIdDesc,
+                                                  child: Text('Amount: High to Low'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.statusAsc,
+                                                  child: Text('Status: Active First'),
+                                                ),
+                                                const PopupMenuItem<SortReferralUserListOption>(
+                                                  value: SortReferralUserListOption.statusDesc,
+                                                  child: Text('Status: Inactive First'),
+                                                ),
+                                              ],
+                                            )
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
+
+                                SizedBox(height: screenHeight * 0.016),
 
 
-                              SizedBox(height: screenHeight * 0.030),
-                              Text(
-                                'Referral User List',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: getResponsiveFontSize(context, 17),
-                                  height: 1.6,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * 0.030),
+                                /// Table View
+                                ...[
 
-
-                              /// Search Controller with Data Sorting Button
-                              Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff040C16),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.02,
-                                    vertical:  screenHeight * 0.001
-                                ),
-
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: ResponsiveSearchField(
-                                        controller: _searchController,
-                                        // onChanged:  (value) => _onSearchChanged(),
-                                        onChanged:  (value) => _applyFiltersAndSort(),
-                                        svgAssetPath: 'assets/icons/search.svg',
-
-                                      ),
+                                  _displayData.isNotEmpty
+                                      ? buildReferralUserListTable(_displayData, screenWidth, context)
+                                      : Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(20),
+                                    child: const Text(
+                                      'No data found',
+                                      style: TextStyle(color: Colors.white70),
                                     ),
-
-
-                                    /// Data Sorting  Button
-                                    Expanded(
-                                      flex: 1,
-                                      child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: PopupMenuButton<SortReferralUserListOption>(
-                                            icon: SvgPicture.asset(
-                                              'assets/icons/sortingList.svg',
-                                              fit: BoxFit.contain,
-                                            ),
-                                            onSelected: (SortReferralUserListOption option) {
-                                              _sortData(option);
-                                            },
-                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortReferralUserListOption>>[
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.dateDesc,
-                                                child: Text('Date: Latest First'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.dateAsc,
-                                                child: Text('Date: Oldest First'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.nameAsc,
-                                                child: Text('Status: A-Z'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.nameDesc,
-                                                child: Text('Status: Z-A'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.userIdAsc,
-                                                child: Text('Amount: Low to High'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.userIdDesc,
-                                                child: Text('Amount: High to Low'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.statusAsc,
-                                                child: Text('Status: Active First'),
-                                              ),
-                                              const PopupMenuItem<SortReferralUserListOption>(
-                                                value: SortReferralUserListOption.statusDesc,
-                                                child: Text('Status: Inactive First'),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(height: screenHeight * 0.016),
-
-
-                              /// Table View
-                              ...[
-
-                                _displayData.isNotEmpty
-                                    ? buildReferralUserListTable(_displayData, screenWidth, context)
-                                    : Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(20),
-                                  child: const Text(
-                                    'No data found',
-                                    style: TextStyle(color: Colors.white70),
                                   ),
-                                ),
+                                ],
+
+
+
                               ],
-
-
-
-                            ],
+                            ),
                           ),
                         ),
                       ),

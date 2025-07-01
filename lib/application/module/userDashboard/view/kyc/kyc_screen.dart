@@ -133,117 +133,123 @@ class _KycScreenState extends State<KycScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: ListView(
-                    children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
 
 
-                      Container(
-                        width: screenWidth,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/icons/selectDocumentBg.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            "Select Your Documents:",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w400,
-                              fontSize: getResponsiveFontSize(context, 12),
-                              height: 1.6,
-                              color: Colors.white,)
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.02,),
-
-
-
-                      /// Stat Cards
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: List.generate(_documentTypes.length, (index) {
-                          final docType = _documentTypes[index];
-                          return Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                right: index < _documentTypes.length - 1 ? itemSpacing : 0,
-                              ),
-                              child: _buildStatCard(
-                                title: docType['title']!,
-                                emojiIcon: docType['icon']!,
-                                selected: selectedCardIndex == index,
-                                onTap: () {
-                                  setState(() {
-                                    selectedCardIndex = index;
-                                  });
-                                  print("Tapped card $index, new index: $index");
-                                },
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.03),
-
-                      Container(
-                        width: screenWidth,
-                        decoration:const BoxDecoration(
-                          image:  DecorationImage(
-                            image: AssetImage('assets/icons/estimatedBG.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              flex: 1,
-                              child: SvgPicture.asset(
-                                'assets/icons/timerImg.svg',
-                                width: screenWidth * 0.04,
+                          Container(
+                            width: screenWidth,
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage('assets/icons/selectDocumentBg.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),
-                            SizedBox(width: screenWidth * 0.02),
-                            Flexible(
-                              flex: 5,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  "Estimated Completion Time: 5-10 minutes",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: getResponsiveFontSize(context, 12),
-                                    height: 1.6,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                "Select Your Documents:",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: getResponsiveFontSize(context, 12),
+                                  height: 1.6,
+                                  color: Colors.white,)
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02,),
+
+
+
+                          /// Stat Cards
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: List.generate(_documentTypes.length, (index) {
+                              final docType = _documentTypes[index];
+                              return Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    right: index < _documentTypes.length - 1 ? itemSpacing : 0,
+                                  ),
+                                  child: _buildStatCard(
+                                    title: docType['title']!,
+                                    emojiIcon: docType['icon']!,
+                                    selected: selectedCardIndex == index,
+                                    onTap: () {
+                                      setState(() {
+                                        selectedCardIndex = index;
+                                      });
+                                      print("Tapped card $index, new index: $index");
+                                    },
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+                          Container(
+                            width: screenWidth,
+                            decoration:const BoxDecoration(
+                              image:  DecorationImage(
+                                image: AssetImage('assets/icons/estimatedBG.png'),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  flex: 1,
+                                  child: SvgPicture.asset(
+                                    'assets/icons/timerImg.svg',
+                                    width: screenWidth * 0.04,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                SizedBox(width: screenWidth * 0.02),
+                                Flexible(
+                                  flex: 5,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      "Estimated Completion Time: 5-10 minutes",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontStyle: FontStyle.italic,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: getResponsiveFontSize(context, 12),
+                                        height: 1.6,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.06),
+
+
+                          /// _kycVerification
+                           if (selectedCardIndex >= 0) _kycVerification(),
+
+                        ],
                       ),
-
-                      SizedBox(height: screenHeight * 0.06),
-
-
-                      /// _kycVerification
-                       if (selectedCardIndex >= 0) _kycVerification(),
-
-                    ],
+                    ),
                   ),
                 ),
               ),

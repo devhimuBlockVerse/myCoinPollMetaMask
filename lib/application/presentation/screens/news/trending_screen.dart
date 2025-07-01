@@ -27,7 +27,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
     double responsiveFontSize(double baseSize) => screenWidth * (baseSize / 375);
 
     final String title = widget.blogData['title'] ?? '';
-    final String description = widget.blogData['description'] ?? ''; // here will be full description for the blog or news
+    final String description = widget.blogData['description'] ?? '';
     final String imageUrl = widget.blogData['imageUrl'] ?? '';
 
 
@@ -121,6 +121,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
 
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
                                     child: Text(
@@ -139,11 +140,11 @@ class _TrendingScreenState extends State<TrendingScreen> {
                                     color: Colors.white,
                                     onPressed: ()=> Share.share(
                                       // Replace the imageUrl with the actual URL/Src link (In Future)
-                                      '$imageUrl\n\n$title\n\n$description',
                                       subject: title,
+                                      '$imageUrl\n\n$title\n\n$description',
 
                                     ),
-                                    width: screenWidth * 0.07,
+                                     width: screenWidth * 0.07,
                                     height: screenWidth * 0.07,
                                   )
 
@@ -206,9 +207,6 @@ class _TrendingScreenState extends State<TrendingScreen> {
     return htmlText.replaceAll(exp, '');
   }
 }
-
-
-
 
 
 

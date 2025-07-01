@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../framework/widgets/video_player.dart';
+import '../../models/get_lessons.dart';
 
 
 class LessonScreen extends StatefulWidget {
-  const LessonScreen({super.key});
+  final LessonModel lesson;
+
+  const LessonScreen({super.key, required this.lesson});
 
   @override
   State<LessonScreen> createState() => _LessonScreenState();
@@ -19,9 +22,11 @@ class _LessonScreenState extends State<LessonScreen> {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
+
+    final lesson = widget.lesson;
 
 
     return  Scaffold(
@@ -84,33 +89,43 @@ class _LessonScreenState extends State<LessonScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                    child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
 
-                          _headerSection(context),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
 
-                          SizedBox(height: screenHeight * 0.03),
-                          const VideoPlayerService(
-                            videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
-                          ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
 
-                          SizedBox(height: screenHeight * 0.03),
+                            _headerSection(context,lesson),
 
-                          _description(),
-
-                          SizedBox(height: screenHeight * 0.03),
-
-                          _disclaimerSection(),
-
-                          SizedBox(height: screenHeight * 0.03),
+                            SizedBox(height: screenHeight * 0.03),
+                             VideoPlayerService(
+                              // videoUrl: 'https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4',
+                              // videoUrl: 'https://youtu.be/ACDyJ2sbCbk',
+                              videoUrl: 'https://youtu.be/${lesson.videoId}',
+                            ),
 
 
-                        ],
-                      )
+
+                            SizedBox(height: screenHeight * 0.03),
+
+                            _description(lesson),
+
+                            SizedBox(height: screenHeight * 0.03),
+
+                            _disclaimerSection(),
+
+                            SizedBox(height: screenHeight * 0.03),
+
+
+                          ],
+                        )
+                    ),
                   ),
                 ),
               ),
@@ -121,9 +136,7 @@ class _LessonScreenState extends State<LessonScreen> {
     );
   }
 
-
-
-  Widget _headerSection(BuildContext context) {
+  Widget _headerSection(BuildContext context, LessonModel lesson) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -152,7 +165,8 @@ class _LessonScreenState extends State<LessonScreen> {
                 children: [
                   Flexible(
                     child: AutoSizeText(
-                      'Blockchain Basics & Analysis',
+                      // 'Blockchain Basics & Analysis',
+                      lesson.title,
                       style: TextStyle(
                         color: const Color(0xFFFFF5ED),
                         fontFamily: 'Poppins',
@@ -166,7 +180,8 @@ class _LessonScreenState extends State<LessonScreen> {
 
                   Flexible(
                     child: AutoSizeText(
-                      'Explore how blockchain transforms industries with secure and transparent data handling.',
+                      // 'Explore how blockchain transforms industries with secure and transparent data handling.',
+                      lesson.shortDescription,
                       style: TextStyle(
                         color: const Color(0xFFFFF5ED),
                         fontFamily: 'Poppins',
@@ -185,6 +200,123 @@ class _LessonScreenState extends State<LessonScreen> {
                 'assets/icons/lessonHeaderImg.png',
                 height: screenHeight * 0.12,
                 fit: BoxFit.contain,
+              ),
+              // child: Image.network(
+              //   lesson.image,
+              //   height: screenHeight * 0.12,
+              //   fit: BoxFit.contain,
+              // ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  // Widget _description(LessonModel lesson){
+  //   final screenWidth = MediaQuery.of(context).size.width;
+  //   final screenHeight = MediaQuery.of(context).size.height;
+  //
+  //   double titleFontSize = screenWidth * 0.032;
+  //   double bodyFontSize = screenWidth * 0.027;
+  //   double containerHeight = screenHeight * 0.22;
+  //
+  //
+  //   return Center(
+  //     child: Container(
+  //       width: double.infinity,
+  //       height: containerHeight,
+  //       padding: EdgeInsets.symmetric(
+  //         horizontal: screenWidth * 0.04,
+  //         vertical: screenHeight * 0.014,
+  //       ),
+  //       decoration: BoxDecoration(
+  //         image: const DecorationImage(
+  //           image: AssetImage("assets/icons/frameBg.png"),
+  //           fit: BoxFit.fill,
+  //         ),
+  //         borderRadius: BorderRadius.circular(3),
+  //       ),
+  //       child: SingleChildScrollView(
+  //         physics: const BouncingScrollPhysics(),
+  //         child: Text.rich(
+  //           TextSpan(
+  //             children: [
+  //               TextSpan(
+  //                 // text: 'A Deep Dive Into Blockchain Analysis and Fundamentasdasals\n\n',
+  //                 text:"${lesson.title}\n\n",
+  //                 style: TextStyle(
+  //                   color: Colors.white.withOpacity(0.9),
+  //                   fontSize: titleFontSize,
+  //                   fontFamily: 'Poppins',
+  //                   fontWeight: FontWeight.w500, // Poppins-Medium
+  //                   height: 1.6,
+  //                 ),
+  //               ),
+  //
+  //               TextSpan(
+  //                 text: lesson.description,
+  //
+  //                 // 'Blockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
+  //                 style: TextStyle(
+  //                   color: Colors.white.withOpacity(0.9),
+  //                   fontSize: bodyFontSize,
+  //                   fontFamily: 'Poppins', // Poppins-Regular
+  //                   fontWeight: FontWeight.normal,
+  //                   height: 1.6,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  Widget _description(LessonModel lesson) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double titleFontSize = screenWidth * 0.032;
+    double bodyFontSize = screenWidth * 0.027;
+
+    return Center(
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.04,
+          vertical: screenHeight * 0.014,
+        ),
+        decoration: BoxDecoration(
+          image: const DecorationImage(
+            image: AssetImage("assets/icons/frameBg.png"),
+            fit: BoxFit.fill,
+          ),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              lesson.title,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: titleFontSize,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+                height: 1.6,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.01),
+            Text(
+              _removeHtmlTags(lesson.description),
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: bodyFontSize,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.normal,
+                height: 1.6,
               ),
             ),
           ],
@@ -308,60 +440,11 @@ class _LessonScreenState extends State<LessonScreen> {
   }
 
 
-  Widget _description(){
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    double titleFontSize = screenWidth * 0.032;
-    double bodyFontSize = screenWidth * 0.027;
-    double containerHeight = screenHeight * 0.22;
-
-
-    return Center(
-      child: Container(
-        width: double.infinity,
-        height: containerHeight,
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.04,
-          vertical: screenHeight * 0.014,
-        ),
-        decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage("assets/icons/frameBg.png"),
-            fit: BoxFit.fill,
-          ),
-          borderRadius: BorderRadius.circular(3),
-        ),
-        child: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: 'A Deep Dive Into Blockchain Analysis and Fundamentals\n\n',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: titleFontSize,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500, // Poppins-Medium
-                  height: 1.6,
-                ),
-              ),
-              TextSpan(
-                text:
-                'Blockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontSize: bodyFontSize,
-                  fontFamily: 'Poppins', // Poppins-Regular
-                  fontWeight: FontWeight.normal,
-                  height: 1.6,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
+String _removeHtmlTags(String htmlText) {
+  final exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+  return htmlText.replaceAll(exp, '');
+}
 

@@ -1,14 +1,20 @@
 
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/InfoCard.dart';
-import '../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../framework/components/badgeComponent.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
@@ -18,8 +24,12 @@ import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
+import '../../../data/services/api_service.dart';
+import '../../../data/services/download_white_paper.dart';
+import '../../countdown_timer_helper.dart';
+import '../../models/token_model.dart';
+import '../../viewmodel/countdown_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
-import 'home_screen.dart';
 
 
 class ViewTokenScreen extends StatefulWidget {
@@ -29,7 +39,7 @@ class ViewTokenScreen extends StatefulWidget {
   State<ViewTokenScreen> createState() => _ViewTokenScreenState();
 }
 
-class _ViewTokenScreenState extends State<ViewTokenScreen> {
+class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObserver {
 
   String selectedBadge = 'AIRDROP';
 
@@ -57,15 +67,20 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
   double _maxECM = 0.0;
   bool isDisconnecting = false;
 
+  List<TokenModel> tokens = [];
+  bool isLoading = true;
+
 
   @override
   void initState() {
     super.initState();
+    fetchTokens();
     ecmController.addListener(_updatePayableAmount);
+    WidgetsBinding.instance.addObserver(this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-       try {
+      try {
         final stageInfo = await walletVM.getCurrentStageInfo();
         final ethPrice = stageInfo['ethPrice'];
         final usdtPrice = stageInfo['usdtPrice'];
@@ -73,14 +88,24 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
         final maxECM = stageInfo['target'];
         final stageIndex = stageInfo['stageIndex'];
 
-        setState(() {
-          _stageIndex = stageIndex;
-          _currentECM = currentECM;
-          _maxECM = maxECM;
-          _ethPrice = ethPrice;
-          _usdtPrice = usdtPrice;
+        if(walletVM.isConnected){
+          setState(() {
+            _stageIndex = stageIndex;
+            _currentECM = currentECM;
+            _maxECM = maxECM;
+            _ethPrice = ethPrice;
+            _usdtPrice = usdtPrice;
 
-        });
+          });
+        }else{
+          setState(() {
+
+            _ethPrice = ethPrice;
+            _usdtPrice = usdtPrice;
+
+          });
+        }
+
       } catch (e) {
         if (mounted) {
           Utils.flushBarErrorMessage("Please connect your wallet", context);
@@ -88,8 +113,49 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
         }
       }
     });
+
+  }
+  Future<void> fetchTokens() async {
+    try {
+      final response = await ApiService().fetchTokens();
+      setState(() {
+        tokens = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching tokens: $e');
+      setState(() => isLoading = false);
+    }
   }
 
+  Future<void> _initializeWalletData() async {
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    await walletVM.init(context);
+    try {
+
+      final ethPrice = walletVM.ethPrice;
+      final usdtPrice = walletVM.usdtPrice;
+      final currentECM = walletVM.currentECM;
+      final maxECM = walletVM.maxECM;
+      final stageIndex = walletVM.stageIndex;
+
+
+      setState(() {
+        _stageIndex = stageIndex;
+        _currentECM = currentECM;
+        _maxECM = maxECM;
+        _ethPrice = ethPrice;
+        _usdtPrice = usdtPrice;
+
+      });
+
+    } catch (e) {
+      if (mounted) {
+        Utils.flushBarErrorMessage("Please connect your wallet", context);
+
+      }
+    }
+  }
 
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
@@ -100,18 +166,70 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
   }
 
+
+  Future<void> downloadWhitepaperPdf(BuildContext context) async {
+    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper.pdf';
+    const String fileName = 'ECM-Whitepaper.pdf';
+
+    try {
+      // Request permission
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Storage permission is required.')),
+        );
+        return;
+      }
+
+      // ✅ Save to Download folder directly
+      final directory = Directory('/storage/emulated/0/Download');
+
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
+
+      final filePath = '${directory!.path}/$fileName';
+
+      // Start downloading
+      final dio = Dio();
+      await dio.download(fileUrl, filePath);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Downloaded to: $filePath')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Download failed: $e')),
+      );
+    }
+  }
+
+
   @override
   void dispose() {
     ecmController.removeListener(_updatePayableAmount);
     ecmController.dispose();
     usdtController.dispose();
     readingMoreController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      print("App resumed from background, refreshing wallet data.");
+      _initializeWalletData();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
@@ -124,14 +242,12 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
           width: screenWidth,
           height: screenHeight,
           decoration: const BoxDecoration(
-            // color: const Color(0xFF0B0A1E),
-            color: Color(0xFF01090B),
+             color: Color(0xFF01090B),
             image: DecorationImage(
               image: AssetImage('assets/icons/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
               filterQuality: FilterQuality.medium,
-
             ),
           ),
           child: Column(
@@ -154,13 +270,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                 ),
               ),
               /// Main Scrollable Content
+              isLoading || tokens.isEmpty ? const Center(child: CircularProgressIndicator()) :
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    top: screenHeight * 0.01,
-                    left: screenWidth * 0.01,
-                    right: screenWidth * 0.01,
-                    bottom: screenHeight * 0.02,
+
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.02,
+                    vertical: screenHeight * 0.02,
                   ),
                   child: ScrollConfiguration(
                     behavior: const ScrollBehavior().copyWith(overscroll: false),
@@ -175,9 +291,10 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         children: [
 
 
-                          /// White Paper Section
+                        /// White Paper Section
+                          // _buildTokenCard(),
+                          ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
-                          _buildTokenCard(),
                           SizedBox(height: screenHeight * 0.04),
 
 
@@ -186,36 +303,43 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
                           SizedBox(height: screenHeight * 0.04),
 
-                           InfoCard(
-                            label1: 'ECM',
-                            label2: 'eCommerce Coin (ECM)',
-                            description:
-                            'ECM Coin (eCommerce Coin) is a blockchain-based crypto- currency built to transform the e-commerce industry. Powered by Ethereum, it supports a decentralized ecosystem including a crypto exchange, staking platform, and metaverse project. ECM Coin ensures secure, transparent, and efficient transactions. A dedicated blockchain launch is planned for 2025.',
-                            imagePath: 'assets/icons/ecmLogo.png',
-                            backgroundImagePath: 'assets/icons/bg.png',
-                             width: screenWidth ,
-                          ),
+                            InfoCard(
+                              label1: tokens.first.symbol,
+                              label2: tokens.first.fullName,
+                              description: tokens.first.description
+                                  .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
+                                  .trim(),
+                              imagePath: 'assets/icons/ecmLogo.png',
+                              // imagePath: tokens.first.logo,
+                              backgroundImagePath: 'assets/icons/bg.png',
+                              width: screenWidth ,
+                            ),
 
-                          /// Submit & Clear Button Section
+                            /// Submit & Clear Button Section
 
-                          SizedBox(height: screenHeight * 0.04),
+                            SizedBox(height: screenHeight * 0.04),
 
-                          InfoCard(
-                            label1: 'METAFUSION LABS',
-                            label2: 'Founder',
-                            description: 'METAFUSION LABS LLC, S.R.L. is a token issuance company company based in Republic of Panama, operating under the legal name "METAFUSION LABS LLC, S.R.L." The company is registered at Global Bank Building, 50th Street, 181h Level, Republic of Panama, with Folio No. 15576379.',
-                             imagePath: 'assets/icons/metaFutionImg.png',
-                            // backgroundImagePath: 'assets/icons/bg.png',
-                            width: screenWidth ,
-                          ),
+                            InfoCard(
+                              // label1: 'METAFUSION LABS',
+                              label1: tokens.first.tokenCompany,
+                              label2: 'Founder',
+                              description: tokens.first.companyDetails,
+                              imagePath: 'assets/icons/metaFutionImg.png',
+                              // backgroundImagePath: 'assets/icons/bg.png',
+                              width: screenWidth ,
+                            ),
 
-                          SizedBox(height: screenHeight * 0.04),
+                            SizedBox(height: screenHeight * 0.04),
 
-                          _strategicTokenSection(),
+                            _strategicTokenSection(tokens.first),
+
+
+
+
 
                           Center(
                             child: Container(
-                              width: screenWidth * 0.7,
+                              width: screenWidth * 0.82,
                               height: screenHeight * 0.19,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
@@ -229,7 +353,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                 alignment: Alignment.centerRight,
                                 child: Padding(
                                   padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                  child:  Row(
+                                   child:  Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
@@ -254,7 +378,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                             fontFamily: 'Poppins',
                                             fontWeight: FontWeight.w500,
                                             height: 1.3,
-                                            fontSize: baseSize * 0.032,
+                                            // fontSize: baseSize * 0.036,
+                                            fontSize: baseSize * 0.045,
                                           ),
                                         ),
                                       ),
@@ -306,11 +431,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
   /// White Paper section With timer
-  Widget _buildTokenCard() {
+  Widget _buildTokenCard(BuildContext context, TokenModel token) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+    double scaleWidth(double size) => size * screenWidth / baseWidth;
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -321,23 +451,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
           /// Token Card
           Container(
             width: screenWidth,
-            // constraints: BoxConstraints(maxWidth: screenWidth * 0.95),
-            decoration: BoxDecoration(
-
-              border: Border.all(
-                  color: Colors.transparent
-              ),
-              image:const DecorationImage(
+            decoration:const BoxDecoration(
+              image: DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
-                fit: BoxFit.fill,
-                filterQuality: FilterQuality.medium,
-
+                 fit: BoxFit.fill,
               ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.025),
               child: Column(
                 children: [
+
                   /// Image and Info
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,47 +470,50 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                       Stack(
                         children: [
 
-                          Image.asset(
-                            'assets/icons/tokens.png',
-                            width: screenWidth * 0.4,
-                            height: screenHeight * 0.15,
-                            fit: BoxFit.fitWidth,
-                            filterQuality: FilterQuality.medium,
-
+                          ClipRRect(
+                             child: Image.network(
+                              token.featureImage,
+                              width: screenWidth * 0.4,
+                              height: screenHeight * 0.15,
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.high,
+                            ),
                           ),
+
 
                           Positioned(
                             top: screenHeight * 0.01,
                             left: screenWidth * 0.02,
                             right: screenWidth * 0.01,
                             child: Row(
-                              children: [
-                                BadgeComponent(
-                                  text: 'AIRDROP',
-                                  isSelected: selectedBadge == 'AIRDROP',
-                                  onTap: () => _onBadgeTap('AIRDROP'),
-                                ),
-                                SizedBox(width: screenWidth * 0.01),
-                                BadgeComponent(
-                                  text: 'INITIAL',
-                                  isSelected: selectedBadge == 'INITIAL',
-                                  onTap: () => _onBadgeTap('INITIAL'),
-                                ),
-                              ],
+                              children: token.tags.map((tag) {
+                                final normalizedTag = tag.toUpperCase();
+                                return Padding(
+                                  padding: EdgeInsets.only(right: screenWidth * 0.01),
+                                  child: BadgeComponent(
+                                    text: normalizedTag,
+                                    isSelected: selectedBadge == normalizedTag,
+                                    onTap: () => _onBadgeTap(normalizedTag),
+                                  ),
+                                );
+                              }).toList(),
+
                             ),
                           ),
 
                         ],
                       ),
-                      SizedBox(width: baseSize * 0.02),
+
+                       SizedBox(width: baseSize * 0.02),
 
                       /// Token details
-                      Expanded(
+                      Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'eCommerce Coin (ECM)',
+                              // 'eCommerce Coin (ECM)',
+                              token.fullName,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
@@ -399,7 +526,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                             ),
                             SizedBox(height: baseSize * 0.01),
                             Text(
-                              'Join the ECM Token ICO to revolutionize e-commerce with blockchain.',
+                              // 'Join the ECM Token ICO to revolutionize e-commerce',
+                              token.shortDescription,
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
@@ -412,50 +540,23 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                             SizedBox(height: baseSize * 0.01),
 
                             /// Timer Section
-                            Padding(
-                              padding: EdgeInsets.all(baseSize * 0.01),
-                              child: Container(
-                                // width: double.infinity,
-                                width: screenWidth,
-                                padding: EdgeInsets.symmetric(
-                                  // horizontal: baseSize * 0.01,
-                                  // vertical: baseSize * 0.015,
-                                  horizontal: baseSize * 0.02,
-                                  vertical: baseSize * 0.015,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0x4D1F1F1F),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    width: 0.3,
-                                    color: const Color(0x4DFFFFFF),
+
+                            if (tokens.isNotEmpty && tokens.first.stageStatus) ...[
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: baseSize * 0.01, vertical: baseSize * 0.01),
+                                child: ChangeNotifierProvider(
+                                  create: (_) => CountdownTimerProvider(
+                                    targetDateTime: DateTime.parse(tokens.first.stageDate),
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: IntrinsicHeight(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      _timeBlock(label: 'Days', value: '02'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Hours', value: '23'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Minutes', value: '05'),
-                                      _timerColon(baseSize),
-                                      _timeBlock(label: 'Seconds', value: '56'),
-                                    ],
+                                  child: CountdownTimer(
+                                    scaleWidth: scaleWidth,
+                                    scaleHeight: scaleHeight,
+                                    scaleText: scaleText,
                                   ),
                                 ),
                               ),
-                            ),
+                            ]
+
                           ],
                         ),
                       ),
@@ -468,7 +569,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Supporter: 726',
+                        // 'Supporter: 726',
+                        'Supporters: ${token.supporter}',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -484,7 +586,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Raised: 1.12%',
+                            // 'Raised: 1.12%',
+                            'Raised: ${token.sellPercentage.toStringAsFixed(2)}%',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -497,7 +600,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                             ),
                           ),
                           Text(
-                            '1118527.50 / 10000000.00',
+                            // '1118527.50 / 10000000.00',
+                            '${token.alreadySell} / ${token.sellTarget}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -515,8 +619,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                   ),
                   SizedBox(height: baseSize * 0.02),
 
-                  const LinearProgressIndicator(
-                    value: 0.5,
+                   LinearProgressIndicator(
+                    // value: 0.5,
+                    value: token.sellPercentage / 100,
                     minHeight: 2,
                     backgroundColor: Colors.white24,
                     color: Colors.cyanAccent,
@@ -535,21 +640,20 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             // SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/xIcon.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            ),
+                            if (token.socialMedia?.twitter != null && token.socialMedia!.twitter!.isNotEmpty)
+                              _imageButton(
+                                context,
+                                'assets/icons/xIcon.svg',
+                                token.socialMedia!.twitter!,
+
+                              ),
                             SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/teleImage.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            )
+                            if (token.socialMedia?.telegram != null && token.socialMedia!.telegram!.isNotEmpty)
+                              _imageButton(
+                                context,
+                                'assets/icons/teleImage.svg',
+                                token.socialMedia!.telegram!,
+                              )
                           ],
                         ),
                       ),
@@ -567,15 +671,23 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           Color(0xFF2680EF),
                           Color(0xFF1CD494),
                         ],
-                        onTap: () {
-                          debugPrint('Button tapped');
+
+                        onTap: () async {
+                           await DownloadService.downloadWhitepaperPdf(context);
+
                         },
                       ),
 
                       BlockButtonV2(
                         text: 'Official Website',
-                        onPressed: () {
+                        onPressed: () async{
                           debugPrint('Button tapped!');
+                          const url = 'https://ecmcoin.com/';
+                          if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                          } else {
+                          debugPrint('Could not launch $url');
+                          }
                         },
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -598,14 +710,23 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
   }
 
   /// _imageButton Widget
-  Widget _imageButton(BuildContext context, String imagePath, VoidCallback onTap) {
+  Widget _imageButton(BuildContext context, String imagePath,  String url) {
     final screenWidth = MediaQuery.of(context).size.width;
     final imageSize = screenWidth * 0.04; // 5% of screen width
 
     final isSvg = imagePath.toLowerCase().endsWith('.svg');
 
     return InkWell(
-      onTap: onTap,
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not open the link')),
+          );
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white12,
@@ -631,66 +752,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
       ),
     );
   }
-  /// Countdown Widget
-  Widget _timerColon(double baseSize) {
-    return Baseline(
-      baseline: baseSize * 0.01,
-      baselineType: TextBaseline.alphabetic,
-      child: Text(
-        ":",
-        style: TextStyle(
-          fontSize: baseSize * 0.045,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-  Widget _timeBlock({required String label, required String value}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      // mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 4),
-
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
-            border: Border.all(color: const Color(0xFF2B2D40), width: 0.25),
-            borderRadius: BorderRadius.circular(2),
-          ),
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-              height: 0.2,
-              letterSpacing: 0.16,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        const SizedBox(height: 1),
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontSize: 8,
-            height: 1.2,
-            color: Colors.grey,
-          ),
-        ),
-      ],
-    );
-  }
-
-
 
   /// Buy ECM Section
-   Widget _buildBuyEcmSection() {
+  Widget _buildBuyEcmSection() {
     final Size screenSize = MediaQuery.of(context).size;
 
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -703,7 +767,21 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
       padding: const EdgeInsets.all(2.0),
       child: Column(
         children: [
-
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Initial Coin Offering',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                  // fontSize: baseSize * 0.045,
+                  fontSize: getResponsiveFontSize(context, 16),
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: screenHeight * 0.02),
           Align(
             alignment: Alignment.center,
@@ -714,14 +792,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  // image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
-
                 ),
               ),
               child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
-
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _updatePayableAmount();
+                });
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -730,10 +810,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                     const SizedBox(height: 18),
 
                     // Stage &  MAx Section
+
                     ECMProgressIndicator(
-                      stageIndex: _stageIndex,
-                      currentECM: _currentECM,
-                      maxECM: _maxECM,
+                      stageIndex: walletVM.stageIndex,
+                      currentECM: walletVM.currentECM,
+                      maxECM:  walletVM.maxECM,
                     ),
 
 
@@ -746,50 +827,61 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                       ),
                     ),
                     /// Address Section
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Your Address:',
-                            hintText: walletVM.walletAddress,
-                            controller: readingMoreController,
-                            isReadOnly: true,
-                          ),
-                           SizedBox(height: screenHeight * 0.02),
-                          CustomLabeledInputField(
-                            labelText: 'Referral Link:',
-                            hintText: ' https://mycoinpoll.com?ref=125482458661',
-                            controller: referredController,
-                            isReadOnly: true,
-                            trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
-                              debugPrint('Trailing icon tapped');
-                            },
-                          ),
-                           SizedBox(height: screenHeight * 0.02),
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                          CustomLabeledInputField(
-                            labelText: 'Referred By:',
-                            hintText: 'Show and Enter Referred id..',
-                            controller: referredController,
-                            isReadOnly:
-                            false, // or false
-                          ),
+                    if (walletVM.isConnected)...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+                            CustomLabeledInputField(
+                              labelText: 'Your Address:',
+                              // hintText: walletVM.walletAddress,
+                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                                  ? walletVM.walletAddress
+                                  : 'Not connected',
+                              controller: readingMoreController,
+                              isReadOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referral Link:',
+                              hintText: ' https://mycoinpoll.com?ref=125482458661',
+                              controller: referredController,
+                              isReadOnly: true,
+                              trailingIconAsset: 'assets/icons/copyImg.svg',
+                              onTrailingIconTap: () {
+                                debugPrint('Trailing icon tapped');
+                                Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('TxnHash copied to clipboard'),
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referred By:',
+                              hintText: '0x0000000000000000000000000000000000000000',
+                              controller: referredController,
+                              isReadOnly:
+                              false, // or false
+                            ),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.9,
-                      child: const Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                        height: 20,
+                      SizedBox(
+                        width: screenWidth * 0.9,
+                        child: const Divider(
+                          color: Colors.white12,
+                          thickness: 1,
+                          height: 20,
+                        ),
                       ),
-                    ),
+                    ],
 
                     ///Action Buttons
                     Padding(
@@ -803,29 +895,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                               text: 'Buy with ETH',
                               icon: 'assets/icons/eth.png',
                               isActive: isETHActive,
-                              onPressed: ()async {
-                                try {
-                                  final stageInfo = await walletVM.getCurrentStageInfo();
-                                  final ethPrice = stageInfo['ethPrice'];
-
-                                  setState(() {
-                                    _ethPrice = ethPrice;
-                                    isETHActive = true;
-                                    isUSDTActive = false;
-
-                                  });
-                                  _updatePayableAmount();
-
-                                } catch (e) {
-
-                                  if (context.mounted) {
-                                    debugPrint('Error fetching stage info: ${e.toString()}');
-                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
-
-                                  }
-                                }
-
+                              onPressed: () {
+                                if (isETHActive) return;
+                                setState(() {
+                                  isETHActive = true;
+                                  isUSDTActive = false;
+                                });
+                                _updatePayableAmount();
                               },
+
+
 
                             ),
                           ),
@@ -837,29 +916,15 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                               text: 'Buy with USDT',
                               icon: 'assets/icons/usdt.png',
                               isActive: isUSDTActive,
-                              onPressed: ()async {
-                                try {
-                                  final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
-                                  final usdtPrice = stageInfo['usdtPrice'];
-
-                                  setState(() {
-                                    _usdtPrice = usdtPrice;
-                                    isETHActive = false;
-                                    isUSDTActive = true;
-                                  });
-                                  _updatePayableAmount();
-                                  debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
-
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    debugPrint('Error fetching stage info: ${e.toString()}');
-
-                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
-
-                                  }
-                                }
-
+                              onPressed: () {
+                                if (isUSDTActive) return;
+                                setState(() {
+                                  isUSDTActive = true;
+                                  isETHActive = false;
+                                });
+                                _updatePayableAmount();
                               },
+
 
                             ),
                           ),
@@ -937,6 +1002,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           } else  {
                             debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
                             await walletVM.buyECMWithUSDT(amount,context);
+                            // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
                           }
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
@@ -968,15 +1034,16 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 
 
   /// Strategic Token Section
-  Widget _strategicTokenSection(){
+  Widget _strategicTokenSection(TokenModel token){
     final Size screenSize = MediaQuery.of(context).size;
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final textScale = screenWidth / 375;
     final bool isPortrait = screenSize.height > screenSize.width;
-
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    // final token = tokens.first;
+
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
@@ -1048,10 +1115,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                                 height: screenWidth * 0.3,
                                 child: AspectRatio(
                                   aspectRatio: 1,
-                                  child: Image.asset(
-                                    'assets/icons/distribution_image.png',
+                                  child: Image.network(
+                                    token.distributionImage!,
                                     fit: BoxFit.contain,
-                                    filterQuality: FilterQuality.high,
+                                    // errorBuilder: (_, __, ___) => Image.asset(
+                                    //     'assets/icons/distribution_image.png'),
                                   ),
                                 ),
                               ),
@@ -1079,37 +1147,23 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              buildProgressBarRow(
-                                title: "Presale & ICO",
-                                percent: 0.5,
-                                percentText: "50%",
-                                barColor: const Color(0xFF1CD494),
-                                textScale: textScale,
-                                screenHeight: screenHeight,
-                                screenWidth: screenWidth,
-                              ),
-                              SizedBox(height: screenHeight * 0.012),
-                              buildProgressBarRow(
-                                title: "Founder Team",
-                                percent: 0.4,
-                                percentText: "40%",
-                                barColor: const Color(0xFFF0B90B),
-                                textScale: textScale,
-                                screenHeight: screenHeight,
-                                screenWidth: screenWidth,
-                              ),
-                              SizedBox(height: screenHeight * 0.012),
-                              buildProgressBarRow(
-                                title: "Angel Investors",
-                                percent: 0.1,
-                                percentText: "10%",
-                                barColor: const Color(0xFF009951),
-                                textScale: textScale,
-                                screenHeight: screenHeight,
-                                screenWidth: screenWidth,
-                              ),
-                            ],
+                             children: token.distributions.map((dist) {
+                              final percent = double.tryParse(dist.value) ?? 0.0;
+                              return Column(
+                                children: [
+                                  buildProgressBarRow(
+                                    title: dist.title,
+                                    percent: percent / 100,
+                                    percentText: "${percent.toStringAsFixed(0)}%",
+                                    barColor: _getBarColor(dist.title),
+                                    textScale: textScale,
+                                    screenHeight: screenHeight,
+                                    screenWidth: screenWidth,
+                                  ),
+                                  SizedBox(height: screenHeight * 0.012),
+                                ],
+                              );
+                            }).toList(),
                           ),
                         ),
                       ),
@@ -1194,5 +1248,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen> {
 }
 
 
+Color _getBarColor(String title) {
+  switch (title.toLowerCase()) {
+    case 'presale & ico':
+      return const Color(0xFF1CD494);
+    case 'founder team':
+      return const Color(0xFFF0B90B);
+    case 'angel investors':
+      return const Color(0xFF009951);
+    default:
+      return Colors.blueAccent;
+  }
+}
 
 

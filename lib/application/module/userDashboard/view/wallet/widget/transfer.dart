@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../../framework/components/BlockButton.dart';
  import '../../../../../../framework/components/fieldContainerCompoenent.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/enums/field_type.dart';
+import '../../../../../../framework/utils/general_utls.dart';
 
 class Transfer extends StatefulWidget {
-  const Transfer({super.key});
+  final String? qrCode;
+
+  const Transfer({super.key, this.qrCode});
 
   @override
   State<Transfer> createState() => _TransferState();
@@ -19,8 +24,24 @@ class _TransferState extends State<Transfer> {
   List<String> currencies = ['ETH', 'ECM'];
   String selectedOption = 'Crypto Wallet';
   bool isCheckSelected = false;
-  TextEditingController amountController = TextEditingController();
+  late  TextEditingController _recipientController = TextEditingController();
 
+  final TextEditingController _amountController = TextEditingController();
+  bool _isloading = false;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    _recipientController = TextEditingController(text: widget.qrCode ?? '');
+  }
+  @override
+  void dispose() {
+    _recipientController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +150,7 @@ class _TransferState extends State<Transfer> {
                               SizedBox(height: screenHeight * 0.02),
 
 
-                              exChangeRate(exchangeRate: "1 ETH = \$10,000 USD"),
+                              exChangeRate(exchangeRate: selected == "ETH" ? "1 ETH = \$10,000 USD" : "1 ECM = \$5,000 USD"),
 
 
                               SizedBox(height: screenHeight * 0.03),
@@ -151,7 +172,7 @@ class _TransferState extends State<Transfer> {
                               // Input mode
                               FieldContainer(
                                 type: CustomInputType.input,
-                                controller: amountController,
+                                controller: _amountController,
                                 hintText: "0.00 ETH",
                               ),
 
@@ -247,8 +268,8 @@ class _TransferState extends State<Transfer> {
                               // Input mode
                               FieldContainer(
                                 type: CustomInputType.input,
-                                controller: amountController,
-                                hintText: "0x123...56789",
+                                controller: _recipientController,
+                                hintText: "0x123...56789",//For testing 0x30C8E35377208ebe1b04f78B3008AAc408F00D1d
                               ),
 
                             ],
@@ -261,24 +282,107 @@ class _TransferState extends State<Transfer> {
 
                           Align(
                             alignment: Alignment.center,
-                            child: BlockButton(
-                              height: screenHeight * 0.045,
-                              width: screenWidth * 0.7,
-                              label: 'Confirm & Transfer',
-                              textStyle: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                // fontSize: baseSize * 0.030,
-                                fontSize: getResponsiveFontSize(context, 16),
-                              ),
-                              gradientColors: const [
-                                Color(0xFF2680EF),
-                                Color(0xFF1CD494),
-                              ],
-                              onTap: () {
-                                //  Confirm Add Funds Transaction Process
+                            child: Consumer<WalletViewModel>(
+                              builder: (context, model, _) {
+                                return BlockButton(
+                                  height: screenHeight * 0.045,
+                                  width: screenWidth * 0.7,
+                                  label: 'Confirm & Transfer',
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    // fontSize: baseSize * 0.030,
+                                    fontSize: getResponsiveFontSize(context, 16),
+                                  ),
+                                  gradientColors: const [
+                                    Color(0xFF2680EF),
+                                    Color(0xFF1CD494),
+                                  ],
+                                  onTap: _isloading ? null : () async {
+                                    //  Confirm Add Funds Transaction Process
+                                    final recipient = _recipientController.text;
+                                    final amountText = _amountController.text;
+                                    final amount = double.tryParse(amountText);
+                                    if(recipient.isEmpty || amountText.isEmpty) {
+                                      Utils.showToast('Please fill out all fields', isError: true);
+                                      return;
+                                    }
 
-                              },
+                                    if (amount == null || recipient.isEmpty) {
+                                      Utils.showToast('Please enter a valid amount or recipient address', isError: true);
+                                      return;
+                                    }
+
+                                    setState(() => _isloading = true);
+
+                                    try{
+
+                                      await model.transferToken(recipient, amount);
+                                      // Utils.showToast('Token transferred successfully!');
+                                      _recipientController.clear();
+                                      _amountController.clear();
+
+                                    }catch(e){
+                                      Utils.showToast('Error sending token: ${e.toString()}', isError: true);
+                                      debugPrint("Error sending token: $e");
+                                    }finally{
+                                      if (mounted) setState(() => _isloading = false);
+                                    }
+
+                                  },
+                                );
+                              }
+
+                              // child: BlockButton(
+                              //   height: screenHeight * 0.045,
+                              //   width: screenWidth * 0.7,
+                              //   label: 'Confirm & Transfer',
+                              //   textStyle: TextStyle(
+                              //     fontWeight: FontWeight.w700,
+                              //     color: Colors.white,
+                              //     // fontSize: baseSize * 0.030,
+                              //     fontSize: getResponsiveFontSize(context, 16),
+                              //   ),
+                              //   gradientColors: const [
+                              //     Color(0xFF2680EF),
+                              //     Color(0xFF1CD494),
+                              //   ],
+                              //   onTap: _isloading ? null : () async {
+                              //     //  Confirm Add Funds Transaction Process
+                              //     final recipient = _recipientController.text;
+                              //     final amountText = _amountController.text;
+                              //     final amount = double.tryParse(amountText);
+                              //     if(recipient.isEmpty || amountText.isEmpty) {
+                              //       Utils.showToast('Please fill out all fields', isError: true);
+                              //       return;
+                              //     }
+                              //
+                              //     if (amount == null || recipient.isEmpty) {
+                              //       Utils.showToast('Please enter a valid amount or recipient address', isError: true);
+                              //       return;
+                              //     }
+                              //
+                              //     setState(() => _isloading = true);
+                              //
+                              //     try{
+                              //
+                              //       await model.transferToken(recipient, amount);
+                              //       Utils.showToast('Token transferred successfully!');
+                              //       _recipientController.clear();
+                              //       _amountController.clear();
+                              //
+                              //     }catch(e){
+                              //       Utils.showToast('Error sending token: ${e.toString()}', isError: true);
+                              //       debugPrint("Error sending token: $e");
+                              //     }finally{
+                              //       if (mounted) setState(() => _isloading = false);
+                              //     }
+                              //
+                              //
+                              //
+                              //
+                              //   },
+                              // ),
                             ),
                           ),
 

@@ -52,6 +52,10 @@ class LearnAndEarnContainer extends StatelessWidget {
                       imagePath,
                       fit: BoxFit.contain,
                     ),
+                    // child: Image.network(
+                    //   imagePath,
+                    //   fit: BoxFit.contain,
+                    // ),
                   ),
                   Positioned(
                     top: baseSize * 0.04,

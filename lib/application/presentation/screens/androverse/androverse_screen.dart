@@ -91,7 +91,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
 
 
                       Image.asset(
-                        'assets/icons/androverseHumanImg.png',
+                        // 'assets/icons/androverseHumanImg.png',
+                        'assets/icons/metaversworld.png',
                         width: isPortrait ? screenWidth * 0.8 : screenWidth * 0.5,
                         height: isPortrait ? screenHeight * 0.38 : screenHeight * 0.5,
                         fit: BoxFit.contain,

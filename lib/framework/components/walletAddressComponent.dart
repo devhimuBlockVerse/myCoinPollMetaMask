@@ -4,10 +4,10 @@ import 'package:flutter_svg/svg.dart';
 import '../utils/dynamicFontSize.dart';
 class WalletAddressComponent extends StatelessWidget {
   final String address;
-
+ final VoidCallback? onTap;
   const WalletAddressComponent({
     super.key,
-    required this.address,
+    required this.address, this.onTap,
   });
 
   @override
@@ -22,43 +22,46 @@ class WalletAddressComponent extends StatelessWidget {
     final double horizontalPadding = 12.0 * scaleFactor.clamp(0.85, 1.0);
     final double verticalPadding = 14.0 * scaleFactor.clamp(0.85, 1.4);
 
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/icons/Medium.png'),
-          fit: BoxFit.fill,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/icons/Medium.png'),
+            fit: BoxFit.fill,
+          ),
+          // borderRadius: BorderRadius.circular(30.0 * scaleFactor),
         ),
-        // borderRadius: BorderRadius.circular(30.0 * scaleFactor),
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(width: 5.0 * scaleFactor),
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding,
+          vertical: verticalPadding,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 5.0 * scaleFactor),
 
-          Flexible(
-            child: Text(
-              address,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textColor,
-                fontSize: getResponsiveFontSize(context, 12),
-                fontWeight: FontWeight.w500,
+            Flexible(
+              child: Text(
+                address,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: getResponsiveFontSize(context, 12),
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          SizedBox(width: 6.0 * scaleFactor),
-          SvgPicture.asset(
-            'assets/icons/walletIcon.svg',
-            width: iconSize,
-            height: iconSize,
-          ),
-        ],
+            SizedBox(width: 6.0 * scaleFactor),
+            SvgPicture.asset(
+              'assets/icons/walletIcon.svg',
+              width: iconSize,
+              height: iconSize,
+            ),
+          ],
+        ),
       ),
     );
   }

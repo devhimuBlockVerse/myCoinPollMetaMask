@@ -59,14 +59,14 @@ class CustomLabeledInputField extends StatelessWidget {
           children: [
             ShaderMask(
               shaderCallback: (bounds) => const LinearGradient(
-                colors: [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+                colors: [ Color(0xFF2EE4A4),Color(0xFF2D8EFF)],
               ).createShader(bounds),
               child: Text(
                 labelText,
                 style: TextStyle(
                   color: Colors.white,
                   // fontSize: fontSize,
-                  fontSize: getResponsiveFontSize(context, 12),
+                  fontSize: getResponsiveFontSize(context, 14),
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
                 ),
@@ -88,13 +88,13 @@ class CustomLabeledInputField extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w400,
                         // fontSize: fontSize,
-                        fontSize: getResponsiveFontSize(context, 12),
+                        fontSize: getResponsiveFontSize(context, 14),
                 ),
                       decoration: InputDecoration(
                         hintText: hintText,
                         hintStyle: TextStyle(
                           // fontSize: fontSize * 0.95,
-                          fontSize: getResponsiveFontSize(context, 12),
+                          fontSize: getResponsiveFontSize(context, 14),
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
                           color: const Color(0xffFFF5ED),

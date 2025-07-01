@@ -6,7 +6,9 @@ import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/enums/field_type.dart';
 
 class WithDraw extends StatefulWidget {
-  const WithDraw({super.key});
+  final String? qrCode;
+
+  const WithDraw({super.key, this.qrCode});
 
   @override
   State<WithDraw> createState() => _WithDrawState();

@@ -116,115 +116,122 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ListView(
-                    children: [
+                  child: ScrollConfiguration(
+                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+
+                      child: Column(
+                        children: [
 
 
-                      SizedBox(height: screenHeight * 0.02),
+                          SizedBox(height: screenHeight * 0.02),
 
-                      _affiliateProgress(),
+                          _affiliateProgress(),
 
-                      SizedBox(height: screenHeight * 0.03),
+                          SizedBox(height: screenHeight * 0.03),
 
-                      const FeatureCard(
-                        iconPath: 'assets/icons/becomeAffiliate.png',
-                        title: 'Why Become an Affiliate?',
-                        isSvg: false,
-                        bulletPoints: [
-                          'Earn commissions on every referral sale',
-                          'Unlock exclusive bonuses & perks',
-                          'Gain priority access to special events',
-                        ],
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-
-                     const FeatureCard(
-                        iconPath: 'assets/icons/quality.png',
-                        isSvg: false,
-                        title: 'How to Qualify?',
-                        bulletPoints: [
-                           'Hold 300 ECM in your wallet',
-                          'Refer 2500 ECM in total sales',
-                        ],
-                      ),
-
-                      SizedBox(height: screenHeight * 0.03),
-                      /// Referral Link
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: const Color(0xff040C16).withOpacity(0.50),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
-
-                        child: ClipRRect(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: CustomLabeledInputField(
-                              labelText: 'Referral Link:',
-                              hintText: ' https://mycoinpoll.com?ref=125482458661',
-                              isReadOnly: true,
-                              trailingIconAsset: 'assets/icons/copyImg.svg',
-                              onTrailingIconTap: () {
-                                debugPrint('Trailing icon tapped');
-                              },
-                            ),
+                          const FeatureCard(
+                            iconPath: 'assets/icons/becomeAffiliate.png',
+                            title: 'Why Become an Affiliate?',
+                            isSvg: false,
+                            bulletPoints: [
+                              'Earn commissions on every referral sale',
+                              'Unlock exclusive bonuses & perks',
+                              'Gain priority access to special events',
+                            ],
                           ),
-                        ),
-                      ),
+                          SizedBox(height: screenHeight * 0.02),
 
-                      SizedBox(height: screenHeight * 0.03),
-
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
-                        decoration:const BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/icons/userActivityLogBg2.png'),
-                              fit: BoxFit.fill,
-                              filterQuality: FilterQuality.high
+                         const FeatureCard(
+                            iconPath: 'assets/icons/quality.png',
+                            isSvg: false,
+                            title: 'How to Qualify?',
+                            bulletPoints: [
+                               'Hold 300 ECM in your wallet',
+                              'Refer 2500 ECM in total sales',
+                            ],
                           ),
-                        ),
 
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-
-
-                            Text(
-                              'Top Referral Sales',
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                                fontSize: getResponsiveFontSize(context, 16),
-                                height: 1.6,
-                                color: Colors.white,
-                              ),
+                          SizedBox(height: screenHeight * 0.03),
+                          /// Referral Link
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: const Color(0xff040C16).withOpacity(0.50),
+                                borderRadius: BorderRadius.circular(12)
                             ),
 
-                            SizedBox(height: screenHeight * 0.02),
-                            ...[
-                              _filteredData.isNotEmpty
-                                  ? referralSalesTable(_filteredData, screenWidth, context)
-                                  : Container(
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.all(20),
-                                child: const Text(
-                                  'No data found',
-                                  style: TextStyle(color: Colors.white70),
+                            child: ClipRRect(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: CustomLabeledInputField(
+                                  labelText: 'Referral Link:',
+                                  hintText: ' https://mycoinpoll.com?ref=125482458661',
+                                  isReadOnly: true,
+                                  trailingIconAsset: 'assets/icons/copyImg.svg',
+                                  onTrailingIconTap: () {
+                                    debugPrint('Trailing icon tapped');
+                                  },
                                 ),
                               ),
-                            ],
+                            ),
+                          ),
 
-                          ],
-                        ),
+                          SizedBox(height: screenHeight * 0.03),
 
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
+                            decoration:const BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/icons/userActivityLogBg2.png'),
+                                  fit: BoxFit.fill,
+                                  filterQuality: FilterQuality.high
+                              ),
+                            ),
+
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+
+                                Text(
+                                  'Top Referral Sales',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: getResponsiveFontSize(context, 16),
+                                    height: 1.6,
+                                    color: Colors.white,
+                                  ),
+                                ),
+
+                                SizedBox(height: screenHeight * 0.02),
+                                ...[
+                                  _filteredData.isNotEmpty
+                                      ? referralSalesTable(_filteredData, screenWidth, context)
+                                      : Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(20),
+                                    child: const Text(
+                                      'No data found',
+                                      style: TextStyle(color: Colors.white70),
+                                    ),
+                                  ),
+                                ],
+
+                              ],
+                            ),
+
+                          ),
+
+
+                        ],
                       ),
-
-
-                    ],
+                    ),
                   ),
                 ),
               ),

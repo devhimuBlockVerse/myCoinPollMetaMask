@@ -1504,7 +1504,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                            await walletVM.ensureModalWithValidContext(context);
                                            await Future.delayed(const Duration(milliseconds: 200));
                                            await walletVM.appKitModal!.openModalView();
-                                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()));
 
                                          } else {
                                            Utils.flushBarErrorMessage("Wallet modal not ready", context);

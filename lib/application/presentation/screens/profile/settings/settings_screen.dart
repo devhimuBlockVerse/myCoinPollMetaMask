@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../framework/components/customSettingsActionButtonComponent.dart';
 import '../../../viewmodel/wallet_view_model.dart';
@@ -192,13 +193,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
                                       try{
+                                        final prefs = await SharedPreferences.getInstance();
+                                        await prefs.clear();
+
                                         await walletVM.disconnectWallet(context);
                                         walletVM.reset();
+
+
                                         if (context.mounted && !walletVM.isConnected) {
-                                          Navigator.push(
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(
+                                          //       builder: (context) => const BottomNavBar()),
+                                          // );
+                                          Navigator.pushAndRemoveUntil(
                                             context,
-                                            MaterialPageRoute(
-                                                builder: (context) => const BottomNavBar()),
+                                            MaterialPageRoute(builder: (context) => const BottomNavBar()),
+                                              (route) => false,
                                           );
                                         }
                                       }catch(e){
@@ -211,10 +222,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         }
                                       }
                                       // DisConnect The User Session and Navigate Back to Home Screen .
-
-
-
-
                                     },
                                   ),
 

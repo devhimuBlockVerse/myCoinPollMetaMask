@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import '../../../../../../framework/components/transactionDetailsComponent.dart';
 
 class TransactionDetailsDialog extends StatelessWidget {
-  const TransactionDetailsDialog({super.key});
+  final Map<String, dynamic> data;
+
+const TransactionDetailsDialog({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,8 @@ class TransactionDetailsDialog extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Text(
-                            '\$ 100000.00',
+                            // '\$ 100000.00',
+                            '\$ ${data['Amount'] ?? '0.00'}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
@@ -73,36 +76,46 @@ class TransactionDetailsDialog extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.01),
 
-                          const TransactionDetails(
+                          TransactionDetails(
                             label: 'Time/Date',
-                            value: '07/10/2024; 09:30 PM',
+                            // value: '07/10/2024; 09:30 PM',
+                            value: data['DateTime'] ?? '',
+
                           ),
-                          const TransactionDetails(
+                            TransactionDetails(
                             label: 'Block',
-                            value: '20969235',
+                            // value: '20969235',
+                            value: data['Block'] ?? 'N/A',
+
                           ),
-                          const TransactionDetails(
+                           TransactionDetails(
                             label: 'Status',
                             value: '',
-                            status: 'In',
+                            // status: 'In',
+                            status: data['Status'] ?? '',
+
                           ),
 
                           SizedBox(height: screenHeight * 0.03),
 
-                          const TransactionDetails(
+                           TransactionDetails(
                             label: 'Txn Hash',
-                            value: '0xac6d8ae0a1dcX',
+                            // value: '0xac6d8ae0a1dcX',
+                            value: data['TxnHash'] ?? '',
+
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
-                          const TransactionDetails(
+                           TransactionDetails(
                             label: 'From',
-                            value: '0xaFODFEC80xaFOFODFEODCaFC8',
+                            // value: '0xaFODFEC80xaFOFODFEODCaFC8',
+                            value: data['From'] ?? '',
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
-                          const TransactionDetails(
+                           TransactionDetails(
                             label: 'To',
-                            value:
-                            '0xaFODFEC80xaFOFODFEODCaFC8',
+                            // value: '0xaFODFEC80xaFOFODFEODCaFC8',
+                            value: data['To'] ?? '',
+
                             svgIconPath: 'assets/icons/copyImg.svg',
                           ),
                         ],

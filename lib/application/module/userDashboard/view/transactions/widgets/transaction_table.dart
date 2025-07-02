@@ -152,7 +152,7 @@ import 'transaction_details.dart';
 
                             showDialog(
                               context: context,
-                              builder: (_) => const TransactionDetailsDialog(),
+                              builder: (_) => TransactionDetailsDialog(data: data,),
                               // builder: (_) => const TransactionDetails(),
                             );
                             // Handle view details action

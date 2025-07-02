@@ -217,76 +217,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       ),
                     );
                   },
-                  // child: SingleChildScrollView(
-                  //   physics: const BouncingScrollPhysics(),
-                  //
-                  //   child: Column(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                  //     children: [
-                  //
-                  //
-                  //       /// User Name Data & Wallet Address
-                  //       _headerSection(_scaffoldKey),
-                  //       SizedBox(height: screenHeight * 0.02),
-                  //
-                  //       /// User Graph Chart and Level
-                  //       _EcmWithGraphChart(),
-                  //       SizedBox(height: screenHeight * 0.03),
-                  //
-                  //
-                  //       /// Referral Link
-                  //       Container(
-                  //         width: double.infinity,
-                  //         decoration: BoxDecoration(
-                  //           color: const Color(0xff040C16),
-                  //         borderRadius: BorderRadius.circular(12)
-                  //         ),
-                  //
-                  //         child: ClipRRect(
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.all(12.0),
-                  //           child: CustomLabeledInputField(
-                  //             labelText: 'Referral Link:',
-                  //             hintText: 'https://mycoinpoll.com?ref=125482458661',
-                  //              isReadOnly: true,
-                  //             trailingIconAsset: 'assets/icons/copyImg.svg',
-                  //             onTrailingIconTap: () {
-                  //               debugPrint('Trailing icon tapped');
-                  //               Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                  //               ScaffoldMessenger.of(context).showSnackBar(
-                  //                 const SnackBar(
-                  //                   content: Text('TxnHash copied to clipboard'),
-                  //                   duration: Duration(seconds: 1),
-                  //                 ),
-                  //               );
-                  //             },
-                  //           ),
-                  //         ),
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: screenHeight * 0.03),
-                  //
-                  //
-                  //
-                  //       _joinPromoteEarn(),
-                  //       SizedBox(height: screenHeight * 0.03),
-                  //
-                  //       _milestoneSection(),
-                  //       SizedBox(height: screenHeight * 0.03),
-                  //
-                  //
-                  //       _kycStatus(),
-                  //       SizedBox(height: screenHeight * 0.03),
-                  //
-                  //
-                  //       _transactionsReferral(),
-                  //       // SizedBox(height: screenHeight * 0.03),
-                  //
-                  //
-                  //     ],
-                  //   ),
-                  // ),
+
                 ),
               ),
             ),

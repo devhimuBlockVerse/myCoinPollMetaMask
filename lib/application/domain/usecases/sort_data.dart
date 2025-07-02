@@ -2,34 +2,57 @@ import '../../../framework/utils/date_parser.dart';
 import '../../../framework/utils/enums/milestone_status.dart';
 import '../../../framework/utils/enums/sort_option.dart';
 import '../../data/dummyData/referral_transaction_dummy_data.dart';
+import '../../presentation/models/get_staking_history.dart';
 import '../model/PurchaseLogModel.dart';
 import '../model/ReferralUserListModel.dart';
 import '../model/TicketListModel.dart';
 import '../model/milestone_list_models.dart';
 import 'package:intl/intl.dart';
 
+// class SortDataUseCase {
+//   List<Map<String, dynamic>> call(
+//       List<Map<String, dynamic>> data,
+//       SortOption option,
+//       ) {
+//     final sorted = List<Map<String, dynamic>>.from(data);
+//     sorted.sort((a, b) {
+//       switch (option) {
+//         case SortOption.dateLatest:
+//           return DateParser.fromReadableFormat(b['Date']!)
+//               .compareTo(DateParser.fromReadableFormat(a['Date']!));
+//         case SortOption.dateOldest:
+//           return DateParser.fromReadableFormat(a['Date']!)
+//               .compareTo(DateParser.fromReadableFormat(b['Date']!));
+//         case SortOption.statusAsc:
+//           return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
+//         case SortOption.statusDesc:
+//           return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
+//
+//
+//       }
+//     });
+//     return sorted;
+//   }
+// }
 class SortDataUseCase {
-  List<Map<String, dynamic>> call(
-      List<Map<String, dynamic>> data,
-      SortOption option,
-      ) {
-    final sorted = List<Map<String, dynamic>>.from(data);
+  List<StakingHistoryModel> call(List<StakingHistoryModel> data, SortOption option) {
+    final sorted = List<StakingHistoryModel>.from(data);
+
     sorted.sort((a, b) {
       switch (option) {
         case SortOption.dateLatest:
-          return DateParser.fromReadableFormat(b['Date']!)
-              .compareTo(DateParser.fromReadableFormat(a['Date']!));
+          return DateParser.fromReadableFormat(b.createdAtFormatted)
+              .compareTo(DateParser.fromReadableFormat(a.createdAtFormatted));
         case SortOption.dateOldest:
-          return DateParser.fromReadableFormat(a['Date']!)
-              .compareTo(DateParser.fromReadableFormat(b['Date']!));
+          return DateParser.fromReadableFormat(a.createdAtFormatted)
+              .compareTo(DateParser.fromReadableFormat(b.createdAtFormatted));
         case SortOption.statusAsc:
-          return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
+          return a.status.compareTo(b.status);
         case SortOption.statusDesc:
-          return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
-
-
+          return b.status.compareTo(a.status);
       }
     });
+
     return sorted;
   }
 }

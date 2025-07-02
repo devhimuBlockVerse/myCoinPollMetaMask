@@ -9,6 +9,7 @@ import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/countdown_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
+import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
  import 'package:flutter/foundation.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(create: (_) => DashboardNavProvider()),

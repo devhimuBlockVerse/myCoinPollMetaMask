@@ -51,7 +51,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="exampleapp"
+                    android:scheme="MyCoin Poll"
                     android:host="callback"/>
             </intent-filter>
 

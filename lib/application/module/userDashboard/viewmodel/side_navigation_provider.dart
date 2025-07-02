@@ -40,18 +40,18 @@ class NavigationProvider extends ChangeNotifier {
   }
 
   List<NavItem> get drawerNavItems => [
-    NavItem(
-      id: 'milestone',
-      title: 'Milestone',
-      iconPath: 'assets/icons/milestone.svg',
-      screenBuilder: (context) => const MilestoneScreen(),
-    ),
-    NavItem(
-      id: 'kyc',
-      title: 'KYC',
-      iconPath: 'assets/icons/kyc.svg',
-      screenBuilder: (context) => const KycScreen(),
-    ),
+    // NavItem(
+    //   id: 'milestone',
+    //   title: 'Milestone',
+    //   iconPath: 'assets/icons/milestone.svg',
+    //   screenBuilder: (context) => const MilestoneScreen(),
+    // ),
+    // NavItem(
+    //   id: 'kyc',
+    //   title: 'KYC',
+    //   iconPath: 'assets/icons/kyc.svg',
+    //   screenBuilder: (context) => const KycScreen(),
+    // ),
     NavItem(
       id: 'purchase_log',
       title: 'Purchase Log',
@@ -59,13 +59,13 @@ class NavigationProvider extends ChangeNotifier {
       screenBuilder: (context) => const PurchaseLogScreen(),
 
     ),
-    NavItem(
-      id: 'wallet',
-      title: 'Wallet',
-      iconPath: 'assets/icons/wallet.svg',
-      screenBuilder: (context) => const WalletScreen(),
-
-    ),
+    // NavItem(
+    //   id: 'wallet',
+    //   title: 'Wallet',
+    //   iconPath: 'assets/icons/wallet.svg',
+    //   screenBuilder: (context) => const WalletScreen(),
+    //
+    // ),
 
     NavItem(
       id: 'referral_stat',
@@ -81,13 +81,13 @@ class NavigationProvider extends ChangeNotifier {
       screenBuilder: (context) => const ReferralTransactionScreen(),
 
     ),
-    NavItem(
-      id: 'support_ticket',
-      title: 'Support Ticket',
-      iconPath: 'assets/icons/support_ticket.svg',
-      screenBuilder: (context) => const SupportTicketScreen(),
-
-    ),
+    // NavItem(
+    //   id: 'support_ticket',
+    //   title: 'Support Ticket',
+    //   iconPath: 'assets/icons/support_ticket.svg',
+    //   screenBuilder: (context) => const SupportTicketScreen(),
+    //
+    // ),
     NavItem(
       id: 'log_out',
       title: 'Logout',

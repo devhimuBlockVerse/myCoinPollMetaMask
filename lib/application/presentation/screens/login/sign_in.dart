@@ -1,17 +1,13 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../data/services/api_service.dart';
-import '../../../domain/constants/api_constants.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'forgot_password.dart';

@@ -6,6 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../framework/components/customSettingsActionButtonComponent.dart';
+import '../../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import '../../../../module/userDashboard/viewmodel/kyc_navigation_provider.dart';
+import '../../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
+import '../../../../module/userDashboard/viewmodel/upload_image_provider.dart';
+import '../../../viewmodel/bottom_nav_provider.dart';
+import '../../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../viewmodel/wallet_view_model.dart';
 import '../tax_statement/terms_condition_screen.dart';
 import 'contact_screen.dart';
@@ -199,17 +205,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         await walletVM.disconnectWallet(context);
                                         walletVM.reset();
 
-
                                         if (context.mounted && !walletVM.isConnected) {
                                           // Navigator.push(
                                           //   context,
-                                          //   MaterialPageRoute(
-                                          //       builder: (context) => const BottomNavBar()),
+                                          //   MaterialPageRoute(builder: (context) => const BottomNavBar()),
                                           // );
-                                          Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => const BottomNavBar()),
-                                              (route) => false,
+                                          Navigator.of(context).pushAndRemoveUntil(
+                                            MaterialPageRoute(
+                                              builder: (context) => MultiProvider(
+                                                providers: [
+                                                  ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                                  ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                                  ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                                  ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                                  ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                                  ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                                  ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                                ],
+                                                child: const BottomNavBar(),
+                                              ),
+                                            ),
+                                                (Route<dynamic> route) => false,
                                           );
                                         }
                                       }catch(e){

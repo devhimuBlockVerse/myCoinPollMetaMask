@@ -144,15 +144,18 @@ class SortPurchaseLogUseCase {
     final sorted = List<PurchaseLogModel>.from(data);
 
     sorted.sort((a, b) {
+      final aDate = DateTime.tryParse(a.createdAt) ?? DateTime.now();
+      final bDate = DateTime.tryParse(b.createdAt) ?? DateTime.now();
+
       switch (option) {
         case SortPurchaseLogOption.dateLatest:
-          return b.date.compareTo(a.date);
+          return bDate.compareTo(aDate);
         case SortPurchaseLogOption.dateOldest:
-          return a.date.compareTo(b.date);
+          return aDate.compareTo(bDate);
         case SortPurchaseLogOption.amountHighToLow:
-          return b.ecmAmount.compareTo(a.ecmAmount);
+          return b.amount.compareTo(a.amount);
         case SortPurchaseLogOption.amountLowToHigh:
-          return a.ecmAmount.compareTo(b.ecmAmount);
+          return a.amount.compareTo(b.amount);
       }
     });
 

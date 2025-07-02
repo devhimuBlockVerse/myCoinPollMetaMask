@@ -18,7 +18,8 @@ class PurchaseCard extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
 
     final DateFormat formatter = DateFormat('d MMMM yyyy');
-    String formattedDate = formatter.format(transaction.date);
+    // String formattedDate = formatter.format(transaction.createdAt);
+    String formattedDate = formatter.format(DateTime.parse(transaction.createdAt));
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.009),
@@ -48,7 +49,8 @@ class PurchaseCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        transaction.coinName,
+                        // transaction.coinName,
+                        "ECM",
                         style: TextStyle(
                           color: AppColors.textColor,
                           fontSize: getResponsiveFontSize(context, 14),
@@ -86,7 +88,7 @@ class PurchaseCard extends StatelessWidget {
                   ),
                   SizedBox(width: screenWidth * 0.01),
                   Text(
-                    'Ref: ${transaction.refName}',
+                    'Ref: ${transaction.referralUserId}',
                     style: TextStyle(
                       color: AppColors.textColor,
                       fontSize: getResponsiveFontSize(context, 12),
@@ -109,7 +111,7 @@ class PurchaseCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          transaction.contractName,
+                          transaction.icoStage,
                           style: TextStyle(
                             color: const Color(0XFF7D8FA9),
                             fontSize: getResponsiveFontSize(context, 12),
@@ -119,7 +121,7 @@ class PurchaseCard extends StatelessWidget {
                         ),
                         SizedBox(height: screenHeight * 0.005),
                         Text(
-                          transaction.senderName,
+                          transaction.icoStage,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: getResponsiveFontSize(context, 16),
@@ -146,7 +148,7 @@ class PurchaseCard extends StatelessWidget {
                         ),
                         SizedBox(height: screenHeight * 0.005),
                         Text(
-                          '${transaction.ecmAmount.toStringAsFixed(2)} ECM',
+                          '${transaction.amount.toStringAsFixed(2)} ECM',
                           style: TextStyle(
                             color: AppColors.accentGreen,
                             fontSize: getResponsiveFontSize(context, 16),

@@ -1897,10 +1897,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
           name: "MyWallet",
           description: "Example Description",
-          url: 'https://example.com/',
+          url: 'https://mycoinpoll.com/',
           icons: ['https://example.com/logo.png'],
           redirect: Redirect(
-            native: 'exampleapp',
+            // native: 'exampleapp',
+            native: 'MyCoin Poll',
             universal: 'https://reown.com/exampleapp',
             linkMode: true,
           ),

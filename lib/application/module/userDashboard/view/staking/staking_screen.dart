@@ -762,29 +762,29 @@ class _StakingScreenState extends State<StakingScreen> {
                               _stakingDetails(),
                               SizedBox(height: screenHeight * 0.04),
 
-                              Center(
-                                child: BlockButton(
-                                  height: baseSize * 0.12,
-                                  width: screenWidth * 0.7,
-                                  label: "Stake Now",
-                                  textStyle: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    fontSize: baseSize * 0.048,
-                                  ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494),
-                                  ],
-                                  onTap: () {
-                                    debugPrint('Button tapped');
-                                  },
-                                  leadingIconPath: 'assets/icons/arrowIcon.svg',
-                                  iconSize : screenHeight * 0.013,
-                                ),
-                              ),
-
-                              SizedBox(height: screenHeight * 0.02),
+                              // Center(
+                              //   child: BlockButton(
+                              //     height: baseSize * 0.12,
+                              //     width: screenWidth * 0.7,
+                              //     label: "Stake Now",
+                              //     textStyle: TextStyle(
+                              //       fontWeight: FontWeight.w700,
+                              //       color: Colors.white,
+                              //       fontSize: baseSize * 0.048,
+                              //     ),
+                              //     gradientColors: const [
+                              //       Color(0xFF2680EF),
+                              //       Color(0xFF1CD494),
+                              //     ],
+                              //     onTap: () {
+                              //       debugPrint('Button tapped');
+                              //     },
+                              //     leadingIconPath: 'assets/icons/arrowIcon.svg',
+                              //     iconSize : screenHeight * 0.013,
+                              //   ),
+                              // ),
+                              //
+                              // SizedBox(height: screenHeight * 0.02),
 
                               Center(
                                 child: BlockButtonV2(

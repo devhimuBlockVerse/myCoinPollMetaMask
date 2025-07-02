@@ -71,8 +71,7 @@ import 'transaction_details.dart';
                 ),
                 DataColumn2(label: buildCenteredText('Amount', headingStyle),
                     size: ColumnSize.S
-                    // fixedWidth: screenWidth * (120.0 / designScreenWidth)
-                ),
+                 ),
                 DataColumn2(label: buildCenteredText('Details', headingStyle),
                     // size: ColumnSize.L
 
@@ -156,20 +155,13 @@ import 'transaction_details.dart';
                               builder: (_) => const TransactionDetailsDialog(),
                               // builder: (_) => const TransactionDetails(),
                             );
-
-
                             // Handle view details action
                             print('View details for ${data['TxnHash']}');
-
-
                           },
                           tooltip: 'View Details',
                         ),
                       ),
                     ),
-
-
-
                   ],
                 );
               }).toList(),

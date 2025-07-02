@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/data/dummyData/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/widgets/transaction_table.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
- import '../../../../domain/usecases/sort_data.dart';
+ import '../../../../domain/constants/api_constants.dart';
+import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/user_model.dart';
+import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
+import 'package:http/http.dart'as http;
 
 
 class TransactionScreen extends StatefulWidget {
@@ -21,7 +25,8 @@ class TransactionScreen extends StatefulWidget {
 
 class _TransactionScreenState extends State<TransactionScreen> {
 
-
+  bool _hasLoaded = false;
+  bool _isLoading = false;
 
   SortTransactionHistoryOption? _currentSort;
   final SortTransactionDataUseCase _sortDataUseCase = SortTransactionDataUseCase();
@@ -29,13 +34,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _displayData = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+   List<Map<String, dynamic>> transactionData = [];
 
   @override
   void initState() {
     super.initState();
-     _displayData = List.from(transactionData);
+     // _displayData = List.from(transactionData);
     _searchController.addListener(_applyFiltersAndSort);
+    _loadTransactions();
 
   }
 
@@ -65,8 +71,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
     });
   }
 
-
-
   void _sortData(SortTransactionHistoryOption option) {
     setState(() {
       _currentSort = option;
@@ -74,15 +78,118 @@ class _TransactionScreenState extends State<TransactionScreen> {
      });
   }
 
+
   @override
   void dispose() {
-    inputController.dispose();
-    _searchController.dispose();
     _searchController.removeListener(_applyFiltersAndSort);
-
+    _searchController.dispose();
+    inputController.dispose();
     super.dispose();
   }
 
+
+  /// re-fetch on wallet connection
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_hasLoaded) {
+      final walletVM = Provider.of<WalletViewModel>(context);
+      if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
+        _loadTransactions();
+        _hasLoaded = true;
+      }
+    }
+  }
+
+  /// Fetch transactions from API with Wallet Connection
+   Future<List<Map<String, dynamic>>> fetchTransactions(String walletAddress) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      print("No login token found.");
+      return [];
+    }
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-transactions?address=$walletAddress');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Response (${response.statusCode}): ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        if (decoded['status'] == '1') {
+          List<dynamic> results = decoded['result'];
+          return results.asMap().entries.map((entry) {
+            final tx = entry.value;
+            return {
+              'SL': (entry.key + 1).toString(),
+              'DateTime': tx['timestamp'] ?? '',
+              'TxnHash': tx['short_hash'] ?? '',
+              'Status': tx['direction'] == 'in' ? 'In' : 'Out',
+              'Amount': tx['converted_value'].toString(),
+              'Details': tx['explorer_url'] ?? '',
+              'FullHash': tx['hash'] ?? '',
+            };
+          }).toList();
+        }
+      } else {
+        print('Failed to fetch with token: ${response.body}');
+      }
+    } catch (e) {
+      print("Error fetching with token: $e");
+    }
+
+    return [];
+  }
+
+
+  Future<void> _loadTransactions() async {
+    setState(() => _isLoading = true);
+
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    String? address;
+
+    if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
+      address = walletVM.walletAddress;
+    } else {
+      /// getting eth address from user profile stored after login
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      if (userJson != null) {
+        final user = UserModel.fromJson(jsonDecode(userJson));
+        if (user.ethAddress.isNotEmpty) {
+          address = user.ethAddress;
+        }
+      }
+    }
+
+    try {
+      if (address == null || address.isEmpty) {
+        throw 'No valid Ethereum wallet address found from wallet or login.';
+      }
+      final fetchedData = await fetchTransactions(address);
+      if (!mounted) return;
+      setState(() {
+        transactionData = fetchedData;
+        _displayData = List.from(fetchedData);
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("Failed to load transactions: $e");
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    }
+  }
 
 
 
@@ -161,201 +268,205 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       ),
                       child: ScrollConfiguration(
                         behavior: const ScrollBehavior().copyWith(overscroll: false),
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: ConstrainedBox(
+                        child: RefreshIndicator(
 
-                            constraints: BoxConstraints(
-                              minHeight: screenHeight - kToolbarHeight, // or screenHeight * 0.9
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: screenHeight * 0.01),
+                          onRefresh: () async {
+                            await _loadTransactions();
+                            setState(() {});
+                          },
+
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: ConstrainedBox(
+
+                              constraints: BoxConstraints(
+                                minHeight: screenHeight - kToolbarHeight, // or screenHeight * 0.9
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: screenHeight * 0.01),
 
 
 
-                                Container(
-                                  width: double.infinity,
-                                  height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+                                  Container(
+                                    width: double.infinity,
+                                    height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-                                  decoration: BoxDecoration(
-                                    // color: const Color(0xFF01090B),
-                                    image: const DecorationImage(
-                                      image: AssetImage('assets/icons/buildStatCardBG.png'),
-                                      fit: BoxFit.fill,
-                                     ),
-                                    borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: horizontalPadding,
-                                      vertical: screenHeight * 0.014,
+                                    decoration: BoxDecoration(
+                                      // color: const Color(0xFF01090B),
+                                      image: const DecorationImage(
+                                        image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                        fit: BoxFit.fill,
+                                       ),
+                                      borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
                                     ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: horizontalPadding,
+                                        vertical: screenHeight * 0.014,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total \nTransactions',
+                                              value: '125',
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                              ),
+                                              imageUrl: "assets/icons/totalTransactionBg.png",
+                                            ),
+                                          ),
+                                          SizedBox(width: itemSpacing),
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total \nEthereum',
+                                              value: '125',
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                              ),
+                                              imageUrl: "assets/icons/totalEthereumBG.png",
+                                            ),
+                                          ),
+                                          SizedBox(width: itemSpacing),
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total \neCommerce',
+                                              value: '100',
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                              ),
+                                              imageUrl: "assets/icons/totalEcommerceBG.png",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+
+                                  SizedBox(height: screenHeight * 0.030),
+                                  Text(
+                                    'Recent Transactions',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: getResponsiveFontSize(context, 17),
+                                      height: 1.6,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight * 0.030),
+
+
+                                  /// Search Controller with Data Sorting Button
+                                  Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff040C16),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: screenWidth * 0.02,
+                                        vertical:  screenHeight * 0.001
+                                    ),
+
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total \nTransactions',
-                                            value: '125',
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                            ),
-                                            imageUrl: "assets/icons/totalTransactionBg.png",
+                                          flex: 2,
+                                          child: ResponsiveSearchField(
+                                            controller: _searchController,
+                                            // onChanged:  (value) => _onSearchChanged(),
+                                            onChanged:  (value) => _applyFiltersAndSort(),
+                                            svgAssetPath: 'assets/icons/search.svg',
+
                                           ),
                                         ),
-                                        SizedBox(width: itemSpacing),
+
+
+                                        /// Data Sorting  Button
                                         Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total \nEthereum',
-                                            value: '125',
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
-                                            ),
-                                            imageUrl: "assets/icons/totalEthereumBG.png",
-                                          ),
-                                        ),
-                                        SizedBox(width: itemSpacing),
-                                        Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total \neCommerce',
-                                            value: '100',
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
-                                            ),
-                                            imageUrl: "assets/icons/totalEcommerceBG.png",
+                                          flex: 1,
+                                          child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: PopupMenuButton<SortTransactionHistoryOption>(
+                                                icon: SvgPicture.asset(
+                                                  'assets/icons/sortingList.svg',
+                                                  fit: BoxFit.contain,
+                                                ),
+                                                onSelected: (SortTransactionHistoryOption option) {
+                                                  _sortData(option);
+                                                },
+                                                itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.dateLatest,
+                                                    child: Text('Date: Latest First'),
+                                                  ),
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.dateOldest,
+                                                    child: Text('Date: Oldest First'),
+                                                  ),
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.statusAsc,
+                                                    child: Text('Status: A-Z'),
+                                                  ),
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.statusDesc,
+                                                    child: Text('Status: Z-A'),
+                                                  ),
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.amountAsc,
+                                                    child: Text('Amount: Low to High'),
+                                                  ),
+                                                  const PopupMenuItem<SortTransactionHistoryOption>(
+                                                    value: SortTransactionHistoryOption.amountDesc,
+                                                    child: Text('Amount: High to Low'),
+                                                  ),
+                                                ],
+                                              )
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
+
+                                  SizedBox(height: screenHeight * 0.016),
 
 
+                                  /// Table View
+                                  ...[
 
-
-
-
-                                SizedBox(height: screenHeight * 0.030),
-                                Text(
-                                  'Recent Transactions',
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: getResponsiveFontSize(context, 17),
-                                    height: 1.6,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.030),
-
-
-                                /// Search Controller with Data Sorting Button
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff040C16),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.02,
-                                      vertical:  screenHeight * 0.001
-                                  ),
-
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: ResponsiveSearchField(
-                                          controller: _searchController,
-                                          // onChanged:  (value) => _onSearchChanged(),
-                                          onChanged:  (value) => _applyFiltersAndSort(),
-                                          svgAssetPath: 'assets/icons/search.svg',
-
-                                        ),
+                                    _isLoading ? const Center(child: CircularProgressIndicator()) : _displayData.isNotEmpty
+                                        ? buildTransactionTable(_displayData, screenWidth, context)
+                                        : Container(
+                                      alignment: Alignment.center,
+                                      padding: const EdgeInsets.all(20),
+                                      child: const Text(
+                                        'No transactions found',
+                                        style: TextStyle(color: Colors.white70),
                                       ),
-
-
-                                      /// Data Sorting  Button
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                            alignment: Alignment.centerRight,
-                                            child: PopupMenuButton<SortTransactionHistoryOption>(
-                                              icon: SvgPicture.asset(
-                                                'assets/icons/sortingList.svg',
-                                                fit: BoxFit.contain,
-                                              ),
-                                              onSelected: (SortTransactionHistoryOption option) {
-                                                _sortData(option);
-                                              },
-                                              itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.dateLatest,
-                                                  child: Text('Date: Latest First'),
-                                                ),
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.dateOldest,
-                                                  child: Text('Date: Oldest First'),
-                                                ),
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.statusAsc,
-                                                  child: Text('Status: A-Z'),
-                                                ),
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.statusDesc,
-                                                  child: Text('Status: Z-A'),
-                                                ),
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.amountAsc,
-                                                  child: Text('Amount: Low to High'),
-                                                ),
-                                                const PopupMenuItem<SortTransactionHistoryOption>(
-                                                  value: SortTransactionHistoryOption.amountDesc,
-                                                  child: Text('Amount: High to Low'),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                SizedBox(height: screenHeight * 0.016),
-
-
-                                /// Table View
-                                ...[
-
-                                  _displayData.isNotEmpty
-                                      ? buildTransactionTable(_displayData, screenWidth, context)
-                                      : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.all(20),
-                                    child: const Text(
-                                      'No data found',
-                                      style: TextStyle(color: Colors.white70),
                                     ),
-                                  ),
+                                  ],
+
+
+
                                 ],
-
-
-
-                              ],
+                              ),
                             ),
                           ),
                         ),

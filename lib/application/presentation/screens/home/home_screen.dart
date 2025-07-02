@@ -24,6 +24,7 @@ import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart' show ECMProgressIndicator;
 import '../../../../framework/widgets/animated_blockchain_images.dart';
 import '../../../data/services/api_service.dart';
+import '../../../module/dashboard_bottom_nav.dart';
 import '../../countdown_timer_helper.dart';
 import '../../models/token_model.dart';
 import '../../viewmodel/wallet_view_model.dart';
@@ -1503,6 +1504,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                            await walletVM.ensureModalWithValidContext(context);
                                            await Future.delayed(const Duration(milliseconds: 200));
                                            await walletVM.appKitModal!.openModalView();
+                                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()));
+
                                          } else {
                                            Utils.flushBarErrorMessage("Wallet modal not ready", context);
                                          }

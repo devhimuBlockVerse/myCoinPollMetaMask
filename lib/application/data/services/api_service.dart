@@ -27,6 +27,12 @@ class ApiService {
         final token = data['token'];
         final user = UserModel.fromJson(data['user']);
 
+         print('Login successful. Token: $token');
+
+       print('ETH Address from login: ${user.ethAddress}');
+
+
+
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         await prefs.setString('user', jsonEncode(user.toJson()));

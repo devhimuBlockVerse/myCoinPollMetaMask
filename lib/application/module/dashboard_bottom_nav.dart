@@ -29,7 +29,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ECMIcoScreen(),
     const StakingScreen(),
     const TransactionScreen(),
-    UnderMaintenance(),
+    const ProfileScreen(),
 
   ];
 

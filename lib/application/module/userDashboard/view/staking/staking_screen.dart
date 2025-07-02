@@ -1,22 +1,27 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mycoinpoll_metamask/application/data/dummyData/staking_dummy_data.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/percentageSelectorComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
- import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../domain/constants/api_constants.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/get_staking_history.dart';
+import '../../../../presentation/models/staking_plan.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widgets/staking_table.dart';
 import 'package:intl/intl.dart';
-
+import 'package:http/http.dart'as http;
 
 
 class StakingScreen extends StatefulWidget {
@@ -26,26 +31,79 @@ class StakingScreen extends StatefulWidget {
   State<StakingScreen> createState() => _StakingScreenState();
 }
 
+
 // class _StakingScreenState extends State<StakingScreen> {
-//
+//    List<String> ecmPercentageOptions = ['25%', '50%', '75%', 'Max'];
 //   SortOption? _currentSort;
 //   final SortDataUseCase _sortDataUseCase = SortDataUseCase();
-//
-//   TextEditingController inputController = TextEditingController();
+//   TextEditingController ecmAmountController = TextEditingController();
 //   final TextEditingController _searchController = TextEditingController();
 //   String? _selectedDuration;
 //   List<Map<String, dynamic>> _filteredData = [];
-//   String _currentSelectedPercentage = dummyPercentageOptions[0];
+//    String _currentSelectedPercentage = '';
 //   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 //
 //
+//
+//   String selectedPercentage = '';
+//
+//   String selectedDay = '';
+//
+//   double estimatedProfit = 0.0;
+//   double totalWithReward = 0.0;
+//   DateTime? unlockDate;
+//
+//   String lockOverviewText = '';
+//   String durationDisplayText = '';
+//
 //   @override
 //   void initState() {
-//      super.initState();
-//      _filteredData = List.from(stakingData);
-//      _searchController.addListener(_onSearchChanged);
+//     super.initState();
+//     _filteredData = List.from(stakingData);
+//     _searchController.addListener(_onSearchChanged);
+//     ecmAmountController.addListener(calculateRewards);
+//     _selectedDuration = 'Select Duration';
+//     calculateRewards();
+//     final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
+//     walletProvider.getBalance();
+//     walletProvider.getMinimunStake();
+//     walletProvider.getMaximumStake();
 //
 //   }
+//
+//   Future<List<StakingPlanModel>> fetchStakingPlans() async {
+//      final prefs = await SharedPreferences.getInstance();
+//      final token = prefs.getString('token');
+//      if (token == null) {
+//        print("No login token found.");
+//        return [];
+//      }
+//
+//      final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-plans');
+//
+//      try {
+//        final response = await http.get(
+//          url,
+//          headers: {
+//            'Accept': 'application/json',
+//            'Authorization': 'Bearer $token',
+//          },
+//        );
+//
+//        print('Staking Plans Response (${response.statusCode}): ${response.body}');
+//
+//        if (response.statusCode == 200) {
+//          final List<dynamic> decoded = json.decode(response.body);
+//          return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
+//        } else {
+//          print('Failed to fetch staking plans: ${response.body}');
+//        }
+//      } catch (e) {
+//        print("Error fetching staking plans: $e");
+//      }
+//
+//      return [];
+//    }
 //
 //   void _onSearchChanged() {
 //
@@ -66,13 +124,51 @@ class StakingScreen extends StatefulWidget {
 //
 //   @override
 //   void dispose() {
-//     inputController.dispose();
+//     ecmAmountController.dispose();
 //     _searchController.dispose();
-//      super.dispose();
+//     super.dispose();
 //   }
 //
+//   final Map<String, double> annualReturnRates = {
+//
+//      '7 Days': 0.05,
+//     '30 Days': 0.08,
+//     '90 Days': 0.11,
+//     '180 Days': 0.15,
+//     '365 Days': 0.20,
+//
+//   };
+//
+//    void calculateRewards() {
+//      double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
+//      int? numberOfDays = int.tryParse(selectedDay.replaceAll('Days', ''));
+//      double annualRate = annualReturnRates[selectedDay] ?? 0.00;
+//      double dailyRate = annualRate / 365;
+//      estimatedProfit = (ecmAmount > 0 && numberOfDays != null) ? ecmAmount * dailyRate * numberOfDays : 0.0;
+//      totalWithReward = ecmAmount + estimatedProfit;
+//      unlockDate = (numberOfDays != null) ? DateTime.now().add(Duration(days: numberOfDays)) : null;
+//      lockOverviewText = (ecmAmount > 0 && numberOfDays != null)
+//          ? "My ${ecmAmount.toStringAsFixed(2)} ECM Staked for $numberOfDays Days"
+//          : (ecmAmount > 0)
+//          ? "My ${ecmAmount.toStringAsFixed(2)}  ECM Staked for 0 Days"
+//          : (numberOfDays != null)
+//          ? "Staking for $numberOfDays Days selected"
+//          : "";
+//      setState(() {});
+//    }
 //
 //
+//    String formatDateWithSuffix(DateTime date) {
+//     int day = date.day;
+//     String suffix = 'th';
+//     if (day == 1 || day == 21 || day == 31) {
+//       suffix = 'st';
+//     } else if (day == 2 || day == 22) suffix = 'nd';
+//     else if (day == 3 || day == 23) suffix = 'rd';
+//
+//     String formatted = "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
+//     return formatted;
+//   }
 //
 //   @override
 //   Widget build(BuildContext context) {
@@ -137,155 +233,172 @@ class StakingScreen extends StatefulWidget {
 //                         horizontal: screenWidth * 0.01,
 //                         vertical: screenHeight * 0.02,
 //                       ),
-//                       child: SingleChildScrollView(
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           mainAxisAlignment: MainAxisAlignment.start,
-//                           children: [
-//                             // SizedBox(height: screenHeight * 0.01),
+//                       child: ScrollConfiguration(
+//                         behavior: const ScrollBehavior().copyWith(overscroll: false),
 //
-//                             _header(),
+//                         child: SingleChildScrollView(
+//                           physics: const BouncingScrollPhysics(),
 //
-//                             SizedBox(height: screenHeight * 0.02),
 //
-//                             _stakingDetails(),
-//                             SizedBox(height: screenHeight * 0.04),
+//                           child: Column(
+//                             crossAxisAlignment: CrossAxisAlignment.start,
+//                             mainAxisAlignment: MainAxisAlignment.start,
+//                             children: [
+//                               // SizedBox(height: screenHeight * 0.01),
 //
-//                             Center(
-//                               child: BlockButton(
-//                                 height: baseSize * 0.12,
-//                                 width: screenWidth * 0.7,
-//                                 label: "Stake Now",
-//                                 textStyle: TextStyle(
-//                                   fontWeight: FontWeight.w700,
+//                               _header(),
+//
+//                               SizedBox(height: screenHeight * 0.02),
+//
+//                               _stakingDetails(),
+//                               SizedBox(height: screenHeight * 0.04),
+//
+//                               // Center(
+//                               //   child: BlockButton(
+//                               //     height: baseSize * 0.12,
+//                               //     width: screenWidth * 0.7,
+//                               //     label: "Stake Now",
+//                               //     textStyle: TextStyle(
+//                               //       fontWeight: FontWeight.w700,
+//                               //       color: Colors.white,
+//                               //       fontSize: baseSize * 0.048,
+//                               //     ),
+//                               //     gradientColors: const [
+//                               //       Color(0xFF2680EF),
+//                               //       Color(0xFF1CD494),
+//                               //     ],
+//                               //     onTap: () {
+//                               //       debugPrint('Button tapped');
+//                               //     },
+//                               //     leadingIconPath: 'assets/icons/arrowIcon.svg',
+//                               //     iconSize : screenHeight * 0.013,
+//                               //   ),
+//                               // ),
+//                               //
+//                               // SizedBox(height: screenHeight * 0.02),
+//
+//                               Center(
+//                                 child: BlockButtonV2(
+//                                   text: 'Buy ECM',
+//                                   leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
+//                                   // trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
+//                                   onPressed: () {
+//                                     debugPrint('Button tapped!');
+//                                     Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+//
+//                                   },
+//                                   textStyle: TextStyle(
+//                                     fontWeight: FontWeight.w700,
+//                                     color: Colors.white,
+//                                     fontSize: baseSize * 0.048,
+//                                   ),
+//                                   height: baseSize * 0.12,
+//                                   width: screenWidth * 0.7,
+//                                 ),
+//                               ),
+//
+//
+//                               SizedBox(height: screenHeight * 0.030),
+//                               Text(
+//                                 'Staking History',
+//                                 textAlign: TextAlign.left,
+//                                 style: TextStyle(
+//                                   fontFamily: 'Poppins',
+//                                   fontWeight: FontWeight.w500,
+//                                   fontSize: getResponsiveFontSize(context, 18),
+//                                   height: 1.6,
 //                                   color: Colors.white,
-//                                   fontSize: baseSize * 0.048,
 //                                 ),
-//                                 gradientColors: const [
-//                                   Color(0xFF2680EF),
-//                                   Color(0xFF1CD494),
-//                                 ],
-//                                 onTap: () {
-//                                   debugPrint('Button tapped');
-//                                 },
 //                               ),
-//                             ),
-//
-//                             SizedBox(height: screenHeight * 0.02),
-//
-//                             Center(
-//                               child: BlockButtonV2(
-//                                 text: 'Buy ECM',
-//                                 trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
-//                                 onPressed: () {
-//                                   debugPrint('Button tapped!');
-//                                 },
-//                                 height: baseSize * 0.12,
-//                                 width: screenWidth * 0.7,
-//                               ),
-//                             ),
-//
-//
-//                             SizedBox(height: screenHeight * 0.030),
-//                             Text(
-//                               'Staking History',
-//                               textAlign: TextAlign.left,
-//                               style: TextStyle(
-//                                 fontFamily: 'Poppins',
-//                                 fontWeight: FontWeight.w500,
-//                                 fontSize: getResponsiveFontSize(context, 18),
-//                                 height: 1.6,
-//                                 color: Colors.white,
-//                               ),
-//                             ),
-//                             SizedBox(height: screenHeight * 0.030),
+//                               SizedBox(height: screenHeight * 0.030),
 //
 //
 //
 //
-//                             Container(
-//                               width: double.infinity,
-//                               decoration: BoxDecoration(
+//                               Container(
+//                                 width: double.infinity,
+//                                 decoration: BoxDecoration(
 //                                   color: const Color(0xff040C16),
-//                                 borderRadius: BorderRadius.circular(5),
+//                                   borderRadius: BorderRadius.circular(5),
 //
-//                               ),
-//                               padding: EdgeInsets.symmetric(
-//                                   horizontal: screenWidth * 0.02,
-//                                   vertical:  screenHeight * 0.001
-//                               ),
+//                                 ),
+//                                 padding: EdgeInsets.symmetric(
+//                                     horizontal: screenWidth * 0.02,
+//                                     vertical:  screenHeight * 0.001
+//                                 ),
 //
-//                               child: Row(
-//                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                                 crossAxisAlignment: CrossAxisAlignment.center,
-//                                 children: [
-//                                   Expanded(
-//                                     flex: 2,
-//                                     child: ResponsiveSearchField(
-//                                       controller: _searchController,
-//                                       onChanged:  (value) => _onSearchChanged(),
-//                                       svgAssetPath: 'assets/icons/search.svg',
+//                                 child: Row(
+//                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                                   crossAxisAlignment: CrossAxisAlignment.center,
+//                                   children: [
+//                                     Expanded(
+//                                       flex: 2,
+//                                       child: ResponsiveSearchField(
+//                                         controller: _searchController,
+//                                         onChanged:  (value) => _onSearchChanged(),
+//                                         svgAssetPath: 'assets/icons/search.svg',
 //
+//                                       ),
 //                                     ),
-//                                   ),
 //
 //
-//                                   Expanded(
-//                                     flex: 1,
-//                                     child: Align(
-//                                       alignment: Alignment.centerRight,
-//                                       child: PopupMenuButton<SortOption>(
-//                                         icon: SvgPicture.asset(
-//                                           'assets/icons/sortingList.svg',
-//                                           fit: BoxFit.contain,
-//                                         ),
-//                                         onSelected: (SortOption option) {
-//                                           _sortData(option);
-//                                         },
-//                                         itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
-//                                           const PopupMenuItem<SortOption>(
-//                                             value: SortOption.dateLatest,
-//                                             child: Text('Date: Latest First'),
-//                                           ),
-//                                           const PopupMenuItem<SortOption>(
-//                                             value: SortOption.dateOldest,
-//                                             child: Text('Date: Oldest First'),
-//                                           ),
-//                                           const PopupMenuItem<SortOption>(
-//                                             value: SortOption.statusAsc,
-//                                             child: Text('Status: A-Z'),
-//                                           ),
-//                                           const PopupMenuItem<SortOption>(
-//                                             value: SortOption.statusDesc,
-//                                             child: Text('Status: Z-A'),
-//                                           ),
-//                                         ],
-//                                       )
-//                                      ),
-//                                   ),
-//                                 ],
-//                               ),
-//                             ),
-//                              SizedBox(height: screenHeight * 0.016),
-//                             ...[
-//                               _filteredData.isNotEmpty
-//                                   ? buildStakingTable(_filteredData, screenWidth, context)
-//                                   : Container(
-//                                 alignment: Alignment.center,
-//                                 padding: const EdgeInsets.all(20),
-//                                 child: const Text(
-//                                   'No data found',
-//                                   style: TextStyle(color: Colors.white70),
+//                                     Expanded(
+//                                       flex: 1,
+//                                       child: Align(
+//                                           alignment: Alignment.centerRight,
+//                                           child: PopupMenuButton<SortOption>(
+//                                             icon: SvgPicture.asset(
+//                                               'assets/icons/sortingList.svg',
+//                                               fit: BoxFit.contain,
+//                                             ),
+//                                             onSelected: (SortOption option) {
+//                                               _sortData(option);
+//                                             },
+//                                             itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
+//                                               const PopupMenuItem<SortOption>(
+//                                                 value: SortOption.dateLatest,
+//                                                 child: Text('Date: Latest First'),
+//                                               ),
+//                                               const PopupMenuItem<SortOption>(
+//                                                 value: SortOption.dateOldest,
+//                                                 child: Text('Date: Oldest First'),
+//                                               ),
+//                                               const PopupMenuItem<SortOption>(
+//                                                 value: SortOption.statusAsc,
+//                                                 child: Text('Status: A-Z'),
+//                                               ),
+//                                               const PopupMenuItem<SortOption>(
+//                                                 value: SortOption.statusDesc,
+//                                                 child: Text('Status: Z-A'),
+//                                               ),
+//                                             ],
+//                                           )
+//                                       ),
+//                                     ),
+//                                   ],
 //                                 ),
 //                               ),
+//                               SizedBox(height: screenHeight * 0.016),
+//                               ...[
+//                                 _filteredData.isNotEmpty
+//                                     ? buildStakingTable(_filteredData, screenWidth, context)
+//                                     : Container(
+//                                   alignment: Alignment.center,
+//                                   padding: const EdgeInsets.all(20),
+//                                   child: const Text(
+//                                     'No data found',
+//                                     style: TextStyle(color: Colors.white70),
+//                                   ),
+//                                 ),
+//                               ],
+//
+//
+//
+//
+//
+//
 //                             ],
-//
-//
-//
-//
-//
-//
-//                           ],
+//                           ),
 //                         ),
 //                       ),
 //                     ),
@@ -303,7 +416,7 @@ class StakingScreen extends StatefulWidget {
 //     final screenWidth = MediaQuery.of(context).size.width;
 //     final screenHeight = MediaQuery.of(context).size.height;
 //
-//      final containerWidth = screenWidth * 0.9;
+//     final containerWidth = screenWidth * 0.9;
 //     final containerHeight = screenHeight * 0.05;
 //     final imageSize = screenWidth * 0.04;
 //     return Column(
@@ -319,7 +432,7 @@ class StakingScreen extends StatefulWidget {
 //           ),
 //           child: Center(
 //             child: Row(
-//                crossAxisAlignment: CrossAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
 //               mainAxisAlignment: MainAxisAlignment.center,
 //               children: [
 //                 Container(
@@ -335,7 +448,8 @@ class StakingScreen extends StatefulWidget {
 //                 ),
 //                 const SizedBox(width: 5),
 //                 Text(
-//                   'My 0 ECM Stack for 180 Days',
+//                   // 'My 0 ECM Stack for 180 Days',
+//                   lockOverviewText.isNotEmpty ? lockOverviewText : "Enter ECM to Stake",
 //                   style: TextStyle(
 //                     color: const Color(0xffFFFFFF),
 //                     fontSize: getResponsiveFontSize(context, 12),
@@ -380,27 +494,40 @@ class StakingScreen extends StatefulWidget {
 //               SizedBox(height: screenHeight * 0.005),
 //               Row(
 //                 crossAxisAlignment: CrossAxisAlignment.start,
+//
 //                 children: [
 //                   // Left side: Max + Input Amount
 //                   Expanded(
 //                     child: Column(
 //                       crossAxisAlignment: CrossAxisAlignment.end,
 //                       children: [
-//                         const Text(
-//                           'Max: 5000',
-//                           style: TextStyle(
-//                             color: Colors.white,
-//                             fontSize: 14,
-//                             fontWeight: FontWeight.w500,
-//                             fontFamily: 'Poppins',
-//                           ),
+//
+//                         Consumer<WalletViewModel>(builder: (context, model, child){
+//                           return Text(
+//                             // 'Max: 5000',
+//                             'Max: ${model.maximumStake ?? '...'} ECM',
+//                             style: TextStyle(
+//                               color: Colors.white,
+//                               fontSize: 14,
+//                               fontWeight: FontWeight.w500,
+//                               fontFamily: 'Poppins',
+//                             ),
+//                           );
+//
+//                         }
 //                         ),
+//
+//
 //                         const SizedBox(height: 6),
 //                         ListingField(
 //                           labelText: 'Input Amounts',
-//                           controller: inputController,
+//                           controller: ecmAmountController,
 //                           height: listingFieldHeight,
-//
+//                           onChanged: (value) {
+//                             setState(() {
+//                               selectedPercentage = '';
+//                             });
+//                           },
 //                           width: double.infinity,
 //                           prefixPngPath: 'assets/icons/ecm.png',
 //                         ),
@@ -408,7 +535,7 @@ class StakingScreen extends StatefulWidget {
 //                     ),
 //                   ),
 //
-//                   const SizedBox(width: 10),
+//                   const SizedBox(width: 8),
 //
 //                   // Right side: Dropdown
 //                   Expanded(
@@ -420,14 +547,18 @@ class StakingScreen extends StatefulWidget {
 //                           isDropdown: true,
 //                           labelText: '', // no label
 //                           prefixSvgPath: 'assets/icons/timerImg.svg',
-//                           dropdownItems: const ['7 Days', '30 Days', '90 Days', '180 Days', '365 Days'],
-//                           selectedDropdownItem: _selectedDuration,
+//                           dropdownItems: const ['Select Duration','7 Days', '30 Days', '90 Days', '180 Days', '365 Days'],
+//                            selectedDropdownItem: _selectedDuration,
 //                           height: listingFieldHeight,
 //                           width: double.infinity,
 //                           onDropdownChanged: (newValue) {
+//
+//                             if (newValue == null || newValue.isEmpty || newValue == 'Select Duration') return;
 //                             setState(() {
 //                               _selectedDuration = newValue;
+//                               selectedDay = newValue;
 //                             });
+//                             calculateRewards();
 //                             print('Selected duration: $newValue');
 //                           },
 //                         ),
@@ -440,16 +571,42 @@ class StakingScreen extends StatefulWidget {
 //               SizedBox(height: screenHeight * 0.02),
 //
 //               /// Percentage Section
-//               PercentageSelectorComponent(
-//                 options: dummyPercentageOptions,
-//                 initialSelection: _currentSelectedPercentage,
-//                 onSelected: (selected) {
-//                   setState(() {
-//                     _currentSelectedPercentage = selected;
-//                   });
-//                   print('Selected: $_currentSelectedPercentage');
-//                 },
-//               ),
+//               Consumer<WalletViewModel>(builder: (context, walletVM, child){
+//                 final balanceStr = walletVM.balance;
+//                 final balance = double.tryParse(balanceStr ?? '0') ?? 0.0;
+//                 print('UI sees balance: $balance');
+//                 return PercentageSelectorComponent(
+//                   options: ecmPercentageOptions,
+//                   initialSelection: _currentSelectedPercentage,
+//                   onSelected: (selected) {
+//
+//                     double percentageValue;
+//                     switch (selected) {
+//                       case '25%':
+//                         percentageValue = balance * 0.25;
+//                         break;
+//                       case '50%':
+//                         percentageValue = balance * 0.50;
+//                         break;
+//                       case '75%':
+//                         percentageValue = balance * 0.75;
+//                         break;
+//                       case 'Max':
+//                         percentageValue = balance;
+//                         break;
+//                       default:
+//                         percentageValue = 0.0;
+//                     }
+//                     ecmAmountController.text = percentageValue.toStringAsFixed(2);
+//                     calculateRewards();
+//                     setState(() {
+//                       _currentSelectedPercentage = selected;
+//                     });
+//                     print('Selected: $_currentSelectedPercentage');
+//
+//                   },
+//                 );
+//               }),
 //               SizedBox(height: screenHeight * 0.02),
 //
 //               Center(
@@ -495,11 +652,11 @@ class StakingScreen extends StatefulWidget {
 //                 crossAxisAlignment: CrossAxisAlignment.start,
 //                 mainAxisSize: MainAxisSize.min,
 //                 children: [
-//                   _buildInfoRow("Stack amount", "0.0000 ECM"),
+//                   _buildInfoRow("Stack amount", "${ecmAmountController.text} ECM"),
 //                   SizedBox(height: screenHeight * 0.01),
-//                   _buildInfoRow("Estimated Profit", "0 ECM", valueColor: const Color(0xFF1CD494)),
+//                   _buildInfoRow("Estimated Profit","${estimatedProfit.toStringAsFixed(3)} ECM", valueColor: const Color(0xFF1CD494)),
 //                   SizedBox(height: screenHeight * 0.01),
-//                   _buildInfoRow("Total with Reward", "0 ECM"),
+//                   _buildInfoRow("Total with Reward","${totalWithReward.toStringAsFixed(3)} ECM"),
 //                 ],
 //               ),
 //             ),
@@ -521,11 +678,11 @@ class StakingScreen extends StatefulWidget {
 //                 crossAxisAlignment: CrossAxisAlignment.start,
 //                 mainAxisSize: MainAxisSize.min,
 //                 children: [
-//                   _buildInfoRow("Annual Return Rate", "0 %"),
+//                   _buildInfoRow("Annual Return Rate",  "${(annualReturnRates[selectedDay] ?? 0.00) * 100}%"),
 //                   SizedBox(height: screenHeight * 0.01),
-//                   _buildInfoRow("Duration", "0 days", valueColor: const Color(0xFF1CD494)),
+//                   _buildInfoRow("Duration", "${selectedDay.replaceAll('Days', '')} Days", valueColor: const Color(0xFF1CD494)),
 //                   SizedBox(height: screenHeight * 0.01),
-//                   _buildInfoRow("Unlocked on", "20th, May 2025"),
+//                   _buildInfoRow("Unlocked on", unlockDate != null ? formatDateWithSuffix(unlockDate!) : "Not Available"),
 //                 ],
 //               ),
 //             ),
@@ -554,7 +711,7 @@ class StakingScreen extends StatefulWidget {
 //             ),
 //           ),
 //         ),
-//          SizedBox(width: screenWidth * 0.01),
+//         SizedBox(width: screenWidth * 0.01),
 //         Flexible(
 //           child: Text(
 //             value,
@@ -576,37 +733,50 @@ class StakingScreen extends StatefulWidget {
 // }
 class _StakingScreenState extends State<StakingScreen> {
    List<String> ecmPercentageOptions = ['25%', '50%', '75%', 'Max'];
-  SortOption? _currentSort;
+   SortOption? _currentSort;
+
   final SortDataUseCase _sortDataUseCase = SortDataUseCase();
   TextEditingController ecmAmountController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  String? _selectedDuration;
-  List<Map<String, dynamic>> _filteredData = [];
-  // String _currentSelectedPercentage = dummyPercentageOptions[0];
-  String _currentSelectedPercentage = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
-
-  String selectedPercentage = '';
-
-  String selectedDay = '';
-
+  String? _selectedDuration;
+  String selectedDay  = '';
   double estimatedProfit = 0.0;
   double totalWithReward = 0.0;
   DateTime? unlockDate;
-
   String lockOverviewText = '';
-  String durationDisplayText = '';
+
+  bool isLoading = false;
+  Map<int, double> annualReturnRates = {};
+  String _currentSelectedPercentage = '';
+  String selectedPercentage = '';
+
+
+
+  List<StakingPlanModel> stakingPlans = [];
+  List<StakingPlanModel> filteredPlans = [];
+
+  List<StakingHistoryModel> stakingHistory = [];
+  List<StakingHistoryModel> filteredHistory = [];
+   bool _isLoading = false;
+
+
+
 
   @override
   void initState() {
     super.initState();
-    _filteredData = List.from(stakingData);
-    _searchController.addListener(_onSearchChanged);
+     _searchController.addListener(_onSearchChanged);
     ecmAmountController.addListener(calculateRewards);
+
+    _loadStakingPlans();
+    fetchStakingHistory();
+
+
     _selectedDuration = 'Select Duration';
     calculateRewards();
+
     final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
     walletProvider.getBalance();
     walletProvider.getMinimunStake();
@@ -614,22 +784,116 @@ class _StakingScreenState extends State<StakingScreen> {
 
   }
 
-  void _onSearchChanged() {
+  Future<List<StakingPlanModel>> fetchStakingPlans() async {
+     final prefs = await SharedPreferences.getInstance();
+     final token = prefs.getString('token');
+     if (token == null) {
+       print("No login token found.");
+       return [];
+     }
 
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredData = stakingData.where((row){
-        return row.values.any((value) => value.toLowerCase().contains(query));
-      }).toList();
-    });
-  }
+     final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-plans');
 
-  void _sortData(SortOption option) {
-    setState(() {
-      _currentSort = option;
-      _filteredData = _sortDataUseCase(_filteredData, option);
-    });
-  }
+     try {
+       final response = await http.get(
+         url,
+         headers: {
+           'Accept': 'application/json',
+           'Authorization': 'Bearer $token',
+         },
+       );
+
+       print('Staking Plans Response (${response.statusCode}): ${response.body}');
+
+       if (response.statusCode == 200) {
+         final List<dynamic> decoded = json.decode(response.body);
+         return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
+       } else {
+         print('Failed to fetch staking plans: ${response.body}');
+         return [];
+       }
+     } catch (e) {
+       print("Error fetching staking plans: $e");
+     }
+
+     return [];
+   }
+
+   Future<void> fetchStakingHistory() async {
+     setState(() => _isLoading = true);
+
+     final prefs = await SharedPreferences.getInstance();
+     final token = prefs.getString('token');
+     if (token == null) return;
+
+     final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
+
+     try {
+       final response = await http.get(url, headers: {
+         'Accept': 'application/json',
+         'Authorization': 'Bearer $token',
+       });
+
+       if (response.statusCode == 200) {
+         final List<dynamic> decoded = json.decode(response.body);
+         final List<StakingHistoryModel> history = decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
+         setState(() {
+           stakingHistory = history;
+           filteredHistory = history;
+           _isLoading = false;
+
+         });
+       }
+     } catch (e) {
+       print('Error fetching staking history: \$e');
+       setState(() => _isLoading = false);
+
+     }
+   }
+
+   Future<void> _loadStakingPlans() async {
+     setState(() {
+       isLoading = true;
+     });
+     final plans = await fetchStakingPlans();
+
+     Map<int,double> rates = {};
+     for (var plan in plans){
+       rates[plan.duration] = plan.rewardPercentage / 100.0;
+     }
+
+
+     setState(() {
+       stakingPlans = plans;
+       filteredPlans = List.from(plans);
+       annualReturnRates = rates;
+       isLoading = false;
+     });
+
+   }
+
+   /// Search Filtering
+   void _onSearchChanged() {
+     String query = _searchController.text.toLowerCase();
+     setState(() {
+       if (query.isEmpty) {
+         filteredHistory = stakingHistory;
+       } else {
+         filteredHistory = stakingHistory.where((item) {
+           return item.status.toLowerCase().contains(query) ||
+               item.createdAtFormatted.toLowerCase().contains(query) ||
+               item.amount.toLowerCase().contains(query);
+         }).toList();
+       }
+     });
+   }
+
+   void _sortData(SortOption option) {
+     setState(() {
+       _currentSort = option;
+       filteredHistory = _sortDataUseCase(filteredHistory, option);
+     });
+   }
 
   @override
   void dispose() {
@@ -638,46 +902,33 @@ class _StakingScreenState extends State<StakingScreen> {
     super.dispose();
   }
 
-  final Map<String, double> annualReturnRates = {
 
-     '7 Days': 0.05,
-    '30 Days': 0.08,
-    '90 Days': 0.11,
-    '180 Days': 0.15,
-    '365 Days': 0.20,
-
-  };
-
+  ///Calculates the Estimated Profits , Rewards ,  Rates ...etc
    void calculateRewards() {
      double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
-     int? numberOfDays = int.tryParse(selectedDay.replaceAll('Days', ''));
-     double annualRate = annualReturnRates[selectedDay] ?? 0.00;
+
+     int? numberOfDays = _selectedDuration != null ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), '')) : null;
+
+     double annualRate = numberOfDays != null ? annualReturnRates[numberOfDays] ?? 0.0 : 0.0;
      double dailyRate = annualRate / 365;
+
      estimatedProfit = (ecmAmount > 0 && numberOfDays != null) ? ecmAmount * dailyRate * numberOfDays : 0.0;
      totalWithReward = ecmAmount + estimatedProfit;
      unlockDate = (numberOfDays != null) ? DateTime.now().add(Duration(days: numberOfDays)) : null;
-     lockOverviewText = (ecmAmount > 0 && numberOfDays != null)
-         ? "My ${ecmAmount.toStringAsFixed(2)} ECM Staked for $numberOfDays Days"
-         : (ecmAmount > 0)
-         ? "My ${ecmAmount.toStringAsFixed(2)}  ECM Staked for 0 Days"
-         : (numberOfDays != null)
-         ? "Staking for $numberOfDays Days selected"
-         : "";
+     lockOverviewText = (ecmAmount > 0 && numberOfDays != null) ? "My ${ecmAmount.toStringAsFixed(2)} ECM Staked for $numberOfDays Days" : "";
      setState(() {});
    }
 
-
    String formatDateWithSuffix(DateTime date) {
-    int day = date.day;
-    String suffix = 'th';
-    if (day == 1 || day == 21 || day == 31) {
-      suffix = 'st';
-    } else if (day == 2 || day == 22) suffix = 'nd';
-    else if (day == 3 || day == 23) suffix = 'rd';
-
-    String formatted = "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
-    return formatted;
-  }
+     int day = date.day;
+     String suffix = 'th';
+     if (day == 1 || day == 21 || day == 31)
+       suffix = 'st';
+     else if (day == 2 || day == 22)
+       suffix = 'nd';
+     else if (day == 3 || day == 23) suffix = 'rd';
+     return "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -688,6 +939,11 @@ class _StakingScreenState extends State<StakingScreen> {
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
+
+    List<String> durationDropdownItems = ['Select Duration'];
+    durationDropdownItems.addAll(stakingPlans.map((plan) => '${plan.duration} Days').toList());
+
+
     return  Scaffold(
         key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
@@ -745,168 +1001,173 @@ class _StakingScreenState extends State<StakingScreen> {
                       child: ScrollConfiguration(
                         behavior: const ScrollBehavior().copyWith(overscroll: false),
 
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            await fetchStakingHistory();
+                            setState(() {});
+                          },
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
 
 
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // SizedBox(height: screenHeight * 0.01),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                // SizedBox(height: screenHeight * 0.01),
 
-                              _header(),
+                                _header(),
 
-                              SizedBox(height: screenHeight * 0.02),
+                                SizedBox(height: screenHeight * 0.02),
 
-                              _stakingDetails(),
-                              SizedBox(height: screenHeight * 0.04),
+                                _stakingDetails(),
+                                SizedBox(height: screenHeight * 0.04),
 
-                              // Center(
-                              //   child: BlockButton(
-                              //     height: baseSize * 0.12,
-                              //     width: screenWidth * 0.7,
-                              //     label: "Stake Now",
-                              //     textStyle: TextStyle(
-                              //       fontWeight: FontWeight.w700,
-                              //       color: Colors.white,
-                              //       fontSize: baseSize * 0.048,
-                              //     ),
-                              //     gradientColors: const [
-                              //       Color(0xFF2680EF),
-                              //       Color(0xFF1CD494),
-                              //     ],
-                              //     onTap: () {
-                              //       debugPrint('Button tapped');
-                              //     },
-                              //     leadingIconPath: 'assets/icons/arrowIcon.svg',
-                              //     iconSize : screenHeight * 0.013,
-                              //   ),
-                              // ),
-                              //
-                              // SizedBox(height: screenHeight * 0.02),
+                                Center(
+                                  child: BlockButton(
+                                    height: baseSize * 0.12,
+                                    width: screenWidth * 0.7,
+                                    label: "Stake Now",
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontSize: baseSize * 0.048,
+                                    ),
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494),
+                                    ],
+                                    onTap: () {
+                                      debugPrint('Button tapped');
+                                    },
+                                    leadingIconPath: 'assets/icons/arrowIcon.svg',
+                                    iconSize : screenHeight * 0.013,
+                                  ),
+                                ),
 
-                              Center(
-                                child: BlockButtonV2(
-                                  text: 'Buy ECM',
-                                  leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
-                                  // trailingIcon:  Icon(Icons.shopping_cart, color: Colors.white, size: screenHeight * 0.02),
-                                  onPressed: () {
-                                    debugPrint('Button tapped!');
-                                    Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+                                SizedBox(height: screenHeight * 0.02),
 
-                                  },
-                                  textStyle: TextStyle(
-                                    fontWeight: FontWeight.w700,
+                                Center(
+                                  child: BlockButtonV2(
+                                    text: 'Buy ECM',
+                                    leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
+                                     onPressed: () {
+                                      debugPrint('Button tapped!');
+                                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+
+                                    },
+                                    textStyle: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontSize: baseSize * 0.048,
+                                    ),
+                                    height: baseSize * 0.12,
+                                    width: screenWidth * 0.7,
+                                  ),
+                                ),
+
+
+                                SizedBox(height: screenHeight * 0.030),
+                                Text(
+                                  'Staking History',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: getResponsiveFontSize(context, 18),
+                                    height: 1.6,
                                     color: Colors.white,
-                                    fontSize: baseSize * 0.048,
-                                  ),
-                                  height: baseSize * 0.12,
-                                  width: screenWidth * 0.7,
-                                ),
-                              ),
-
-
-                              SizedBox(height: screenHeight * 0.030),
-                              Text(
-                                'Staking History',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: getResponsiveFontSize(context, 18),
-                                  height: 1.6,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * 0.030),
-
-
-
-
-                              Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xff040C16),
-                                  borderRadius: BorderRadius.circular(5),
-
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.02,
-                                    vertical:  screenHeight * 0.001
-                                ),
-
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      flex: 2,
-                                      child: ResponsiveSearchField(
-                                        controller: _searchController,
-                                        onChanged:  (value) => _onSearchChanged(),
-                                        svgAssetPath: 'assets/icons/search.svg',
-
-                                      ),
-                                    ),
-
-
-                                    Expanded(
-                                      flex: 1,
-                                      child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: PopupMenuButton<SortOption>(
-                                            icon: SvgPicture.asset(
-                                              'assets/icons/sortingList.svg',
-                                              fit: BoxFit.contain,
-                                            ),
-                                            onSelected: (SortOption option) {
-                                              _sortData(option);
-                                            },
-                                            itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
-                                              const PopupMenuItem<SortOption>(
-                                                value: SortOption.dateLatest,
-                                                child: Text('Date: Latest First'),
-                                              ),
-                                              const PopupMenuItem<SortOption>(
-                                                value: SortOption.dateOldest,
-                                                child: Text('Date: Oldest First'),
-                                              ),
-                                              const PopupMenuItem<SortOption>(
-                                                value: SortOption.statusAsc,
-                                                child: Text('Status: A-Z'),
-                                              ),
-                                              const PopupMenuItem<SortOption>(
-                                                value: SortOption.statusDesc,
-                                                child: Text('Status: Z-A'),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * 0.016),
-                              ...[
-                                _filteredData.isNotEmpty
-                                    ? buildStakingTable(_filteredData, screenWidth, context)
-                                    : Container(
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.all(20),
-                                  child: const Text(
-                                    'No data found',
-                                    style: TextStyle(color: Colors.white70),
                                   ),
                                 ),
+                                SizedBox(height: screenHeight * 0.030),
+
+
+
+
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xff040C16),
+                                    borderRadius: BorderRadius.circular(5),
+
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.02,
+                                      vertical:  screenHeight * 0.001
+                                  ),
+
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: ResponsiveSearchField(
+                                          controller: _searchController,
+                                          onChanged:  (value) => _onSearchChanged(),
+                                          svgAssetPath: 'assets/icons/search.svg',
+
+                                        ),
+                                      ),
+
+
+                                      Expanded(
+                                        flex: 1,
+                                        child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: PopupMenuButton<SortOption>(
+                                              icon: SvgPicture.asset(
+                                                'assets/icons/sortingList.svg',
+                                                fit: BoxFit.contain,
+                                              ),
+                                              onSelected: (SortOption option) {
+                                                _sortData(option);
+                                              },
+                                              itemBuilder: (BuildContext context) => <PopupMenuEntry<SortOption>>[
+                                                const PopupMenuItem<SortOption>(
+                                                  value: SortOption.dateLatest,
+                                                  child: Text('Date: Latest First'),
+                                                ),
+                                                const PopupMenuItem<SortOption>(
+                                                  value: SortOption.dateOldest,
+                                                  child: Text('Date: Oldest First'),
+                                                ),
+                                                const PopupMenuItem<SortOption>(
+                                                  value: SortOption.statusAsc,
+                                                  child: Text('Status: A-Z'),
+                                                ),
+                                                const PopupMenuItem<SortOption>(
+                                                  value: SortOption.statusDesc,
+                                                  child: Text('Status: Z-A'),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: screenHeight * 0.016),
+                                ...[
+                                  _isLoading ? const Center(child: CircularProgressIndicator()) :  filteredHistory.isNotEmpty
+                                      ? buildStakingTable(filteredHistory, screenWidth, context)
+                                      : Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.all(20),
+                                    child: const Text(
+                                      'No History found',
+                                      style: TextStyle(color: Colors.white70),
+                                    ),
+                                  ),
+                                ],
+
+
+
+
+
+
                               ],
-
-
-
-
-
-
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -1187,7 +1448,15 @@ class _StakingScreenState extends State<StakingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildInfoRow("Annual Return Rate",  "${(annualReturnRates[selectedDay] ?? 0.00) * 100}%"),
+                  Builder(
+                    builder: (context) {
+                      int? durationKey = int.tryParse(selectedDay.replaceAll(' Days', '').trim());
+                      String rateText = durationKey != null
+                          ? "${(annualReturnRates[durationKey] ?? 0.0) * 100}%"
+                          : "0%";
+                      return _buildInfoRow("Annual Return Rate", rateText);
+                    },
+                  ),
                   SizedBox(height: screenHeight * 0.01),
                   _buildInfoRow("Duration", "${selectedDay.replaceAll('Days', '')} Days", valueColor: const Color(0xFF1CD494)),
                   SizedBox(height: screenHeight * 0.01),

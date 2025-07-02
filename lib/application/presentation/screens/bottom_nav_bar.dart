@@ -93,7 +93,8 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       const FeaturesScreen(),
       const AndroVerseScreen(),
       const NewsScreen(),
-      isLoggedInOrConnected ? const ProfileScreen() : const SignIn(),
+      const SignIn(),
+      // isLoggedInOrConnected ? const ProfileScreen() : const SignIn(),
     ];
 
 

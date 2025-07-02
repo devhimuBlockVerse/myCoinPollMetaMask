@@ -351,7 +351,7 @@ class _SignInState extends State<SignIn> {
                                                       await walletVM.connectWallet(context);
                                                     }
                                                      if (walletVM.isConnected && context.mounted) {
-                                                      Navigator.pushReplacement(
+                                                      Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
                                                           builder: (context) => const DashboardBottomNavBar(),

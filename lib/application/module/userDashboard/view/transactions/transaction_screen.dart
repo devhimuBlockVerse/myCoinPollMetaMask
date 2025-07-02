@@ -139,6 +139,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
               'Amount': tx['converted_value'].toString(),
               'Details': tx['explorer_url'] ?? '',
               'FullHash': tx['hash'] ?? '',
+              'From': tx['from'] ?? '',
+              'To': tx['to'] ?? '',
+
             };
           }).toList();
         }

@@ -90,7 +90,8 @@ class NavigationProvider extends ChangeNotifier {
     // ),
     NavItem(
       id: 'log_out',
-      title: 'Logout',
+      // title: 'Logout',
+      title: 'Exit',
       iconPath: 'assets/icons/logout.svg',
       onTap: (context) {
 
@@ -99,13 +100,14 @@ class NavigationProvider extends ChangeNotifier {
           context: context,
           barrierDismissible: false,
           builder: (context) => DialogModalView(
-            title: 'Logout',
-            message: 'Are you sure you want to log out?',
+            title: 'Exit Dashboard',
+            message: 'Do you wish to exit the Dashboard panel?',
+            // message: 'Are you sure you want to log out?',
             yesLabel: 'Yes',
             onYes: ()async {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.remove('token');
-              await prefs.remove('user');
+              // final prefs = await SharedPreferences.getInstance();
+              // await prefs.remove('token');
+              // await prefs.remove('user');
               Navigator.push(context, MaterialPageRoute(builder: (context) =>  BottomNavBar()));
 
 

@@ -78,12 +78,12 @@ class _SideNavBarState extends State<SideNavBar> {
         children: <Widget>[
           CircleAvatar(
             radius: avatarRadius,
-            backgroundImage: const AssetImage('assets/icons/ecm.png'), // Ensure asset exists
+            backgroundImage: const AssetImage('assets/icons/ecm.png'),
             backgroundColor: Colors.white.withOpacity(0.3),
           ),
           SizedBox(height: drawerWidth * 0.03),
           Text(
-            'Abdur Salam',
+            'Hi, Ethereum User!',
             style: TextStyle(
               color: AppColors.profileName,
               fontSize: nameFontSize,

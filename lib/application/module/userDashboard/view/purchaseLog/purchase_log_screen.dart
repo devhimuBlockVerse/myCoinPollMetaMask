@@ -1,16 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
  import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../domain/constants/api_constants.dart';
 import '../../../../domain/model/PurchaseLogModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/user_model.dart';
+import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widget/purchase_card.dart';
+import 'package:http/http.dart'as http;
 
 
 
@@ -29,11 +36,12 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
   SortPurchaseLogOption? _currentSort;
   final SortPurchaseLogUseCase _sortDataUseCase = SortPurchaseLogUseCase();
-
-  TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
+
   List<PurchaseLogModel> _transactionData = [];
+  List<PurchaseLogModel> _originalData = [];
+
   bool isLoading = true;
   String? errorMessage;
 
@@ -44,36 +52,149 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
     _fetchTransactions();
   }
 
-   Future<void> _fetchTransactions() async {
+
+
+  // Future<void> _fetchTransactions() async {
+  //   setState(() {
+  //     isLoading = true;
+  //     errorMessage = null;
+  //   });
+  //
+  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //   String? walletAddress;
+  //
+  //   if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
+  //     walletAddress = walletVM.walletAddress;
+  //   } else {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final userJson = prefs.getString('user');
+  //     if (userJson != null) {
+  //       final user = UserModel.fromJson(jsonDecode(userJson));
+  //       if (user.ethAddress.isNotEmpty) {
+  //         walletAddress = user.ethAddress;
+  //       }
+  //     }
+  //   }
+  //
+  //   if (walletAddress == null || walletAddress.isEmpty) {
+  //     setState(() {
+  //       errorMessage = 'No wallet address found.';
+  //       isLoading = false;
+  //     });
+  //     return;
+  //   }
+  //
+  //
+  //
+  //   try {
+  //
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('token');
+  //
+  //     if (token == null) {
+  //       setState(() {
+  //         errorMessage = 'Authentication token missing.';
+  //         isLoading = false;
+  //       });
+  //       return;
+  //     }
+  //
+  //     final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=$walletAddress');
+  //     final response = await http.get(
+  //         url,
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final decoded = json.decode(response.body);
+  //       final List<dynamic> data = decoded['data'];
+  //       _originalData = data.map((e) => PurchaseLogModel.fromJson(e)).toList();
+  //       _transactionData = [..._originalData];
+  //     } else {
+  //       errorMessage = 'Failed to fetch data. Status: ${response.statusCode}';
+  //     }
+  //   } catch (e) {
+  //     errorMessage = 'Error: $e';
+  //   } finally {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }
+  // }
+  Future<void> _fetchTransactions() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
 
-    try {
-      await Future.delayed(const Duration(seconds: 2));
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    String? walletAddress;
 
-      List<String> names = [
-        'Alice Smith', 'Bob Johnson', 'Charlie Brown', 'David Lee', 'Eva Green',
-        'Frank Harris', 'Grace Kim', 'Hank Adams', 'Ivy Moore', 'Jack White',
-        'Kara Black', 'Liam Young', 'Mia Scott', 'Nina Hill', 'Oscar Reed',
-        'Paul King', 'Quinn Price', 'Rachel Cook', 'Steve Bell', 'Tina Ward'
-      ];
+    if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
+      walletAddress = walletVM.walletAddress;
+      print("Wallet address from WalletViewModel: $walletAddress");
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+      print("User JSON from prefs: $userJson");
+      if (userJson != null) {
+        final user = UserModel.fromJson(jsonDecode(userJson));
+        print("ETH Address from UserModel: ${user.ethAddress}");
+        if (user.ethAddress.isNotEmpty) {
+          walletAddress = user.ethAddress;
+        }
+      }
+    }
 
-      _transactionData = List.generate(40, (index) {
-        final name = names[index % names.length];
-        return PurchaseLogModel(
-          coinName: 'ECM Coins',
-          refName: name,
-          date: DateTime(2025, 1 + (index % 12), 1 + (index % 28)),
-          contractName: 'Contract ${String.fromCharCode(65 + (index % 5))}', // A–E
-          senderName: 'Sender ${index + 1}',
-          ecmAmount: 100.0 + (index * 25.5),
-          hash: '0xHASH${index.toString().padLeft(4, '0')}',
-        );
+    if (walletAddress == null || walletAddress.isEmpty) {
+      setState(() {
+        errorMessage = 'No wallet address found.';
+        isLoading = false;
       });
+      print("No wallet address found.");
+      return;
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      print("Token from prefs: $token");
+
+      if (token == null || token.isEmpty) {
+        setState(() {
+          errorMessage = 'Authentication token missing.';
+          isLoading = false;
+        });
+        print("Authentication token missing.");
+        return;
+      }
+
+      // final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=$walletAddress');
+      final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=');
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      print('Purchase log API response: ${response.body}');
+
+
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        final List<dynamic> data = decoded['data'];
+        _originalData = data.map((e) => PurchaseLogModel.fromJson(e)).toList();
+        _transactionData = [..._originalData];
+      } else {
+        errorMessage = 'Failed to fetch data. Status: ${response.statusCode}';
+      }
     } catch (e) {
-      errorMessage = 'Failed to load transactions: $e';
+      errorMessage = 'Error: $e';
     } finally {
       setState(() {
         isLoading = false;
@@ -86,28 +207,24 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
   void _applyFiltersAndSort() {
     String query = _searchController.text.toLowerCase().trim();
 
-    // Filter transactions
-    List<PurchaseLogModel> filtered = _transactionData.where((tx) {
-      if (query.isEmpty) return true;
-
+    List<PurchaseLogModel> filtered = _originalData.where((tx) {
       return tx.hash.toLowerCase().contains(query) ||
-          tx.refName.toLowerCase().contains(query) ||
-          tx.senderName.toLowerCase().contains(query) ||
-          tx.contractName.toLowerCase().contains(query) ||
-          tx.ecmAmount.toString().toLowerCase().contains(query) ||
-          tx.date.toIso8601String().toLowerCase().contains(query);
+          tx.buyer.toLowerCase().contains(query) ||
+          tx.amount.toString().contains(query) ||
+          tx.createdAt.toLowerCase().contains(query) ||
+          tx.icoStage.toLowerCase().contains(query);
     }).toList();
 
-    //  Sort using your use case
     if (_currentSort != null) {
       filtered = _sortDataUseCase(filtered, _currentSort!);
     }
 
-    //   Update UI
     setState(() {
       _transactionData = filtered;
     });
   }
+
+
   void _sortData( SortPurchaseLogOption option) {
     setState(() {
       _currentSort = option;
@@ -321,18 +438,14 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                                 style: const TextStyle(color: Colors.redAccent, fontSize: 16),
                               ),
                             )
-                                : RefreshIndicator(
-                              onRefresh: _fetchTransactions,
-                              color: AppColors.accentOrange,
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _transactionData.length,
-                                itemBuilder: (context, index) {
-                                  return PurchaseCard(transaction: _transactionData[index]);
-                                },
-                              ),
-                            ),
+                                : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: _transactionData.length,
+                                  itemBuilder: (context, index) {
+                                    return PurchaseCard(transaction: _transactionData[index]);
+                                  },
+                                ),
 
 
 

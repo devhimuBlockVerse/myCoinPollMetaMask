@@ -9,6 +9,7 @@ import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
+import '../../../../data/services/api_service.dart';
 import '../../../../domain/constants/api_constants.dart';
 import '../../../../domain/model/PurchaseLogModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
@@ -52,156 +53,65 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
     _fetchTransactions();
   }
 
-
-
-  // Future<void> _fetchTransactions() async {
-  //   setState(() {
-  //     isLoading = true;
-  //     errorMessage = null;
-  //   });
-  //
-  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-  //   String? walletAddress;
-  //
-  //   if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
-  //     walletAddress = walletVM.walletAddress;
-  //   } else {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final userJson = prefs.getString('user');
-  //     if (userJson != null) {
-  //       final user = UserModel.fromJson(jsonDecode(userJson));
-  //       if (user.ethAddress.isNotEmpty) {
-  //         walletAddress = user.ethAddress;
-  //       }
-  //     }
-  //   }
-  //
-  //   if (walletAddress == null || walletAddress.isEmpty) {
-  //     setState(() {
-  //       errorMessage = 'No wallet address found.';
-  //       isLoading = false;
-  //     });
-  //     return;
-  //   }
-  //
-  //
-  //
-  //   try {
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final token = prefs.getString('token');
-  //
-  //     if (token == null) {
-  //       setState(() {
-  //         errorMessage = 'Authentication token missing.';
-  //         isLoading = false;
-  //       });
-  //       return;
-  //     }
-  //
-  //     final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=$walletAddress');
-  //     final response = await http.get(
-  //         url,
-  //       headers: {
-  //         'Accept': 'application/json',
-  //         'Authorization': 'Bearer $token',
-  //       },
-  //
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final decoded = json.decode(response.body);
-  //       final List<dynamic> data = decoded['data'];
-  //       _originalData = data.map((e) => PurchaseLogModel.fromJson(e)).toList();
-  //       _transactionData = [..._originalData];
-  //     } else {
-  //       errorMessage = 'Failed to fetch data. Status: ${response.statusCode}';
-  //     }
-  //   } catch (e) {
-  //     errorMessage = 'Error: $e';
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
   Future<void> _fetchTransactions() async {
     setState(() {
       isLoading = true;
       errorMessage = null;
     });
 
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    String? walletAddress;
-
-    if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
-      walletAddress = walletVM.walletAddress;
-      print("Wallet address from WalletViewModel: $walletAddress");
-    } else {
-      final prefs = await SharedPreferences.getInstance();
-      final userJson = prefs.getString('user');
-      print("User JSON from prefs: $userJson");
-      if (userJson != null) {
-        final user = UserModel.fromJson(jsonDecode(userJson));
-        print("ETH Address from UserModel: ${user.ethAddress}");
-        if (user.ethAddress.isNotEmpty) {
-          walletAddress = user.ethAddress;
-        }
-      }
-    }
-
-    if (walletAddress == null || walletAddress.isEmpty) {
-      setState(() {
-        errorMessage = 'No wallet address found.';
-        isLoading = false;
-      });
-      print("No wallet address found.");
-      return;
-    }
-
     try {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      print("Token from prefs: $token");
-
-      if (token == null || token.isEmpty) {
-        setState(() {
-          errorMessage = 'Authentication token missing.';
-          isLoading = false;
-        });
-        print("Authentication token missing.");
-        return;
-      }
-
-      // final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=$walletAddress');
-      final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=');
-      final response = await http.get(
-        url,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      );
-      print('Purchase log API response: ${response.body}');
+      print("WalletViewModel connected: ${walletVM.isConnected}");
+      print("WalletViewModel walletAddress: ${walletVM.walletAddress}");
+      String? walletAddress;
 
 
-      if (response.statusCode == 200) {
-        final decoded = json.decode(response.body);
-        final List<dynamic> data = decoded['data'];
-        _originalData = data.map((e) => PurchaseLogModel.fromJson(e)).toList();
-        _transactionData = [..._originalData];
+
+      if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
+        walletAddress = walletVM.walletAddress.trim().toLowerCase();
+        print(" Using wallet from WalletViewModel: $walletAddress");
       } else {
-        errorMessage = 'Failed to fetch data. Status: ${response.statusCode}';
+
+         final userJson = prefs.getString('user');
+
+        if (userJson != null) {
+          final user = UserModel.fromJson(jsonDecode(userJson));
+          if (user.ethAddress.isNotEmpty) {
+            walletAddress = user.ethAddress.trim().toLowerCase();
+            print(" Using wallet from SharedPreferences (UserModel): $walletAddress");
+
+          }
+        }
       }
+
+      final apiService = ApiService();
+      // final logs = await apiService.fetchPurchaseLogs(walletAddress: walletAddress);
+      final logs = await apiService.fetchPurchaseLogs(
+        walletAddress: token == null || token.isEmpty ? walletAddress : null,
+
+      );
+
+      setState(() {
+        _originalData = logs;
+        _transactionData = List.from(logs);
+      });
+
+      print("Purchase logs fetched: ${logs.length}");
+
     } catch (e) {
-      errorMessage = 'Error: $e';
+      print(" Fetch error _fetchTransactions(): $e");
+
+      setState(() {
+        errorMessage = e.toString();
+      });
     } finally {
       setState(() {
         isLoading = false;
       });
     }
   }
-
 
 
   void _applyFiltersAndSort() {

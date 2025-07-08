@@ -198,15 +198,15 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
 
-                          _joinPromoteEarn(),
-                          SizedBox(height: screenHeight * 0.03),
-
-                          _milestoneSection(),
-                          SizedBox(height: screenHeight * 0.03),
-
-
-                          _kycStatus(),
-                          SizedBox(height: screenHeight * 0.03),
+                          // _joinPromoteEarn(),
+                          // SizedBox(height: screenHeight * 0.03),
+                          //
+                          // _milestoneSection(),
+                          // SizedBox(height: screenHeight * 0.03),
+                          //
+                          //
+                          // _kycStatus(),
+                          // SizedBox(height: screenHeight * 0.03),
 
 
                           _transactionsReferral(),
@@ -236,124 +236,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     // Dynamic multipliers
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
-    // return Consumer<WalletViewModel>(
-    // builder: (context, model, _){
-    //  return   Container(
-    //    width: double.infinity,
-    //    decoration: BoxDecoration(
-    //      color: Colors.transparent.withOpacity(0.1),
-    //    ),
-    //    child: ClipRRect(
-    //      child: BackdropFilter(
-    //        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-    //        child: Padding(
-    //          padding: EdgeInsets.symmetric(
-    //            horizontal: screenWidth * 0.03,
-    //            vertical: screenHeight * 0.015,
-    //          ),
-    //          child: Row(
-    //            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //            crossAxisAlignment: CrossAxisAlignment.center,
-    //            children: [
-    //
-    //              Row(
-    //                mainAxisAlignment: MainAxisAlignment.start,
-    //                crossAxisAlignment: CrossAxisAlignment.center,
-    //                children: [
-    //                  GestureDetector(
-    //                    onTap: (){
-    //                     scaffoldKey.currentState?.openDrawer();
-    //                    },
-    //                    child: SvgPicture.asset(
-    //                      'assets/icons/drawerIcon.svg',
-    //                      height: getResponsiveFontSize(context, 16),
-    //                    ),
-    //                  ),
-    //                  SizedBox(width: screenWidth * 0.03),
-    //                  /// User Info & Ro Text + Notification
-    //                  Column(
-    //                    crossAxisAlignment: CrossAxisAlignment.start,
-    //                    children: [
-    //                      Text(
-    //                        greeting,
-    //                        style: TextStyle(
-    //                          fontFamily: 'Poppins',
-    //                          fontWeight: FontWeight.w400,
-    //                          fontSize: getResponsiveFontSize(context, 14),
-    //                          height: 1.6,
-    //                          color: const Color(0xffFFF5ED),
-    //                        ),
-    //                      ),
-    //                      Text(
-    //
-    //                        model.walletConnectedManually || currentUser == null ? 'Wallet Connected': currentUser!.name,
-    //                        style: TextStyle(
-    //                          fontFamily: 'Poppins',
-    //                          fontWeight: FontWeight.w600,
-    //                          fontSize: getResponsiveFontSize(context, 18),
-    //                          height: 1.3,
-    //                          color: const Color(0xffFFF5ED),
-    //                        ),
-    //                      ),
-    //                      const SizedBox(width: 8),
-    //
-    //                    ],
-    //                  ),
-    //                ],
-    //              ),
-    //
-    //
-    //
-    //              /// Wallet Address
-    //              Column(
-    //                mainAxisAlignment: MainAxisAlignment.end,
-    //                crossAxisAlignment: CrossAxisAlignment.end,
-    //                children: [
-    //                  Transform.translate(
-    //                    offset: Offset(screenWidth * 0.025, 0),
-    //                    child: WalletAddressComponent(
-    //                      address:  model.walletConnectedManually || currentUser == null
-    //                          ? formatAddress(model.walletAddress)
-    //                          : formatAddress(currentUser!.ethAddress),
-    //                        // onTap: () async {
-    //                        // await model.ensureModalWithValidContext(context);
-    //                        // await model.appKitModal?.openModalView();
-    //                        //
-    //                        // },
-    //                      onTap: () async {
-    //                        if (!model.walletConnectedManually) {
-    //                          // If showing logged in user, tapping could open wallet modal if you want
-    //                          await model.ensureModalWithValidContext(context);
-    //                          await model.appKitModal?.openModalView();
-    //                        } else {
-    //                          // If wallet connected, open modal as usual
-    //                          await model.ensureModalWithValidContext(context);
-    //                          await model.appKitModal?.openModalView();
-    //                        }
-    //                      },
-    //                    ),
-    //
-    //                  ),
-    //
-    //                  GestureDetector(
-    //                    onTap: (){
-    //                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
-    //
-    //                    },
-    //                    child: SvgPicture.asset(
-    //                      'assets/icons/nofitication.svg',
-    //                      height: getResponsiveFontSize(context, 24),
-    //                    ),
-    //                  ),
-    //                ],
-    //              ),
-    //            ],
-    //          ),
-    //        ),
-    //      ),
-    //    ),
-    //  );
-    // });
    return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -401,7 +283,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                           ),
                         ),
                         Text(
-
                           model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
                           style: TextStyle(
                             fontFamily: 'Poppins',
@@ -451,16 +332,16 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                     ),
 
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
-
-                      },
-                      child: SvgPicture.asset(
-                        'assets/icons/nofitication.svg',
-                        height: getResponsiveFontSize(context, 24),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: (){
+                    //     Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
+                    //
+                    //   },
+                    //   child: SvgPicture.asset(
+                    //     'assets/icons/nofitication.svg',
+                    //     height: getResponsiveFontSize(context, 24),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],

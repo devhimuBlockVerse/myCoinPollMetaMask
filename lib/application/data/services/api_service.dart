@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/constants/api_constants.dart';
+import '../../domain/model/PurchaseLogModel.dart';
+import '../../domain/model/ReferralUserListModel.dart';
 import '../../presentation/models/get_lessons.dart';
 import '../../presentation/models/token_model.dart';
 import '../../presentation/models/user_model.dart';
@@ -67,9 +69,73 @@ class ApiService {
     }
   }
 
+  Future<List<PurchaseLogModel>> fetchPurchaseLogs({String? walletAddress}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    print('  Token: $token');
+    print('  Wallet address: $walletAddress');
 
 
 
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+       'Authorization': token != null && token.isNotEmpty ? 'Bearer $token' : '',
+    };
+
+    final url = Uri.parse(
+      walletAddress != null && walletAddress.isNotEmpty
+          ? '${ApiConstants.baseUrl}/get-purchase-logs?page=1&search=$walletAddress'
+          : '${ApiConstants.baseUrl}/get-purchase-logs?page=1',
+    );
+
+    print('  Request URL: $url');
+    print('  Headers: $headers');
+
+    try {
+      final response = await http.get(url, headers: headers);
+      print('  Response status PurchaseLogModel: ${response.statusCode}');
+      print('  Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        final data = decoded['data'];
+        if (data == null || data is! List) {
+          throw Exception("'data' is missing or not a list");
+        }
+        return data.map<PurchaseLogModel>((e) => PurchaseLogModel.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to fetch purchase logs: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('  Error fetching logs: $e');
+      rethrow;
+    }
+  }
+
+
+   Future<List<ReferralUserListModel>> fetchReferralUsers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+    };
+
+    final url = Uri.parse('https://app.mycoinpoll.com/api/v1/get-referral-users?page=1');
+
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body);
+      final List data = decoded['data'] ?? [];
+      return data.map((e) => ReferralUserListModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to fetch referral users: ${response.statusCode}');
+    }
+  }
 
 }
 

@@ -74,13 +74,13 @@ class NavigationProvider extends ChangeNotifier {
       screenBuilder: (context) => const ReferralStatScreen(),
 
   ),
-    NavItem(
-      id: 'referral_transaction',
-      title: 'Referral Transaction',
-      iconPath: 'assets/icons/referral_transaction.svg',
-      screenBuilder: (context) => const ReferralTransactionScreen(),
-
-    ),
+    // NavItem(
+    //   id: 'referral_transaction',
+    //   title: 'Referral Transaction',
+    //   iconPath: 'assets/icons/referral_transaction.svg',
+    //   screenBuilder: (context) => const ReferralTransactionScreen(),
+    //
+    // ),
     // NavItem(
     //   id: 'support_ticket',
     //   title: 'Support Ticket',

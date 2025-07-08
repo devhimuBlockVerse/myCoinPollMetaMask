@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../framework/res/colors.dart';
 import '../domain/model/nav_item.dart';
+import '../presentation/models/user_model.dart';
+import '../presentation/viewmodel/wallet_view_model.dart';
 
 class SideNavBar extends StatefulWidget {
   final String? currentScreenId;
@@ -22,12 +28,32 @@ class SideNavBar extends StatefulWidget {
 }
 
 class _SideNavBarState extends State<SideNavBar> {
+  UserModel? currentUser;
+
+
 
   @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+  Future<void> _loadCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+
+    if (userJson != null) {
+      setState(() {
+        currentUser = UserModel.fromJson(jsonDecode(userJson));
+      });
+    }
+  }
+
+   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final drawerWidth = screenWidth * 0.55;
+    final WalletViewModel model = Provider.of<WalletViewModel>(context, listen: true);
 
     return SizedBox(
       width: drawerWidth,
@@ -49,7 +75,7 @@ class _SideNavBarState extends State<SideNavBar> {
             child: ListView(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.020,vertical: screenHeight * 0.020),
               children: <Widget>[
-                _buildHeader(context, drawerWidth),
+                _buildHeader(context, drawerWidth ,model),
 
                 ...widget.navItems.map((item) => _buildNavItem(context, item, drawerWidth)).toList(),
 
@@ -63,7 +89,7 @@ class _SideNavBarState extends State<SideNavBar> {
   }
 
 
-  Widget _buildHeader(BuildContext context, double drawerWidth) {
+  Widget _buildHeader(BuildContext context, double drawerWidth,WalletViewModel model) {
     final double avatarRadius = drawerWidth * 0.15;
     final double verticalPadding = drawerWidth * 0.08;
     final double nameFontSize = drawerWidth * 0.06;
@@ -83,7 +109,8 @@ class _SideNavBarState extends State<SideNavBar> {
           ),
           SizedBox(height: drawerWidth * 0.03),
           Text(
-            'Hi, Ethereum User!',
+            // 'Hi, Ethereum User!',
+            model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
             style: TextStyle(
               color: AppColors.profileName,
               fontSize: nameFontSize,

@@ -70,7 +70,7 @@ class Blog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    children: [
+                     children: [
                       Text(
                         source,
                         style: TextStyle(

@@ -2159,59 +2159,59 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     }
   }
-  Future<void> forceReinitModal(BuildContext context) async {
-     try {
-      // If the modal has a dispose method, call it (if not, just set to null)
-      await appKitModal?.dispose();
-    } catch (e) {
-      print("Error disposing previous AppKitModal: $e");
-    }
-    appKitModal = null;
-    _isModalEventsSubscribed = false;
-    _isConnected = false;
-    _walletAddress = '';
-    _balance = null;
-    _minimumStake = null;
-    _maximumStake = null;
-    _ethPrice = 0.0;
-    _usdtPrice = 0.0;
-    _stageIndex = 0;
-    _currentECM = 0.0;
-    _maxECM = 0.0;
-    _ecmRefBonus = 0;
-    _paymentRefBonus = 0;
-    _isCompleted = false;
-
-    // Optionally clear SharedPreferences if you want a full reset
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-    } catch (e) {
-      print("Error clearing SharedPreferences: $e");
-    }
-
-    notifyListeners();
-
-    // Re-initialize the modal as if the app just started
-    await init(context);
-  }
-  Future<void> recoverWallet(BuildContext context) async {
-    // 1. Dispose and nullify the modal
-    try {
-      await appKitModal?.dispose();
-    } catch (_) {}
-    appKitModal = null;
-    _isModalEventsSubscribed = false;
-
-    // 2. Clear all wallet state
-    await _clearWalletAndStageInfo();
-
-    // 3. Re-initialize the modal
-    await init(context);
-
-    // 4. Prompt user to reconnect
-    await connectWallet(context);
-  }
+  // Future<void> forceReinitModal(BuildContext context) async {
+  //    try {
+  //     // If the modal has a dispose method, call it (if not, just set to null)
+  //     await appKitModal?.dispose();
+  //   } catch (e) {
+  //     print("Error disposing previous AppKitModal: $e");
+  //   }
+  //   appKitModal = null;
+  //   _isModalEventsSubscribed = false;
+  //   _isConnected = false;
+  //   _walletAddress = '';
+  //   _balance = null;
+  //   _minimumStake = null;
+  //   _maximumStake = null;
+  //   _ethPrice = 0.0;
+  //   _usdtPrice = 0.0;
+  //   _stageIndex = 0;
+  //   _currentECM = 0.0;
+  //   _maxECM = 0.0;
+  //   _ecmRefBonus = 0;
+  //   _paymentRefBonus = 0;
+  //   _isCompleted = false;
+  //
+  //   // Optionally clear SharedPreferences if you want a full reset
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.clear();
+  //   } catch (e) {
+  //     print("Error clearing SharedPreferences: $e");
+  //   }
+  //
+  //   notifyListeners();
+  //
+  //   // Re-initialize the modal as if the app just started
+  //   await init(context);
+  // }
+  // Future<void> recoverWallet(BuildContext context) async {
+  //   // 1. Dispose and nullify the modal
+  //   try {
+  //     await appKitModal?.dispose();
+  //   } catch (_) {}
+  //   appKitModal = null;
+  //   _isModalEventsSubscribed = false;
+  //
+  //   // 2. Clear all wallet state
+  //   await _clearWalletAndStageInfo();
+  //
+  //   // 3. Re-initialize the modal
+  //   await init(context);
+  //
+  //   // 4. Prompt user to reconnect
+  //   await connectWallet(context);
+  // }
 
   Future<void> _clearWalletAndStageInfo({bool shouldNotify = true}) async {
     _walletAddress = '';

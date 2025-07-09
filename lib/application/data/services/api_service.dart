@@ -4,11 +4,33 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/constants/api_constants.dart';
 import '../../domain/model/PurchaseLogModel.dart';
 import '../../domain/model/ReferralUserListModel.dart';
-import '../../presentation/models/get_lessons.dart';
+ import '../../presentation/models/get_purchase_stats.dart';
+import '../../presentation/models/get_referral_stats.dart';
 import '../../presentation/models/token_model.dart';
 import '../../presentation/models/user_model.dart';
 
 class ApiService {
+  Future<List<TokenModel>> fetchTokens() async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/tokens');
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        return data.map((e) => TokenModel.fromJson(e)).toList();
+
+      } else {
+        throw Exception('Failed to load tokens: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<LoginResponse> login(String username, String password) async {
     final url = Uri.parse('${ApiConstants.baseUrl}/auth/login');
@@ -49,25 +71,7 @@ class ApiService {
     }
   }
 
-  Future<List<TokenModel>> fetchTokens() async {
-    final url = Uri.parse('${ApiConstants.baseUrl}/tokens');
-    final headers = {
-      'Content-Type': 'application/json',
-    };
 
-    try {
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((e) => TokenModel.fromJson(e)).toList();
-      } else {
-        throw Exception('Failed to load tokens: ${response.reasonPhrase}');
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
 
   Future<List<PurchaseLogModel>> fetchPurchaseLogs({String? walletAddress}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -125,7 +129,7 @@ class ApiService {
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
 
-    final url = Uri.parse('https://app.mycoinpoll.com/api/v1/get-referral-users?page=1');
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
 
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -136,6 +140,46 @@ class ApiService {
       throw Exception('Failed to fetch referral users: ${response.statusCode}');
     }
   }
+
+
+  Future<PurchaseStatsModel> fetchPurchaseStats() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-stats');
+
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body);
+      return PurchaseStatsModel.fromJson(decoded);
+    } else {
+      throw Exception('Failed to fetch purchase stats');
+    }
+  }
+
+  Future<ReferralStatsModel> fetchReferralStats() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-stats');
+
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body);
+      return ReferralStatsModel.fromJson(decoded);
+    } else {
+      throw Exception('Failed to fetch purchase stats');
+    }
+  }
+
 
 }
 

@@ -203,7 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         await prefs.clear();
 
                                         await walletVM.disconnectWallet(context);
-                                        walletVM.reset();
+                                        // walletVM.reset();
 
                                         if (context.mounted && !walletVM.isConnected) {
                                           // Navigator.push(

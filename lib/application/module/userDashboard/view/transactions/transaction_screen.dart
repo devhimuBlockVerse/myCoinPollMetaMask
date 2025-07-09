@@ -7,8 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
- import '../../../../domain/constants/api_constants.dart';
+ import '../../../../data/services/api_service.dart';
+import '../../../../domain/constants/api_constants.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../../../presentation/models/user_model.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -36,12 +38,15 @@ class _TransactionScreenState extends State<TransactionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
    List<Map<String, dynamic>> transactionData = [];
 
+  PurchaseStatsModel? _purchaseStats;
+
+
   @override
   void initState() {
     super.initState();
-     // _displayData = List.from(transactionData);
-    _searchController.addListener(_applyFiltersAndSort);
+     _searchController.addListener(_applyFiltersAndSort);
     _loadTransactions();
+    _loadPurchaseStats();
 
   }
 
@@ -50,7 +55,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     List<Map<String, dynamic>> currentFilteredData = List.from(transactionData);
     String query = _searchController.text.toLowerCase();
 
-    //  search filter
+
     if (query.isNotEmpty) {
       currentFilteredData = currentFilteredData.where((row) {
         return (row['TxnHash']?.toLowerCase().contains(query) ?? false) ||
@@ -194,6 +199,17 @@ class _TransactionScreenState extends State<TransactionScreen> {
     }
   }
 
+  Future<void> _loadPurchaseStats() async {
+    try {
+      final stats = await ApiService().fetchPurchaseStats();
+      setState(() {
+        _purchaseStats = stats;
+      });
+    } catch (e) {
+      debugPrint('Error fetching stats: $e');
+    }
+  }
+
 
 
   @override
@@ -316,9 +332,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                         children: [
                                           Expanded(
                                             child: _buildStatCard(
-                                              title: 'Total \nTransactions',
-                                              value: '125',
-                                              gradient: const LinearGradient(
+                                              title: 'Total\nPurchases',
+                                              // value: '125',
+                                              value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+
+                                          gradient: const LinearGradient(
                                                 begin: Alignment(0.99, 0.14),
                                                 end: Alignment(-0.99, -0.14),
                                                 colors: [Color(0xFF040C16), Color(0xFF162B4A)],
@@ -329,8 +347,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           SizedBox(width: itemSpacing),
                                           Expanded(
                                             child: _buildStatCard(
-                                              title: 'Total \nEthereum',
-                                              value: '125',
+                                              title: 'Attendant',
+                                              // value: '125',
+                                              value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
                                               gradient: const LinearGradient(
                                                 begin: Alignment(0.99, 0.14),
                                                 end: Alignment(-0.99, -0.14),
@@ -342,8 +361,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           SizedBox(width: itemSpacing),
                                           Expanded(
                                             child: _buildStatCard(
-                                              title: 'Total \neCommerce',
-                                              value: '100',
+                                              title: 'Purchased\nAmount',
+                                              // value: '100',
+                                              value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
+
                                               gradient: const LinearGradient(
                                                 begin: Alignment(0.99, 0.14),
                                                 end: Alignment(-0.99, -0.14),

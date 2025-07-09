@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -9,12 +11,22 @@ import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
+import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import '../../../module/userDashboard/viewmodel/kyc_navigation_provider.dart';
+import '../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
+import '../../../module/userDashboard/viewmodel/upload_image_provider.dart';
+import '../../viewmodel/bottom_nav_provider.dart';
+import '../../viewmodel/countdown_provider.dart';
+import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'forgot_password.dart';
 
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final bool showBackButton;
+
+  const SignIn({super.key, this.showBackButton = true});
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -46,6 +58,37 @@ class _SignInState extends State<SignIn> {
     });
   }
 
+  //  Future<void> login() async {
+  //   final username = userNameOrIdController.text.trim();
+  //   final password = passwordController.text.trim();
+  //
+  //   if (username.isEmpty || password.isEmpty) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Please fill in all fields')),
+  //     );
+  //     return;
+  //   }
+  //
+  //   setState(() => isLoading = true);
+  //
+  //   try {
+  //     final response = await ApiService().login(username, password);
+  //
+  //     print('Logged in as: ${response.user.name}, Token: ${response.token}');
+  //
+  //
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+  //     );
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(e.toString())),
+  //     );
+  //   } finally {
+  //     setState(() => isLoading = false);
+  //   }
+  // }
    Future<void> login() async {
     final username = userNameOrIdController.text.trim();
     final password = passwordController.text.trim();
@@ -62,6 +105,15 @@ class _SignInState extends State<SignIn> {
     try {
       final response = await ApiService().login(username, password);
       print('Logged in as: ${response.user.name}, Token: ${response.token}');
+
+      /// Save token + user data to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response.token);
+      await prefs.setString('user', jsonEncode(response.user.toJson()));
+
+      /// Update user provider manually
+      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+      await userAuth.loadUserFromPrefs();
 
       Navigator.pushReplacement(
         context,
@@ -109,7 +161,7 @@ class _SignInState extends State<SignIn> {
               // SizedBox(height: screenHeight * 0.01),
 
               ///Back Button
-              Align(
+              widget.showBackButton ? Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
                   icon: SvgPicture.asset(
@@ -120,7 +172,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
-              ),
+              ) : const SizedBox.shrink(),
               /// Main Scrollable Content
               Expanded(
                 child: Padding(
@@ -335,27 +387,74 @@ class _SignInState extends State<SignIn> {
 
 
                                           /// Connect Wallet
+                                          // Consumer<WalletViewModel>(
+                                          //   builder: (context, walletVM, _) {
+                                          //     if (walletVM.isLoading || _isNavigating) {
+                                          //       return const Center(child: CircularProgressIndicator());
+                                          //     }
+                                          //
+                                          //     return BlockButtonV2(
+                                          //       text: walletVM.isConnected ? 'Go To Dashboard':'Connect Wallet',
+                                          //        onPressed:  walletVM.isLoading ? null : () async {
+                                          //         setState(() => _isNavigating = true);
+                                          //
+                                          //         try {
+                                          //           if (!walletVM.isConnected) {
+                                          //             await walletVM.connectWallet(context);
+                                          //           }
+                                          //            if (walletVM.isConnected && context.mounted) {
+                                          //             // Navigator.push(
+                                          //             //   context,
+                                          //             //   MaterialPageRoute(
+                                          //             //     builder: (context) => const DashboardBottomNavBar(),
+                                          //             //   ),
+                                          //             // );
+                                          //
+                                          //             Navigator.pushReplacement(
+                                          //               context,
+                                          //               MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+                                          //             );
+                                          //           }
+                                          //         } catch (e, stack) {
+                                          //           debugPrint('Wallet Error: $e\n$stack');
+                                          //           if (context.mounted) {
+                                          //             Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                          //           }
+                                          //         }finally{
+                                          //           if (mounted) setState(() => _isNavigating = false);
+                                          //
+                                          //         }
+                                          //       },
+                                          //
+                                          //
+                                          //       height: screenHeight * 0.05,
+                                          //       width: screenWidth * 0.88,
+                                          //     );
+                                          //   }
+                                          //
+                                          // ),
                                           Consumer<WalletViewModel>(
                                             builder: (context, walletVM, _) {
                                               if (walletVM.isLoading || _isNavigating) {
                                                 return const Center(child: CircularProgressIndicator());
                                               }
-                                              return BlockButtonV2(
-                                                text: walletVM.isConnected ? 'Go To Dashboard':'Connect Wallet',
 
-                                                onPressed:  walletVM.isLoading ? null : () async {
+                                              final isConnected = walletVM.isConnected;
+
+                                              return BlockButtonV2(
+                                                text: isConnected ? 'Go To Dashboard' : 'Connect Wallet',
+                                                onPressed: walletVM.isLoading ? null : () async {
                                                   setState(() => _isNavigating = true);
 
                                                   try {
-                                                    if (!walletVM.isConnected) {
+                                                    if (!isConnected) {
+                                                      // User taps button -> connect wallet
                                                       await walletVM.connectWallet(context);
-                                                    }
-                                                     if (walletVM.isConnected && context.mounted) {
-                                                      Navigator.push(
+                                                    } else {
+                                                      // Wallet already connected -> go to dashboard
+                                                      Navigator.pushReplacement(
                                                         context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => const DashboardBottomNavBar(),
-                                                        ),
+                                                        MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
                                                       );
                                                     }
                                                   } catch (e, stack) {
@@ -363,17 +462,14 @@ class _SignInState extends State<SignIn> {
                                                     if (context.mounted) {
                                                       Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
                                                     }
-                                                  }finally{
+                                                  } finally {
                                                     if (mounted) setState(() => _isNavigating = false);
-
                                                   }
                                                 },
-
                                                 height: screenHeight * 0.05,
                                                 width: screenWidth * 0.88,
                                               );
-                                            }
-
+                                            },
                                           ),
 
 
@@ -456,109 +552,4 @@ class _SignInState extends State<SignIn> {
   }
 
 }
-
-
-
-
-
-
-
-
-// class Frame1413377636 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     final double screenWidth = MediaQuery.of(context).size.width;
-//     final double cardWidth = screenWidth * 0.9 > 400 ? 400 : screenWidth * 0.9;
-//     final double baseTitleFontSize = 14.0;
-//     final double baseSubtitleFontSize = 12.0;
-//
-//     final double titleFontSize = baseTitleFontSize * (screenWidth / 375);
-//     final double subtitleFontSize = baseSubtitleFontSize * (screenWidth / 375);
-//
-//     return Center(
-//       child: Column(
-//         children: [
-//           Container(
-//             width: cardWidth,
-//             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-//             decoration: ShapeDecoration(
-//               gradient: const LinearGradient(
-//                 begin: Alignment.topRight,
-//                 end: Alignment.bottomLeft,
-//                  colors: [Color(0xFF2C1F2C), Color(0xFF101A29)],
-//               ),
-//               shape: RoundedRectangleBorder(
-//                 side: BorderSide(width: 1, color: Color(0xFF2B2D40)),
-//                 borderRadius: BorderRadius.circular(5),
-//               ),
-//             ),
-//             child: Row(
-//               mainAxisSize: MainAxisSize.max,
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                  Container(
-//                   height: 40,
-//                   width: 40,
-//                   padding: const EdgeInsets.all(4),
-//                   decoration: ShapeDecoration(
-//                     color: Color(0xFF303746),
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(43),
-//                     ),
-//                   ),
-//                   child: Center(
-//                     child: Icon(
-//                       Icons.build_circle_outlined,
-//                       color: Colors.white,
-//                       size: 24,
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(width: 10),
-//
-//                 // Vertical Divider
-//                 VerticalDivider(
-//                   width: 2,
-//                   thickness: 1,
-//                   color: Colors.white.withOpacity(0.5),
-//                   indent: 5,
-//                   endIndent: 5,
-//                 ),
-//                 const SizedBox(width: 10),
-//
-//                  Expanded(
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'Charger is under maintenance',
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontSize: titleFontSize,
-//                           fontFamily: 'Poppins',
-//                         ),
-//                       ),
-//                       const SizedBox(height: 5),
-//                       Text(
-//                         'Please select another charger.',
-//                         style: TextStyle(
-//                           color: Color(0xFFC7C5C5),
-//                           fontSize: subtitleFontSize,
-//                           fontFamily: 'Poppins',
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 

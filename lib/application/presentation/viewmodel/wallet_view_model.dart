@@ -8,6 +8,9 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../framework/utils/customToastMessage.dart';
+import '../../../framework/utils/enums/toast_type.dart';
+
 
 
 
@@ -2183,59 +2186,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     }
   }
-  // Future<void> forceReinitModal(BuildContext context) async {
-  //    try {
-  //     // If the modal has a dispose method, call it (if not, just set to null)
-  //     await appKitModal?.dispose();
-  //   } catch (e) {
-  //     print("Error disposing previous AppKitModal: $e");
-  //   }
-  //   appKitModal = null;
-  //   _isModalEventsSubscribed = false;
-  //   _isConnected = false;
-  //   _walletAddress = '';
-  //   _balance = null;
-  //   _minimumStake = null;
-  //   _maximumStake = null;
-  //   _ethPrice = 0.0;
-  //   _usdtPrice = 0.0;
-  //   _stageIndex = 0;
-  //   _currentECM = 0.0;
-  //   _maxECM = 0.0;
-  //   _ecmRefBonus = 0;
-  //   _paymentRefBonus = 0;
-  //   _isCompleted = false;
-  //
-  //   // Optionally clear SharedPreferences if you want a full reset
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     await prefs.clear();
-  //   } catch (e) {
-  //     print("Error clearing SharedPreferences: $e");
-  //   }
-  //
-  //   notifyListeners();
-  //
-  //   // Re-initialize the modal as if the app just started
-  //   await init(context);
-  // }
-  // Future<void> recoverWallet(BuildContext context) async {
-  //   // 1. Dispose and nullify the modal
-  //   try {
-  //     await appKitModal?.dispose();
-  //   } catch (_) {}
-  //   appKitModal = null;
-  //   _isModalEventsSubscribed = false;
-  //
-  //   // 2. Clear all wallet state
-  //   await _clearWalletAndStageInfo();
-  //
-  //   // 3. Re-initialize the modal
-  //   await init(context);
-  //
-  //   // 4. Prompt user to reconnect
-  //   await connectWallet(context);
-  // }
 
   Future<void> _clearWalletAndStageInfo({bool shouldNotify = true}) async {
     _walletAddress = '';
@@ -2251,8 +2201,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _ecmRefBonus = 0;
     _paymentRefBonus = 0;
     _isCompleted = false;
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs.clear();
+
     print("Wallet state and storage have been reset.");
     if (shouldNotify) {
       notifyListeners();
@@ -2394,23 +2343,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
      _ethPrice = (_safeParseBigInt(result[2]).toDouble() / 1e18);
     _usdtPrice = (_safeParseBigInt(result[3]).toDouble() / 1e6);
 
-    // Only update connected-specific info if connected
-    // if (isConnected) {
+
       _stageIndex = _safeParseBigInt(result[0]).toInt();
       _maxECM = (_safeParseBigInt(result[1]).toDouble() / 1e18);
       _ecmRefBonus = _safeParseBigInt(result[4]).toInt();
       _paymentRefBonus = _safeParseBigInt(result[5]).toInt();
       _currentECM = (_safeParseBigInt(result[6]).toDouble() / 1e18);
       _isCompleted = result[7] as bool;
-    // } else {
-      // Clear connected-specific info if not connected
-      // _stageIndex = 0;
-      // _maxECM = 0.0;
-      // _ecmRefBonus = 0;
-      // _paymentRefBonus = 0;
-      // _currentECM = 0.0;
-      // _isCompleted = false;
-    // }
 
     print("Stage info successfully parsed and updated:");
     print('stageIndex: $_stageIndex');
@@ -2609,6 +2548,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   Future<String> transferToken(String recipientAddress, double amount) async {
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
+      ToastMessage.show(
+        message: "Wallet Error",
+        subtitle: "Wallet not connected or chain not selected.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
       throw Exception("Wallet not Connected or selected chain not available.");
     }
     _isLoading = true;
@@ -2655,14 +2601,12 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
       print('Transfer Result: $result');
       print('runtimeType: ${result.runtimeType}');
-      Fluttertoast.showToast(
-        msg: "Transaction sent successfully!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
+      ToastMessage.show(
+        message: "Transaction Sent",
+        subtitle: "Token transfer initiated successfully!",
+        type: MessageType.success,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
 
       await fetchConnectedWalletData();
@@ -2671,24 +2615,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return result;
     } catch (e) {
       print('Error Sending transferToken: $e');
-      Fluttertoast.showToast(
-        msg: "Error: ${e.toString()}",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
+
+      ToastMessage.show(
+        message: "Transfer Failed",
+        subtitle: "Something went wrong: ${e.toString()}",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+
       rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
-
-
-
 
   Future<String> buyECMWithETH(EtherAmount ethAmount, BuildContext context) async {
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
@@ -2728,19 +2669,27 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
-      // Fluttertoast.showToast(
-      //   msg: "Transaction sent successfully!",
-      //   backgroundColor: Colors.green,
-      // );
+      ToastMessage.show(
+        message: "Purchase Successful",
+        subtitle: "Your transaction was submitted to the address.",
+        type: MessageType.success,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+
       await fetchConnectedWalletData();
       await getCurrentStageInfo();
       return result;
     } catch (e) {
       print("Error buying ECM with ETH: $e");
-      Fluttertoast.showToast(
-        msg: "Error: ${e.toString()}",
-        backgroundColor: Colors.red,
+      ToastMessage.show(
+        message: "Transaction Failed",
+        subtitle: "Could not complete purchase. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+
       rethrow;
     } finally {
       _isLoading = false;
@@ -2787,19 +2736,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
-      // Fluttertoast.showToast(
-      //   msg: "Transaction sent successfully!",
-      //   backgroundColor: Colors.green,
-      // );
+      ToastMessage.show(
+        message: "Purchase Successful",
+        subtitle: "USDT transaction submitted successfully!",
+        type: MessageType.success,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
       await fetchConnectedWalletData();
       await getCurrentStageInfo();
       return result;
     } catch (e) {
       print("Error buying ECM with USDT: $e");
-      Fluttertoast.showToast(
-        msg: "Error: ${e.toString()}",
-        backgroundColor: Colors.red,
+      ToastMessage.show(
+        message: "Transaction Failed",
+        subtitle: "Could not complete USDT purchase. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+
       rethrow;
     } finally {
       _isLoading = false;

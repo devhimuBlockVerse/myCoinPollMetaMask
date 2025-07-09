@@ -5,6 +5,9 @@ import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import 'package:http/http.dart'as http;
 
+import '../../../../framework/utils/customToastMessage.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
+
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -21,8 +24,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     final uniqueId = uniqueIDController.text.trim();
 
     if (uniqueId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Unique ID is required')),
+
+      ToastMessage.show(
+        message: "Unique ID is required",
+         type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
       return;
     }
@@ -52,25 +59,39 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         final result = await response.stream.bytesToString();
         debugPrint("Reset request success: $result");
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Reset link sent to Email Address!')),
+        ToastMessage.show(
+          message: "Reset Link Sent",
+          subtitle: "Check your email for the password reset instructions.",
+          type: MessageType.success,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
         );
 
         uniqueIDController.clear();
        } else {
         final error = await response.stream.bytesToString();
-        debugPrint("Reset request failed: $error");
+        print("Reset request failed: $error");
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Reset failed: ${response.reasonPhrase}')),
+
+        ToastMessage.show(
+          message: "Reset Failed",
+          subtitle: "Server error: ${response.reasonPhrase ?? 'Please try again.'}",
+          type: MessageType.error,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
         );
       }
     } catch (e) {
-      debugPrint("Exception: $e");
+      print("Exception: $e");
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Something went wrong: $e')),
+      ToastMessage.show(
+        message: "Request Error",
+        subtitle: "Something went wrong. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+
     } finally {
       setState(() => isLoading = false);
     }

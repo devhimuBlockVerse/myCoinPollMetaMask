@@ -474,7 +474,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                              child: Image.network(
                               token.featureImage,
                               width: screenWidth * 0.4,
-                              height: screenHeight * 0.15,
+                              height: screenHeight * 0.18,
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                             ),

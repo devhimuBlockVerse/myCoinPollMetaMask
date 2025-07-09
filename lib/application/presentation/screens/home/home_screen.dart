@@ -951,8 +951,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       isETHActive
                           ? "1 ECM = ${walletVM.ethPrice.toStringAsFixed(5)} ETH"
                           : "1 ECM = ${walletVM.usdtPrice.toStringAsFixed(1)} USDT",
-                      // ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
-                      // : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
+
 
                       style:  TextStyle(
                         color: Colors.white,
@@ -1028,13 +1027,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
-                          ToastMessage.show(
-                            message: "Transaction Failed",
-                            subtitle: "Please check your wallet connection and try again.",
-                            type: MessageType.error,
-                            duration: CustomToastLength.LONG,
-                            gravity: CustomToastGravity.BOTTOM,
-                          );
 
                         }
                       },

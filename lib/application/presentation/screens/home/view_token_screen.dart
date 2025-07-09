@@ -21,7 +21,9 @@ import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/components/custonButton.dart';
 import '../../../../framework/components/loader.dart';
+import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
 import '../../../data/services/api_service.dart';
@@ -175,13 +177,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
       // Request permission
       final status = await Permission.storage.request();
       if (!status.isGranted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission is required.')),
+        ToastMessage.show(
+          message: "Permission Denied",
+          subtitle: "Storage permission is required to download the file.",
+          type: MessageType.info,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
         );
         return;
       }
 
-      // ✅ Save to Download folder directly
+      // Save to Download folder directly
       final directory = Directory('/storage/emulated/0/Download');
 
       if (!await directory.exists()) {
@@ -195,13 +201,24 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
       final dio = Dio();
       await dio.download(fileUrl, filePath);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Downloaded to: $filePath')),
+      ToastMessage.show(
+        message: "Download Complete",
+        subtitle: "Saved to: Download/$fileName",
+        type: MessageType.success,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Download failed: $e')),
+
+      ToastMessage.show(
+        message: "Download Failed",
+        subtitle: "An error occurred while downloading the file.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+      print("Download errorL: $e");
     }
   }
 
@@ -723,8 +740,12 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not open the link')),
+          ToastMessage.show(
+            message: "Could not open the link",
+            subtitle: "Invalid or inaccessible URL",
+            type: MessageType.error,
+            duration: CustomToastLength.SHORT,
+            gravity: CustomToastGravity.BOTTOM,
           );
         }
       },
@@ -851,16 +872,22 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               controller: referredController,
                               isReadOnly: true,
                               trailingIconAsset: 'assets/icons/copyImg.svg',
-                              onTrailingIconTap: () {
+                               onTrailingIconTap: () {
                                 debugPrint('Trailing icon tapped');
-                                Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('TxnHash copied to clipboard'),
-                                    duration: Duration(seconds: 1),
-                                  ),
+                                const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+
+                                Clipboard.setData(const ClipboardData(text:referralLink));
+
+                                ToastMessage.show(
+                                  message: "Referral link copied!",
+                                  subtitle: referralLink,
+                                  type: MessageType.success,
+                                  duration: CustomToastLength.SHORT,
+                                  gravity: CustomToastGravity.BOTTOM,
                                 );
+
                               },
+
                             ),
                             SizedBox(height: screenHeight * 0.02),
                             CustomLabeledInputField(
@@ -980,8 +1007,12 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           final ethDouble = double.tryParse(inputEth);
                           debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Enter a valid ECM amount')),
+                            ToastMessage.show(
+                              message: "Invalid Amount",
+                              subtitle: "Please enter a valid ECM amount.",
+                              type: MessageType.info,
+                              duration: CustomToastLength.SHORT,
+                              gravity: CustomToastGravity.BOTTOM,
                             );
                             return;
                           }
@@ -1007,9 +1038,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           }
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Purchase successful')),
-                          );
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
                         }

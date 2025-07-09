@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+ import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,8 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
-import '../../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
-import '../../../viewmodel/bottom_nav_provider.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
+ import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {
@@ -175,11 +175,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
   Future<void> _updateProfile() async {
     if (!_isProfileUpdated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No changes to update."),
-          backgroundColor: Colors.blueGrey,
-        ),
+      ToastMessage.show(
+        message: "No Changes Found",
+        subtitle: "You haven't updated any profile information.",
+        type: MessageType.info,
+        duration: CustomToastLength.SHORT,
+        gravity: CustomToastGravity.BOTTOM,
       );
       return;
     }
@@ -234,30 +235,34 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
       if (mounted) {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Profile updated successfully!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-        // ✅ Navigate back
+        if (mounted) {
+          ToastMessage.show(
+            message: "Profile Updated",
+            subtitle: "Your changes have been saved successfully.",
+            type: MessageType.success,
+            duration: CustomToastLength.LONG,
+            gravity: CustomToastGravity.BOTTOM,
+          );
+
+        // Navigate back
         Provider.of<BottomNavProvider>(context, listen: false).setFullName(
           '${updatedProfile['firstName']} ${updatedProfile['lastName']}',
         );
         Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
 
 
-      }
+      }}
 
 
     } catch (e) {
       print("Error updating profile: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Failed to update profile: $e"),
-            backgroundColor: Colors.red,
-          ),
+        ToastMessage.show(
+          message: "Update Failed",
+          subtitle: "Could not update profile. Please try again.",
+          type: MessageType.error,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
         );
       }
     } finally {
@@ -273,23 +278,35 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     String confirmPass = confirmPasswordController.text.trim();
 
     if (oldPass != _storedPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Old password is incorrect."), backgroundColor: Colors.red),
-      );
+    ToastMessage.show(
+    message: "Incorrect Password",
+    subtitle: "The old password you entered is incorrect.",
+    type: MessageType.error,
+    duration: CustomToastLength.SHORT,
+    gravity: CustomToastGravity.BOTTOM,
+    );
       return;
     }
 
     if (newPass.isEmpty || newPass.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("New password must be at least 6 characters."), backgroundColor: Colors.orange),
-      );
+    ToastMessage.show(
+    message: "Weak Password",
+    subtitle: "New password must be at least 6 characters.",
+    type: MessageType.info,
+    duration: CustomToastLength.SHORT,
+    gravity: CustomToastGravity.BOTTOM,
+    );
       return;
     }
 
     if (newPass != confirmPass) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Passwords do not match."), backgroundColor: Colors.orange),
-      );
+    ToastMessage.show(
+    message: "Password Mismatch",
+    subtitle: "New password and confirmation do not match.",
+    type: MessageType.error,
+    duration: CustomToastLength.SHORT,
+    gravity: CustomToastGravity.BOTTOM,
+    );
       return;
     }
 
@@ -304,9 +321,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     });
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password updated successfully!"), backgroundColor: Colors.green),
-      );
+    ToastMessage.show(
+    message: "Password Updated",
+    subtitle: "Your password has been changed successfully.",
+    type: MessageType.success,
+    duration: CustomToastLength.LONG,
+    gravity: CustomToastGravity.BOTTOM,
+    );
       Navigator.popUntil(context, (route) => route.isFirst);
       Future.delayed(const Duration(milliseconds: 100), () {
         Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
@@ -605,12 +626,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       ],
 
                                         onTap: _isProfileUpdated ? _updateProfile : () {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(
-                                              content: Text("No changes to update."),
-                                              backgroundColor: Colors.blueGrey,
-                                            ),
-                                          );
+
+                                        ToastMessage.show(
+                                          message: "No Changes Detected",
+                                          subtitle: "You haven't made any edits to your profile.",
+                                          type: MessageType.info,duration: CustomToastLength.SHORT,
+                                          gravity: CustomToastGravity.BOTTOM);
+
                                         },
                                     ),
 

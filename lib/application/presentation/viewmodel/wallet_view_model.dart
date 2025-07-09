@@ -2669,26 +2669,67 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
+      // ToastMessage.show(
+      //   message: "Purchase Successful",
+      //   subtitle: "Your transaction was submitted to the address.",
+      //   type: MessageType.success,
+      //   duration: CustomToastLength.LONG,
+      //   gravity: CustomToastGravity.BOTTOM,
+      // );
+      // await fetchConnectedWalletData();
+      // await getCurrentStageInfo();
+      // return result;
+
+
+      // ✅ Ensure it's a proper hash (optional: regex validation or check length)
+      if (result != null && result.toString().startsWith("0x") && result.toString().length == 66) {
+        ToastMessage.show(
+          message: "Purchase Successful",
+          subtitle: "Your transaction was submitted successfully.",
+          type: MessageType.success,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+
+        await fetchConnectedWalletData();
+        await getCurrentStageInfo();
+
+        return result;
+      } else {
+         ToastMessage.show(
+          message: "Transaction Cancelled",
+          subtitle: "You cancelled the transaction in your wallet.",
+          type: MessageType.info,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+        throw Exception("User cancelled the transaction.");
+      }
+
+    } catch (e) {
+      print("Error buying ECM with ETH: $e");
+      // ToastMessage.show(
+      //   message: "Transaction Failed",
+      //   subtitle: "Could not complete purchase. Please try again.",
+      //   type: MessageType.error,
+      //   duration: CustomToastLength.LONG,
+      //   gravity: CustomToastGravity.BOTTOM,
+      // );
+      final isUserRejected = e.toString().toLowerCase().contains("user rejected") ||
+          e.toString().toLowerCase().contains("user denied") ||
+          e.toString().toLowerCase().contains("user canceled") ||
+          e.toString().toLowerCase().contains("user cancelled");
+
       ToastMessage.show(
-        message: "Purchase Successful",
-        subtitle: "Your transaction was submitted to the address.",
-        type: MessageType.success,
+        message: isUserRejected ? "Transaction Cancelled" : "Transaction Failed",
+        subtitle: isUserRejected
+            ? "You cancelled the transaction."
+            : "Could not complete the purchase. Please try again.",
+        type: isUserRejected ? MessageType.info : MessageType.error,
         duration: CustomToastLength.LONG,
         gravity: CustomToastGravity.BOTTOM,
       );
 
-      await fetchConnectedWalletData();
-      await getCurrentStageInfo();
-      return result;
-    } catch (e) {
-      print("Error buying ECM with ETH: $e");
-      ToastMessage.show(
-        message: "Transaction Failed",
-        subtitle: "Could not complete purchase. Please try again.",
-        type: MessageType.error,
-        duration: CustomToastLength.LONG,
-        gravity: CustomToastGravity.BOTTOM,
-      );
 
       rethrow;
     } finally {
@@ -2736,25 +2777,63 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $result');
       print('runtimeType: ${result.runtimeType}');
       print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
-      ToastMessage.show(
-        message: "Purchase Successful",
-        subtitle: "USDT transaction submitted successfully!",
-        type: MessageType.success,
-        duration: CustomToastLength.LONG,
-        gravity: CustomToastGravity.BOTTOM,
-      );
-      await fetchConnectedWalletData();
-      await getCurrentStageInfo();
-      return result;
+      // ToastMessage.show(
+      //   message: "Purchase Successful",
+      //   subtitle: "USDT transaction submitted successfully!",
+      //   type: MessageType.success,
+      //   duration: CustomToastLength.LONG,
+      //   gravity: CustomToastGravity.BOTTOM,
+      // );
+      // await fetchConnectedWalletData();
+      // await getCurrentStageInfo();
+      // return result;
+      if (result != null && result.toString().startsWith("0x") && result.toString().length == 66) {
+        ToastMessage.show(
+          message: "Purchase Successful",
+          subtitle: "USDT transaction submitted successfully!",
+          type: MessageType.success,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+        await fetchConnectedWalletData();
+        await getCurrentStageInfo();
+        return result;
+      }else{
+        ToastMessage.show(
+          message: "Transaction Cancelled",
+          subtitle: "You cancelled the transaction in your wallet.",
+          type: MessageType.info,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+        throw Exception("User cancelled the transaction.");
+      }
+
+
     } catch (e) {
       print("Error buying ECM with USDT: $e");
+      // ToastMessage.show(
+      //   message: "Transaction Failed",
+      //   subtitle: "Could not complete USDT purchase. Please try again.",
+      //   type: MessageType.error,
+      //   duration: CustomToastLength.LONG,
+      //   gravity: CustomToastGravity.BOTTOM,
+      // );
+      final isUserRejected = e.toString().toLowerCase().contains("user rejected") ||
+          e.toString().toLowerCase().contains("user denied") ||
+          e.toString().toLowerCase().contains("user canceled") ||
+          e.toString().toLowerCase().contains("user cancelled");
+
       ToastMessage.show(
-        message: "Transaction Failed",
-        subtitle: "Could not complete USDT purchase. Please try again.",
-        type: MessageType.error,
+        message: isUserRejected ? "Transaction Cancelled" : "Transaction Failed",
+        subtitle: isUserRejected
+            ? "You cancelled the transaction."
+            : "Could not complete the purchase. Please try again.",
+        type: isUserRejected ? MessageType.info : MessageType.error,
         duration: CustomToastLength.LONG,
         gravity: CustomToastGravity.BOTTOM,
       );
+
 
       rethrow;
     } finally {

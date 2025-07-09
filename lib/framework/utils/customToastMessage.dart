@@ -56,6 +56,7 @@ class ToastMessage {
     });
   }
 }
+
 class _ToastContent extends StatelessWidget {
   final String message;
   final String? subtitle;

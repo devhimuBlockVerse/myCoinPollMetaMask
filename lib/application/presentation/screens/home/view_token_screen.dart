@@ -504,6 +504,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         ],
                       ),
 
+
                        SizedBox(width: baseSize * 0.02),
 
                       /// Token details

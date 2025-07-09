@@ -20,6 +20,8 @@ import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../../../presentation/models/user_model.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -41,6 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   UserModel? currentUser;
+  PurchaseStatsModel? _purchaseStats;
 
 
   @override
@@ -48,7 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     super.initState();
     _setGreeting();
     _loadUserFromPrefs();
-
+    _loadPurchaseStats();
   }
 
 
@@ -79,6 +82,18 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         : hour >= 17 && hour < 21
         ? "Good Evening"
         : "Good Night";
+  }
+
+
+  Future<void> _loadPurchaseStats() async {
+    try {
+      final stats = await ApiService().fetchPurchaseStats();
+      setState(() {
+        _purchaseStats = stats;
+      });
+    } catch (e) {
+      debugPrint('Error fetching stats: $e');
+    }
   }
 
   @override
@@ -131,93 +146,110 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 horizontal: screenWidth * 0.01,
                 vertical: screenHeight * 0.02,
               ),
-              child: ScrollConfiguration(
-                behavior: const ScrollBehavior().copyWith(overscroll: false),
-                child: Consumer<WalletViewModel>(
-                  builder: (context, walletModel, _) {
-                    final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  // Reload prefs data
+                  await _loadUserFromPrefs();
 
-                    if (isWalletConnected && currentUser != null) {
-                      currentUser = null;
+                  // Also reload WalletViewModel data if needed
+                  final walletModel = Provider.of<WalletViewModel>(context, listen: false);
+                  if (walletModel.isConnected) {
+                    await walletModel.fetchConnectedWalletData();
+                  } else {
+                    // Optionally, reset or re-init wallet model here
+                    await walletModel.reset();
+                  }
+                },
 
-                    }
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(overscroll: false),
+                  child: Consumer<WalletViewModel>(
+                    builder: (context, walletModel, _) {
+                      final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
 
-                    if (!isWalletConnected && currentUser == null) {
-                      // Wallet disconnected, reload user if previously logged in
-                      _loadUserFromPrefs(); // This updates currentUser in setState
-                    }
-                    return  SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
+                      if (isWalletConnected && currentUser != null) {
+                        currentUser = null;
 
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
+                      }
 
+                      if (!isWalletConnected && currentUser == null) {
+                        // Wallet disconnected, reload user if previously logged in
+                        _loadUserFromPrefs(); // This updates currentUser in setState
+                      }
+                      return  SingleChildScrollView(
+                        // physics: const BouncingScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
 
-                          /// User Name Data & Wallet Address
-                          _headerSection(_scaffoldKey,walletModel),
-                          SizedBox(height: screenHeight * 0.02),
-
-                          /// User Graph Chart and Level
-                          _EcmWithGraphChart(),
-                          SizedBox(height: screenHeight * 0.03),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
 
 
-                          /// Referral Link
-                          Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                color: const Color(0xff040C16),
-                                borderRadius: BorderRadius.circular(12)
-                            ),
+                            /// User Name Data & Wallet Address
+                            _headerSection(_scaffoldKey,walletModel),
+                            SizedBox(height: screenHeight * 0.02),
 
-                            child: ClipRRect(
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: CustomLabeledInputField(
-                                  labelText: 'Referral Link:',
-                                  hintText: 'https://mycoinpoll.com?ref=125482458661',
-                                  isReadOnly: true,
-                                  trailingIconAsset: 'assets/icons/copyImg.svg',
-                                  onTrailingIconTap: () {
-                                    debugPrint('Trailing icon tapped');
-                                    Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('TxnHash copied to clipboard'),
-                                        duration: Duration(seconds: 1),
-                                      ),
-                                    );
-                                  },
+                            /// User Graph Chart and Level
+                            _EcmWithGraphChart(),
+                            SizedBox(height: screenHeight * 0.03),
+
+
+                            /// Referral Link
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff040C16),
+                                  borderRadius: BorderRadius.circular(12)
+                              ),
+
+                              child: ClipRRect(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: CustomLabeledInputField(
+                                    labelText: 'Referral Link:',
+                                    hintText: 'https://mycoinpoll.com?ref=125482458661',
+                                    isReadOnly: true,
+                                    trailingIconAsset: 'assets/icons/copyImg.svg',
+                                    onTrailingIconTap: () {
+                                      debugPrint('Trailing icon tapped');
+                                      Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('TxnHash copied to clipboard'),
+                                          duration: Duration(seconds: 1),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(height: screenHeight * 0.03),
+                            SizedBox(height: screenHeight * 0.03),
 
 
 
-                          // _joinPromoteEarn(),
-                          // SizedBox(height: screenHeight * 0.03),
-                          //
-                          // _milestoneSection(),
-                          // SizedBox(height: screenHeight * 0.03),
-                          //
-                          //
-                          // _kycStatus(),
-                          // SizedBox(height: screenHeight * 0.03),
+                            // _joinPromoteEarn(),
+                            // SizedBox(height: screenHeight * 0.03),
+                            //
+                            // _milestoneSection(),
+                            // SizedBox(height: screenHeight * 0.03),
+                            //
+                            //
+                            // _kycStatus(),
+                            // SizedBox(height: screenHeight * 0.03),
 
 
-                          _transactionsReferral(),
-                          // SizedBox(height: screenHeight * 0.03),
+                            _transactionsReferral(),
+                            // SizedBox(height: screenHeight * 0.03),
 
 
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                      );
+                    },
 
+                  ),
                 ),
               ),
             ),
@@ -1028,26 +1060,31 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   children: [
 
 
-                    const TransactionStatCard(
+                    TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
-                      title: 'Your Transactions',
-                      value: '205',
+                      title: 'Transactions',
+                      // value: '205',
+                      value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+
                     ),
                     SizedBox(height: screenHeight * 0.01),
 
-                    const TransactionStatCard(
+                     TransactionStatCard(
                       bgImagePath: 'assets/icons/colorPurple.png',
-                      title: 'Total ECM',
-                      value: '205',
-                    ),
+                      title: 'Purchased Amount ',
+                      value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+
+                     ),
 
 
                      SizedBox(height: screenHeight * 0.01),
-                     const TransactionStatCard(
+                      TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
-                      title: 'Total ETH',
-                      value: '205',
-                    ),
+                      // title: 'Total ETH',
+                      title: 'Attendant',
+                         value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
+
+                      ),
 
                     SizedBox(height: screenHeight * 0.001),
 

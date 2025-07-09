@@ -17,6 +17,7 @@ import '../../../../data/dummyData/referral_user_list_dummy_data.dart';
  import '../../../../data/services/api_service.dart';
 import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/get_referral_stats.dart';
 import '../../../../presentation/models/user_model.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -602,6 +603,8 @@ class ReferralStatScreen extends StatefulWidget {
 // }
 class _ReferralStatScreenState extends State<ReferralStatScreen> {
   UserModel? currentUser;
+  ReferralStatsModel? _referralStats;
+
 
   SortReferralUserListOption? _currentSort;
   final SortReferralUseListUseCase _sortDataUseCase = SortReferralUseListUseCase();
@@ -624,7 +627,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
 
     _loadCurrentUser();
     _loadReferralUsers();
-
+    _loadReferralStats();
 
   }
 
@@ -725,7 +728,19 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     }
   }
 
-   Future<List<ReferralUserListModel>> fetchReferralUsers({String? search}) async {
+  Future<void> _loadReferralStats() async {
+    try {
+      final stats = await ApiService().fetchReferralStats();
+      setState(() {
+        _referralStats = stats;
+      });
+    } catch (e) {
+      debugPrint('Error fetching stats: $e');
+    }
+  }
+
+
+  Future<List<ReferralUserListModel>> fetchReferralUsers({String? search}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -913,8 +928,9 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                       children: [
                                         Expanded(
                                           child: _buildStatCard(
-                                            title: 'Total \nTransactions',
-                                            value: '202',
+                                            title: 'Total \nReferrals',
+                                             value: _referralStats != null ? _referralStats!.totalReferrals.toString() : '0',
+
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),
@@ -927,7 +943,8 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         Expanded(
                                           child: _buildStatCard(
                                             title: 'Total ECM Bought',
-                                            value: '30.000',
+                                            // value: '30.000',
+                                            value: _referralStats != null ? _referralStats!.totalReferralAmount.truncate().toString() : '0',
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),
@@ -939,8 +956,9 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         SizedBox(width: itemSpacing),
                                         Expanded(
                                           child: _buildStatCard(
-                                            title: 'Total Referral User',
-                                            value: '450',
+                                            title: 'Total ECM Paid',
+                                            // value: '450',
+                                            value: _referralStats != null ? _referralStats!.totalPurchaseUsers.toString() : '0',
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),

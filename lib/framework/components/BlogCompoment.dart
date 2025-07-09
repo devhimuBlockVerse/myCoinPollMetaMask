@@ -20,11 +20,11 @@ class Blog extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final double containerWidth = screenWidth * 0.42; // ~166px on 400 width
+    final double containerWidth = screenWidth * 0.42;
     final double padding = screenWidth * 0.02;
-    final double fontSmall = screenWidth * 0.025; // ~10px on 400 width
-    final double fontMedium = screenWidth * 0.028; // ~11px
-    final double dotSize = screenWidth * 0.008; // ~2px
+    final double fontSmall = screenWidth * 0.025;
+    final double fontMedium = screenWidth * 0.028;
+    final double dotSize = screenWidth * 0.008;
 
     return GestureDetector(
       onTap: onTap,
@@ -70,15 +70,18 @@ class Blog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                     children: [
-                      Text(
-                        source,
-                        style: TextStyle(
-                          color: const Color(0xFF7D8088),
-                          fontSize: fontSmall,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          height: 1.6,
+                      children: [
+                      Flexible(
+                        child: Text(
+                          source,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: const Color(0xFF7D8088),
+                            fontSize: fontSmall,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            height: 1.6,
+                          ),
                         ),
                       ),
                       SizedBox(width: padding * 0.5),
@@ -91,14 +94,18 @@ class Blog extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: padding * 0.5),
-                      Text(
-                        date,
-                        style: TextStyle(
-                          color: const Color(0xff7E8088),
-                          fontSize: fontSmall,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
-                          height: 1.6,
+                      Flexible(
+                        child: Text(
+                          date,
+                          overflow: TextOverflow.ellipsis,
+
+                          style: TextStyle(
+                            color: const Color(0xff7E8088),
+                            fontSize: fontSmall,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            height: 1.6,
+                          ),
                         ),
                       ),
                     ],

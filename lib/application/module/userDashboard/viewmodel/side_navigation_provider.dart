@@ -3,18 +3,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/supportTicket/suppor_ticket_screen.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/upload_image_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../framework/components/DialogModalViewComponent.dart';
 import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
 import '../../../presentation/screens/bottom_nav_bar.dart';
+import '../../../presentation/viewmodel/bottom_nav_provider.dart';
+import '../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import '../../../presentation/viewmodel/wallet_view_model.dart';
 import '../view/kyc/kyc_screen.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
 import '../view/referralTransaction/referral_transaction_screen.dart';
 import '../view/supportTicket/widget/ticket_description_card.dart';
 import '../view/wallet/wallet_screen.dart';
+import 'dashboard_nav_provider.dart';
+import 'kyc_navigation_provider.dart';
 
 class NavigationProvider extends ChangeNotifier {
   String _currentScreenId = 'milestone';
@@ -88,33 +95,101 @@ class NavigationProvider extends ChangeNotifier {
     //   screenBuilder: (context) => const SupportTicketScreen(),
     //
     // ),
+
+    ///
+    // NavItem(
+    //   id: 'log_out',
+    //   // title: 'Logout',
+    //   title: 'Exit',
+    //   iconPath: 'assets/icons/logout.svg',
+    //   onTap: (context) {
+    //
+    //
+    //     showDialog(
+    //       context: context,
+    //       barrierDismissible: false,
+    //       builder: (context) => DialogModalView(
+    //         title: 'Exit Dashboard',
+    //         message: 'Do you wish to exit the Dashboard panel?',
+    //         // message: 'Are you sure you want to log out?',
+    //         yesLabel: 'Yes',
+    //         onYes: ()async {
+    //           // final prefs = await SharedPreferences.getInstance();
+    //           // await prefs.remove('token');
+    //           // await prefs.remove('user');
+    //           Navigator.push(context, MaterialPageRoute(builder: (context) =>  BottomNavBar()));
+    //
+    //
+    //         },
+    //         onNo: () {
+    //           Navigator.of(context).pop();
+    //         },
+    //       ),
+    //     );
+    //   },
+    // ),
+
+
     NavItem(
       id: 'log_out',
       // title: 'Logout',
       title: 'Exit',
       iconPath: 'assets/icons/logout.svg',
       onTap: (context) {
-
-
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (context) => DialogModalView(
             title: 'Exit Dashboard',
             message: 'Do you wish to exit the Dashboard panel?',
-            // message: 'Are you sure you want to log out?',
             yesLabel: 'Yes',
-            onYes: ()async {
-              // final prefs = await SharedPreferences.getInstance();
-              // await prefs.remove('token');
-              // await prefs.remove('user');
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>  BottomNavBar()));
+            onYes: () async {
+              try {
+                // Clear all shared preferences
+                // final prefs = await SharedPreferences.getInstance();
+                // await prefs.clear();
 
+                /// Only remove token-based login prefs
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('token');
+                await prefs.remove('user');
 
+                // Reset BottomNav index
+                Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+
+                // Restart app from BottomNavBar with fresh providers
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider(create: (_) => WalletViewModel()),
+                          ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                          ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                          ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                          ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                          ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                          ChangeNotifierProvider(create: (_) => UploadProvider()),
+                        ],
+                        child: const BottomNavBar(),
+                      ),
+                    ),
+                        (route) => false,
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  debugPrint('Error during logout: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Logout failed: ${e.toString()}'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
             },
-            onNo: () {
-              Navigator.of(context).pop();
-            },
+            onNo: () => Navigator.of(context).pop(),
           ),
         );
       },

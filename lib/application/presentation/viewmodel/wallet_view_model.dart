@@ -2104,6 +2104,30 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
+  // Future<bool> connectWallet(BuildContext context) async {
+  //   _walletConnectedManually = true;
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   try {
+  //
+  //     appKitModal = null;
+  //     await init(context);
+  //     await appKitModal?.openModalView();
+  //
+  //     return _isConnected;
+  //   } catch (e, stack) {
+  //     if (e is ReownAppKitModalException) {
+  //       print('Wallet connect error: ${e.message}');
+  //     } else {
+  //       print('Unexpected wallet connect error: $e');
+  //     }
+  //     print('Stack trace: $stack');
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
@@ -2250,8 +2274,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _ecmRefBonus = 0;
     _paymentRefBonus = 0;
     _isCompleted = false;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    appKitModal = null;
+
     print("Wallet state and storage have been reset.");
     notifyListeners();
   }

@@ -15,12 +15,16 @@ class UserAuthProvider with ChangeNotifier {
 
   Future<void> loadUserFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('user');
     final token = prefs.getString('token');
+    final userJson = prefs.getString('user');
 
     if (token != null && userJson != null) {
       _token = token;
       _user = UserModel.fromJson(jsonDecode(userJson));
+       notifyListeners();
+    } else {
+      _token = null;
+      _user = null;
       notifyListeners();
     }
   }

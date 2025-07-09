@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -1256,401 +1258,397 @@ class HomeScreen extends StatefulWidget {
 //
 // }
 
-/// Beta V6
-class _HomeScreenState extends State<HomeScreen> {
-  String selectedBadge = 'AIRDROP';
-
-  void _onBadgeTap(String badge) {
-    setState(() {
-      selectedBadge = badge;
-    });
-  }
-
-  final usdtController = TextEditingController();
-  final ecmController = TextEditingController();
-  final readingMoreController = TextEditingController();
-  final referredController = TextEditingController();
-  final String defaultReferrerAddress = '0x0000000000000000000000000000000000000000';
-
-  bool isETHActive = true;
-  bool isUSDTActive = false;
-  bool isDisconnecting = false;
-
-  List<TokenModel> tokens = [];
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTokens();
-    ecmController.addListener(_updatePayableAmount);
-     WidgetsBinding.instance.addPostFrameCallback((_) async {
-       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-       // await walletVM.forceReinitModal(context);
-
-       final prefs = await SharedPreferences.getInstance();
-       final wasConnected = prefs.getBool('isConnected') ?? false;
-       print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
-
-
-       // if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
-       if (!walletVM.isConnected && wasConnected) {
-         debugPrint("Attempting silent reconnect...");
-         await walletVM.init(context);
-       }
-
-       await _initializeWalletData();
-
-    });
-  }
-  Future<void> fetchTokens() async {
-    try {
-      final response = await ApiService().fetchTokens();
+  /// Beta V6
+  class _HomeScreenState extends State<HomeScreen> {
+    String selectedBadge = 'AIRDROP';
+  
+    void _onBadgeTap(String badge) {
       setState(() {
-        tokens = response;
-        isLoading = false;
+        selectedBadge = badge;
       });
-    } catch (e) {
-      print('Error fetching tokens: $e');
-      setState(() => isLoading = false);
     }
-  }
-
-  Future<void> _initializeWalletData() async {
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-
-    // Step 1: Ensure the wallet modal is initialized
-    if (walletVM.appKitModal == null) {
-      debugPrint("AppKitModal is null. Initializing...");
-      await walletVM.init(context);
+  
+    final usdtController = TextEditingController();
+    final ecmController = TextEditingController();
+    final readingMoreController = TextEditingController();
+    final referredController = TextEditingController();
+    final String defaultReferrerAddress = '0x0000000000000000000000000000000000000000';
+  
+    bool isETHActive = true;
+    bool isUSDTActive = false;
+    bool isDisconnecting = false;
+  
+    List<TokenModel> tokens = [];
+    bool isLoading = true;
+  
+    @override
+    void initState() {
+      super.initState();
+      fetchTokens();
+      ecmController.addListener(_updatePayableAmount);
+       WidgetsBinding.instance.addPostFrameCallback((_) async {
+         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+         // await walletVM.forceReinitModal(context);
+  
+         final prefs = await SharedPreferences.getInstance();
+         final wasConnected = prefs.getBool('isConnected') ?? false;
+         print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
+  
+  
+         // if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
+         if (!walletVM.isConnected && wasConnected) {
+           debugPrint("Attempting silent reconnect...");
+           await walletVM.init(context);
+         }
+  
+         await _initializeWalletData();
+  
+      });
     }
-
-    // Step 2: Check if user was previously connected (using shared prefs)
-    final prefs = await SharedPreferences.getInstance();
-    final wasConnected = prefs.getBool('isConnected') ?? false;
-    debugPrint("wasConnected (from prefs): $wasConnected");
-    debugPrint("walletVM.isConnected: ${walletVM.isConnected}");
-
-    // Step 3: Reconnect silently if needed
-    if (!walletVM.isConnected && wasConnected) {
-      debugPrint("Attempting silent reconnect...");
+    Future<void> fetchTokens() async {
       try {
-        await walletVM.fetchConnectedWalletData(isReconnecting: true);
-        await walletVM.getCurrentStageInfo();
-        _updatePayableAmount();
+        final response = await ApiService().fetchTokens();
+        setState(() {
+          tokens = response;
+          isLoading = false;
+        });
       } catch (e) {
-        debugPrint("Silent reconnect failed: $e");
+        print('Error fetching tokens: $e');
+        setState(() => isLoading = false);
       }
-      return;
     }
-
-    // Step 4: If already connected, fetch wallet info and stage data
-    if (walletVM.isConnected) {
-      try {
-        await walletVM.fetchConnectedWalletData();
-        await walletVM.getCurrentStageInfo();
-        _updatePayableAmount();
-      } catch (e) {
-        debugPrint("Error fetching wallet data after connection: $e");
-        if (mounted) {
-          Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info", context);
+  
+    Future<void> _initializeWalletData() async {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  
+      // Step 1: Ensure the wallet modal is initialized
+      if (walletVM.appKitModal == null) {
+        debugPrint("AppKitModal is null. Initializing...");
+        await walletVM.init(context);
+      }
+  
+      // Step 2: Check if user was previously connected (using shared prefs)
+      final prefs = await SharedPreferences.getInstance();
+      final wasConnected = prefs.getBool('isConnected') ?? false;
+      debugPrint("wasConnected (from prefs): $wasConnected");
+      debugPrint("walletVM.isConnected: ${walletVM.isConnected}");
+  
+      // Step 3: Reconnect silently if needed
+      if (!walletVM.isConnected && wasConnected) {
+        debugPrint("Attempting silent reconnect...");
+        try {
+          await walletVM.fetchConnectedWalletData(isReconnecting: true);
+          await walletVM.getCurrentStageInfo();
+          _updatePayableAmount();
+        } catch (e) {
+          debugPrint("Silent reconnect failed: $e");
         }
+        return;
       }
-    } else {
-      await walletVM.getCurrentStageInfo();
-      debugPrint("Wallet is not connected. Skipping wallet data fetch.");
+  
+      // Step 4: If already connected, fetch wallet info and stage data
+      if (walletVM.isConnected) {
+        try {
+          await walletVM.fetchConnectedWalletData();
+          await walletVM.getCurrentStageInfo();
+          _updatePayableAmount();
+        } catch (e) {
+          debugPrint("Error fetching wallet data after connection: $e");
+          if (mounted) {
+            Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info", context);
+          }
+        }
+      } else {
+        await walletVM.getCurrentStageInfo();
+        debugPrint("Wallet is not connected. Skipping wallet data fetch.");
+      }
     }
-  }
-
-
-  /// Helper function to fetch contract data and update the UI state.
-
-  void _updatePayableAmount() {
-    final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
-    // double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
-
-    usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
-
-  }
-
-  @override
-  void dispose() {
-
-    ecmController.removeListener(_updatePayableAmount);
-    ecmController.dispose();
-    usdtController.dispose();
-    readingMoreController.dispose();
-    super.dispose();
-  }
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    final isPortrait = screenHeight > screenWidth;
-
-    // Dynamic multipliers
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-    bool canOpenModal = false;
-
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Container(
-          width: screenWidth,
-          height: screenHeight,
-          decoration: const BoxDecoration(
-
-            image: DecorationImage(
-               image: AssetImage('assets/icons/starGradientBg.png'),
-              fit: BoxFit.cover,
-              alignment: Alignment.topRight,
-              filterQuality: FilterQuality.medium,
-
+  
+    /// Helper function to fetch contract data and update the UI state.
+  
+    void _updatePayableAmount() {
+      final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
+      // double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
+  
+      usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
+  
+    }
+  
+    @override
+    void dispose() {
+  
+      ecmController.removeListener(_updatePayableAmount);
+      ecmController.dispose();
+      usdtController.dispose();
+      readingMoreController.dispose();
+      super.dispose();
+    }
+  
+    @override
+    Widget build(BuildContext context) {
+      double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
+      final isPortrait = screenHeight > screenWidth;
+  
+      // Dynamic multipliers
+      final baseSize = isPortrait ? screenWidth : screenHeight;
+      bool canOpenModal = false;
+  
+      return Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            decoration: const BoxDecoration(
+  
+              image: DecorationImage(
+                 image: AssetImage('assets/icons/starGradientBg.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topRight,
+                filterQuality: FilterQuality.medium,
+  
+              ),
             ),
-          ),
-          child: ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(overscroll: false),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenWidth * 0.01,
-                  vertical: screenHeight * 0.02,
-                ),
-                child: Column(
-                  children: [
-
-                    ///MyCoinPoll & Connected Wallet Button
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+  
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.01,
+                    vertical: screenHeight * 0.02,
+                  ),
+                  child: Column(
+                    children: [
+  
+                      ///MyCoinPoll & Connected Wallet Button
+  
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: screenHeight * 0.01,
+                                right: screenWidth * 0.02
+                            ),
+                            child: Image.asset(
+                              'assets/icons/mycoinpolllogo.png',
+                              width: screenWidth * 0.40,
+                              height: screenHeight * 0.040,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.medium,
+  
+                            ),
+                          ),
+  
+                          /// Connected Wallet Button
+                          Padding(
+                            padding: EdgeInsets.only(
                               top: screenHeight * 0.01,
-                              right: screenWidth * 0.02
-                          ),
-                          child: Image.asset(
-                            'assets/icons/mycoinpolllogo.png',
-                            width: screenWidth * 0.40,
-                            height: screenHeight * 0.040,
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.medium,
-
-                          ),
-                        ),
-
-                        /// Connected Wallet Button
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: screenHeight * 0.01,
-                            right: screenWidth * 0.02,
-                          ),
-                          child: Consumer<WalletViewModel>(
-                              builder: (context, walletVM, _){
-                                if (walletVM.isLoading) {
-                                   return SizedBox(
+                              right: screenWidth * 0.02,
+                            ),
+                            child: Consumer<WalletViewModel>(
+                                builder: (context, walletVM, _){
+                                  if (walletVM.isLoading) {
+                                     return SizedBox(
+                                      height: screenHeight * 0.040,
+                                      width: screenWidth * 0.3,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                          strokeWidth: 3,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                   return  BlockButton(
                                     height: screenHeight * 0.040,
                                     width: screenWidth * 0.3,
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        strokeWidth: 3,
-                                      ),
+                                    label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
+                                    textStyle:  TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      fontSize: getResponsiveFontSize(context, 12),
                                     ),
-                                  );
-                                }
-                                 return  BlockButton(
-                                  height: screenHeight * 0.040,
-                                  width: screenWidth * 0.3,
-                                  label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
-                                  textStyle:  TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    fontSize: getResponsiveFontSize(context, 12),
-                                  ),
-                                  gradientColors: const [
-                                    Color(0xFF2680EF),
-                                    Color(0xFF1CD494)
-                                  ],
-                                    onTap: walletVM.isLoading ? null : () async {
-                                     try {
-                                       if (!walletVM.isConnected) {
-                                         await walletVM.connectWallet(context);
-                                       } else {
-                                         if (walletVM.appKitModal != null) {
-                                           try {
-                                             canOpenModal = walletVM.appKitModal!.selectedChain != null;
-                                           } catch (e) {
-                                             debugPrint("Error accessing selectedChain: $e");
-                                             canOpenModal = false;
-                                           }
-
-                                           if (!canOpenModal) {
-                                             Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
-                                             await walletVM.connectWallet(context);
-                                             return;
-                                           }
-
-                                           await walletVM.ensureModalWithValidContext(context);
-                                           await Future.delayed(const Duration(milliseconds: 200));
-                                           await walletVM.appKitModal!.openModalView();
-
+                                    gradientColors: const [
+                                      Color(0xFF2680EF),
+                                      Color(0xFF1CD494)
+                                    ],
+                                      onTap: walletVM.isLoading ? null : () async {
+                                       try {
+                                         if (!walletVM.isConnected) {
+                                           await walletVM.connectWallet(context);
                                          } else {
-                                           Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                           if (walletVM.appKitModal != null) {
+                                             try {
+                                               canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                             } catch (e) {
+                                               debugPrint("Error accessing selectedChain: $e");
+                                               canOpenModal = false;
+                                             }
+  
+                                             if (!canOpenModal) {
+                                               Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                               await walletVM.connectWallet(context);
+                                               return;
+                                             }
+  
+                                             await walletVM.ensureModalWithValidContext(context);
+                                             await Future.delayed(const Duration(milliseconds: 200));
+                                             await walletVM.appKitModal!.openModalView();
+  
+                                           } else {
+                                             Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                           }
+                                         }
+                                       } catch (e, stack) {
+                                         debugPrint('Wallet Error: $e\n$stack');
+                                         if (context.mounted) {
+                                           Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
                                          }
                                        }
-                                     } catch (e, stack) {
-                                       debugPrint('Wallet Error: $e\n$stack');
-                                       if (context.mounted) {
-                                         Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                       }
-                                     }
-                                   },
-
-                                 );}
-                          ),
-
-
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: screenHeight * 0.03),
-
-                    /// Apply For Lisign Button
-
-
-                    Container(
-                      width: screenWidth,
-                      // height: screenHeight * 0.16,
-                      height: screenHeight * 0.17,
-                      // height: screenHeight * 0.30,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Colors.transparent
-                        ),
-                        image:const DecorationImage(
-                          image: AssetImage('assets/icons/applyForListingBG.png'),
-                          fit: BoxFit.fill,
-                          filterQuality: FilterQuality.medium,
-                        ),
-                      ),
-
-                      /// Apply For Lisign Button
-
-                      child: Stack(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.035,
-                                vertical: screenHeight * 0.015,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Blockchain Innovation \nLaunchpad Hub',
-                                    style: TextStyle(
-                                      color: const Color(0xFFFFF5ED),
-                                      fontFamily: 'Poppins',
-                                      // fontSize: screenWidth * 0.04,
-                                      fontSize: getResponsiveFontSize(context, 17),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    maxLines: 2,
-                                  ),
-                                  // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
-
-                                  /// Apply For Lising Button
-                                  Padding(
-                                    padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
-                                    child: BlockButton(
-                                      height: screenHeight * 0.05,
-                                      width: screenWidth * 0.4,
-                                      label: 'Apply For Listing',
-                                      textStyle:  TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        // fontSize: screenWidth * 0.030,
-                                        fontSize: getResponsiveFontSize(context, 12),
-
-                                      ),
-                                      gradientColors: const [
-                                        Color(0xFF2680EF),
-                                        Color(0xFF1CD494)
-                                        // 1CD494
-                                      ],
-                                      onTap: () {
-                                        debugPrint('Button tapped');
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
-                                        );
-
-                                      },
-                                      iconPath: 'assets/icons/arrowIcon.svg',
-                                      iconSize : screenHeight * 0.009,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                     },
+  
+                                   );}
                             ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: screenWidth * 0.02),
-                                child: RepaintBoundary(
-                                  child: AnimatedBlockchainImages(
-                                    containerWidth: screenWidth * 0.4,
-                                    containerHeight: screenHeight * 0.4,
-                                    imageAssets: const [
-                                      'assets/icons/animatedImg1.png',
-                                      'assets/icons/animatedImg2.png',
-                                      'assets/icons/animatedImg3.png',
-                                    ],
+  
+  
+                          ),
+                        ],
+                      ),
+  
+                      SizedBox(height: screenHeight * 0.03),
+  
+                      /// Apply For Lisign Button
+  
+  
+                      Container(
+                        width: screenWidth,
+                        // height: screenHeight * 0.16,
+                        height: screenHeight * 0.17,
+                        // height: screenHeight * 0.30,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Colors.transparent
+                          ),
+                          image:const DecorationImage(
+                            image: AssetImage('assets/icons/applyForListingBG.png'),
+                            fit: BoxFit.fill,
+                            filterQuality: FilterQuality.medium,
+                          ),
+                        ),
+  
+                        /// Apply For Lisign Button
+  
+                        child: Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.035,
+                                  vertical: screenHeight * 0.015,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Blockchain Innovation \nLaunchpad Hub',
+                                      style: TextStyle(
+                                        color: const Color(0xFFFFF5ED),
+                                        fontFamily: 'Poppins',
+                                        // fontSize: screenWidth * 0.04,
+                                        fontSize: getResponsiveFontSize(context, 17),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      maxLines: 2,
+                                    ),
+                                    // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
+  
+                                    /// Apply For Lising Button
+                                    Padding(
+                                      padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
+                                      child: BlockButton(
+                                        height: screenHeight * 0.05,
+                                        width: screenWidth * 0.4,
+                                        label: 'Apply For Listing',
+                                        textStyle:  TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          // fontSize: screenWidth * 0.030,
+                                          fontSize: getResponsiveFontSize(context, 12),
+  
+                                        ),
+                                        gradientColors: const [
+                                          Color(0xFF2680EF),
+                                          Color(0xFF1CD494)
+                                          // 1CD494
+                                        ],
+                                        onTap: () {
+                                          debugPrint('Button tapped');
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
+                                          );
+  
+                                        },
+                                        iconPath: 'assets/icons/arrowIcon.svg',
+                                        iconSize : screenHeight * 0.009,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: screenWidth * 0.02),
+                                  child: RepaintBoundary(
+                                    child: AnimatedBlockchainImages(
+                                      containerWidth: screenWidth * 0.4,
+                                      containerHeight: screenHeight * 0.4,
+                                      imageAssets: const [
+                                        'assets/icons/animatedImg1.png',
+                                        'assets/icons/animatedImg2.png',
+                                        'assets/icons/animatedImg3.png',
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ]
+                            ]
+                        ),
                       ),
-                    ),
-
-                    SizedBox(height: screenHeight * 0.03),
-
-                    // _buildTokenCard(),
-                    ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
-
-                    SizedBox(height: screenHeight * 0.05),
-
-                    _buildBuyEcmSection(),
-
-
-                    SizedBox(height: screenHeight * 0.03),
-
-                    RepaintBoundary(child: _learnAndEarnContainer()),
-
-
-                  ],
+  
+                      SizedBox(height: screenHeight * 0.03),
+  
+                      // _buildTokenCard(),
+                      ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
+  
+                      SizedBox(height: screenHeight * 0.05),
+  
+                      _buildBuyEcmSection(),
+  
+  
+                      SizedBox(height: screenHeight * 0.03),
+  
+                      RepaintBoundary(child: _learnAndEarnContainer()),
+  
+  
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
 
   Widget _buildTokenCard(BuildContext context, TokenModel token) {
@@ -1664,8 +1662,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
-
-
+ 
     return Padding(
       padding: const EdgeInsets.all(1.0),
       child: Column(
@@ -1728,19 +1725,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       /// Token image with badges
                       Stack(
                         children: [
-                          // Image.asset(
-                          //   'assets/icons/tokens.png',
-                          //   width: screenWidth * 0.4,
-                          //   height: screenHeight * 0.15,
-                          //   fit: BoxFit.fitWidth,
-                          //   filterQuality: FilterQuality.high,
-                          // ),
-                          // Image.network(
-                          //   token.featureImage,
-                          //   width: screenWidth * 0.4,
-                          //   height: screenHeight * 0.15,
-                          //   fit: BoxFit.cover,
-                          // ),
 
                           ClipRRect(
                             child: Image.network(
@@ -1768,24 +1752,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 );
                               }).toList(),
-                              // children: [
-                              //   BadgeComponent(
-                              //     text: 'AIRDROP',
-                              //     isSelected: selectedBadge == 'AIRDROP',
-                              //     onTap: () => _onBadgeTap('AIRDROP'),
-                              //   ),
-                              //   SizedBox(width: screenWidth * 0.01),
-                              //   BadgeComponent(
-                              //     text: 'INITIAL',
-                              //     isSelected: selectedBadge == 'INITIAL',
-                              //     onTap: () => _onBadgeTap('INITIAL'),
-                              //   ),
-                              // ],
+
                             ),
                           ),
 
                         ],
                       ),
+
                       SizedBox(width: baseSize * 0.02),
 
                       /// Token details

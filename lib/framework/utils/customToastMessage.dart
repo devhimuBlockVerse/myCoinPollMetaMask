@@ -3,121 +3,148 @@ import 'package:flutter_svg/svg.dart';
 
 import 'enums/toast_type.dart';
 
-class ToastMessage extends StatelessWidget {
-  final MessageType type;
-  final String title;
-  final String subtitle;
+enum CustomToastLength { SHORT, LONG }
+enum CustomToastGravity { TOP, CENTER, BOTTOM }
 
-  const ToastMessage({
-    Key? key,
+class ToastMessage {
+  static final GlobalKey<NavigatorState> toastContextNavigatorKey = GlobalKey<NavigatorState>();
+
+  static void show({
+    required String message,
+    String? subtitle,
+    MessageType type = MessageType.info,
+    CustomToastLength duration = CustomToastLength.SHORT,
+    CustomToastGravity gravity = CustomToastGravity.BOTTOM,
+  }) {
+    // Ensure widgets are bound and navigator is mounted
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (toastContextNavigatorKey.currentState?.mounted ?? false) {
+        final overlayState = toastContextNavigatorKey.currentState?.overlay;
+        if (overlayState == null) {
+          debugPrint('ToastMessage Error: Overlay state not available');
+          return;
+        }
+
+        final overlayEntry = OverlayEntry(
+          builder: (context) => Positioned(
+            top: gravity == CustomToastGravity.TOP ? 50.0 : null,
+            bottom: gravity == CustomToastGravity.BOTTOM ? 50.0 : null,
+            left: 0,
+            right: 0,
+            child: Material(
+              color: Colors.transparent,
+              child: Center(
+                child: _ToastContent(
+                  message: message,
+                  subtitle: subtitle,
+                  type: type,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        overlayState.insert(overlayEntry);
+
+        Future.delayed(
+          Duration(seconds: duration == CustomToastLength.SHORT ? 2 : 4),
+              () => overlayEntry.remove(),
+        );
+      } else {
+        debugPrint('ToastMessage Error: Navigator not mounted');
+      }
+    });
+  }
+}
+class _ToastContent extends StatelessWidget {
+  final String message;
+  final String? subtitle;
+  final MessageType type;
+
+  const _ToastContent({
+    required this.message,
+    this.subtitle,
     required this.type,
-    required this.title,
-    required this.subtitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double cardWidth = screenWidth * 0.9 > 400 ? 400 : screenWidth * 0.9;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final maxWidth = screenWidth * 0.95 > 500 ? 500.0 : screenWidth * 0.95;
 
-    final double baseTitleFontSize = 14.0;
-    final double baseSubtitleFontSize = 12.0;
 
-    final double titleFontSize = baseTitleFontSize * (screenWidth / 375);
-    final double subtitleFontSize = baseSubtitleFontSize * (screenWidth / 375);
 
-    List<Color> gradientColors;
-    String iconData;
-
-    switch (type) {
-      case MessageType.info:
-        gradientColors = [Color(0xFF313927), Color(0xFF101A29)];
-        iconData = 'assets/icons/info.svg';
-        break;
-      case MessageType.success:
-        gradientColors = [Color(0xFF123438), Color(0xFF101A29)];
-        iconData = 'assets/icons/success.svg';
-        break;
-      case MessageType.error:
-        gradientColors =  [Color(0xFF2C1F2C), Color(0xFF101A29)];
-        iconData = 'assets/icons/error.svg';
-        break;
-    }
+    final (List<Color> colors, String icon) = switch (type) {
+      MessageType.info => (
+      [const Color(0xFF313927), const Color(0xFF101A29)],
+      'assets/icons/info.svg',
+      ),
+      MessageType.success => (
+      [const Color(0xFF123438), const Color(0xFF101A29)],
+      'assets/icons/success.svg',
+      ),
+      MessageType.error => (
+      [const Color(0xFF2C1F2C), const Color(0xFF101A29)],
+      'assets/icons/error.svg',
+      ),
+    };
 
     return Container(
-      width: cardWidth,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      width: screenWidth * 0.9,
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+
       decoration: ShapeDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
-          colors: gradientColors,
+          colors: colors,
         ),
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 1, color: Color(0xFF2B2D40)),
-          borderRadius: BorderRadius.circular(5),
+          side: const BorderSide(width: 1.0, color: Color(0xFF2B2D40)),
+          borderRadius: BorderRadius.circular(5.0),
         ),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Icon Section
+          // Icon
+          SvgPicture.asset(icon, width: 24.0, height: 24.0),
+          const SizedBox(width: 10.0),
+
+          // Divider
           Container(
-            height: 40,
-            width: 40,
-            padding: const EdgeInsets.all(4),
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(43),
-              ),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                iconData,
-                // color: Colors.white,
-                // size: 24,
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-
-          // Vertical Divider
-          VerticalDivider(
-            width: 2,
-            thickness: 1,
+            width: 1.0,
+            height: 24.0,
             color: Colors.white.withOpacity(0.5),
-            indent: 5,
-            endIndent: 5,
+            margin: const EdgeInsets.symmetric(horizontal: 5.0),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 10.0),
 
-          // Text Section
-          Expanded(
+          // Message
+          Flexible(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title, // Use dynamic title
-                  style: TextStyle(
+                  message,
+                  style: const TextStyle(
                     color: Colors.white,
-                    fontSize: titleFontSize,
+                    fontSize: 14.0,
                     fontFamily: 'Poppins',
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  subtitle, // Use dynamic subtitle
-                  style: TextStyle(
-                    color: Color(0xFFC7C5C5),
-                    fontSize: subtitleFontSize,
-                    fontFamily: 'Poppins',
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4.0),
+                  Text(
+                    subtitle!,
+                    style: const TextStyle(
+                      color: Color(0xFFC7C5C5),
+                      fontSize: 12.0,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

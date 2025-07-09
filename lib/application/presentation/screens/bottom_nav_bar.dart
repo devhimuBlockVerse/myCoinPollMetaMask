@@ -82,11 +82,6 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
     final currentIndex = Provider.of<BottomNavProvider>(context).currentIndex;
 
-    final userAuth = Provider.of<UserAuthProvider>(context);
-    final walletVM = Provider.of<WalletViewModel>(context);
-
-    final isLoggedInOrConnected = userAuth.isLoggedIn || walletVM.isConnected;
-
 
     final List<Widget> _pages = [
       const HomeScreen(),

@@ -1,6 +1,4 @@
-
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -8,16 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
+import '../../../../framework/utils/customToastMessage.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/utils/general_utls.dart';
 import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
-import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
-import '../../../module/userDashboard/viewmodel/kyc_navigation_provider.dart';
-import '../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
-import '../../../module/userDashboard/viewmodel/upload_image_provider.dart';
-import '../../viewmodel/bottom_nav_provider.dart';
-import '../../viewmodel/countdown_provider.dart';
-import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'forgot_password.dart';
@@ -58,44 +51,18 @@ class _SignInState extends State<SignIn> {
     });
   }
 
-  //  Future<void> login() async {
-  //   final username = userNameOrIdController.text.trim();
-  //   final password = passwordController.text.trim();
-  //
-  //   if (username.isEmpty || password.isEmpty) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Please fill in all fields')),
-  //     );
-  //     return;
-  //   }
-  //
-  //   setState(() => isLoading = true);
-  //
-  //   try {
-  //     final response = await ApiService().login(username, password);
-  //
-  //     print('Logged in as: ${response.user.name}, Token: ${response.token}');
-  //
-  //
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
-  //     );
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text(e.toString())),
-  //     );
-  //   } finally {
-  //     setState(() => isLoading = false);
-  //   }
-  // }
    Future<void> login() async {
     final username = userNameOrIdController.text.trim();
     final password = passwordController.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
+
+      ToastMessage.show(
+        message: "Please fill in all fields",
+        subtitle: "Username or Password is empty",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
       return;
     }
@@ -120,9 +87,14 @@ class _SignInState extends State<SignIn> {
         MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+      ToastMessage.show(
+        message: "Login Failed",
+        subtitle: "Invalid credentials or server error. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
+      print("Login error: $e");
     } finally {
       setState(() => isLoading = false);
     }
@@ -496,13 +468,17 @@ class _SignInState extends State<SignIn> {
                         //   type: MessageType.success,
                         //   title: 'Payment successful!',
                         //   subtitle: 'Your transaction has been completed.',
+                        //
                         // ),
                         //
                         // const ToastMessage(
                         //   type: MessageType.error,
                         //   title: 'Connection Lost',
                         //   subtitle: 'Please check your internet connection.',
+                        //
                         // ),
+
+
 
                       ],
                     ),

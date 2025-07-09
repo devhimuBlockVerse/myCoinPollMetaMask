@@ -468,7 +468,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   Expanded(
                     flex: 1,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
 
@@ -513,6 +514,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         )
     );
   }
+
+
 
   Widget _joinPromoteEarn(){
     final Size screenSize = MediaQuery.of(context).size;
@@ -1019,7 +1022,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               TextButton(
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
-
                 },
                 child: Text(
                   'View All',

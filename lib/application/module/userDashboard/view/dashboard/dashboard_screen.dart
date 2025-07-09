@@ -18,8 +18,10 @@ import '../../../../../framework/components/statusChipComponent.dart';
 import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../../../presentation/models/user_model.dart';
@@ -213,12 +215,16 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     trailingIconAsset: 'assets/icons/copyImg.svg',
                                     onTrailingIconTap: () {
                                       debugPrint('Trailing icon tapped');
-                                      Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('TxnHash copied to clipboard'),
-                                          duration: Duration(seconds: 1),
-                                        ),
+
+                                      const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+                                      Clipboard.setData(const ClipboardData(text:referralLink));
+
+                                      ToastMessage.show(
+                                        message: "Referral link copied!",
+                                        subtitle: referralLink,
+                                        type: MessageType.success,
+                                        duration: CustomToastLength.SHORT,
+                                        gravity: CustomToastGravity.BOTTOM,
                                       );
                                     },
                                   ),
@@ -228,7 +234,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             SizedBox(height: screenHeight * 0.03),
 
 
-
+                            /// WIll Implemented in Future
                             // _joinPromoteEarn(),
                             // SizedBox(height: screenHeight * 0.03),
                             //

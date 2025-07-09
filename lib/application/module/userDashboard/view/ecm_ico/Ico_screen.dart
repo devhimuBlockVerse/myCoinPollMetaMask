@@ -12,7 +12,9 @@ import '../../../../../framework/components/customInputField.dart';
 import '../../../../../framework/components/custonButton.dart';
 import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../../framework/utils/general_utls.dart';
 import '../../../../../framework/utils/routes/route_names.dart';
 import '../../../../data/services/download_white_paper.dart';
@@ -369,8 +371,12 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
         if (await canLaunchUrl(uri)) {
           await launchUrl(uri, mode: LaunchMode.externalApplication);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not open the link')),
+          ToastMessage.show(
+            message: "Could not open the link",
+            subtitle: "Invalid or inaccessible URL",
+            type: MessageType.error,
+            duration: CustomToastLength.SHORT,
+            gravity: CustomToastGravity.BOTTOM,
           );
         }
       },
@@ -473,13 +479,22 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             controller: referredController,
                             isReadOnly: true,
                             trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
+                             onTrailingIconTap: () {
                               debugPrint('Trailing icon tapped');
-                              Clipboard.setData(ClipboardData(text: 'https://mycoinpoll.com?ref=125482458661' ));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Copied to clipboard')),
+                              const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+
+                              Clipboard.setData(const ClipboardData(text:referralLink));
+
+                              ToastMessage.show(
+                                message: "Referral link copied!",
+                                subtitle: referralLink,
+                                type: MessageType.success,
+                                duration: CustomToastLength.SHORT,
+                                gravity: CustomToastGravity.BOTTOM,
                               );
+
                             },
+
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
@@ -626,9 +641,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           final ethDouble = double.tryParse(inputEth);
                           debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Enter a valid ECM amount')),
+                            ToastMessage.show(
+                              message: "Invalid Amount",
+                              subtitle: "Please enter a valid ECM amount.",
+                              type: MessageType.info,
+                              duration: CustomToastLength.SHORT,
+                              gravity: CustomToastGravity.BOTTOM,
                             );
+
                             return;
                           }
 
@@ -653,9 +673,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           }
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
 
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   const SnackBar(content: Text('Purchase successful')),
-                          // );
                         }catch (e) {
                           debugPrint("Buy ECM failed: $e");
                         }

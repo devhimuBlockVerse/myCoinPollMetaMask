@@ -1,17 +1,13 @@
-
 import 'dart:io';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
-
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/InfoCard.dart';
@@ -1001,6 +997,19 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         debugPrint("ECM Purchase triggered");
+                        if (!walletVM.isConnected) {
+                          print("Wallet not connected. Prompting user to connect...");
+                          try {
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.appKitModal?.openModalView();
+                          } catch (e) {
+                            debugPrint("Failed to open wallet modal: $e");
+                            return;
+                          }
+
+                          return;
+                        }
+
                         try{
                           final inputEth = ecmController.text.trim();
                           debugPrint("User input: $inputEth");

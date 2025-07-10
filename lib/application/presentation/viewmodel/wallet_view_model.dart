@@ -902,13 +902,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     } catch (e) {
       print("Error buying ECM with ETH: $e");
-      // ToastMessage.show(
-      //   message: "Transaction Failed",
-      //   subtitle: "Could not complete purchase. Please try again.",
-      //   type: MessageType.error,
-      //   duration: CustomToastLength.LONG,
-      //   gravity: CustomToastGravity.BOTTOM,
-      // );
+
       final isUserRejected = e.toString().toLowerCase().contains("user rejected") ||
           e.toString().toLowerCase().contains("user denied") ||
           e.toString().toLowerCase().contains("user canceled") ||

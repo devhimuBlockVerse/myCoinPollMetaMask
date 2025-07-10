@@ -1,19 +1,16 @@
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
- import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import 'package:mycoinpoll_metamask/application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
- import '../../../viewmodel/bottom_nav_provider.dart';
+import '../../../viewmodel/bottom_nav_provider.dart';
 
 
 class PersonalInformationScreen extends StatefulWidget {

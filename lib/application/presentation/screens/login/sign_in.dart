@@ -42,12 +42,6 @@ class _SignInState extends State<SignIn> {
       final wasConnected = prefs.getBool('isConnected') ?? false;
       print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
 
-
-      if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
-        debugPrint("Attempting silent reconnect...");
-        await walletVM.init(context);
-      }
-
     });
   }
 
@@ -99,6 +93,7 @@ class _SignInState extends State<SignIn> {
       setState(() => isLoading = false);
     }
   }
+
 
 
   @override
@@ -291,14 +286,7 @@ class _SignInState extends State<SignIn> {
                                               Color(0xFF2680EF),
                                               Color(0xFF1CD494),
                                             ],
-                                            // onTap: () {
-                                            //    Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(builder: (context) => ValidationScreen(
-                                            //       getUserNameOrId: userNameOrIdController.text,
-                                            //     )),
-                                            //   );
-                                            // },
+
                                             onTap: login,
                                           ),
                                           SizedBox(height: screenHeight * 0.01),
@@ -414,32 +402,33 @@ class _SignInState extends State<SignIn> {
                                               final isConnected = walletVM.isConnected;
 
                                               return BlockButtonV2(
-                                                text: isConnected ? 'Go To Dashboard' : 'Connect Wallet',
-                                                onPressed: walletVM.isLoading ? null : () async {
-                                                  setState(() => _isNavigating = true);
+                                                  text: isConnected ? 'Go To Dashboard' : 'Connect Wallet',
 
-                                                  try {
-                                                    if (!isConnected) {
-                                                      // User taps button -> connect wallet
-                                                      await walletVM.connectWallet(context);
-                                                    } else {
-                                                      // Wallet already connected -> go to dashboard
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
-                                                      );
+                                                  height: screenHeight * 0.05,
+                                                  width: screenWidth * 0.88,
+                                                  onPressed: walletVM.isLoading ? null : () async {
+                                                    setState(() => _isNavigating = true);
+                                                    try {
+
+                                                      if (!walletVM.isConnected) {
+                                                         await walletVM.connectWallet(context);
+                                                      }
+
+                                                      if (walletVM.appKitModal != null && walletVM.isConnected) {
+
+                                                        Navigator.pushAndRemoveUntil(
+                                                          context,
+                                                          MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
+                                                              (_) => false,
+                                                        );
+                                                      }
+                                                    } catch (e, stack) {
+                                                      print('Wallet Connect Error: $e\n$stack');
+                                                     } finally {
+                                                      if (mounted) setState(() => _isNavigating = false);
                                                     }
-                                                  } catch (e, stack) {
-                                                    debugPrint('Wallet Error: $e\n$stack');
-                                                    if (context.mounted) {
-                                                      Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                                    }
-                                                  } finally {
-                                                    if (mounted) setState(() => _isNavigating = false);
                                                   }
-                                                },
-                                                height: screenHeight * 0.05,
-                                                width: screenWidth * 0.88,
+
                                               );
                                             },
                                           ),
@@ -457,28 +446,6 @@ class _SignInState extends State<SignIn> {
                         ),
 
                         SizedBox(height: screenHeight * 0.02),
-
-                        // const ToastMessage(
-                        //   type: MessageType.info,
-                        //   title: 'Charger is under maintenance',
-                        //   subtitle: 'Please select another charger.',
-                        // ),
-                        //
-                        // const ToastMessage(
-                        //   type: MessageType.success,
-                        //   title: 'Payment successful!',
-                        //   subtitle: 'Your transaction has been completed.',
-                        //
-                        // ),
-                        //
-                        // const ToastMessage(
-                        //   type: MessageType.error,
-                        //   title: 'Connection Lost',
-                        //   subtitle: 'Please check your internet connection.',
-                        //
-                        // ),
-
-
 
                       ],
                     ),

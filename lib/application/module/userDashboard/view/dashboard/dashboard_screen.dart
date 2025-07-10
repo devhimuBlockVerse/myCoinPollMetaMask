@@ -54,6 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     _setGreeting();
     _loadUserFromPrefs();
     _loadPurchaseStats();
+
   }
 
 
@@ -321,7 +322,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                           ),
                         ),
                         Text(
-                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
+                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser!.name}',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
@@ -350,36 +351,37 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         address:  model.walletConnectedManually || currentUser == null
                             ? formatAddress(model.walletAddress)
                             : formatAddress(currentUser!.ethAddress),
+
                         // onTap: () async {
-                        // await model.ensureModalWithValidContext(context);
-                        // await model.appKitModal?.openModalView();
-                        //
+                        //   if (!model.walletConnectedManually) {
+                        //     // If showing logged in user, tapping could open wallet modal if you want
+                        //     await model.ensureModalWithValidContext(context);
+                        //     await model.appKitModal?.openModalView();
+                        //   } else {
+                        //     // If wallet connected, open modal as usual
+                        //     await model.ensureModalWithValidContext(context);
+                        //     await model.appKitModal?.openModalView();
+                        //   }
                         // },
-                        onTap: () async {
-                          if (!model.walletConnectedManually) {
-                            // If showing logged in user, tapping could open wallet modal if you want
-                            await model.ensureModalWithValidContext(context);
-                            await model.appKitModal?.openModalView();
-                          } else {
-                            // If wallet connected, open modal as usual
-                            await model.ensureModalWithValidContext(context);
-                            await model.appKitModal?.openModalView();
+                          onTap: () async {
+                            try {
+                              /// ✅ Ensure modal is rebuilt with context
+                              if (!model.walletConnectedManually) {
+                                await model.ensureModalWithValidContext(context);
+                                await model.appKitModal?.openModalView();
+                              }
+
+                            } catch (e) {
+                              print("❌ Error opening wallet modal: $e");
+                             }
                           }
-                        },
+
+
                       ),
 
                     ),
 
-                    // GestureDetector(
-                    //   onTap: (){
-                    //     Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
-                    //
-                    //   },
-                    //   child: SvgPicture.asset(
-                    //     'assets/icons/nofitication.svg',
-                    //     height: getResponsiveFontSize(context, 24),
-                    //   ),
-                    // ),
+
                   ],
                 ),
               ],

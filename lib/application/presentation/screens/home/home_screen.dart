@@ -1,11 +1,10 @@
 import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
- import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
- import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_for_listing_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
@@ -987,6 +986,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
+
+                        if (!walletVM.isConnected) {
+                          print("Wallet not connected. Prompting user to connect...");
+                          try {
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.appKitModal?.openModalView();
+                          } catch (e) {
+                            debugPrint("Failed to open wallet modal: $e");
+                            return;
+                          }
+
+                          return;
+                        }
+
                         debugPrint("ECM Purchase triggered");
                         try{
                           final inputEth = ecmController.text.trim();

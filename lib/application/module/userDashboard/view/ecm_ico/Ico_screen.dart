@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customInputField.dart';
@@ -16,7 +14,6 @@ import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../../framework/utils/general_utls.dart';
-import '../../../../../framework/utils/routes/route_names.dart';
 import '../../../../data/services/download_white_paper.dart';
 import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
@@ -28,7 +25,6 @@ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:web3dart/web3dart.dart';
-
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/upload_image_provider.dart';
 
@@ -635,6 +631,19 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         debugPrint("ECM Purchase triggered");
+
+                        if (!walletVM.isConnected) {
+                          print("Wallet not connected. Prompting user to connect...");
+                          try {
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.appKitModal?.openModalView();
+                          } catch (e) {
+                            debugPrint("Failed to open wallet modal: $e");
+                            return;
+                          }
+                          return;
+                        }
+
                         try{
                           final inputEth = ecmController.text.trim();
                           debugPrint("User input: $inputEth");

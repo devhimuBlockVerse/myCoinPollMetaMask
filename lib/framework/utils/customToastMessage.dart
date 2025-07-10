@@ -57,7 +57,7 @@ class ToastMessage {
   }
 }
 
-class _ToastContent extends StatelessWidget {
+class _ToastContent extends StatefulWidget {
   final String message;
   final String? subtitle;
   final MessageType type;
@@ -69,13 +69,15 @@ class _ToastContent extends StatelessWidget {
   });
 
   @override
+  State<_ToastContent> createState() => _ToastContentState();
+}
+
+class _ToastContentState extends State<_ToastContent> {
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final maxWidth = screenWidth * 0.95 > 500 ? 500.0 : screenWidth * 0.95;
 
-
-
-    final (List<Color> colors, String icon) = switch (type) {
+    final (List<Color> colors, String icon) = switch (widget.type) {
       MessageType.info => (
       [const Color(0xFF313927), const Color(0xFF101A29)],
       'assets/icons/info.svg',
@@ -128,17 +130,17 @@ class _ToastContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  message,
+                  widget.message,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14.0,
                     fontFamily: 'Poppins',
                   ),
                 ),
-                if (subtitle != null) ...[
+                if (widget.subtitle != null) ...[
                   const SizedBox(height: 4.0),
                   Text(
-                    subtitle!,
+                    widget.subtitle!,
                     style: const TextStyle(
                       color: Color(0xFFC7C5C5),
                       fontSize: 12.0,

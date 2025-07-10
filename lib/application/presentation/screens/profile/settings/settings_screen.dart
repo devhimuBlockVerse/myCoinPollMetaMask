@@ -191,6 +191,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   CustomSettingsActionButton(
                                     icon: 'assets/icons/logoutImg.svg',
                                     text: 'Logout',
+                                    // onPressed: ()async{
+                                    //   setState(() {
+                                    //     isDisconnecting = true;
+                                    //   });
+                                    //
+                                    //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                                    //
+                                    //   try{
+                                    //     await walletVM.disconnectWallet(context);
+                                    //
+                                    //     final prefs = await SharedPreferences.getInstance();
+                                    //     await prefs.clear();
+                                    //
+                                    //
+                                    //
+                                    //     if (context.mounted && !walletVM.isConnected) {
+                                    //
+                                    //       Navigator.of(context).pushAndRemoveUntil(
+                                    //         MaterialPageRoute(
+                                    //           builder: (context) => MultiProvider(
+                                    //             providers: [
+                                    //               ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                    //               ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                    //               ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                    //             ],
+                                    //             child: const BottomNavBar(),
+                                    //           ),
+                                    //         ),
+                                    //             (Route<dynamic> route) => false,
+                                    //       );
+                                    //     }
+                                    //   }catch(e){
+                                    //     debugPrint("Error Wallet Disconnecting : $e");
+                                    //   }finally{
+                                    //     if (mounted) {
+                                    //       setState(() {
+                                    //         isDisconnecting = false;
+                                    //       });
+                                    //     }
+                                    //   }
+                                    //   // DisConnect The User Session and Navigate Back to Home Screen .
+                                    // },
                                     onPressed: ()async{
                                       setState(() {
                                         isDisconnecting = true;
@@ -199,17 +245,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
                                       try{
-                                        final prefs = await SharedPreferences.getInstance();
-                                        await prefs.clear();
-
                                         await walletVM.disconnectWallet(context);
-                                        // walletVM.reset();
+                                        walletVM.reset();
+                                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+
+
+
 
                                         if (context.mounted && !walletVM.isConnected) {
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(builder: (context) => const BottomNavBar()),
-                                          // );
+
                                           Navigator.of(context).pushAndRemoveUntil(
                                             MaterialPageRoute(
                                               builder: (context) => MultiProvider(
@@ -237,8 +281,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           });
                                         }
                                       }
-                                      // DisConnect The User Session and Navigate Back to Home Screen .
-                                    },
+                                     },
                                   ),
 
 

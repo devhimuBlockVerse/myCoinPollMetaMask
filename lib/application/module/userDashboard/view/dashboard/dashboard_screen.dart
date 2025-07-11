@@ -22,6 +22,7 @@ import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../../framework/utils/general_utls.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../../../presentation/models/user_model.dart';
@@ -54,7 +55,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     _setGreeting();
     _loadUserFromPrefs();
     _loadPurchaseStats();
-
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    //   walletVM.appKitModal?.showModalViewWithContext(context);
+    // });
   }
 
 
@@ -110,6 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     final navItems = navProvider.drawerNavItems;
 
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -274,6 +279,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     final isPortrait = screenHeight > screenWidth;
     // Dynamic multipliers
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    bool canOpenModal = false;
 
    return Container(
       width: double.infinity,
@@ -347,27 +353,17 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   children: [
                     Transform.translate(
                       offset: Offset(screenWidth * 0.025, 0),
+
                       child: WalletAddressComponent(
                         address:  model.walletConnectedManually || currentUser == null
                             ? formatAddress(model.walletAddress)
                             : formatAddress(currentUser!.ethAddress),
-
-                        // onTap: () async {
-                        //   if (!model.walletConnectedManually) {
-                        //     // If showing logged in user, tapping could open wallet modal if you want
-                        //     await model.ensureModalWithValidContext(context);
-                        //     await model.appKitModal?.openModalView();
-                        //   } else {
-                        //     // If wallet connected, open modal as usual
-                        //     await model.ensureModalWithValidContext(context);
-                        //     await model.appKitModal?.openModalView();
-                        //   }
-                        // },
                           onTap: () async {
                             try {
                               /// ✅ Ensure modal is rebuilt with context
                               if (!model.walletConnectedManually) {
                                 await model.ensureModalWithValidContext(context);
+
                                 await model.appKitModal?.openModalView();
                               }
 

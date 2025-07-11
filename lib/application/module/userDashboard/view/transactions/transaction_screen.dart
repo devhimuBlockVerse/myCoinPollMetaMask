@@ -230,6 +230,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
 
     return  Scaffold(
         key: _scaffoldKey,
@@ -477,14 +482,27 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
                                     _isLoading ? const Center(child: CircularProgressIndicator()) : _displayData.isNotEmpty
                                         ? buildTransactionTable(_displayData, screenWidth, context)
-                                        : Container(
-                                      alignment: Alignment.center,
-                                      padding: const EdgeInsets.all(20),
-                                      child: const Text(
-                                        'No transactions found',
-                                        style: TextStyle(color: Colors.white70),
+                                        : Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(height: scaleHeight(38)),
+                                          Text(
+                                            'No transactions Found',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white.withOpacity(0.8),
+                                              fontSize: scaleText(16),
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.3,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
+
                                   ],
 
 

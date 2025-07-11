@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralStat/widgets/referral_stat_table.dart';
+ import 'package:http/http.dart' as http;
+ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralStat/widgets/referral_stat_table.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
@@ -15,8 +14,7 @@ import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
-import '../../../../data/dummyData/referral_user_list_dummy_data.dart';
- import '../../../../data/services/api_service.dart';
+  import '../../../../data/services/api_service.dart';
 import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../../../presentation/models/get_referral_stats.dart';
@@ -191,6 +189,15 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
     final WalletViewModel model = Provider.of<WalletViewModel>(context, listen: true);
+
+
+
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+
+     double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
+
 
     return  Scaffold(
         key: _scaffoldKey,
@@ -495,18 +502,27 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                       ? const Center(child: CircularProgressIndicator())
                                       : _displayData.isNotEmpty
                                       ? buildReferralUserListTable(_displayData, screenWidth, context)
-                                      : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.all(20),
-                                    child: const Text(
-                                      'No user found',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
+                                       : Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(height: scaleHeight(38)),
+                                            Text(
+                                              'No Data Found',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white.withOpacity(0.8),
+                                                fontSize: scaleText(16),
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w400,
+                                                height: 1.3,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                   ),
                                 ],
-
-
-
                               ],
                             ),
                           ),

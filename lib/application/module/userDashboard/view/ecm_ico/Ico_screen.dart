@@ -630,7 +630,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
-                        debugPrint("ECM Purchase triggered");
 
                         if (!walletVM.isConnected) {
                           print("Wallet not connected. Prompting user to connect...");
@@ -641,6 +640,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             debugPrint("Failed to open wallet modal: $e");
                             return;
                           }
+
                           return;
                         }
 

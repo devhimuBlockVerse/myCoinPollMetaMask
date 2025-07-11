@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
+import 'package:mycoinpoll_metamask/framework/utils/enums/toast_type.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/BlockButton.dart';
@@ -59,7 +61,8 @@ class _StakingScreenState extends State<StakingScreen> {
 
   List<StakingHistoryModel> stakingHistory = [];
   List<StakingHistoryModel> filteredHistory = [];
-   bool _isLoading = false;
+  bool _isLoadingHistory = false;
+
 
 
 
@@ -73,7 +76,6 @@ class _StakingScreenState extends State<StakingScreen> {
     _loadStakingPlans();
     fetchStakingHistory();
 
-
     _selectedDuration = 'Select Duration';
     calculateRewards();
 
@@ -84,9 +86,11 @@ class _StakingScreenState extends State<StakingScreen> {
 
   }
 
-  Future<List<StakingPlanModel>> fetchStakingPlans() async {
+  Future<List<StakingPlanModel>> fetchStakingPlans( ) async {
      final prefs = await SharedPreferences.getInstance();
      final token = prefs.getString('token');
+
+
      if (token == null) {
        print("No login token found.");
        return [];
@@ -120,12 +124,12 @@ class _StakingScreenState extends State<StakingScreen> {
    }
 
    Future<void> fetchStakingHistory() async {
-     setState(() => _isLoading = true);
+     setState(() => _isLoadingHistory = true);
 
      final prefs = await SharedPreferences.getInstance();
      final token = prefs.getString('token');
       if (token == null) {
-       setState(() => _isLoading = false);
+       setState(() => _isLoadingHistory = false);
        return;
      }
      final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
@@ -142,18 +146,19 @@ class _StakingScreenState extends State<StakingScreen> {
          setState(() {
            stakingHistory = history;
            filteredHistory = history;
-           _isLoading = false;
+           _isLoadingHistory = false;
 
          });
        }
      } catch (e) {
        print('Error fetching staking history: \$e');
-       setState(() => _isLoading = false);
+       setState(() => _isLoadingHistory = false);
 
      }
    }
 
    Future<void> _loadStakingPlans() async {
+
      setState(() {
        isLoading = true;
      });
@@ -204,7 +209,6 @@ class _StakingScreenState extends State<StakingScreen> {
     super.dispose();
   }
 
-
   ///Calculates the Estimated Profits , Rewards ,  Rates ...etc
    void calculateRewards() {
      double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
@@ -244,6 +248,12 @@ class _StakingScreenState extends State<StakingScreen> {
 
     List<String> durationDropdownItems = ['Select Duration'];
     durationDropdownItems.addAll(stakingPlans.map((plan) => '${plan.duration} Days').toList());
+
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
 
 
     return  Scaffold(
@@ -325,28 +335,116 @@ class _StakingScreenState extends State<StakingScreen> {
                                 _stakingDetails(),
                                 SizedBox(height: screenHeight * 0.04),
 
-                                Center(
-                                  child: BlockButton(
-                                    height: baseSize * 0.12,
-                                    width: screenWidth * 0.7,
-                                    label: "Stake Now",
-                                    textStyle: TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      fontSize: baseSize * 0.048,
-                                    ),
-                                    gradientColors: const [
-                                      Color(0xFF2680EF),
-                                      Color(0xFF1CD494),
-                                    ],
-                                    onTap: () {
-                                      debugPrint('Button tapped');
-                                    },
-                                    leadingIconPath: 'assets/icons/arrowIcon.svg',
-                                    iconSize : screenHeight * 0.013,
-                                  ),
-                                ),
+                                Consumer<WalletViewModel>(
+                                  builder: (context , walletVM, child) {
+                                    return Center(
+                                      child: BlockButton(
+                                        height: baseSize * 0.12,
+                                        width: screenWidth * 0.7,
+                                        label: walletVM.isLoading? "Processing..." : "Stake Now",
+                                        textStyle: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          fontSize: baseSize * 0.048,
+                                        ),
+                                        gradientColors: const [
+                                          Color(0xFF2680EF),
+                                          Color(0xFF1CD494),
+                                        ],
+                                        leadingIconPath: 'assets/icons/arrowIcon.svg',
+                                        iconSize: screenHeight * 0.013,
+                                        onTap: walletVM.isLoading ? null : () async{
 
+                                          double amount = double.tryParse(ecmAmountController.text) ?? 0.0;
+                                          int ? durationDays = _selectedDuration != null
+                                              ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), ''))
+                                              : null;
+
+                                          if(amount <=0 || durationDays == null){
+                                            ToastMessage.show(
+                                              message: "Invalid Input",
+                                              subtitle: "Please enter a valid amount and select a duration.",
+                                              type: MessageType.info,
+                                            );
+                                            return;
+                                          }
+
+
+                                          final selectedPlan = stakingPlans.firstWhere(
+                                                (plan) => plan.duration == durationDays,
+                                            orElse: () => StakingPlanModel(
+                                              id: -1,
+                                              duration: -1,
+                                              rewardPercentage: 0,
+                                               name: '',
+                                              isActive: 0,
+                                              currentPoll: 0.0,
+                                              maxPoll: 0.0,
+                                              createdAt: DateTime.now(),
+                                              updatedAt: DateTime.now(),
+                                            ),
+                                          );
+
+
+                                          if (selectedPlan.id == -1) {
+                                            ToastMessage.show(
+                                              message: "Staking Plan Error",
+                                              subtitle: "Selected duration does not match any available staking plan.",
+                                              type: MessageType.error,
+                                            );
+                                            return;
+                                          }
+
+                                          try{
+                                             final txHash = await walletVM.stakeNow(
+                                              context,
+                                              amount,
+                                              selectedPlan.id,
+                                             );
+
+                                            if (txHash != null) {
+                                              // Staking successful, refresh history
+                                              await fetchStakingHistory();
+                                              // Clear inputs after successful stake
+                                              ecmAmountController.clear();
+                                              setState(() {
+                                                _selectedDuration = 'Select Duration';
+                                                _currentSelectedPercentage = '';
+                                                calculateRewards(); // Recalculate to reset display
+                                              });
+                                            }
+                                          }catch (e) {
+                                             debugPrint("Error in UI staking flow: $e");
+                                          }
+
+
+                                        },
+                                      ),
+                                    );
+                                  }),
+
+                                // child: Center(
+                                //   child: BlockButton(
+                                //     height: baseSize * 0.12,
+                                //     width: screenWidth * 0.7,
+                                //     label: "Stake Now",
+                                //     textStyle: TextStyle(
+                                //       fontWeight: FontWeight.w700,
+                                //       color: Colors.white,
+                                //       fontSize: baseSize * 0.048,
+                                //     ),
+                                //     gradientColors: const [
+                                //       Color(0xFF2680EF),
+                                //       Color(0xFF1CD494),
+                                //     ],
+                                //     onTap: () {
+                                //       debugPrint('Button tapped');
+                                //
+                                //     },
+                                //     leadingIconPath: 'assets/icons/arrowIcon.svg',
+                                //     iconSize : screenHeight * 0.013,
+                                //   ),
+                                // ),
                                 SizedBox(height: screenHeight * 0.02),
 
                                 Center(
@@ -382,9 +480,6 @@ class _StakingScreenState extends State<StakingScreen> {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.030),
-
-
-
 
                                 Container(
                                   width: double.infinity,
@@ -451,23 +546,29 @@ class _StakingScreenState extends State<StakingScreen> {
                                 ),
                                 SizedBox(height: screenHeight * 0.016),
                                 ...[
-                                  _isLoading ? const Center(child: CircularProgressIndicator()) :  filteredHistory.isNotEmpty
+                                  _isLoadingHistory ? const Center(child: CircularProgressIndicator()) :  filteredHistory.isNotEmpty
                                       ? buildStakingTable(filteredHistory, screenWidth, context)
-                                      : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.all(20),
-                                    child: const Text(
-                                      'No History found',
-                                      style: TextStyle(color: Colors.white70),
+                                      : Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(height: scaleHeight(38)),
+                                        Text(
+                                          'No History Found',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.8),
+                                            fontSize: scaleText(16),
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w400,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
-
-
-
-
-
-
                               ],
                             ),
                           ),
@@ -481,7 +582,6 @@ class _StakingScreenState extends State<StakingScreen> {
         )
     );
   }
-
 
 
   Widget _header(){
@@ -537,8 +637,6 @@ class _StakingScreenState extends State<StakingScreen> {
       ],
     );
   }
-
-
 
   Widget _stakingDetails() {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -620,7 +718,8 @@ class _StakingScreenState extends State<StakingScreen> {
                           labelText: '', // no label
                           prefixSvgPath: 'assets/icons/timerImg.svg',
                           dropdownItems: const ['Select Duration','7 Days', '30 Days', '90 Days', '180 Days', '365 Days'],
-                           selectedDropdownItem: _selectedDuration,
+
+                          selectedDropdownItem: _selectedDuration,
                           height: listingFieldHeight,
                           width: double.infinity,
                           onDropdownChanged: (newValue) {
@@ -633,6 +732,23 @@ class _StakingScreenState extends State<StakingScreen> {
                             calculateRewards();
                             print('Selected duration: $newValue');
                           },
+                          // onDropdownChanged: (newValue) {
+                          //   if (newValue == null ||
+                          //       newValue.isEmpty ||
+                          //       newValue == 'Select Duration') {
+                          //     setState(() {
+                          //       _selectedDuration = 'Select Duration'; // Reset if invalid
+                          //     });
+                          //     calculateRewards(); // Recalculate to clear
+                          //     return;
+                          //   }
+                          //   setState(() {
+                          //     _selectedDuration = newValue;
+                          //     selectedDay = newValue; // Update selectedDay for consistency
+                          //   });
+                          //   calculateRewards();
+                          //   print('Selected duration: $newValue');
+                          // },
                         ),
                       ],
                     ),
@@ -752,10 +868,16 @@ class _StakingScreenState extends State<StakingScreen> {
                 children: [
                   Builder(
                     builder: (context) {
+
                       int? durationKey = int.tryParse(selectedDay.replaceAll(' Days', '').trim());
+                      // int? durationKey = int.tryParse(selectedDay.replaceAll(RegExp(r'[^0-9]'), ''));
+
                       String rateText = durationKey != null
                           ? "${(annualReturnRates[durationKey] ?? 0.0) * 100}%"
                           : "0%";
+
+                      print("durationKey: $durationKey, rate: ${annualReturnRates[durationKey]}");
+
                       return _buildInfoRow("Annual Return Rate", rateText);
                     },
                   ),

@@ -342,12 +342,12 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                             isLoading
                                 ? const Center(child: CircularProgressIndicator(color: AppColors.whiteColor))
                                 : errorMessage != null
-                                ? Center(
-                              child: Text(
+                                ? Center(child: Text(
                                 errorMessage!,
                                 style: const TextStyle(color: Colors.redAccent, fontSize: 16),
                               ),
                             )
+
                                 : ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),

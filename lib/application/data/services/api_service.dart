@@ -6,6 +6,7 @@ import '../../domain/model/PurchaseLogModel.dart';
 import '../../domain/model/ReferralUserListModel.dart';
  import '../../presentation/models/get_purchase_stats.dart';
 import '../../presentation/models/get_referral_stats.dart';
+import '../../presentation/models/get_staking_history.dart';
 import '../../presentation/models/token_model.dart';
 import '../../presentation/models/user_model.dart';
 
@@ -32,7 +33,7 @@ class ApiService {
     }
   }
 
-  Future<LoginResponse> login(String username, String password) async {
+  Future<LoginResponse>  login(String username, String password) async {
     final url = Uri.parse('${ApiConstants.baseUrl}/auth/login');
     final headers = {
       'Accept': 'application/json',
@@ -52,8 +53,7 @@ class ApiService {
         final user = UserModel.fromJson(data['user']);
 
          print('Login successful. Token: $token');
-
-       print('ETH Address from login: ${user.ethAddress}');
+         print('ETH Address from login: ${user.ethAddress}');
 
 
 
@@ -70,8 +70,6 @@ class ApiService {
       rethrow;
     }
   }
-
-
 
   Future<List<PurchaseLogModel>> fetchPurchaseLogs({String? walletAddress}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -177,6 +175,62 @@ class ApiService {
       return ReferralStatsModel.fromJson(decoded);
     } else {
       throw Exception('Failed to fetch purchase stats');
+    }
+  }
+
+
+  Future<LoginResponse> web3Login(String message, String address, String signature) async {
+     // final prefs = await SharedPreferences.getInstance();
+    // final refId = prefs.getString('referralId');
+
+    final response = await http.post(
+      Uri.parse('${ApiConstants.baseUrl}/auth/web3-login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'message': message,
+        'address': address,
+        'signature': signature,
+        // 'refId': refId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+
+      final data = jsonDecode(response.body);
+      final token = data['token'];
+      final user = UserModel.fromJson(data['user']);
+
+      return LoginResponse(user: user, token: token);
+    } else {
+       throw Exception('Failed to login with Web3: ${response.body}');
+    }
+  }
+
+  Future<List<StakingHistoryModel>> fetchStakingHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      print("No login token found for staking history.");
+      return [];
+    }
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
+
+    try {
+      final response = await http.get(url, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> decoded = json.decode(response.body);
+        return decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
+      } else {
+        print('Failed to fetch staking history from API: ${response.statusCode} ${response.body}');
+        throw Exception('Failed to fetch staking history');
+      }
+    } catch (e) {
+      print('Error fetching staking history: $e');
+       return [];
     }
   }
 

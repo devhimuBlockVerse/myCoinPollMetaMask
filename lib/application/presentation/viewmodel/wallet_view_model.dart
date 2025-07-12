@@ -2218,18 +2218,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _isLoading = false;
       notifyListeners();
     }
-
-
-
-
-
-
-
-
-
-
-
   }
+
+
 
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{

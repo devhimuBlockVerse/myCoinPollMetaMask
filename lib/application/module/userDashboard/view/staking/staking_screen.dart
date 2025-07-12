@@ -64,9 +64,6 @@ class _StakingScreenState extends State<StakingScreen> {
   bool _isLoadingHistory = false;
 
 
-
-
-
   @override
   void initState() {
     super.initState();

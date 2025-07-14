@@ -26,6 +26,8 @@ import '../../../../../framework/utils/general_utls.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../../../presentation/models/user_model.dart';
+import '../../../../presentation/viewmodel/user_auth_provider.dart';
+import '../../../dashboard_bottom_nav.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -45,15 +47,16 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  UserModel? currentUser;
+  // UserModel? currentUser;
   PurchaseStatsModel? _purchaseStats;
+  bool _isNavigating = false;
 
 
   @override
   void initState() {
     super.initState();
     _setGreeting();
-    _loadUserFromPrefs();
+    // _loadUserFromPrefs();
     _loadPurchaseStats();
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -62,22 +65,22 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   }
 
 
-  Future<void> _loadUserFromPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    final userJson = prefs.getString('user');
-
-    if (token != null && userJson != null) {
-      final userMap = jsonDecode(userJson);
-      final loadedUser = UserModel.fromJson(userMap);
-
-      if (currentUser == null || currentUser?.id != loadedUser.id) {
-        setState(() {
-          currentUser = loadedUser;
-        });
-      }
-    }
-  }
+  // Future<void> _loadUserFromPrefs() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('token');
+  //   final userJson = prefs.getString('user');
+  //
+  //   if (token != null && userJson != null) {
+  //     final userMap = jsonDecode(userJson);
+  //     final loadedUser = UserModel.fromJson(userMap);
+  //
+  //     if (currentUser == null || currentUser?.id != loadedUser.id) {
+  //       setState(() {
+  //         currentUser = loadedUser;
+  //       });
+  //     }
+  //   }
+  // }
   String greeting = "";
 
   void _setGreeting() {
@@ -102,6 +105,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       debugPrint('Error fetching stats: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +161,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               child: RefreshIndicator(
                 onRefresh: () async {
                   // Reload prefs data
-                  await _loadUserFromPrefs();
+                  // await _loadUserFromPrefs();
+
+                  final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+                  await userAuth.loadUserFromPrefs();
 
                   // Also reload WalletViewModel data if needed
                   final walletModel = Provider.of<WalletViewModel>(context, listen: false);
@@ -173,17 +180,17 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   behavior: const ScrollBehavior().copyWith(overscroll: false),
                   child: Consumer<WalletViewModel>(
                     builder: (context, walletModel, _) {
-                      final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
-
-                      if (isWalletConnected && currentUser != null) {
-                        currentUser = null;
-
-                      }
-
-                      if (!isWalletConnected && currentUser == null) {
-                        // Wallet disconnected, reload user if previously logged in
-                        _loadUserFromPrefs(); // This updates currentUser in setState
-                      }
+                      // final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
+                      //
+                      // if (isWalletConnected && currentUser != null) {
+                      //   currentUser = null;
+                      //
+                      // }
+                      //
+                      // if (!isWalletConnected && currentUser == null) {
+                      //   // Wallet disconnected, reload user if previously logged in
+                      //   _loadUserFromPrefs(); // This updates currentUser in setState
+                      // }
                       return  SingleChildScrollView(
                         // physics: const BouncingScrollPhysics(),
                         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
@@ -195,7 +202,13 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
                             /// User Name Data & Wallet Address
-                            _headerSection(_scaffoldKey,walletModel),
+                            // _headerSection(_scaffoldKey,walletModel),
+
+                            Consumer<UserAuthProvider>(
+                              builder: (context, userAuth, child) {
+                                return _headerSection(_scaffoldKey, walletModel, userAuth);
+                              },
+                            ),
                             SizedBox(height: screenHeight * 0.02),
 
                             /// User Graph Chart and Level
@@ -273,13 +286,13 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
 
-  Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey,WalletViewModel model){
+  Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey,WalletViewModel model,UserAuthProvider userAuthModel){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
-    // Dynamic multipliers
-    final baseSize = isPortrait ? screenWidth : screenHeight;
+     final baseSize = isPortrait ? screenWidth : screenHeight;
     bool canOpenModal = false;
+    final currentUser = userAuthModel.user;
 
    return Container(
       width: double.infinity,
@@ -328,7 +341,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                           ),
                         ),
                         Text(
-                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser!.name}',
+                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser.name}',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
@@ -363,7 +376,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                               /// ✅ Ensure modal is rebuilt with context
                               if (!model.walletConnectedManually) {
                                 await model.ensureModalWithValidContext(context);
-
                                 await model.appKitModal?.openModalView();
                               }
 

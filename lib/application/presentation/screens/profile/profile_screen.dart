@@ -250,7 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? FileImage(pickedImage)
                       : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
                       ? FileImage(File(profileVM.originalImagePath!))
-                      : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+                      : const NetworkImage("https://mycoinpoll.com/_ipx/q_20&s_50x50/images/dashboard/icon/user.png") as ImageProvider,
 
                   fit: BoxFit.fill,
                   ),

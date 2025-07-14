@@ -28,6 +28,7 @@ import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../countdown_timer_helper.dart';
 import '../../models/token_model.dart';
+import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 
@@ -61,7 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
   
     List<TokenModel> tokens = [];
     bool isLoading = true;
-  
+
+    bool _isNavigating = false;
+
     @override
     void initState() {
       super.initState();
@@ -156,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
       usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
   
     }
-  
+
+
     @override
     void dispose() {
   
@@ -273,17 +277,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                debugPrint("Error accessing selectedChain: $e");
                                                canOpenModal = false;
                                              }
-  
+
                                              if (!canOpenModal) {
                                                Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
                                                await walletVM.connectWallet(context);
                                                return;
                                              }
-  
+
                                              await walletVM.ensureModalWithValidContext(context);
                                              await Future.delayed(const Duration(milliseconds: 200));
                                              await walletVM.appKitModal!.openModalView();
-  
+
                                            } else {
                                              Utils.flushBarErrorMessage("Wallet modal not ready", context);
                                            }
@@ -295,7 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                          }
                                        }
                                      },
-  
+
                                    );}
                             ),
   

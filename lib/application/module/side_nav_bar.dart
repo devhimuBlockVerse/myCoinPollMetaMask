@@ -29,6 +29,7 @@ class SideNavBar extends StatefulWidget {
 
 class _SideNavBarState extends State<SideNavBar> {
   UserModel? currentUser;
+  String? uniqueId;
 
 
 
@@ -36,6 +37,8 @@ class _SideNavBarState extends State<SideNavBar> {
   void initState() {
     super.initState();
     _loadCurrentUser();
+    _loadUserId();
+
   }
   Future<void> _loadCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
@@ -46,6 +49,12 @@ class _SideNavBarState extends State<SideNavBar> {
         currentUser = UserModel.fromJson(jsonDecode(userJson));
       });
     }
+  }
+  void _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      uniqueId = prefs.getString('unique_id') ?? '';
+    });
   }
 
    @override
@@ -137,7 +146,7 @@ class _SideNavBarState extends State<SideNavBar> {
                 Icon(Icons.check_circle, color: AppColors.whiteColor, size: iconSize),
                 SizedBox(width: drawerWidth * 0.015),
                 Text(
-                  'User ID: 5268574132',
+                   'User ID: ${uniqueId ?? '...'}',
                   style: TextStyle(
                     color: AppColors.whiteColor,
                     fontSize: idFontSize,

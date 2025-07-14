@@ -46,6 +46,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
 
   bool _isLoading = true;
   String? _errorMessage;
+  String? uniqueId;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -58,7 +59,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     _loadCurrentUser();
     _loadReferralUsers();
     _loadReferralStats();
-
+    _loadUserId();
   }
 
 
@@ -131,6 +132,13 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
         currentUser = UserModel.fromJson(jsonDecode(userJson));
       });
     }
+  }
+
+  void _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      uniqueId = prefs.getString('unique_id') ?? '';
+     });
   }
 
   Future<void> _loadReferralStats() async {
@@ -545,6 +553,8 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
 
      final double containerPadding = drawerWidth * 0.025;
 
+
+
     return Padding(
       padding:  EdgeInsets.symmetric(horizontal: drawerWidth * 0.02),
       child: Row(
@@ -592,7 +602,8 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                     Icon(Icons.check_circle, color: AppColors.whiteColor, size: drawerWidth * 0.035),
                     SizedBox(width: drawerWidth * 0.010),
                     Text(
-                      'User ID: 5268574132',
+                      // 'User ID: 5268574132',
+                      'User ID: ${uniqueId ?? '...'}',
                       style: TextStyle(
                         color: AppColors.whiteColor,
                         fontSize: getResponsiveFontSize(context, 10),

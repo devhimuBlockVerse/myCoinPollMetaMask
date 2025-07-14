@@ -1,10 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reown_appkit/appkit_modal.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web3dart/crypto.dart';
 
+import '../../../framework/utils/customToastMessage.dart';
+import '../../../framework/utils/enums/toast_type.dart';
+import '../../data/services/api_service.dart';
+import '../../module/dashboard_bottom_nav.dart';
 import '../models/user_model.dart';
+import 'wallet_view_model.dart';
 
 class UserAuthProvider with ChangeNotifier {
+
+  UserAuthProvider() {
+    loadUserFromPrefs();
+  }
+
   UserModel? _user;
   String? _token;
 
@@ -48,4 +62,8 @@ class UserAuthProvider with ChangeNotifier {
     _token = null;
     notifyListeners();
   }
+
+
+
+
 }

@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
+ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:reown_appkit/reown_appkit.dart';
+ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/crypto.dart';
-
 import '../../../framework/utils/customToastMessage.dart';
 import '../../../framework/utils/enums/toast_type.dart';
 import '../../domain/constants/api_constants.dart';
+import 'dart:typed_data';
 
+import '../models/get_staking_history.dart';
 
 /// STABLE 2.0
 // class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
@@ -1070,9 +1070,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   Web3Client? _web3Client;
   bool _isModalEventsSubscribed = false;
-
   bool _walletConnectedManually = false;
   bool get walletConnectedManually => _walletConnectedManually;
+
 
   // Getters
   double get ethPrice => _ethPrice;
@@ -1092,9 +1092,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isSessionSettling => _isSessionSettling;
 
   static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/FPbP1-XUOoRxMpYioocm5i4rdPSJSGKU";
+  // static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
   static const String SALE_CONTRACT_ADDRESS = '0x02f2aA15675aED44A117aC0c55E795Be9908543D';
   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x30C8E35377208ebe1b04f78B3008AAc408F00D1d';
   static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833';
+  static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715';
 
   String? _authToken;
   String? get authToken => _authToken;
@@ -1122,6 +1124,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
      super.dispose();
   }
 
+
   Future<void> init(BuildContext context) async {
 
     if (_isLoading) return;
@@ -1135,12 +1138,12 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     final savedChainId = prefs.getInt('chainId');
 
 
-
     if (appKitModal == null) {
       appKitModal = ReownAppKitModal(
 
         context: context,
         projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
+        // projectId: '89b2029d61b54d70cd34a04c1816f87b',
         metadata: const PairingMetadata(
 
           name: "MyWallet",
@@ -2053,206 +2056,354 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  Future<String?> stakeNow(BuildContext context , double amount, int planIndex,{String referrerAddress = '0x0000000000000000000000000000000000000000'})async{
+
+  Future<String?> stakeNow(BuildContext context, double amount, int planIndex,
+      {String referrerAddress = '0x0000000000000000000000000000000000000000'}) async {
+    print(">> stakeNow() called with amount=$amount, planIndex=$planIndex, referrerAddress=$referrerAddress");
+
     /// Modal Check
-    if(appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null){
+    if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
       ToastMessage.show(
         message: "Wallet Error",
         subtitle: "Please connect your wallet before staking.",
         type: MessageType.error,
-       );
+      );
+      print(" >> Wallet not connected or chain not selected.");
       throw Exception("Wallet not connected or chain not selected.");
     }
 
-    if(amount <= 0 || planIndex < 0){
+    if (amount <= 0 || planIndex < 0) {
       ToastMessage.show(
         message: "Invalid Input",
         subtitle: "Please enter a valid amount and select a plan",
         type: MessageType.info,
       );
+      print(">> Invalid amount or planIndex.");
       return null;
     }
-    
+
     _isLoading = true;
     notifyListeners();
+    print(">> Loading started...");
 
-    try{
+    try {
       /// Contract data setup
       final chainID = appKitModal!.selectedChain!.chainId;
+      print(">> Selected chain ID: $chainID");
+
       final tokenAbiString = await rootBundle.loadString("assets/abi/MyContract.json");
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
+      print(">> ABIs loaded.");
 
       final ecmTokenContract = DeployedContract(
           ContractAbi.fromJson(jsonEncode(jsonDecode(tokenAbiString)), 'eCommerce Coin'),
-          EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS)
-      );
+          EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS));
 
-      final stakingContract =  DeployedContract(
+      final stakingContract = DeployedContract(
           ContractAbi.fromJson(jsonEncode(jsonDecode(stakingAbiString)), 'eCommerce Coin'),
-          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS)
-      );
+          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2));
+
+      final stakeFunction = stakingContract.function('stake');
+      print('>> Staking function: ${stakeFunction.name}');
+      print('>> Parameters count: ${stakeFunction.parameters.length}');
+      for (int i = 0; i < stakeFunction.parameters.length; i++) {
+        final param = stakeFunction.parameters[i];
+        print(' >> - Param $i: name=${param.name}, type=${param.type}');
+      }
 
       final tokenDecimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
+      print(">> Token decimals: $tokenDecimals");
+
       final multiplier = Decimal.parse('1e$tokenDecimals');
-      final stakeAmount = (Decimal.parse(amount.toString()) *  multiplier).toBigInt();
+      final stakeAmount = (Decimal.parse(amount.toString()) * multiplier).toBigInt();
+      print('>> stakeAmount: type=${stakeAmount.runtimeType}, value=$stakeAmount');
 
       /// Approval Transaction
       ToastMessage.show(
         message: "Step 1 of 2: Approval",
         subtitle: "Please approve the token spending in your wallet.",
         type: MessageType.info,
-        duration: CustomToastLength.LONG
+        duration: CustomToastLength.LONG,
       );
 
-      /// Launch MetaMask for approval
-      final metaMaskUrl = Uri.parse('metamask://dapp/exampleapp');
-      await launchUrl(metaMaskUrl, mode: LaunchMode.externalApplication);
-
-
-      final approveTxHashBytes  = await appKitModal!.requestWriteContract(
+      print(">> Requesting approval transaction...");
+      final dynamic approveTxResult = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: chainID,
         deployedContract: ecmTokenContract,
         functionName: 'approve',
         transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
-        parameters:[
-          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS),
+        parameters: [
+          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
           stakeAmount,
         ],
       );
-      final approveTxHash = bytesToHex(approveTxHashBytes);
+
+      String approveTxHash;
+      if (approveTxResult is String) {
+        approveTxHash = approveTxResult;
+      } else if (approveTxResult is Uint8List) {
+        approveTxHash = bytesToHex(approveTxResult);
+      } else {
+        throw Exception("Unexpected type for approve transaction hash: ${approveTxResult.runtimeType}");
+      }
+      print(">> Approval transaction hash: $approveTxHash");
 
       /// Wait for approval confirmation
-      await _waitForTransaction(approveTxHash);
+      print(">> Waiting for approval transaction confirmation...");
+      final approveReceipt = await _waitForTransaction(approveTxHash);
+      if (approveReceipt == null) {
+        throw Exception("Approval transaction failed or timed out.");
+      }
+      print(">> Approval confirmed.");
+
       ToastMessage.show(
         message: "Approval Successful!",
         subtitle: "Now confirming the stake transaction.",
         type: MessageType.success,
       );
 
-      /// Stack Transaction
-       ToastMessage.show(
-         message: "Step 2 of 2: Staking",
-         subtitle: "Please confirm the transaction in you wallet.",
-         type: MessageType.info,
-         duration: CustomToastLength.LONG,
-       );
+      /// Stake Transaction
+      ToastMessage.show(
+        message: "Step 2 of 2: Staking",
+        subtitle: "Please confirm the transaction in your wallet.",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+      );
 
-       final stakeTxHashBytes  = await appKitModal!.requestWriteContract(
-         topic: appKitModal!.session!.topic,
-         chainId: chainID,
-         deployedContract: stakingContract,
-         functionName: 'stake',
-         transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
-         parameters: [
-           stakeAmount,
-           BigInt.from(planIndex),
-           EthereumAddress.fromHex(referrerAddress),
-         ],
-       );
-      final stakeTxHash = bytesToHex(stakeTxHashBytes); /// Convert Uint8List to String
+      print('>> Preparing stake transaction...');
+      print('>>  stakeAmount: $stakeAmount');
+      print('>>  planIndex: ${BigInt.from(planIndex)}');
+      print('>>  referrerAddress: $referrerAddress');
+
+      final dynamic stakeTxResult = await appKitModal!.requestWriteContract(
+        topic: appKitModal!.session!.topic,
+        chainId: chainID,
+        deployedContract: stakingContract,
+        functionName: 'stake',
+        transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
+        parameters: [
+          stakeAmount,
+          BigInt.from(planIndex),
+          EthereumAddress.fromHex(referrerAddress),
+        ],
+      );
+
+      String stakeTxHash;
+      if (stakeTxResult is String) {
+        stakeTxHash = stakeTxResult;
+      } else if (stakeTxResult is Uint8List) {
+        stakeTxHash = bytesToHex(stakeTxResult);
+      } else {
+        throw Exception("Unexpected type for stake transaction hash: ${stakeTxResult.runtimeType}");
+      }
+      print(">> Stake transaction hash: $stakeTxHash");
 
       // Wait for stake confirmation and get receipt
-      final receipt = await _waitForTransaction(stakeTxHash);
+      print(">> Waiting for stake transaction confirmation...");
+      final stakeReceipt = await _waitForTransaction(stakeTxHash);
 
-      /// POST-TRANSACTION & EVENT PARSING
-      if(receipt != null) {
-        final stakeEvent = stakingContract.event('Staked');
-        final log = receipt.logs.firstWhere(
-              (log) => log.topics?.first == bytesToHex(stakeEvent.signature),
-          orElse: () => throw Exception("Staked event log not found"),
-        );
+      if (stakeReceipt == null) {
+        throw Exception("Stake transaction failed or timed out.");
+      }
+      print(">> Stake transaction confirmed.");
 
-        final decodedLog = stakeEvent.decodeResults(log.topics!, log.data!);
+      /// Post-Transaction & Event Parsing
+      final stakeEvent = stakingContract.event('Staked');
+      print(">> Parsing logs for 'Staked' event...");
 
-        final payload = {
-           'hash': bytesToHex(receipt.transactionHash),
-          'staker': (decodedLog[0] as EthereumAddress).hex,
-          'stakeId': (decodedLog[1] as BigInt).toString(),
-          'amount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[2] as BigInt)
-              .getValueInUnit(EtherUnit.ether)
-              .toString(),
-          'endTime': (decodedLog[4] as BigInt).toString(),
-        };
-        print("Staking successful. Payload: $payload");
+      bool successShown = false;
 
-        ///Sending payload to the backend API
-        await http.post(Uri.parse('${ApiConstants.baseUrl}/staking-created'),
-            body: jsonEncode(payload));
+      print(">> Logs count: ${stakeReceipt.logs.length}");
+      final stakeEventSignatureHex = bytesToHex(stakeEvent.signature);
+      print("  >> - Stake event signature hex: $stakeEventSignatureHex");
 
+      for (final log in stakeReceipt.logs) {
+        try {
+          if (log.topics != null && log.topics!.isNotEmpty) {
+             final firstTopic = log.topics!.first;
+
+
+             if (firstTopic == null) {
+               print(">> Null first topic, skipping this log");
+               continue;
+             }
+
+             String firstTopicHex;
+
+
+             if (firstTopic is Uint8List) {
+               firstTopicHex = bytesToHex(firstTopic as Uint8List);
+             } else if (firstTopic is List<int>) {
+               firstTopicHex = bytesToHex(Uint8List.fromList(firstTopic as List<int>));
+             } else if (firstTopic is String) {
+
+               final bytes = hexToBytes(firstTopic);
+               firstTopicHex = bytesToHex(bytes);
+             } else {
+               print(">> Unknown topic type: ${firstTopic.runtimeType}");
+               continue;
+             }
+
+            final stakeEventHex = bytesToHex(stakeEvent.signature);
+            print(" >>  - Log first topic hex: $firstTopicHex");
+            print("  >> - Stake event signature hex: $stakeEventHex");
+
+            if (firstTopicHex.toLowerCase() == stakeEventHex.toLowerCase()) {
+              print(">> Matched 'Staked' event log");
+
+              print(" >>  - Log topics:");
+              for (var t in log.topics!) {
+                print(" >>    • Topic: $t (${t.runtimeType})");
+              }
+
+              print(" >>  - Log data: ${log.data} (${log.data.runtimeType})");
+
+              final decodedLog = stakeEvent.decodeResults(log.topics!, log.data!);
+
+              print(" >>  - Decoded log results:");
+              for (int i = 0; i < decodedLog.length; i++) {
+                print("  >>   • decoded[$i]: ${decodedLog[i]}");
+              }
+
+              final payload = {
+                'hash': bytesToHex(stakeReceipt.transactionHash),
+                'staker': (decodedLog[0] as EthereumAddress).hex,
+                'stakeId': (decodedLog[1] as BigInt).toString(),
+                'amount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[2] as BigInt)
+                    .getValueInUnit(EtherUnit.ether)
+                    .toString(),
+                'planIndex': (decodedLog[3] as BigInt).toString(),
+                'endTime': (decodedLog[4] as BigInt).toString(),
+              };
+
+              print(">> Payload prepared for backend: $payload");
+
+
+
+              final apiUrl = '${ApiConstants.baseUrl}/staking-created';
+
+              print(">> Sending POST request to: $apiUrl");
+
+              print(">> Entering backend sync block...");
+              final prefs = await SharedPreferences.getInstance();
+              final token = prefs.getString('token');
+              print(">> Token BEFORE sending request: $token");
+
+
+              try {
+
+                final response = await http.post(
+                  Uri.parse(apiUrl),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    if (token != null) 'Authorization': 'Bearer $token',
+                  },
+                  body: jsonEncode(payload),
+                );
+                print(">> POST request sent.");
+                print(">> Payload: $payload");
+                print(">> Response status: ${response.statusCode}");
+                print(">> Response body: ${response.body}");
+                final postToken = prefs.getString('token');
+                print(">> Token AFTER response: $postToken");
+
+                if (response.statusCode != 200 && response.statusCode != 201) {
+                  throw Exception("Failed to sync stake to backend: ${response.statusCode}");
+                }
+              } catch (e) {
+                print(">> HTTP POST failed: $e");
+               }
+
+              ToastMessage.show(
+                message: "Staking Successful!",
+                subtitle: "Your tokens have been staked.",
+                type: MessageType.success,
+                duration: CustomToastLength.LONG,
+              );
+
+              await fetchConnectedWalletData();
+              successShown = true;
+              return bytesToHex(stakeReceipt.transactionHash);
+            }
+          } else {
+            print("⚠>> Skipping log with empty or null topics.");
+          }
+        } catch (e) {
+          print(">> Error decoding log: $e");
+        }
+      }
+
+      if (!successShown) {
         ToastMessage.show(
-          message: "Staking Successful!",
-          subtitle: "Your tokens have been staked.",
+          message: "Staking Success (No Event Found)",
+          subtitle: "Stake transaction confirmed, but event not parsed.",
           type: MessageType.success,
-          duration: CustomToastLength.LONG,
         );
-
-        /// REFRESH DATA
         await fetchConnectedWalletData();
-
-
-        /// function to refresh staking history from backend
-        // await loadStakeHistory();
-
-
-         return bytesToHex(receipt.transactionHash);
-
+        return bytesToHex(stakeReceipt.transactionHash);
       }
 
       return null;
-
-
-    }catch(e){
-      debugPrint("Staking failed: $e");
+    } catch (e) {
+      debugPrint("❌ Staking failed: $e");
       final errorMessage = e.toString().toLowerCase();
-      final isUserRejected = errorMessage.contains("user rejected") || errorMessage.contains("user denied") || errorMessage.contains("user cancelled");
+      final isUserRejected = errorMessage.contains("user rejected") ||
+          errorMessage.contains("user denied") ||
+          errorMessage.contains("user cancelled");
 
       ToastMessage.show(
         message: isUserRejected ? "Transaction Cancelled" : "Staking Failed",
-        subtitle: isUserRejected ? "You cancelled the transaction in your wallet." : "An error occurred during staking.",
+        subtitle: isUserRejected
+            ? "You cancelled the transaction in your wallet."
+            : "An error occurred during staking.",
         type: isUserRejected ? MessageType.info : MessageType.error,
         duration: CustomToastLength.LONG,
       );
       return null;
-    }finally{
+    } finally {
       _isLoading = false;
       notifyListeners();
+      print(">> Loading ended.");
     }
-  }
 
+  }
 
 
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
-    const pollInterval = Duration(seconds: 3);
-    const timeout = Duration(minutes: 3);
-    final expiry = DateTime.now().add(timeout);
+      const pollInterval = Duration(seconds: 3);
+      const timeout = Duration(minutes: 3);
+      final expiry = DateTime.now().add(timeout);
 
-    print("Waiting for transaction: $txHash");
+      print("Waiting for transaction: $txHash");
 
-    while (DateTime.now().isBefore(expiry)){
-      try{
-        final receipt = await _web3Client!.getTransactionReceipt(txHash);
-        if(receipt != null){
-          if (receipt.status == true){
-            print("Transaction successful: $txHash");
-            return receipt;
-          }else{
-            print("Transaction reverted by EVM: $txHash");
-            throw Exception("Transaction failed. Please check the block explorer for details.");
+      while (DateTime.now().isBefore(expiry)){
+        try{
+          final receipt = await _web3Client!.getTransactionReceipt(txHash);
+          if(receipt != null){
+            if (receipt.status == true){
+              print("Transaction successful: $txHash");
+              return receipt;
+            }else{
+              print("Transaction reverted by EVM: $txHash");
+              throw Exception("Transaction failed. Please check the block explorer for details.");
+
+            }
 
           }
-
+        }catch(e){
+          debugPrint("_waitForTransaction :$e");
         }
-      }catch(e){
-        debugPrint("_waitForTransaction :$e");
+        await Future.delayed(pollInterval);
       }
-      await Future.delayed(pollInterval);
+      throw Exception("Transaction timed out. Could not confirm transaction status.");
     }
-    throw Exception("Transaction timed out. Could not confirm transaction status.");
-  }
 
-  /// Mock function to format decimal value to token unit (BigInt)
+
+
+   /// Mock function to format decimal value to token unit (BigInt)
   BigInt _formatValue(double amount, {required BigInt decimals}) {
     final decimalPlaces = decimals.toInt(); // e.g., 6 for USDT, 18 for ETH
     final factor = BigInt.from(10).pow(decimalPlaces);

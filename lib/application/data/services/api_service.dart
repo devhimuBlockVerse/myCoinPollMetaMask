@@ -193,6 +193,8 @@ class ApiService {
         // 'refId': refId,
       }),
     );
+    
+    
 
     if (response.statusCode == 200) {
 
@@ -200,39 +202,32 @@ class ApiService {
       final token = data['token'];
       final user = UserModel.fromJson(data['user']);
 
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString('firstName', user.name ?? '');
+      await prefs.setString('userName', user.username ?? '');
+      await prefs.setString('emailAddress', user.email ?? '');
+      await prefs.setString('phoneNumber', user.phone ?? '');
+      await prefs.setString('ethAddress', user.ethAddress ?? '');
+      await prefs.setString('unique_id', user.uniqueId ?? '');
+
+      if(user.image != null && user.image!.isNotEmpty){
+        await prefs.setString('profileImage', user.image!);
+      }
+
+
+
+      print('>> Payload Web3Login statusCode:  ${response.statusCode}');
+      print('>> Web3Login Headers:  ${response.headers}');
+      print('>> Web3Login Response Body:  ${response.body}');
+
+
       return LoginResponse(user: user, token: token);
     } else {
        throw Exception('Failed to login with Web3: ${response.body}');
     }
   }
 
-  Future<List<StakingHistoryModel>> fetchStakingHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    if (token == null) {
-      print("No login token found for staking history.");
-      return [];
-    }
-    final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
-
-    try {
-      final response = await http.get(url, headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
-
-      if (response.statusCode == 200) {
-        final List<dynamic> decoded = json.decode(response.body);
-        return decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
-      } else {
-        print('Failed to fetch staking history from API: ${response.statusCode} ${response.body}');
-        throw Exception('Failed to fetch staking history');
-      }
-    } catch (e) {
-      print('Error fetching staking history: $e');
-       return [];
-    }
-  }
 
 
 }

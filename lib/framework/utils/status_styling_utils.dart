@@ -14,19 +14,19 @@ class StatusStyling {
 }
 StatusStyling getStatusStyling(String status) {
   switch (status) {
-    case 'Completed':
+    case 'completed':
       return StatusStyling(
         backgroundColor: const Color(0xFF0A2A1F), // Very dark, desaturated green
         borderColor: const Color(0xFF29C77F),    // Bright Green
         textColor: const Color(0xFF29C77F),       // Bright Green
       );
-    case 'Unstack Now':
+    case 'unstack Now':
       return StatusStyling(
         backgroundColor: const Color(0xFF3B171E), // Very dark, desaturated red
         borderColor: const Color(0xFFF46A7A),    // Bright Red
         textColor: const Color(0xFFF46A7A),       // Bright Red
       );
-    case 'Pending':
+    case 'pending':
       return StatusStyling(
         backgroundColor: const Color(0xFF3D3013), // Very dark, desaturated orange/yellow
         borderColor: const Color(0xFFFABE2B),    // Bright Orange/Yellow

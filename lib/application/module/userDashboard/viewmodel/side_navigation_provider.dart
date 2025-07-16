@@ -1,25 +1,17 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milestone/mileston_screen.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/supportTicket/suppor_ticket_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/upload_image_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../framework/components/DialogModalViewComponent.dart';
-import '../../../../framework/res/colors.dart';
 import '../../../domain/model/nav_item.dart';
 import '../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../presentation/viewmodel/wallet_view_model.dart';
-import '../view/kyc/kyc_screen.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
-import '../view/referralTransaction/referral_transaction_screen.dart';
-import '../view/supportTicket/widget/ticket_description_card.dart';
-import '../view/wallet/wallet_screen.dart';
 import 'dashboard_nav_provider.dart';
 import 'kyc_navigation_provider.dart';
 
@@ -189,7 +181,7 @@ class NavigationProvider extends ChangeNotifier {
                 }
               }
             },
-            onNo: () => Navigator.of(context).pop(),
+            // onNo: () => Navigator.of(context).pop(false),
           ),
         );
       },

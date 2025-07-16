@@ -12,6 +12,7 @@ import '../../../../../framework/components/customDropDownComponent.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../domain/constants/api_constants.dart';
+import '../../../models/user_model.dart';
 import '../../../viewmodel/bottom_nav_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -97,12 +98,24 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
   Future<void> _loadInitialProfileData() async {
     final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
 
-    firstNameController.text = prefs.getString('firstName') ?? '';
-    userNameController.text = prefs.getString('userName') ?? '';
-    emailAddressController.text = prefs.getString('emailAddress') ?? '';
-    phoneNumberController.text = prefs.getString('phoneNumber') ?? '';
-    addressController.text = prefs.getString('ethAddress') ?? '';
+
+    if (userJson != null) {
+      final user = UserModel.fromJson(jsonDecode(userJson));
+      firstNameController.text = user.name ?? '';
+      userNameController.text = user.username ?? '';
+      emailAddressController.text = user.email ?? '';
+      phoneNumberController.text = user.phone ?? '';
+      addressController.text = user.ethAddress ?? '';
+    }else{
+      firstNameController.text = prefs.getString('firstName') ?? '';
+      userNameController.text = prefs.getString('userName') ?? '';
+      emailAddressController.text = prefs.getString('emailAddress') ?? '';
+      phoneNumberController.text = prefs.getString('phoneNumber') ?? '';
+      addressController.text = prefs.getString('ethAddress') ?? '';
+    }
+
 
 
 
@@ -224,11 +237,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
 
         setState(() {
-          _originalFirstName = updatedProfile['name']!;
-          _originalFirstName = updatedProfile['username']!;
-          _originalFirstName = updatedProfile['email']!;
-          _originalFirstName = updatedProfile['phone']!;
-          _originalAddress = updatedProfile['eth_address']!;
+          // _originalFirstName = updatedProfile['name']!;
+          // _originalFirstName = updatedProfile['username']!;
+          // _originalFirstName = updatedProfile['email']!;
+          // _originalFirstName = updatedProfile['phone']!;
+          // _originalAddress = updatedProfile['eth_address']!;
+          // _isProfileUpdated = false;
+          _originalFirstName = updatedProfile['name'] ?? '';
+          _originalLastName = updatedProfile['username'] ?? '';
+          _originalEmailAddress = updatedProfile['email'] ?? '';
+          _originalPhoneNumber = updatedProfile['phone'] ?? '';
+          _originalAddress = updatedProfile['eth_address'] ?? '';
           _isProfileUpdated = false;
         });
 

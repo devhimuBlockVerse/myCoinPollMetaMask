@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -15,6 +17,7 @@ class ToastMessage {
     MessageType type = MessageType.info,
     CustomToastLength duration = CustomToastLength.SHORT,
     CustomToastGravity gravity = CustomToastGravity.BOTTOM,
+    int? remainingSeconds,
   }) {
 
     late final OverlayEntry overlayEntry;
@@ -51,6 +54,7 @@ class ToastMessage {
                   duration: duration,
                   overlayEntry: overlayEntry,
                   onRemove: safeRemoveToast,
+                  remainingSeconds: remainingSeconds,
                 ),
               ),
             ),
@@ -80,9 +84,12 @@ class _ToastContent extends StatefulWidget {
   final CustomToastLength duration;
   final OverlayEntry overlayEntry;
   final VoidCallback onRemove;
+  final int? remainingSeconds;
   const _ToastContent({
     required this.message,
     this.subtitle,
+    this.remainingSeconds,
+
     required this.type, required this.gravity, required this.duration, required this.overlayEntry, required this.onRemove,
   });
 
@@ -98,10 +105,17 @@ class _ToastContentState extends State<_ToastContent> with SingleTickerProviderS
   bool _isDismissed = false;
 
 
+  Timer? _timer;
+  int? _remaining;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.remainingSeconds != null) {
+      _remaining = widget.remainingSeconds;
+      _startCountdown();
+    }
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 400),
@@ -145,8 +159,23 @@ class _ToastContentState extends State<_ToastContent> with SingleTickerProviderS
     });
   }
 
+  void _startCountdown() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_remaining == null) return;
+      if (_remaining! <= 0) {
+        timer.cancel();
+        _controller.reverse();
+      } else {
+        setState(() {
+          _remaining = _remaining! - 1;
+        });
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _timer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -169,6 +198,12 @@ class _ToastContentState extends State<_ToastContent> with SingleTickerProviderS
       'assets/icons/error.svg',
       ),
     };
+
+    String subtitleText = widget.subtitle ?? '';
+    if (_remaining != null) {
+      final d = Duration(seconds: _remaining!);
+      subtitleText = "Remaining: ${d.inDays}d ${d.inHours % 24}h ${d.inMinutes % 60}m ${d.inSeconds % 60}s";
+    }
 
     return SlideTransition(
       position: _slideAnimation,
@@ -220,7 +255,8 @@ class _ToastContentState extends State<_ToastContent> with SingleTickerProviderS
                         if (widget.subtitle != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            widget.subtitle!,
+                            // widget.subtitle!,
+                            subtitleText,
                             style: const TextStyle(
                               color: Color(0xFFC7C5C5),
                               fontSize: 12,

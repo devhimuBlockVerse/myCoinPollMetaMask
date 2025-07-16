@@ -133,6 +133,10 @@ const TransactionDetailsDialog({super.key, required this.data});
 }
 
 
+String formatHash(String hash, {int start = 6, int end = 6}) {
+  if (hash.length <= start + end) return hash;
+  return '${hash.substring(0, start)}...${hash.substring(hash.length - end)}';
+}
 
 
 

@@ -7,9 +7,11 @@ class StakingHistoryModel {
   final int duration;
   final String reward;
   final String totalReceive;
+  final int? endTime;
   final String endTimeFormatted;
   final String createdAtFormatted;
   final String status;
+  final int? remainingTime;
 
   StakingHistoryModel({
     required this.id,
@@ -21,8 +23,10 @@ class StakingHistoryModel {
     required this.reward,
     required this.totalReceive,
     required this.endTimeFormatted,
+    this.endTime,
     required this.createdAtFormatted,
     required this.status,
+    this.remainingTime,
   });
 
   factory StakingHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -36,8 +40,11 @@ class StakingHistoryModel {
       reward: json['reward'],
       totalReceive: json['total_receive'],
       endTimeFormatted: json['end_time_formatted'],
+      endTime: json['end_time'],
       createdAtFormatted: json['created_at_formatted'],
       status: json['status'],
+      remainingTime: json['remaining_time'] != null ? (json['remaining_time'] as num).toInt() : null,
+
     );
   }
 }

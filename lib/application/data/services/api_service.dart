@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/constants/api_constants.dart';
 import '../../domain/model/PurchaseLogModel.dart';
@@ -9,6 +11,7 @@ import '../../presentation/models/get_referral_stats.dart';
 import '../../presentation/models/get_staking_history.dart';
 import '../../presentation/models/token_model.dart';
 import '../../presentation/models/user_model.dart';
+import '../../presentation/viewmodel/bottom_nav_provider.dart';
 
 class ApiService {
   Future<List<TokenModel>> fetchTokens() async {
@@ -23,6 +26,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
 
+        print("Using TOken Login :${response.body}");
         return data.map((e) => TokenModel.fromJson(e)).toList();
 
       } else {
@@ -33,7 +37,7 @@ class ApiService {
     }
   }
 
-  Future<LoginResponse>  login(String username, String password) async {
+  Future<LoginResponse>  login(String username, String password) async  {
     final url = Uri.parse('${ApiConstants.baseUrl}/auth/login');
     final headers = {
       'Accept': 'application/json',
@@ -46,6 +50,8 @@ class ApiService {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
+      print('>> Status Code: ${response.statusCode}');
+      print('>> Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -60,6 +66,8 @@ class ApiService {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         await prefs.setString('user', jsonEncode(user.toJson()));
+        await prefs.setString('unique_id', user.uniqueId ?? '');
+
 
         return LoginResponse(user: user, token: token);
       } else {
@@ -130,6 +138,7 @@ class ApiService {
     final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
 
     final response = await http.get(url, headers: headers);
+    print(">> Raw Response Body: ${response.body}");
     if (response.statusCode == 200) {
       final decoded = json.decode(response.body);
       final List data = decoded['data'] ?? [];
@@ -179,7 +188,7 @@ class ApiService {
   }
 
 
-  Future<LoginResponse> web3Login(String message, String address, String signature) async {
+  Future<LoginResponse> web3Login( BuildContext context,String message, String address, String signature) async {
      // final prefs = await SharedPreferences.getInstance();
     // final refId = prefs.getString('referralId');
 
@@ -210,12 +219,12 @@ class ApiService {
       await prefs.setString('phoneNumber', user.phone ?? '');
       await prefs.setString('ethAddress', user.ethAddress ?? '');
       await prefs.setString('unique_id', user.uniqueId ?? '');
-
       if(user.image != null && user.image!.isNotEmpty){
         await prefs.setString('profileImage', user.image!);
       }
 
-
+      final bottomNavProvider = Provider.of<BottomNavProvider>(context, listen: false);
+      bottomNavProvider.setFullName(user.name ?? '');
 
       print('>> Payload Web3Login statusCode:  ${response.statusCode}');
       print('>> Web3Login Headers:  ${response.headers}');

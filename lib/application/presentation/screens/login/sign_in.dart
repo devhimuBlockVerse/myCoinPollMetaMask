@@ -143,7 +143,7 @@ class _SignInState extends State<SignIn> {
       );
 
       //Verify signature with your backend
-      final response = await ApiService().web3Login(message, walletVM.walletAddress, signature);
+      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
       print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
 
       //Save session and navigate

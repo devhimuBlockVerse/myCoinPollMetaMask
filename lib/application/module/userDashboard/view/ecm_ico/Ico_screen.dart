@@ -672,17 +672,29 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
                           debugPrint("Purchase Button Pressed");
 
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => const Center(
+                              child: CircularProgressIndicator(color: Colors.white),
+                            ),
+                          );
+
                           if (isETH) {
                             debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+
                           } else  {
                             debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
                             await walletVM.buyECMWithUSDT(amount,context);
                             // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
                           }
+                          Navigator.of(context).pop();
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+                          ecmController.clear();
 
                         }catch (e) {
+                          Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");
                         }
                       },

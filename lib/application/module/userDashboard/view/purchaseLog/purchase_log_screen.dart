@@ -157,6 +157,13 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
 
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
+
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
@@ -346,9 +353,24 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                                 errorMessage!,
                                 style: const TextStyle(color: Colors.redAccent, fontSize: 16),
                               ),
-                            )
-
-                                : ListView.builder(
+                            ) : _transactionData.isEmpty ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: scaleHeight(38)),
+                                  Text(
+                                    'No History Found',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.8),
+                                      fontSize: scaleText(16),
+                                      fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.w400,
+                                      height: 1.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) : ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: _transactionData.length,

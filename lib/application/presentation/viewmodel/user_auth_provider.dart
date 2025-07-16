@@ -27,6 +27,11 @@ class UserAuthProvider with ChangeNotifier {
 
   bool get isLoggedIn => _token != null && _token!.isNotEmpty;
 
+  void setUser(UserModel? user) {
+    _user = user;
+    notifyListeners();
+  }
+
   Future<void> loadUserFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

@@ -58,11 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     _setGreeting();
     // _loadUserFromPrefs();
     _loadPurchaseStats();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    //   walletVM.appKitModal?.showModalViewWithContext(context);
-    // });
-  }
+   }
 
 
   // Future<void> _loadUserFromPrefs() async {
@@ -401,133 +397,287 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
   }
 
 
+  // Widget _EcmWithGraphChart(){
+  //   double screenWidth = MediaQuery.of(context).size.width;
+  //   double screenHeight = MediaQuery.of(context).size.height;
+  //
+  //   return Container(
+  //       width: screenWidth,
+  //       height: screenHeight * 0.16,
+  //       decoration: BoxDecoration(
+  //         border: Border.all(
+  //             color: Colors.transparent
+  //         ),
+  //         image: const DecorationImage(
+  //           image: AssetImage('assets/icons/applyForListingBG.png'),
+  //           fit: BoxFit.fill,
+  //         ),
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //
+  //           Padding(
+  //             padding: EdgeInsets.symmetric(
+  //               horizontal: screenWidth * 0.035,
+  //               vertical: screenHeight * 0.015,
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.start,
+  //                         crossAxisAlignment: CrossAxisAlignment.center,
+  //                         children: [
+  //                           Image.asset(
+  //                             'assets/icons/ecm.png',
+  //                             height: screenWidth * 0.04,
+  //                             fit: BoxFit.contain,
+  //                           ),
+  //                           SizedBox(width: screenWidth * 0.01),
+  //                           Text(
+  //                             'ECM Coin',
+  //                             textAlign:TextAlign.start,
+  //                             style: TextStyle(
+  //                               color: const Color(0xffFFF5ED),
+  //                               fontFamily: 'Poppins',
+  //                               fontSize: getResponsiveFontSize(context, 16),
+  //                               fontWeight: FontWeight.normal,
+  //                               height: 1.6,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                         Text(
+  //                           '20000000', /// Get the Real Value  from Wallet
+  //                           style: TextStyle(
+  //                               color: Colors.white,
+  //                               fontFamily: 'Poppins',
+  //                               fontSize: getResponsiveFontSize(context, 24),
+  //                               fontWeight: FontWeight.w600,
+  //                               height: 1.3
+  //                         ),
+  //
+  //                       ),
+  //                       SizedBox(height: screenHeight * 0.01),
+  //
+  //                       /// Badge Icons (assuming this is related to the left text)
+  //                       Padding(
+  //                         padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
+  //                         child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //
+  //                 Expanded(
+  //                   flex: 1,
+  //                   child: Column(
+  //                     // mainAxisAlignment: MainAxisAlignment.center,
+  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                     crossAxisAlignment: CrossAxisAlignment.end,
+  //                     children: [
+  //
+  //                       // Badge
+  //                       const UserBadgeLevel(
+  //                         label: 'Level-1',
+  //                         iconPath: 'assets/icons/check.svg',
+  //                       ),
+  //
+  //                        Image.asset(
+  //                         'assets/icons/staticChart.png',
+  //                         width: screenWidth * 0.48 ,
+  //                         height: screenHeight * 0.08,
+  //                         fit: BoxFit.contain,
+  //                       ),
+  //
+  //                        RichText(
+  //                         text:  TextSpan(
+  //                           text: 'Today up to ',
+  //                           style: TextStyle(
+  //                               fontFamily: 'Poppins',
+  //                               fontWeight: FontWeight.normal,
+  //                               color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
+  //                           children: <TextSpan>[
+  //                             TextSpan(
+  //                               text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
+  //                               style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
+  //                                 fontWeight: FontWeight.normal,
+  //                                 fontSize: getResponsiveFontSize(context, 10),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //               ],
+  //       )
+  //   );
+  // }
   Widget _EcmWithGraphChart(){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
-    return Container(
-        width: screenWidth,
-        height: screenHeight * 0.16,
-        decoration: BoxDecoration(
-          border: Border.all(
-              color: Colors.transparent
-          ),
-          image: const DecorationImage(
-            image: AssetImage('assets/icons/applyForListingBG.png'),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Stack(
-          children: [
+    return FutureBuilder<String>(
+      future: walletVM.getBalance(),
+      builder: (context,snapshot){
+        String balanceText = '...';
+        if(snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active){
+          return Center(
+            child: const CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          );
 
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.035,
-                vertical: screenHeight * 0.015,
+        }else if(snapshot.connectionState == ConnectionState.done){
+          if(snapshot.hasData){
+            balanceText = snapshot.data!.toString();
+          }else if(snapshot.hasError){
+            balanceText = "Session expired";
+          }
+        }
+
+        return Container(
+            width: screenWidth,
+            height: screenHeight * 0.16,
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.transparent
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+              image: const DecorationImage(
+                image: AssetImage('assets/icons/applyForListingBG.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Stack(
+              children: [
 
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.035,
+                    vertical: screenHeight * 0.015,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/ecm.png',
+                                  height: screenWidth * 0.04,
+                                  fit: BoxFit.contain,
+                                ),
+                                SizedBox(width: screenWidth * 0.01),
+                                Text(
+                                  'ECM Coin',
+                                  textAlign:TextAlign.start,
+                                  style: TextStyle(
+                                    color: const Color(0xffFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontSize: getResponsiveFontSize(context, 16),
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.6,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              formatBalance(balanceText),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  fontSize: getResponsiveFontSize(context, 24),
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3
+                              ),
+
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+
+                            /// Badge Icons (assuming this is related to the left text)
+                            Padding(
+                              padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
+                              child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+
+                            // Badge
+                            const UserBadgeLevel(
+                              label: 'Level-1',
+                              iconPath: 'assets/icons/check.svg',
+                            ),
+
                             Image.asset(
-                              'assets/icons/ecm.png',
-                              height: screenWidth * 0.04,
+                              'assets/icons/staticChart.png',
+                              width: screenWidth * 0.48 ,
+                              height: screenHeight * 0.08,
                               fit: BoxFit.contain,
                             ),
-                            SizedBox(width: screenWidth * 0.01),
-                            Text(
-                              'ECM Coin',
-                              textAlign:TextAlign.start,
-                              style: TextStyle(
-                                color: const Color(0xffFFF5ED),
-                                fontFamily: 'Poppins',
-                                fontSize: getResponsiveFontSize(context, 16),
-                                fontWeight: FontWeight.normal,
-                                height: 1.6,
+
+                            RichText(
+                              text:  TextSpan(
+                                text: 'Today up to ',
+                                style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
+                                    style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: getResponsiveFontSize(context, 10),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                          Text(
-                            '20000000', /// Get the Real Value  from Wallet
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Poppins',
-                                fontSize: getResponsiveFontSize(context, 24),
-                                fontWeight: FontWeight.w600,
-                                height: 1.3
-                          ),
-
-                        ),
-                        SizedBox(height: screenHeight * 0.01),
-
-                        /// Badge Icons (assuming this is related to the left text)
-                        Padding(
-                          padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
-                          child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
+              ],
+            )
+        );
+      },
 
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
 
-                        // Badge
-                        const UserBadgeLevel(
-                          label: 'Level-1',
-                          iconPath: 'assets/icons/check.svg',
-                        ),
-
-                         Image.asset(
-                          'assets/icons/staticChart.png',
-                          width: screenWidth * 0.48 ,
-                          height: screenHeight * 0.08,
-                          fit: BoxFit.contain,
-                        ),
-
-                         RichText(
-                          text:  TextSpan(
-                            text: 'Today up to ',
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.normal,
-                                color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
-                                style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: getResponsiveFontSize(context, 10),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-                ],
-        )
     );
   }
 
@@ -1123,15 +1273,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     );
   }
 
-
-
-
-
-
-
 }
-
-
-
-
-
+String formatBalance(String balance) {
+  if (balance.length <= 6) return balance;
+  return '${balance.substring(0, 8)}...';
+}

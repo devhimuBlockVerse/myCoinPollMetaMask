@@ -13,14 +13,23 @@ class StatusStyling {
   });
 }
 StatusStyling getStatusStyling(String status) {
-  switch (status) {
+  final normalized = status.toLowerCase();
+
+  switch (normalized) {
     case 'completed':
       return StatusStyling(
         backgroundColor: const Color(0xFF0A2A1F), // Very dark, desaturated green
         borderColor: const Color(0xFF29C77F),    // Bright Green
         textColor: const Color(0xFF29C77F),       // Bright Green
       );
-    case 'unstack Now':
+    case 'unstake':
+      return StatusStyling(
+        backgroundColor: const Color(0xFF13313C), // Teal background
+        borderColor: const Color(0xFF29C7C7),      // Cyan border
+        textColor: const Color(0xFF29C7C7),        // Cyan text
+      );
+
+    case 'force':
       return StatusStyling(
         backgroundColor: const Color(0xFF3B171E), // Very dark, desaturated red
         borderColor: const Color(0xFFF46A7A),    // Bright Red

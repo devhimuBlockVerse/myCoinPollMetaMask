@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../framework/components/LearnAndEarnComponent.dart';
-import 'lesson_screen.dart';
+import '../../../domain/constants/api_constants.dart';
+import '../../models/get_lessons.dart';
+import 'lesson_screen.dart';import 'package:http/http.dart' as http;
+
 
 
 class LearnEarnScreen extends StatefulWidget {
@@ -16,6 +21,27 @@ class LearnEarnScreen extends StatefulWidget {
 
 class _LearnEarnScreenState extends State<LearnEarnScreen> {
 
+  late Future<List<LessonModel>> lessonsFuture;
+
+
+  @override
+  void initState() {
+    super.initState();
+    lessonsFuture = fetchLessons();
+  }
+
+
+  Future<List<LessonModel>> fetchLessons() async {
+    final uri = Uri.parse('${ApiConstants.baseUrl}/get-lessons');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => LessonModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to load lessons');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,73 +113,186 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.01,
                   ),
-                  child: ScrollConfiguration(
-                    behavior: const ScrollBehavior().copyWith(overscroll: false),
-                    child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
+                  child: FutureBuilder<List<LessonModel>>(
+                    future: lessonsFuture,
+                    builder: (context, snapshot) {
 
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator(color: Colors.white));
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error loading lessons',
+                            style: TextStyle(color: Colors.red, fontSize: screenWidth * 0.04),
+                          ),
+                        );
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No lessons found.',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }
 
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-
-                             _headerSection(context),
-                            SizedBox(height: screenHeight * 0.04),
-                            Text(
-                              'Learn & Earn',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                                fontSize: baseSize * 0.045,
-                                height: 1.2,
-                                color: Colors.white,
-                              ),
-                            ),
-
-
-
-                            SizedBox(height: screenHeight * 0.03),
-
-                            LearnAndEarnContainer(
-                              title: 'Blockchain Fundamentals & Analysis',
-                              description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                              imagePath: 'assets/icons/learnAndEarnImg.png',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const LessonScreen()),
-                                );
-                              },
-                            ),
-
-                            SizedBox(height: screenHeight * 0.02),
-
-                            LearnAndEarnContainer(
-                              title: 'Blockchain Fundamentals & Analysis',
-                              description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                              imagePath: 'assets/icons/lesson2.png',
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const LessonScreen()),
-                                );
-                              },
-                            ),
-
-                            SizedBox(height: screenHeight * 0.05),
+                      final lessons = snapshot.data!;
 
 
-                            // Frame1321314874(),
+                      return ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+                        child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
 
-                            _disclaimerSection(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
 
-                            SizedBox(height: screenHeight * 0.03),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+
+                                _headerSection(context),
+                                SizedBox(height: screenHeight * 0.04),
+                                Text(
+                                  'Learn & Earn',
+                                  style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: baseSize * 0.045,
+                                    height: 1.2,
+                                    color: Colors.white,
+                                  ),
+                                ),
 
 
-                          ],
-                        )
-                    ),
+
+                                SizedBox(height: screenHeight * 0.03),
+// Dynamic lesson containers
+                                ...lessons.map((lesson) => Padding(
+                                  padding: EdgeInsets.only(bottom: screenHeight * 0.02),
+                                  child: LearnAndEarnContainer(
+                                    title: lesson.title,
+                                    description: lesson.shortDescription,
+                                    // imagePath: lesson.image,
+                                    imagePath: 'assets/icons/learnAndEarnImg.png',
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => LessonScreen(lesson: lesson),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )),
+
+                                // LearnAndEarnContainer(
+                                //   title: 'Blockchain Fundamentals & Analysis',
+                                //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
+                                //   imagePath: 'assets/icons/learnAndEarnImg.png',
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(builder: (context) => const LessonScreen()),
+                                //     );
+                                //   },
+                                // ),
+                                //
+                                // SizedBox(height: screenHeight * 0.02),
+                                //
+                                // LearnAndEarnContainer(
+                                //   title: 'Blockchain Fundamentals & Analysis',
+                                //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
+                                //   imagePath: 'assets/icons/lesson2.png',
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(builder: (context) => const LessonScreen()),
+                                //     );
+                                //   },
+                                // ),
+
+                                SizedBox(height: screenHeight * 0.05),
+
+
+                                // Frame1321314874(),
+
+                                _disclaimerSection(),
+
+                                SizedBox(height: screenHeight * 0.03),
+
+
+                              ],
+                            )
+                        ),
+                      );
+                    },
+                    // child: ScrollConfiguration(
+                    //   behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    //   child: SingleChildScrollView(
+                    //       physics: const BouncingScrollPhysics(),
+                    //
+                    //       child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: [
+                    //
+                    //            _headerSection(context),
+                    //           SizedBox(height: screenHeight * 0.04),
+                    //           Text(
+                    //             'Learn & Earn',
+                    //             style: TextStyle(
+                    //               fontFamily: 'Poppins',
+                    //               fontWeight: FontWeight.w500,
+                    //               fontSize: baseSize * 0.045,
+                    //               height: 1.2,
+                    //               color: Colors.white,
+                    //             ),
+                    //           ),
+                    //
+                    //
+                    //
+                    //           SizedBox(height: screenHeight * 0.03),
+                    //
+                    //           LearnAndEarnContainer(
+                    //             title: 'Blockchain Fundamentals & Analysis',
+                    //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
+                    //             imagePath: 'assets/icons/learnAndEarnImg.png',
+                    //             onTap: () {
+                    //               Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(builder: (context) => const LessonScreen()),
+                    //               );
+                    //             },
+                    //           ),
+                    //
+                    //           SizedBox(height: screenHeight * 0.02),
+                    //
+                    //           LearnAndEarnContainer(
+                    //             title: 'Blockchain Fundamentals & Analysis',
+                    //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
+                    //             imagePath: 'assets/icons/lesson2.png',
+                    //             onTap: () {
+                    //               Navigator.push(
+                    //                 context,
+                    //                 MaterialPageRoute(builder: (context) => const LessonScreen()),
+                    //               );
+                    //             },
+                    //           ),
+                    //
+                    //           SizedBox(height: screenHeight * 0.05),
+                    //
+                    //
+                    //           // Frame1321314874(),
+                    //
+                    //           _disclaimerSection(),
+                    //
+                    //           SizedBox(height: screenHeight * 0.03),
+                    //
+                    //
+                    //         ],
+                    //       )
+                    //   ),
+                    // ),
                   ),
                 ),
               ),

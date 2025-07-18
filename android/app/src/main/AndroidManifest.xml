@@ -21,9 +21,11 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-        android:label="mycoinpoll_metamask"
+        android:label="MyCoinPoll"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        android:usesCleartextTraffic="true">
+        android:enableOnBackInvokedCallback="true"
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -51,7 +53,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="exampleapp"
+                    android:scheme="MyCoin Poll"
                     android:host="callback"/>
             </intent-filter>
 

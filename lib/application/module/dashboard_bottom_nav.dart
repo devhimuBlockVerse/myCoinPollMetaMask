@@ -10,10 +10,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transa
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../framework/res/colors.dart';
 import '../../framework/components/DialogModalViewComponent.dart';
-import '../presentation/screens/ecm_staking_screen.dart';
-import '../presentation/under_maintenance.dart';
 
 
 
@@ -29,7 +26,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ECMIcoScreen(),
     const StakingScreen(),
     const TransactionScreen(),
-    UnderMaintenance(),
+    const ProfileScreen(),
 
   ];
 

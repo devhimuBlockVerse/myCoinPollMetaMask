@@ -11,7 +11,7 @@ final List<Map<String, String>> stakingData = List.generate(40, (index) {
   };
 });
 
-/// Dummy Data for Transaction History
+/// Dummy Data for Transaction History( Delete later)
 final List<Map<String, dynamic>> transactionData = List.generate(50, (index) {
   final statuses = ['In', 'Out'];
   // Sample Txn Hashes

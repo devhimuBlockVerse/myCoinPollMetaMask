@@ -49,7 +49,6 @@ class UnderMaintenance extends StatelessWidget {
               padding: EdgeInsets.all(scaleWidth(16)),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(scaleWidth(12)),
-
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -130,31 +129,6 @@ class UnderMaintenance extends StatelessWidget {
                     iconPath: 'assets/icons/arrowIcon.svg',
                     iconSize : screenHeight * 0.013,
                   ),
-
-
-                  // CustomToast(
-                  //   icon: const Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-                  //    backgroundGradientColors: const [Color(0xFF28A745), Color(0xFF1E262C)], // Green gradient matching image
-                  //   title: 'Charger reserved',
-                  //   subtitle: 'Opera Passage station reserved successfully.',
-                  // ),
-                  //
-                  // SizedBox(height: scaleHeight(30)),
-                  // // 2. Warning Toast (Yellow)
-                  // CustomToast(
-                  //   icon: const Icon(Icons.info_outline, color: Colors.white, size: 20), // Using info_outline for exclamation
-                  //    backgroundGradientColors: const [Color(0xFFFFC107), Color(0xFF1E262C)], // Yellow gradient matching image
-                  //   title: 'Charging need confirm',
-                  //   subtitle: 'Your reservation at this hotel valid only if you book a room here.',
-                  // ),
-                  // SizedBox(height: scaleHeight(30)),
-                  // // 3. Error Toast (Red)
-                  // CustomToast(
-                  //   icon: const Icon(Icons.close, color: Colors.white, size: 20), // 'X' icon
-                  //    backgroundGradientColors: const [Color(0xFFF04248), Color(0xFF1E262C)], // Red gradient matching image
-                  //   title: 'Charger is under maintenance',
-                  //   subtitle: 'Please select another charger.',
-                  // ),
 
                 ],
               ),

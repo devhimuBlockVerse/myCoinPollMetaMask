@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/login/sign_in.dart';
 import 'package:provider/provider.dart';
 import '../../../../framework/components/BlockButton.dart';
@@ -10,6 +9,8 @@ import '../../../../framework/components/ListingFields.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../../../framework/utils/customToastMessage.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 
@@ -51,10 +52,13 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
     final walletProvider = Provider.of<WalletViewModel>(context, listen: false);
 
      if (!walletProvider.isConnected) {
-      Fluttertoast.showToast(
-        msg: "Please connect your wallet before submitting.",
-        backgroundColor: Colors.orange,
-      );
+       ToastMessage.show(
+         message: "Wallet Not Connected",
+         subtitle: "Please connect your wallet before submitting the application.",
+         type: MessageType.info,
+         duration: CustomToastLength.LONG,
+         gravity: CustomToastGravity.BOTTOM,
+       );
       return;
     }
 
@@ -96,8 +100,15 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
 
-        Fluttertoast.showToast(msg: "Application submitted successfully!");
-        // Reset All Fields
+        ToastMessage.show(
+          message: "Application Submitted",
+          subtitle: "Your application has been submitted successfully.",
+          type: MessageType.success,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+
+        /// Reset All Fields
         fullNameController.clear();
         emailAddressController.clear();
         projectNameController.clear();
@@ -119,16 +130,25 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
           selectedOptionTeam = '';
         });
       } else {
-        Fluttertoast.showToast(
-          msg: "Failed to submit. Error: ${response.statusCode}",
-          backgroundColor: Colors.red,
+
+        ToastMessage.show(
+          message: "Submission Failed",
+          subtitle: "Server responded with status: ${response.statusCode}",
+          type: MessageType.error,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
         );
+
       }
     } catch (e) {
       print(">>> Submission error: $e");
-      Fluttertoast.showToast(
-        msg: "Something went wrong: $e",
-        backgroundColor: Colors.red,
+
+      ToastMessage.show(
+        message: "Something Went Wrong",
+        subtitle: "Unable to submit application. Please try again later.",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
       );
     }
   }

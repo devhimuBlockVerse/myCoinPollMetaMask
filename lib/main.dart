@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
 import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart';
 import 'application/module/userDashboard/viewmodel/upload_image_provider.dart';
@@ -9,12 +10,14 @@ import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/countdown_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart';
+import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
  import 'package:flutter/foundation.dart';
-import 'package:device_preview/device_preview.dart';
+// import 'package:device_preview/device_preview.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
 
@@ -56,6 +59,7 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
         ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
@@ -72,6 +76,7 @@ class MyApp extends StatelessWidget {
 
       child: WalletAppInitializer(
         child: MaterialApp(
+          navigatorKey: ToastMessage.toastContextNavigatorKey, // Add this line
           useInheritedMediaQuery: true,
           // locale: DevicePreview.locale(context),
           // builder: DevicePreview.appBuilder,

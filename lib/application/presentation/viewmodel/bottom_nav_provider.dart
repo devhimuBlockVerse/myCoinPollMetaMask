@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
+
 class BottomNavProvider with ChangeNotifier {
   int _currentIndex = 0; // default tab (Home)
-  String _fullName = 'John Doe';
+  String _fullName = '';
 
 
   int get currentIndex => _currentIndex;

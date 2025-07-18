@@ -1,15 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralStat/widgets/referral_stat_table.dart';
+ import 'package:http/http.dart' as http;
+ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/referralStat/widgets/referral_stat_table.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/searchControllerComponent.dart';
 import '../../../../../framework/res/colors.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
-import '../../../../data/dummyData/referral_user_list_dummy_data.dart';
- import '../../../../domain/model/ReferralUserListModel.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
+  import '../../../../data/services/api_service.dart';
+import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
+import '../../../../presentation/models/get_referral_stats.dart';
+import '../../../../presentation/models/user_model.dart';
+import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 
@@ -22,49 +32,79 @@ class ReferralStatScreen extends StatefulWidget {
 }
 
 class _ReferralStatScreenState extends State<ReferralStatScreen> {
+  UserModel? currentUser;
+  ReferralStatsModel? _referralStats;
+
+
   SortReferralUserListOption? _currentSort;
   final SortReferralUseListUseCase _sortDataUseCase = SortReferralUseListUseCase();
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+
   List<ReferralUserListModel> _displayData = [];
+  List<ReferralUserListModel> _originalData = [];
+
+  bool _isLoading = true;
+  String? _errorMessage;
+  String? uniqueId;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _displayData = List.from(referralUserListData);
+    // _displayData = List.from(referralUserListData);
     _searchController.addListener(_applyFiltersAndSort);
 
+    _loadCurrentUser();
+    _loadReferralUsers();
+    _loadReferralStats();
+    _loadUserId();
   }
 
+
   void _applyFiltersAndSort() {
-     List<ReferralUserListModel> currentFilteredData = List.from(referralUserListData); // Start with the original full data
-    String query = _searchController.text.toLowerCase().trim(); // Trim whitespace
+    String query = _searchController.text.toLowerCase().trim();
 
-    // Search filter based on UserLogModel fields
-    if (query.isNotEmpty) {
-      currentFilteredData = currentFilteredData.where((userLog) {
-        // Check each relevant field for the query
-        return userLog.sl.toLowerCase().contains(query) ||
-            userLog.date.toLowerCase().contains(query) ||
-            userLog.name.toLowerCase().contains(query) ||
-            userLog.userId.toLowerCase().contains(query) ||
-            userLog.status.toLowerCase().contains(query);
-      }).toList();
-    }
+    List<ReferralUserListModel> filtered = _originalData.where((userLog) {
+      return userLog.sl.toLowerCase().contains(query) ||
+          userLog.date.toLowerCase().contains(query) ||
+          userLog.name.toLowerCase().contains(query) ||
+          userLog.userId.toLowerCase().contains(query) ||
+          userLog.status.toLowerCase().contains(query);
+    }).toList();
 
-    // Sorting if a sort option is selected
     if (_currentSort != null) {
-       currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
+      filtered = _sortDataUseCase(filtered, _currentSort!);
     }
 
     setState(() {
-      _displayData = currentFilteredData;
+      _displayData = filtered;
     });
   }
 
 
+  Future<void> _loadReferralUsers() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    try {
+      final logs = await ApiService().fetchReferralUsers();
+      setState(() {
+        _originalData = logs;
+        _displayData = List.from(logs);
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   void _sortData(SortReferralUserListOption option) {
     setState(() {
@@ -83,7 +123,61 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
   }
 
 
+  Future<void> _loadCurrentUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
 
+    if (userJson != null) {
+      setState(() {
+        currentUser = UserModel.fromJson(jsonDecode(userJson));
+      });
+    }
+  }
+
+  void _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      uniqueId = prefs.getString('unique_id') ?? '';
+     });
+  }
+
+  Future<void> _loadReferralStats() async {
+    try {
+      final stats = await ApiService().fetchReferralStats();
+      setState(() {
+        _referralStats = stats;
+      });
+    } catch (e) {
+      debugPrint('Error fetching stats: $e');
+    }
+  }
+
+
+  Future<List<ReferralUserListModel>> fetchReferralUsers({String? search}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+    };
+
+    final url = Uri.parse(
+      search != null && search.isNotEmpty
+          ? 'https://app.mycoinpoll.com/api/v1/get-referral-users?page=1&search=$search'
+          : 'https://app.mycoinpoll.com/api/v1/get-referral-users?page=1',
+    );
+
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> decoded = json.decode(response.body);
+      final List<dynamic> data = decoded['data'];
+      return data.map((e) => ReferralUserListModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to fetch referral users: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +196,16 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
+    final WalletViewModel model = Provider.of<WalletViewModel>(context, listen: true);
+
+
+
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+
+     double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
+
 
     return  Scaffold(
         key: _scaffoldKey,
@@ -186,7 +290,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 // SizedBox(height: screenHeight * 0.01),
-                                _buildHeader(context),
+                                _buildHeader(context,model),
 
                                 SizedBox(height: screenHeight * 0.03),
 
@@ -206,9 +310,22 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         hintText: ' https://mycoinpoll.com?ref=125482458661',
                                         isReadOnly: true,
                                         trailingIconAsset: 'assets/icons/copyImg.svg',
-                                        onTrailingIconTap: () {
+                                         onTrailingIconTap: () {
                                           debugPrint('Trailing icon tapped');
+                                          const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+
+                                          Clipboard.setData(const ClipboardData(text:referralLink));
+
+                                          ToastMessage.show(
+                                            message: "Referral link copied!",
+                                            subtitle: referralLink,
+                                            type: MessageType.success,
+                                            duration: CustomToastLength.SHORT,
+                                            gravity: CustomToastGravity.BOTTOM,
+                                          );
+
                                         },
+
                                       ),
                                     ),
                                   ),
@@ -240,8 +357,9 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                       children: [
                                         Expanded(
                                           child: _buildStatCard(
-                                            title: 'Total \nTransactions',
-                                            value: '202',
+                                            title: 'Total \nReferrals',
+                                             value: _referralStats != null ? _referralStats!.totalReferrals.toString() : '0',
+
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),
@@ -254,7 +372,8 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         Expanded(
                                           child: _buildStatCard(
                                             title: 'Total ECM Bought',
-                                            value: '30.000',
+                                            // value: '30.000',
+                                            value: _referralStats != null ? _referralStats!.totalReferralAmount.truncate().toString() : '0',
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),
@@ -266,8 +385,9 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         SizedBox(width: itemSpacing),
                                         Expanded(
                                           child: _buildStatCard(
-                                            title: 'Total Referral User',
-                                            value: '450',
+                                            title: 'Total ECM Paid',
+                                            // value: '450',
+                                            value: _referralStats != null ? _referralStats!.totalPurchaseUsers.toString() : '0',
                                             gradient: const LinearGradient(
                                               begin: Alignment(0.99, 0.14),
                                               end: Alignment(-0.99, -0.14),
@@ -386,20 +506,31 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                 /// Table View
                                 ...[
 
-                                  _displayData.isNotEmpty
+                                  _isLoading
+                                      ? const Center(child: CircularProgressIndicator())
+                                      : _displayData.isNotEmpty
                                       ? buildReferralUserListTable(_displayData, screenWidth, context)
-                                      : Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.all(20),
-                                    child: const Text(
-                                      'No data found',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
+                                       : Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(height: scaleHeight(38)),
+                                            Text(
+                                              'No Data Found',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white.withOpacity(0.8),
+                                                fontSize: scaleText(16),
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w400,
+                                                height: 1.3,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                   ),
                                 ],
-
-
-
                               ],
                             ),
                           ),
@@ -415,12 +546,14 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
   }
 
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, WalletViewModel model) {
     final drawerWidth = MediaQuery.of(context).size.width ;
     final double avatarRadius = drawerWidth * 0.054;
     final double verticalPadding = drawerWidth * 0.08;
 
      final double containerPadding = drawerWidth * 0.025;
+
+
 
     return Padding(
       padding:  EdgeInsets.symmetric(horizontal: drawerWidth * 0.02),
@@ -440,7 +573,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Abdur Salam',
+                model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
                 style: TextStyle(
                   color: AppColors.profileName,
                   fontSize: getResponsiveFontSize(context, 16),
@@ -469,7 +602,8 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                     Icon(Icons.check_circle, color: AppColors.whiteColor, size: drawerWidth * 0.035),
                     SizedBox(width: drawerWidth * 0.010),
                     Text(
-                      'User ID: 5268574132',
+                      // 'User ID: 5268574132',
+                      'User ID: ${uniqueId ?? '...'}',
                       style: TextStyle(
                         color: AppColors.whiteColor,
                         fontSize: getResponsiveFontSize(context, 10),

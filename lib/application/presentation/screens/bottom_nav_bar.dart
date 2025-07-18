@@ -7,16 +7,9 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/androverse/
 import 'package:mycoinpoll_metamask/application/presentation/screens/features/features_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
  import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+ import 'package:provider/provider.dart';
 import '../../../framework/components/DialogModalViewComponent.dart';
-import '../../../framework/res/colors.dart';
-import '../../../framework/utils/general_utls.dart';
-import '../under_maintenance.dart';
 import '../viewmodel/bottom_nav_provider.dart';
-import '../viewmodel/user_auth_provider.dart';
-import '../viewmodel/wallet_view_model.dart';
 import 'login/sign_in.dart';
 
 
@@ -152,6 +145,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
                           SizedBox(
                             width: scaleWidth(50),
                             child: SvgPicture.asset(
+
                               _imgPaths[index],
                               color: isSelected ? const Color(0xFF6BB2FF) : const Color(0xFFB2B0B6),
                               height: scaleHeight(18),

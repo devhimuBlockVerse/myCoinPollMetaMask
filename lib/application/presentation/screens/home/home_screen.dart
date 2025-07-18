@@ -72,15 +72,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ecmController.addListener(_updatePayableAmount);
        WidgetsBinding.instance.addPostFrameCallback((_) async {
          final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-         // await walletVM.forceReinitModal(context);
-  
+
          final prefs = await SharedPreferences.getInstance();
          final wasConnected = prefs.getBool('isConnected') ?? false;
          print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
   
   
-         // if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
-         if (!walletVM.isConnected && wasConnected) {
+          if (!walletVM.isConnected && wasConnected) {
            debugPrint("Attempting silent reconnect...");
            await walletVM.init(context);
          }
@@ -144,8 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       } else {
         await walletVM.getCurrentStageInfo();
-        debugPrint("Wallet is not connected. Skipping wallet data fetch.");
-      }
+       }
     }
   
     /// Helper function to fetch contract data and update the UI state.
@@ -154,8 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
       double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
-      // double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
-  
+
       usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
   
     }
@@ -189,20 +185,19 @@ class _HomeScreenState extends State<HomeScreen> {
             width: screenWidth,
             height: screenHeight,
             decoration: const BoxDecoration(
-  
+
               image: DecorationImage(
                  image: AssetImage('assets/icons/starGradientBg.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
-                filterQuality: FilterQuality.medium,
-  
+                filterQuality: FilterQuality.low,
               ),
             ),
             child: ScrollConfiguration(
               behavior: const ScrollBehavior().copyWith(overscroll: false),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-  
+
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.01,
@@ -210,221 +205,224 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Column(
                     children: [
-  
+
                       ///MyCoinPoll & Connected Wallet Button
-  
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
+
+                      RepaintBoundary(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: screenHeight * 0.01,
+                                  right: screenWidth * 0.02
+                              ),
+                              child: Image.asset(
+                                'assets/icons/mycoinpolllogo.png',
+                                width: screenWidth * 0.40,
+                                height: screenHeight * 0.040,
+                                fit: BoxFit.contain,
+                                filterQuality: FilterQuality.low,
+                              ),
+                            ),
+
+                            /// Connected Wallet Button
+                            Padding(
+                              padding: EdgeInsets.only(
                                 top: screenHeight * 0.01,
-                                right: screenWidth * 0.02
-                            ),
-                            child: Image.asset(
-                              'assets/icons/mycoinpolllogo.png',
-                              width: screenWidth * 0.40,
-                              height: screenHeight * 0.040,
-                              fit: BoxFit.contain,
-                              filterQuality: FilterQuality.medium,
-  
-                            ),
-                          ),
-  
-                          /// Connected Wallet Button
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: screenHeight * 0.01,
-                              right: screenWidth * 0.02,
-                            ),
-                            child: Consumer<WalletViewModel>(
-                                builder: (context, walletVM, _){
-                                  if (walletVM.isLoading) {
-                                     return SizedBox(
+                                right: screenWidth * 0.02,
+                              ),
+                              child: Consumer<WalletViewModel>(
+                                  builder: (context, walletVM, _){
+                                    if (walletVM.isLoading) {
+                                       return SizedBox(
+                                        height: screenHeight * 0.040,
+                                        width: screenWidth * 0.3,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                            strokeWidth: 3,
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                     return  BlockButton(
                                       height: screenHeight * 0.040,
                                       width: screenWidth * 0.3,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                          strokeWidth: 3,
-                                        ),
+                                      label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
+                                      textStyle:  TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        fontSize: getResponsiveFontSize(context, 12),
                                       ),
-                                    );
-                                  }
-                                   return  BlockButton(
-                                    height: screenHeight * 0.040,
-                                    width: screenWidth * 0.3,
-                                    label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
-                                    textStyle:  TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                      fontSize: getResponsiveFontSize(context, 12),
-                                    ),
-                                    gradientColors: const [
-                                      Color(0xFF2680EF),
-                                      Color(0xFF1CD494)
-                                    ],
-                                      onTap: walletVM.isLoading ? null : () async {
-                                       try {
-                                         if (!walletVM.isConnected) {
-                                           await walletVM.connectWallet(context);
-                                         } else {
-                                           if (walletVM.appKitModal != null) {
-                                             try {
-                                               canOpenModal = walletVM.appKitModal!.selectedChain != null;
-                                             } catch (e) {
-                                               debugPrint("Error accessing selectedChain: $e");
-                                               canOpenModal = false;
-                                             }
-
-                                             if (!canOpenModal) {
-                                               Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
-                                               await walletVM.connectWallet(context);
-                                               return;
-                                             }
-
-                                             await walletVM.ensureModalWithValidContext(context);
-                                             await Future.delayed(const Duration(milliseconds: 200));
-                                             await walletVM.appKitModal!.openModalView();
-
+                                      gradientColors: const [
+                                        Color(0xFF2680EF),
+                                        Color(0xFF1CD494)
+                                      ],
+                                        onTap: walletVM.isLoading ? null : () async {
+                                         try {
+                                           if (!walletVM.isConnected) {
+                                             await walletVM.connectWallet(context);
                                            } else {
-                                             Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                             if (walletVM.appKitModal != null) {
+                                               try {
+                                                 canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                               } catch (e) {
+                                                 debugPrint("Error accessing selectedChain: $e");
+                                                 canOpenModal = false;
+                                               }
+
+                                               if (!canOpenModal) {
+                                                 Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                                 await walletVM.connectWallet(context);
+                                                 return;
+                                               }
+
+                                               await walletVM.ensureModalWithValidContext(context);
+                                               await Future.delayed(const Duration(milliseconds: 200));
+                                               await walletVM.appKitModal!.openModalView();
+
+                                             } else {
+                                               Utils.flushBarErrorMessage("Wallet modal not ready", context);
+                                             }
+                                           }
+                                         } catch (e, stack) {
+                                           debugPrint('Wallet Error: $e\n$stack');
+                                           if (context.mounted) {
+                                             Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
                                            }
                                          }
-                                       } catch (e, stack) {
-                                         debugPrint('Wallet Error: $e\n$stack');
-                                         if (context.mounted) {
-                                           Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                         }
-                                       }
-                                     },
+                                       },
 
-                                   );}
-                            ),
-  
-  
-                          ),
-                        ],
-                      ),
-  
-                      SizedBox(height: screenHeight * 0.03),
-  
-                      /// Apply For Lisign Button
-  
-  
-                      Container(
-                        width: screenWidth,
-                        // height: screenHeight * 0.16,
-                        height: screenHeight * 0.17,
-                        // height: screenHeight * 0.30,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.transparent
-                          ),
-                          image:const DecorationImage(
-                            image: AssetImage('assets/icons/applyForListingBG.png'),
-                            fit: BoxFit.fill,
-                            filterQuality: FilterQuality.medium,
-                          ),
-                        ),
-  
-                        /// Apply For Lisign Button
-  
-                        child: Stack(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: screenWidth * 0.035,
-                                  vertical: screenHeight * 0.015,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Blockchain Innovation \nLaunchpad Hub',
-                                      style: TextStyle(
-                                        color: const Color(0xFFFFF5ED),
-                                        fontFamily: 'Poppins',
-                                        // fontSize: screenWidth * 0.04,
-                                        fontSize: getResponsiveFontSize(context, 17),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      maxLines: 2,
-                                    ),
-                                    // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
-  
-                                    /// Apply For Lising Button
-                                    Padding(
-                                      padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
-                                      child: BlockButton(
-                                        height: screenHeight * 0.05,
-                                        width: screenWidth * 0.4,
-                                        label: 'Apply For Listing',
-                                        textStyle:  TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          // fontSize: screenWidth * 0.030,
-                                          fontSize: getResponsiveFontSize(context, 12),
-  
-                                        ),
-                                        gradientColors: const [
-                                          Color(0xFF2680EF),
-                                          Color(0xFF1CD494)
-                                          // 1CD494
-                                        ],
-                                        onTap: () {
-                                          debugPrint('Button tapped');
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
-                                          );
-  
-                                        },
-                                        iconPath: 'assets/icons/arrowIcon.svg',
-                                        iconSize : screenHeight * 0.009,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                     );}
                               ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: screenWidth * 0.02),
-                                  child: RepaintBoundary(
-                                    child: AnimatedBlockchainImages(
-                                      containerWidth: screenWidth * 0.4,
-                                      containerHeight: screenHeight * 0.4,
-                                      imageAssets: const [
-                                        'assets/icons/animatedImg1.png',
-                                        'assets/icons/animatedImg2.png',
-                                        'assets/icons/animatedImg3.png',
-                                      ],
+
+
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.03),
+
+                      /// Apply For Lisign Button
+
+
+                      RepaintBoundary(
+                        child: Container(
+                          width: screenWidth,
+                          // height: screenHeight * 0.16,
+                          height: screenHeight * 0.17,
+                          // height: screenHeight * 0.30,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.transparent
+                            ),
+                            image:const DecorationImage(
+                              image: AssetImage('assets/icons/applyForListingBG.png'),
+                              fit: BoxFit.fill,
+                              filterQuality: FilterQuality.low,
+                            ),
+                          ),
+
+                          /// Apply For Lisign Button
+
+                          child: Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.035,
+                                    vertical: screenHeight * 0.015,
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Blockchain Innovation \nLaunchpad Hub',
+                                        style: TextStyle(
+                                          color: const Color(0xFFFFF5ED),
+                                          fontFamily: 'Poppins',
+                                          // fontSize: screenWidth * 0.04,
+                                          fontSize: getResponsiveFontSize(context, 17),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        maxLines: 2,
+                                      ),
+                                      // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
+
+                                      /// Apply For Lising Button
+                                      Padding(
+                                        padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
+                                        child: BlockButton(
+                                          height: screenHeight * 0.05,
+                                          width: screenWidth * 0.4,
+                                          label: 'Apply For Listing',
+                                          textStyle:  TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            color: Colors.white,
+                                            // fontSize: screenWidth * 0.030,
+                                            fontSize: getResponsiveFontSize(context, 12),
+
+                                          ),
+                                          gradientColors: const [
+                                            Color(0xFF2680EF),
+                                            Color(0xFF1CD494)
+                                            // 1CD494
+                                          ],
+                                          onTap: () {
+                                            debugPrint('Button tapped');
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
+                                            );
+
+                                          },
+                                          iconPath: 'assets/icons/arrowIcon.svg',
+                                          iconSize : screenHeight * 0.009,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: screenWidth * 0.02),
+                                    child: RepaintBoundary(
+                                      child: AnimatedBlockchainImages(
+                                        containerWidth: screenWidth * 0.4,
+                                        containerHeight: screenHeight * 0.4,
+                                        imageAssets: const [
+                                          'assets/icons/animatedImg1.png',
+                                          'assets/icons/animatedImg2.png',
+                                          'assets/icons/animatedImg3.png',
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]
+                              ]
+                          ),
                         ),
                       ),
-  
+
                       SizedBox(height: screenHeight * 0.03),
-  
+
                       // _buildTokenCard(),
-                      ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
-  
+                      ...tokens.map((token) => RepaintBoundary(child: _buildTokenCard(context, token))).toList(),
+
                       SizedBox(height: screenHeight * 0.05),
-  
-                      _buildBuyEcmSection(),
-  
-  
+
+                      RepaintBoundary(child: _buildBuyEcmSection()),
+
+
                       SizedBox(height: screenHeight * 0.03),
-  
+
                       RepaintBoundary(child: _learnAndEarnContainer()),
-  
-  
+
+
                     ],
                   ),
                 ),
@@ -497,6 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
               image: DecorationImage(
                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
                 fit: BoxFit.fill,
+                filterQuality: FilterQuality.low,
               ),
             ),
             child: Padding(
@@ -812,7 +811,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 image:const DecorationImage(
                    image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
-                  filterQuality: FilterQuality.medium,
+                  filterQuality: FilterQuality.low,
                 ),
               ),
               child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
@@ -1078,7 +1077,7 @@ class _HomeScreenState extends State<HomeScreen> {
         image: DecorationImage(
           image: AssetImage('assets/icons/learnAndEarnFrame.png'),
           fit: BoxFit.fill,
-          filterQuality: FilterQuality.medium,
+          filterQuality: FilterQuality.low,
 
         ),
       ),
@@ -1094,7 +1093,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: screenWidth * 0.28,
               height: screenHeight * 0.14,
-              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.fill,filterQuality: FilterQuality.medium,
+              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.fill,filterQuality: FilterQuality.low,
               ),
             ),
 

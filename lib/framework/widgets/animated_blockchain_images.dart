@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' show radians;
 
 
-class AnimatedBlockchainImages extends StatefulWidget {
+ class AnimatedBlockchainImages extends StatefulWidget {
   final List<String> imageAssets;
   final double containerWidth;
   final double containerHeight;
@@ -24,11 +24,18 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
   late AnimationController _controller;
   late Animation<double> _animation;
 
+  // Cache radians constants
+  static final double _radians30 = 30 * pi / 180;
+  static final double _twoPi = 2 * pi;
+
+  late final List<Widget> _cachedImages;
+
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
-      duration: const Duration(seconds: 8), // Animation duration
+      duration: const Duration(seconds: 8),
       vsync: this,
     )..repeat(reverse: true);
 
@@ -36,6 +43,24 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
       parent: _controller,
       curve: Curves.easeInOut,
     );
+
+    // Cache images with ClipOval and fixed size + cacheWidth/cacheHeight for optimization
+    final effectiveDimension = min(widget.containerWidth, widget.containerHeight);
+    final baseImageSize = effectiveDimension * 0.55;
+
+    _cachedImages = widget.imageAssets.map((asset) {
+      return ClipOval(
+        child: Image.asset(
+          asset,
+          width: baseImageSize,
+          height: baseImageSize,
+          fit: BoxFit.fill,
+          filterQuality: FilterQuality.low,
+           cacheWidth: baseImageSize.toInt(),
+          cacheHeight: baseImageSize.toInt(),
+        ),
+      );
+    }).toList();
   }
 
   @override
@@ -46,16 +71,13 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
 
   @override
   Widget build(BuildContext context) {
-    // Define the center of the circular path relative to the container
-    final double centerX = widget.containerWidth / 2;
-    final double centerY = widget.containerHeight / 5;
+    final centerX = widget.containerWidth / 2;
+    final centerY = widget.containerHeight / 5;
 
-    // Define the radius of the circular path - Decreased for less spacing
-    final double effectiveDimension = min(widget.containerWidth, widget.containerHeight);
-    final double radius = effectiveDimension * 0.28; // Reduced radius
+    final effectiveDimension = min(widget.containerWidth, widget.containerHeight);
+    final radius = effectiveDimension * 0.28;
 
-    // Define the base size of the individual rounded images - Slightly increased again
-    final double baseImageSize = effectiveDimension * 0.55;
+    final baseImageSize = effectiveDimension * 0.55;
 
     return SizedBox(
       width: widget.containerWidth,
@@ -63,51 +85,42 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
       child: AnimatedBuilder(
         animation: _animation,
         builder: (context, child) {
-          // Apply a 3D rotation and perspective to the entire stack
-          final Matrix4 transform = Matrix4.identity()
-            ..setEntry(3, 2, 0.001) // Add perspective
-            ..rotateX(radians(30)) // Rotate the entire orbit around the X-axis
-            ..rotateY(_animation.value * radians(360)); // Rotate the entire orbit around the Y-axis over time
+          final animationValue = _animation.value;
+
+          // Compose the 3D rotation matrix once
+          final transform = Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateX(_radians30)
+            ..rotateY(animationValue * 2 * pi);
 
           return Transform(
             transform: transform,
-            alignment: FractionalOffset.center,
-            child: Stack(
-              children: List.generate(widget.imageAssets.length, (index) {
-                // Calculate the angle for the current image in the 2D plane
-                final double startAngle = (2 * pi / widget.imageAssets.length) * index;
-                final double currentAngle = startAngle + (_animation.value * 2 * pi);
+            alignment: Alignment.center,
+            child: RepaintBoundary(
+              child: Stack(
+                children: List.generate(widget.imageAssets.length, (index) {
+                  final startAngle = (_twoPi / widget.imageAssets.length) * index;
+                  final currentAngle = startAngle + (animationValue * _twoPi);
 
-                // Calculate the position in the 2D plane of the orbit
-                final double imageX = centerX + radius * cos(currentAngle) - baseImageSize / 2;
-                final double imageY = centerY + radius * sin(currentAngle) - baseImageSize / 2;
+                  final imageX = centerX + radius * cos(currentAngle) - baseImageSize / 2;
+                  final imageY = centerY + radius * sin(currentAngle) - baseImageSize / 2;
 
-                // Calculate a scaling factor based on the image's perceived depth
-                final double scale = 0.7 + (sin(currentAngle) * 0.4);
+                  final scale = 0.7 + (sin(currentAngle) * 0.4);
+                  final opacity = (0.6 + (sin(currentAngle) * 0.4)).clamp(0.0, 1.0);
 
-                 final double opacity = 0.6 + (sin(currentAngle) * 0.4);
-
-                return Positioned(
-                  left: imageX,
-                  top: imageY,
-                   child: Opacity(
-                    opacity: opacity.clamp(0.0, 1.0),
-                    child: Transform.scale(
-                      scale: scale.clamp(0.7, 1.3),
-                      child: ClipOval(
-                        child: Image.asset(
-                          widget.imageAssets[index],
-                          width: baseImageSize,
-                          height: baseImageSize,
-                          fit: BoxFit.fill,
-                          filterQuality: FilterQuality.medium,
-
-                        ),
+                  return Positioned(
+                    left: imageX,
+                    top: imageY,
+                    child: Opacity(
+                      opacity: opacity,
+                      child: Transform.scale(
+                        scale: scale.clamp(0.7, 1.3),
+                        child: _cachedImages[index],
                       ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
             ),
           );
         },

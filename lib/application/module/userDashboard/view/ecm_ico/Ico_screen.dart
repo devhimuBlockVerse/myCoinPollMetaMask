@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/WhitePaperButtonComponent.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customInputField.dart';
 import '../../../../../framework/components/custonButton.dart';
 import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../../framework/utils/general_utls.dart';
-import '../../../../../framework/utils/routes/route_names.dart';
 import '../../../../data/services/download_white_paper.dart';
+import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -24,7 +25,6 @@ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:web3dart/web3dart.dart';
-
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/upload_image_provider.dart';
 
@@ -58,6 +58,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   double _maxECM = 0.0;
   bool isDisconnecting = false;
 
+  List<TokenModel> tokens = [];
 
   @override
   void initState() {
@@ -174,7 +175,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                               SizedBox(height: screenHeight * 0.02),
 
 
-                              _buildTokenCard(),
+                              _buildTokenCard(context),
+
                               SizedBox(height: screenHeight * 0.04),
 
 
@@ -197,11 +199,12 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   }
 
   /// White Paper section With timer
-  Widget _buildTokenCard() {
+  Widget _buildTokenCard(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
+    // final socialMedia = tokens.first.socialMedia;
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -213,29 +216,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           Container(
             width: screenWidth,
              decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xff010219),
-                  Color(0xff050A7F)],
-                begin: Alignment(-1.0, 0.0),
-                end: Alignment(1.0, 1.0),
-                stops: [0.68, 1.0],
-              ),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x80FFFFFF),
-                  offset: Offset(0, 1),
-                  blurRadius: 1,
-                  spreadRadius: 0,
-                ),
-                BoxShadow(
-                  color: Color(0x80010227),
-                  offset: Offset(0, 0.75),
-                  blurRadius: 0,
-                  spreadRadius: 0,
-                ),
-              ],
+               border: Border.all(
+                   color: Colors.transparent
+               ),
+               image:const DecorationImage(
+                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                 fit: BoxFit.fill,
+
+               ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.030),
@@ -293,22 +281,22 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            // SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/xIcon.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            ),
+
+                              _imageButton(
+                                context,
+                                'assets/icons/xIcon.svg',
+                                'https://x.com/ecmcoin'
+
+                                // socialMedia!.twitter!,
+
+                              ),
                             SizedBox(width: baseSize * 0.02),
-                            _imageButton(
-                              context,
-                              'assets/icons/teleImage.svg',
-                                  () {
-                                debugPrint('Image button tapped!');
-                              },
-                            )
+                               _imageButton(
+                                context,
+                                'assets/icons/teleImage.svg',
+                                'https://t.me/ecmcoin'
+                                // socialMedia!.telegram!,
+                              )
                           ],
                         ),
                       ),
@@ -367,14 +355,27 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   }
 
   /// _imageButton Widget
-  Widget _imageButton(BuildContext context, String imagePath, VoidCallback onTap) {
+  Widget _imageButton(BuildContext context, String imagePath,  String url) {
     final screenWidth = MediaQuery.of(context).size.width;
     final imageSize = screenWidth * 0.04; // 5% of screen width
 
     final isSvg = imagePath.toLowerCase().endsWith('.svg');
 
     return InkWell(
-      onTap: onTap,
+      onTap: () async {
+        final uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          ToastMessage.show(
+            message: "Could not open the link",
+            subtitle: "Invalid or inaccessible URL",
+            type: MessageType.error,
+            duration: CustomToastLength.SHORT,
+            gravity: CustomToastGravity.BOTTOM,
+          );
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white12,
@@ -454,7 +455,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       ),
                     ),
                     /// Address Section
-                    Padding(
+                if (walletVM.isConnected)...[
+                  Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -473,9 +475,22 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             controller: referredController,
                             isReadOnly: true,
                             trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
+                             onTrailingIconTap: () {
                               debugPrint('Trailing icon tapped');
+                              const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+
+                              Clipboard.setData(const ClipboardData(text:referralLink));
+
+                              ToastMessage.show(
+                                message: "Referral link copied!",
+                                subtitle: referralLink,
+                                type: MessageType.success,
+                                duration: CustomToastLength.SHORT,
+                                gravity: CustomToastGravity.BOTTOM,
+                              );
+
                             },
+
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
@@ -498,7 +513,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         height: 20,
                       ),
                     ),
-
+                ],
                     ///Action Buttons
                     Padding(
                       padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),
@@ -615,22 +630,41 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
-                        debugPrint("ECM Purchase triggered");
+
+                        if (!walletVM.isConnected) {
+                          print("Wallet not connected. Prompting user to connect...");
+                          try {
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.appKitModal?.openModalView();
+                          } catch (e) {
+                            debugPrint("Failed to open wallet modal: $e");
+                            return;
+                          }
+
+                          return;
+                        }
+
                         try{
                           final inputEth = ecmController.text.trim();
                           debugPrint("User input: $inputEth");
                           final ethDouble = double.tryParse(inputEth);
                           debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Enter a valid ECM amount')),
+                            ToastMessage.show(
+                              message: "Invalid Amount",
+                              subtitle: "Please enter a valid ECM amount.",
+                              type: MessageType.info,
+                              duration: CustomToastLength.SHORT,
+                              gravity: CustomToastGravity.BOTTOM,
                             );
+
                             return;
                           }
 
                           final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-                          // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
+                          // final ecmAmountInWeiUSDT = EtherAmount.fromUnitAndValue(EtherUnit.wei, (ethDouble * 1e6).round()).getInWei;
+
                           debugPrint("ETH in Wei: $ecmAmountInWeiETH");
                           debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 
@@ -639,20 +673,29 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
                           debugPrint("Purchase Button Pressed");
 
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => const Center(
+                              child: CircularProgressIndicator(color: Colors.white),
+                            ),
+                          );
+
                           if (isETH) {
                             debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+
                           } else  {
                             debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
                             await walletVM.buyECMWithUSDT(amount,context);
                             // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
                           }
+                          Navigator.of(context).pop();
                           debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
+                          ecmController.clear();
 
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   const SnackBar(content: Text('Purchase successful')),
-                          // );
                         }catch (e) {
+                          Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");
                         }
                       },
@@ -663,94 +706,61 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     ),
                     const SizedBox(height: 18),
 
+                    if (walletVM.isConnected)...[
+
                       DisconnectButton(
-                        label: 'Disconnect',
-                        color: const Color(0xffE04043),
-                        icon: 'assets/icons/disconnected.svg',
-                        // onPressed: () async {
-                        //   setState(() {
-                        //     isDisconnecting = true;
-                        //   });
-                        //   try {
-                        //     await walletVM.disconnectWallet(context);
-                        //      walletVM.reset();
-                        //
-                        //     if (context.mounted && !walletVM.isConnected) {
-                        //
-                        //       Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-                        //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                        //           builder: (context) => const BottomNavBar()),
-                        //             (Route<dynamic> route) => false,
-                        //       );
-                        //
-                        //     }
-                        //
-                        //
-                        //   } catch (e) {
-                        //     if (context.mounted) {
-                        //       print('Error disconnecting: $e');
-                        //       ScaffoldMessenger.of(context).showSnackBar(
-                        //         SnackBar(
-                        //           content: Text('Error disconnecting: ${e.toString()}'),
-                        //           backgroundColor: Colors.red,
-                        //         ),
-                        //       );
-                        //     }
-                        //   }finally{
-                        //     if (mounted) {
-                        //       setState(() {
-                        //         isDisconnecting = false;
-                        //       });
-                        //     }
-                        //   }
-                        // },
-                        onPressed: () async {
+                    label: 'Disconnect',
+                    color: const Color(0xffE04043),
+                    icon: 'assets/icons/disconnected.svg',
+                    onPressed: () async {
+                      setState(() {
+                        isDisconnecting = true;
+                      });
+                      try {
+                        await walletVM.disconnectWallet(context);
+                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+
+                        if (context.mounted) {
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (context) => MultiProvider(
+                                providers: [
+                                  ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                  ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                  ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                  ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                  ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                  ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                  ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                ],
+                                child: const BottomNavBar(),
+                              ),
+                            ),
+                                (Route<dynamic> route) => false,
+                          );
+                        }
+                      }catch (e) {
+                        if (context.mounted) {
+                          print('Error disconnecting: $e');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error disconnecting: ${e.toString()}'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }finally{
+                        if (mounted) {
                           setState(() {
-                            isDisconnecting = true;
+                            isDisconnecting = false;
                           });
-                          try {
-                            await walletVM.disconnectWallet(context);
-                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                        }
+                      }
+                    },
 
-                            if (context.mounted) {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (context) => MultiProvider(
-                                    providers: [
-                                      ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-                                      ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-                                      ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-                                      ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-                                      ChangeNotifierProvider(create: (_) => NavigationProvider()),
-                                      ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
-                                      ChangeNotifierProvider(create: (_) => UploadProvider()),
-                                    ],
-                                    child: const BottomNavBar(),
-                                  ),
-                                ),
-                                    (Route<dynamic> route) => false,
-                              );
-                            }
-                          }catch (e) {
-                            if (context.mounted) {
-                              print('Error disconnecting: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error disconnecting: ${e.toString()}'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          }finally{
-                            if (mounted) {
-                              setState(() {
-                                isDisconnecting = false;
-                              });
-                            }
-                          }
-                        },
+                  ),
 
-                      ),
+                    ],
                     const SizedBox(height: 18),
 
                   ],

@@ -1,19 +1,27 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/login/validation_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:reown_appkit/appkit_modal.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:web3dart/crypto.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
+import '../../../../framework/utils/customToastMessage.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/utils/general_utls.dart';
+import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
+import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
-
+import 'forgot_password.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  final bool showBackButton;
+
+  const SignIn({super.key, this.showBackButton = true});
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -23,7 +31,20 @@ class _SignInState extends State<SignIn> {
 
   TextEditingController userNameOrIdController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+  bool _isNavigating = false;
 
+  String _generateSignatureMessage(String address) {
+    return [
+      "Welcome to MyCoinPoll!",
+      "",
+      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
+      "",
+      "Wallet: $address",
+      "",
+      "Thank you for being a part of our community!"
+    ].join("\n");
+  }
 
   @override
   void initState() {
@@ -35,14 +56,135 @@ class _SignInState extends State<SignIn> {
       final wasConnected = prefs.getBool('isConnected') ?? false;
       print("WalletViewModel.isConnected: ${walletVM.isConnected}, SharedPref: $wasConnected");
 
-
-      if (!walletVM.isConnected && wasConnected && walletVM.appKitModal==null) {
-        debugPrint("Attempting silent reconnect...");
-        await walletVM.init(context);
-      }
-
     });
   }
+
+   Future<void> login() async {
+    final username = userNameOrIdController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+
+      ToastMessage.show(
+        message: "Please fill in all fields",
+        subtitle: "Username or Password is empty",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      final response = await ApiService().login(username, password);
+      print('Logged in as: ${response.user.name}, Token: ${response.token}');
+
+      /// Save token + user data to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response.token);
+      await prefs.setString('user', jsonEncode(response.user.toJson()));
+
+      /// Update user provider manually
+      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+      await userAuth.loadUserFromPrefs();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
+      );
+    } catch (e) {
+      ToastMessage.show(
+        message: "Login Failed",
+        subtitle: "Invalid credentials or server error. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+      print("Login error: $e");
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  /// Handles the entire Web3 login flow.
+  Future<void> _handleWeb3Login() async {
+    if (_isNavigating) return;
+    setState(() => _isNavigating = true);
+
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+    try {
+      //Ensure wallet is connected
+      if (!walletVM.isConnected) {
+        await walletVM.connectWallet(context);
+      }
+
+      // If connection fails or is cancelled, exit the flow
+      if (!walletVM.isConnected || walletVM.appKitModal?.session == null) {
+        ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+        return;
+      }
+
+      //Generate message and request signature
+      final message = _generateSignatureMessage(walletVM.walletAddress);
+
+      // The message must be hex-encoded for the personal_sign method
+      final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+
+      final signature = await walletVM.appKitModal!.request(
+        topic: walletVM.appKitModal!.session!.topic,
+        chainId: walletVM.appKitModal!.selectedChain!.chainId,
+        request: SessionRequestParams(
+          method: 'personal_sign',
+          params: [hexMessage, walletVM.walletAddress],
+        ),
+      );
+
+      //Verify signature with your backend
+      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
+      print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
+
+      //Save session and navigate
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response.token);
+      await prefs.setString('user', jsonEncode(response.user.toJson()));
+
+      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+      await userAuth.loadUserFromPrefs();
+
+      ToastMessage.show(message: "Login Successful", type: MessageType.success);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
+            (_) => false,
+      );
+
+    } catch (e) {
+      final errorString = e.toString().toLowerCase();
+      String subtitle;
+
+      if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
+        subtitle = "You cancelled the signature request in your wallet.";
+      } else {
+        subtitle = "An unexpected error occurred. Please try again.";
+        print("Web3 Login Error: $e");
+      }
+
+      ToastMessage.show(
+        message: "Login Failed",
+        subtitle: subtitle,
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+      );
+    } finally {
+      if (mounted) setState(() => _isNavigating = false);
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +218,7 @@ class _SignInState extends State<SignIn> {
               // SizedBox(height: screenHeight * 0.01),
 
               ///Back Button
-              Align(
+              widget.showBackButton ? Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
                   icon: SvgPicture.asset(
@@ -87,7 +229,7 @@ class _SignInState extends State<SignIn> {
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
-              ),
+              ) : const SizedBox.shrink(),
               /// Main Scrollable Content
               Expanded(
                 child: Padding(
@@ -125,7 +267,6 @@ class _SignInState extends State<SignIn> {
                                     fit: BoxFit.fill,
                                    ),
                                 ),
-
 
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(
@@ -186,14 +327,41 @@ class _SignInState extends State<SignIn> {
                                         keyboard: TextInputType.emailAddress,
                                         isPassword: true,
                                       ),
+                                      SizedBox(height: screenHeight * 0.02),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => const ForgotPassword()),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Forgot Password?',
+                                            style: TextStyle(
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: baseSize * 0.032,
+                                              height: 0.80,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       SizedBox(height: screenHeight * 0.04),
+
+
 
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
 
                                           /// Login Button adn navigate to validation screen
-                                          BlockButton(
+                                          isLoading
+                                              ? const Center(child: CircularProgressIndicator())
+                                              :BlockButton(
                                             height: screenHeight * 0.05,
                                             width: screenWidth * 0.88,
                                             label: 'Login Now',
@@ -208,15 +376,8 @@ class _SignInState extends State<SignIn> {
                                               Color(0xFF2680EF),
                                               Color(0xFF1CD494),
                                             ],
-                                            onTap: () {
-                                              // Check / Read the user Email and password and navigate
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => ValidationScreen(
-                                                  getUserNameOrId: userNameOrIdController.text,
-                                                )),
-                                              );
-                                            },
+
+                                            onTap: login,
                                           ),
                                           SizedBox(height: screenHeight * 0.01),
 
@@ -278,51 +439,46 @@ class _SignInState extends State<SignIn> {
                                           /// Connect Wallet
                                           Consumer<WalletViewModel>(
                                             builder: (context, walletVM, _) {
-                                              return BlockButtonV2(
-                                                text: walletVM.isConnected ? 'Go To Dashboard':'Connect Wallet',
-                                                // onPressed: () {
-                                                //
-                                                //   debugPrint('Button tapped!');
-                                                //   // Apply the wallet connection from view model and navigate to the Dashboard
-                                                //   Navigator.push(
-                                                //     context,
-                                                //     MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
-                                                //   );
-                                                // },
-                                                onPressed:  walletVM.isLoading ? null : () async {
-                                                  try {
-                                                    if (!walletVM.isConnected) {
-                                                      await walletVM.connectWallet(context);
-                                                    }
-                                                    // After successful connection, navigate
-                                                    if (walletVM.isConnected && context.mounted) {
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => const DashboardBottomNavBar(),
-                                                        ),
-                                                      );
-                                                    }
-                                                  } catch (e, stack) {
-                                                    debugPrint('Wallet Error: $e\n$stack');
-                                                    if (context.mounted) {
-                                                      Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
-                                                    }
-                                                  }
-                                                },
+                                              if (walletVM.isLoading || _isNavigating) {
+                                                return const Center(child: CircularProgressIndicator());
+                                              }
 
+                                              final isConnected = walletVM.isConnected;
+
+                                              return BlockButtonV2(
+                                                text: isConnected ? 'Go To Dashboard' : 'Connect Wallet',
                                                 height: screenHeight * 0.05,
                                                 width: screenWidth * 0.88,
+                                                // onPressed: walletVM.isLoading ? null : () async {
+                                                  //   setState(() => _isNavigating = true);
+                                                  //   try {
+                                                  //
+                                                  //     if (!walletVM.isConnected) {
+                                                  //        await walletVM.connectWallet(context);
+                                                  //     }
+                                                  //
+                                                  //     if (walletVM.appKitModal != null && walletVM.isConnected) {
+                                                  //
+                                                  //       Navigator.pushAndRemoveUntil(
+                                                  //         context,
+                                                  //         MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
+                                                  //             (_) => false,
+                                                  //       );
+                                                  //     }
+                                                  //   } catch (e, stack) {
+                                                  //     print('Wallet Connect Error: $e\n$stack');
+                                                  //    } finally {
+                                                  //     if (mounted) setState(() => _isNavigating = false);
+                                                  //   }
+                                                  // }
+                                                onPressed: walletVM.isLoading ? null : _handleWeb3Login,
                                               );
-                                            }
-
+                                            },
                                           ),
 
 
                                         ],
                                       ),
-
-
 
                                     ],
                                   ),
@@ -333,6 +489,7 @@ class _SignInState extends State<SignIn> {
                         ),
 
                         SizedBox(height: screenHeight * 0.02),
+
                       ],
                     ),
                   ),
@@ -381,7 +538,3 @@ class _SignInState extends State<SignIn> {
   }
 
 }
-
-
-
-

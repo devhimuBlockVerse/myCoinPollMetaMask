@@ -49,6 +49,7 @@ class TransactionDetails extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
+          SizedBox(width: 2,),
           Expanded(
             child: Wrap(
               alignment: WrapAlignment.end,
@@ -58,7 +59,9 @@ class TransactionDetails extends StatelessWidget {
                 ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: width * 0.6),
                   child: Text(
-                    value,
+                    // value,
+                    formatHashConditionally(label, value),
+
                     textAlign: TextAlign.right,
                     softWrap: true,
                     overflow: TextOverflow.visible,
@@ -104,62 +107,15 @@ class TransactionDetails extends StatelessWidget {
             ),
           ),
 
-          // Expanded(
-          //   child: Wrap(
-          //     alignment: WrapAlignment.end,
-          //     crossAxisAlignment: WrapCrossAlignment.center,
-          //     spacing: spacing ?? 10,
-          //     children: [
-          //       Flexible(
-          //         child: Text(
-          //           value,
-          //           textAlign: TextAlign.right,
-          //           softWrap: true,
-          //           overflow: TextOverflow.visible,
-          //           style: TextStyle(
-          //             color: Colors.white,
-          //             fontSize: fontSize,
-          //             fontFamily: 'Poppins',
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //         ),
-          //       ),
-          //       if (svgIconPath != null)
-          //         GestureDetector(
-          //           onTap: () => _copyToClipboard(context),
-          //           child: SvgPicture.asset(
-          //             svgIconPath!,
-          //             width: fontSize + 3,
-          //             height: fontSize + 3,
-          //             fit: BoxFit.contain,
-          //             color: Colors.white.withOpacity(0.8),
-          //           ),
-          //         ),
-          //       if (showStatus)
-          //         Container(
-          //           padding:
-          //           const EdgeInsets.symmetric(horizontal: 25, vertical: 4),
-          //           decoration: BoxDecoration(
-          //             color: styling!.backgroundColor,
-          //             border: Border.all(color: styling.borderColor),
-          //             borderRadius: BorderRadius.circular(4),
-          //           ),
-          //           child: Text(
-          //             status!,
-          //             style: TextStyle(
-          //               fontSize: fontSize,
-          //               color: styling.textColor,
-          //               fontFamily: 'Poppins',
-          //               fontWeight: FontWeight.bold,
-          //               height: 0.8,
-          //             ),
-          //           ),
-          //         ),
-          //     ],
-          //   ),
-          // ),
-        ],
+         ],
       ),
     );
   }
+}
+String formatHashConditionally(String label, String value) {
+  final hashLabels = [ 'From', 'To'];
+  if (hashLabels.contains(label) && value.length > 12) {
+    return '${value.substring(0, 12)}...${value.substring(value.length - 12)}';
+  }
+  return value;
 }

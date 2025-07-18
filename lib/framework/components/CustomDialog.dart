@@ -21,7 +21,7 @@ class CustomDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(), // Close when tapped outside
+      onTap: () => Navigator.of(context).pop(),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(

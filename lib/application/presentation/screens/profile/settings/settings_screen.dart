@@ -3,8 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../framework/components/customSettingsActionButtonComponent.dart';
+import '../../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import '../../../../module/userDashboard/viewmodel/kyc_navigation_provider.dart';
+import '../../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
+import '../../../../module/userDashboard/viewmodel/upload_image_provider.dart';
+import '../../../viewmodel/bottom_nav_provider.dart';
+import '../../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../viewmodel/wallet_view_model.dart';
 import '../tax_statement/terms_condition_screen.dart';
 import 'contact_screen.dart';
@@ -184,6 +191,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   CustomSettingsActionButton(
                                     icon: 'assets/icons/logoutImg.svg',
                                     text: 'Logout',
+                                    // onPressed: ()async{
+                                    //   setState(() {
+                                    //     isDisconnecting = true;
+                                    //   });
+                                    //
+                                    //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                                    //
+                                    //   try{
+                                    //     await walletVM.disconnectWallet(context);
+                                    //
+                                    //     final prefs = await SharedPreferences.getInstance();
+                                    //     await prefs.clear();
+                                    //
+                                    //
+                                    //
+                                    //     if (context.mounted && !walletVM.isConnected) {
+                                    //
+                                    //       Navigator.of(context).pushAndRemoveUntil(
+                                    //         MaterialPageRoute(
+                                    //           builder: (context) => MultiProvider(
+                                    //             providers: [
+                                    //               ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                    //               ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                    //               ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                    //               ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                    //             ],
+                                    //             child: const BottomNavBar(),
+                                    //           ),
+                                    //         ),
+                                    //             (Route<dynamic> route) => false,
+                                    //       );
+                                    //     }
+                                    //   }catch(e){
+                                    //     debugPrint("Error Wallet Disconnecting : $e");
+                                    //   }finally{
+                                    //     if (mounted) {
+                                    //       setState(() {
+                                    //         isDisconnecting = false;
+                                    //       });
+                                    //     }
+                                    //   }
+                                    //   // DisConnect The User Session and Navigate Back to Home Screen .
+                                    // },
                                     onPressed: ()async{
                                       setState(() {
                                         isDisconnecting = true;
@@ -194,11 +247,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       try{
                                         await walletVM.disconnectWallet(context);
                                         walletVM.reset();
+                                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+
+
+
+
                                         if (context.mounted && !walletVM.isConnected) {
-                                          Navigator.push(
-                                            context,
+
+                                          Navigator.of(context).pushAndRemoveUntil(
                                             MaterialPageRoute(
-                                                builder: (context) => const BottomNavBar()),
+                                              builder: (context) => MultiProvider(
+                                                providers: [
+                                                  ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                                  ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                                  ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                                  ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                                  ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                                  ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
+                                                  ChangeNotifierProvider(create: (_) => UploadProvider()),
+                                                ],
+                                                child: const BottomNavBar(),
+                                              ),
+                                            ),
+                                                (Route<dynamic> route) => false,
                                           );
                                         }
                                       }catch(e){
@@ -210,12 +281,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           });
                                         }
                                       }
-                                      // DisConnect The User Session and Navigate Back to Home Screen .
-
-
-
-
-                                    },
+                                     },
                                   ),
 
 

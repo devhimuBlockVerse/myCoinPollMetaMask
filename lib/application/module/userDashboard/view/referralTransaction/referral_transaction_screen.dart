@@ -174,6 +174,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
             ),
           ),
           child: Column(
+
             children: [
               // App bar row
               Row(
@@ -219,6 +220,8 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+
                         children: [
 
 

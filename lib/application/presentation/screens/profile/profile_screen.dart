@@ -5,7 +5,9 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/set
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
+import '../../models/user_model.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'notification/notifications.dart';
@@ -19,6 +21,18 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadFullNameFromPrefs();
+  }
+
+  Future<void> _loadFullNameFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('firstName') ?? '';
+    Provider.of<BottomNavProvider>(context, listen: false).setFullName(name);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -230,6 +244,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final fullName = Provider.of<BottomNavProvider>(context).fullName;
     final profileVM = Provider.of<PersonalViewModel>(context);
     final pickedImage = profileVM.pickedImage;
+
+
     // Scale factors (tweak if needed)
     double scale = screenWidth / 375;
     return Column(
@@ -250,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? FileImage(pickedImage)
                       : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
                       ? FileImage(File(profileVM.originalImagePath!))
-                      : const NetworkImage("https://picsum.photos/90/90") as ImageProvider,
+                      : const NetworkImage("https://mycoinpoll.com/_ipx/q_20&s_50x50/images/dashboard/icon/user.png") as ImageProvider,
 
                   fit: BoxFit.fill,
                   ),
@@ -264,8 +280,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               // Name
               Text(
-                // 'Abdur Salam',
-                fullName,
+                 // fullName,
+                fullName.isNotEmpty ? fullName : 'Ethereum User',
+
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,

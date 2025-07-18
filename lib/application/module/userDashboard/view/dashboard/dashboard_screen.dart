@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,8 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
- import '../../../../../framework/components/AddressFieldComponent.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/milestoneLegendtemComponent.dart';
@@ -16,8 +18,16 @@ import '../../../../../framework/components/statusChipComponent.dart';
 import '../../../../../framework/components/statusIndicatorComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
- import '../../../../../framework/utils/dynamicFontSize.dart';
- import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
+import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../../framework/utils/enums/kyc_track.dart';
+import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../../framework/utils/general_utls.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../presentation/models/get_purchase_stats.dart';
+import '../../../../presentation/models/user_model.dart';
+import '../../../../presentation/viewmodel/user_auth_provider.dart';
+import '../../../dashboard_bottom_nav.dart';
 import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
@@ -37,15 +47,36 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // UserModel? currentUser;
+  PurchaseStatsModel? _purchaseStats;
+  bool _isNavigating = false;
 
 
   @override
   void initState() {
     super.initState();
     _setGreeting();
-  }
+    // _loadUserFromPrefs();
+    _loadPurchaseStats();
+   }
 
 
+  // Future<void> _loadUserFromPrefs() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('token');
+  //   final userJson = prefs.getString('user');
+  //
+  //   if (token != null && userJson != null) {
+  //     final userMap = jsonDecode(userJson);
+  //     final loadedUser = UserModel.fromJson(userMap);
+  //
+  //     if (currentUser == null || currentUser?.id != loadedUser.id) {
+  //       setState(() {
+  //         currentUser = loadedUser;
+  //       });
+  //     }
+  //   }
+  // }
   String greeting = "";
 
   void _setGreeting() {
@@ -59,6 +90,19 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         : "Good Night";
   }
 
+
+  Future<void> _loadPurchaseStats() async {
+    try {
+      final stats = await ApiService().fetchPurchaseStats();
+      setState(() {
+        _purchaseStats = stats;
+      });
+    } catch (e) {
+      debugPrint('Error fetching stats: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -70,6 +114,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     final navItems = navProvider.drawerNavItems;
 
     final baseSize = isPortrait ? screenWidth : screenHeight;
+
 
     return WillPopScope(
       onWillPop: () async {
@@ -109,76 +154,122 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                 horizontal: screenWidth * 0.01,
                 vertical: screenHeight * 0.02,
               ),
-              child: ScrollConfiguration(
-                behavior: const ScrollBehavior().copyWith(overscroll: false),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  // Reload prefs data
+                  // await _loadUserFromPrefs();
 
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                  final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+                  await userAuth.loadUserFromPrefs();
+
+                  // Also reload WalletViewModel data if needed
+                  final walletModel = Provider.of<WalletViewModel>(context, listen: false);
+                  if (walletModel.isConnected) {
+                    await walletModel.fetchConnectedWalletData();
+                  } else {
+                    // Optionally, reset or re-init wallet model here
+                    await walletModel.reset();
+                  }
+                },
+
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(overscroll: false),
+                  child: Consumer<WalletViewModel>(
+                    builder: (context, walletModel, _) {
+                      // final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
+                      //
+                      // if (isWalletConnected && currentUser != null) {
+                      //   currentUser = null;
+                      //
+                      // }
+                      //
+                      // if (!isWalletConnected && currentUser == null) {
+                      //   // Wallet disconnected, reload user if previously logged in
+                      //   _loadUserFromPrefs(); // This updates currentUser in setState
+                      // }
+                      return  SingleChildScrollView(
+                        // physics: const BouncingScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
 
 
-                      /// User Name Data & Wallet Address
-                      _headerSection(_scaffoldKey),
-                      SizedBox(height: screenHeight * 0.02),
+                            /// User Name Data & Wallet Address
+                            // _headerSection(_scaffoldKey,walletModel),
 
-                      /// User Graph Chart and Level
-                      _EcmWithGraphChart(),
-                      SizedBox(height: screenHeight * 0.03),
+                            Consumer<UserAuthProvider>(
+                              builder: (context, userAuth, child) {
+                                return _headerSection(_scaffoldKey, walletModel, userAuth);
+                              },
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+
+                            /// User Graph Chart and Level
+                            _EcmWithGraphChart(),
+                            SizedBox(height: screenHeight * 0.03),
 
 
-                      /// Referral Link
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xff040C16),
-                        borderRadius: BorderRadius.circular(12)
-                        ),
+                            /// Referral Link
+                            Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff040C16),
+                                  borderRadius: BorderRadius.circular(12)
+                              ),
 
-                        child: ClipRRect(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: CustomLabeledInputField(
-                            labelText: 'Referral Link:',
-                            hintText: 'https://mycoinpoll.com?ref=125482458661',
-                             isReadOnly: true,
-                            trailingIconAsset: 'assets/icons/copyImg.svg',
-                            onTrailingIconTap: () {
-                              debugPrint('Trailing icon tapped');
-                              Clipboard.setData(const ClipboardData(text:'https://mycoinpoll.com?ref=125482458661'));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('TxnHash copied to clipboard'),
-                                  duration: Duration(seconds: 1),
+                              child: ClipRRect(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: CustomLabeledInputField(
+                                    labelText: 'Referral Link:',
+                                    hintText: 'https://mycoinpoll.com?ref=125482458661',
+                                    isReadOnly: true,
+                                    trailingIconAsset: 'assets/icons/copyImg.svg',
+                                    onTrailingIconTap: () {
+                                      debugPrint('Trailing icon tapped');
+
+                                      const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+                                      Clipboard.setData(const ClipboardData(text:referralLink));
+
+                                      ToastMessage.show(
+                                        message: "Referral link copied!",
+                                        subtitle: referralLink,
+                                        type: MessageType.success,
+                                        duration: CustomToastLength.SHORT,
+                                        gravity: CustomToastGravity.BOTTOM,
+                                      );
+                                    },
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                            SizedBox(height: screenHeight * 0.03),
+
+
+                            /// WIll Implemented in Future
+                            // _joinPromoteEarn(),
+                            // SizedBox(height: screenHeight * 0.03),
+                            //
+                            // _milestoneSection(),
+                            // SizedBox(height: screenHeight * 0.03),
+                            //
+                            //
+                            // _kycStatus(),
+                            // SizedBox(height: screenHeight * 0.03),
+
+
+                            _transactionsReferral(),
+                            // SizedBox(height: screenHeight * 0.03),
+
+
+                          ],
                         ),
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.03),
+                      );
+                    },
 
-
-
-                      _joinPromoteEarn(),
-                      SizedBox(height: screenHeight * 0.03),
-
-                      _milestoneSection(),
-                      SizedBox(height: screenHeight * 0.03),
-
-
-                      _kycStatus(),
-                      SizedBox(height: screenHeight * 0.03),
-
-
-                      _transactionsReferral(),
-                      // SizedBox(height: screenHeight * 0.03),
-
-
-                    ],
                   ),
                 ),
               ),
@@ -191,249 +282,406 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
 
-  Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey){
+  Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey,WalletViewModel model,UserAuthProvider userAuthModel){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
-    // Dynamic multipliers
-    final baseSize = isPortrait ? screenWidth : screenHeight;
+     final baseSize = isPortrait ? screenWidth : screenHeight;
+    bool canOpenModal = false;
+    final currentUser = userAuthModel.user;
 
-    return Consumer<WalletViewModel>(
-    builder: (context, model, _){
-     return   Container(
-       width: double.infinity,
-       decoration: BoxDecoration(
-         color: Colors.transparent.withOpacity(0.1),
-       ),
-       child: ClipRRect(
-         child: BackdropFilter(
-           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-           child: Padding(
-             padding: EdgeInsets.symmetric(
-               horizontal: screenWidth * 0.03,
-               vertical: screenHeight * 0.015,
-             ),
-             child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-               crossAxisAlignment: CrossAxisAlignment.center,
-               children: [
+   return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.transparent.withOpacity(0.1),
+      ),
+      child: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.03,
+              vertical: screenHeight * 0.015,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.start,
-                   crossAxisAlignment: CrossAxisAlignment.center,
-                   children: [
-                     GestureDetector(
-                       onTap: (){
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: (){
                         scaffoldKey.currentState?.openDrawer();
-                       },
-                       child: SvgPicture.asset(
-                         'assets/icons/drawerIcon.svg',
-                         height: getResponsiveFontSize(context, 16),
-                       ),
-                     ),
-                     SizedBox(width: screenWidth * 0.03),
-                     /// User Info & Ro Text + Notification
-                     Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
-                       children: [
-                         Text(
-                           greeting,
-                           style: TextStyle(
-                             fontFamily: 'Poppins',
-                             fontWeight: FontWeight.w400,
-                             fontSize: getResponsiveFontSize(context, 14),
-                             height: 1.6,
-                             color: const Color(0xffFFF5ED),
-                           ),
-                         ),
-                         Text(
-                           'User Name', // your Ro text
-                           style: TextStyle(
-                             fontFamily: 'Poppins',
-                             fontWeight: FontWeight.w600,
-                             fontSize: getResponsiveFontSize(context, 18),
-                             height: 1.3,
-                             color: const Color(0xffFFF5ED),
-                           ),
-                         ),
-                         const SizedBox(width: 8),
+                      },
+                      child: SvgPicture.asset(
+                        'assets/icons/drawerIcon.svg',
+                        height: getResponsiveFontSize(context, 16),
+                      ),
+                    ),
+                    SizedBox(width: screenWidth * 0.03),
+                    /// User Info & Ro Text + Notification
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          greeting,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                            fontSize: getResponsiveFontSize(context, 14),
+                            height: 1.6,
+                            color: const Color(0xffFFF5ED),
+                          ),
+                        ),
+                        Text(
+                          model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser.name}',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            fontSize: getResponsiveFontSize(context, 18),
+                            height: 1.3,
+                            color: const Color(0xffFFF5ED),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
 
-                       ],
-                     ),
-                   ],
-                 ),
+                      ],
+                    ),
+                  ],
+                ),
 
 
 
-                 /// Wallet Address
-                 Column(
-                   mainAxisAlignment: MainAxisAlignment.end,
-                   crossAxisAlignment: CrossAxisAlignment.end,
-                   children: [
-                     Transform.translate(
-                       offset: Offset(screenWidth * 0.025, 0),
-                       child: WalletAddressComponent(
-                         address: formatAddress(model.walletAddress),
-                         // onTap:() => model.appKitModal!.openModalView(),
+                /// Wallet Address
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Transform.translate(
+                      offset: Offset(screenWidth * 0.025, 0),
+
+                      child: WalletAddressComponent(
+                        address:  model.walletConnectedManually || currentUser == null
+                            ? formatAddress(model.walletAddress)
+                            : formatAddress(currentUser!.ethAddress),
                           onTap: () async {
-                           await model.ensureModalWithValidContext(context);
-                           await model.appKitModal?.openModalView();
-                         },
+                            try {
+                              /// ✅ Ensure modal is rebuilt with context
+                              if (!model.walletConnectedManually) {
+                                await model.ensureModalWithValidContext(context);
+                                await model.appKitModal?.openModalView();
+                              }
 
-                       ),
+                            } catch (e) {
+                              print("❌ Error opening wallet modal: $e");
+                             }
+                          }
 
-                     ),
 
-                     GestureDetector(
-                       onTap: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context) =>  NotificationScreen()));
+                      ),
 
-                       },
-                       child: SvgPicture.asset(
-                         'assets/icons/nofitication.svg',
-                         height: getResponsiveFontSize(context, 24),
-                       ),
-                     ),
-                   ],
-                 ),
-               ],
-             ),
-           ),
-         ),
-       ),
-     );
-    });
+                    ),
+
+
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
 
+  // Widget _EcmWithGraphChart(){
+  //   double screenWidth = MediaQuery.of(context).size.width;
+  //   double screenHeight = MediaQuery.of(context).size.height;
+  //
+  //   return Container(
+  //       width: screenWidth,
+  //       height: screenHeight * 0.16,
+  //       decoration: BoxDecoration(
+  //         border: Border.all(
+  //             color: Colors.transparent
+  //         ),
+  //         image: const DecorationImage(
+  //           image: AssetImage('assets/icons/applyForListingBG.png'),
+  //           fit: BoxFit.fill,
+  //         ),
+  //       ),
+  //       child: Stack(
+  //         children: [
+  //
+  //           Padding(
+  //             padding: EdgeInsets.symmetric(
+  //               horizontal: screenWidth * 0.035,
+  //               vertical: screenHeight * 0.015,
+  //             ),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //
+  //                 Expanded(
+  //                   flex: 2,
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Row(
+  //                         mainAxisAlignment: MainAxisAlignment.start,
+  //                         crossAxisAlignment: CrossAxisAlignment.center,
+  //                         children: [
+  //                           Image.asset(
+  //                             'assets/icons/ecm.png',
+  //                             height: screenWidth * 0.04,
+  //                             fit: BoxFit.contain,
+  //                           ),
+  //                           SizedBox(width: screenWidth * 0.01),
+  //                           Text(
+  //                             'ECM Coin',
+  //                             textAlign:TextAlign.start,
+  //                             style: TextStyle(
+  //                               color: const Color(0xffFFF5ED),
+  //                               fontFamily: 'Poppins',
+  //                               fontSize: getResponsiveFontSize(context, 16),
+  //                               fontWeight: FontWeight.normal,
+  //                               height: 1.6,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                         Text(
+  //                           '20000000', /// Get the Real Value  from Wallet
+  //                           style: TextStyle(
+  //                               color: Colors.white,
+  //                               fontFamily: 'Poppins',
+  //                               fontSize: getResponsiveFontSize(context, 24),
+  //                               fontWeight: FontWeight.w600,
+  //                               height: 1.3
+  //                         ),
+  //
+  //                       ),
+  //                       SizedBox(height: screenHeight * 0.01),
+  //
+  //                       /// Badge Icons (assuming this is related to the left text)
+  //                       Padding(
+  //                         padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
+  //                         child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //
+  //                 Expanded(
+  //                   flex: 1,
+  //                   child: Column(
+  //                     // mainAxisAlignment: MainAxisAlignment.center,
+  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                     crossAxisAlignment: CrossAxisAlignment.end,
+  //                     children: [
+  //
+  //                       // Badge
+  //                       const UserBadgeLevel(
+  //                         label: 'Level-1',
+  //                         iconPath: 'assets/icons/check.svg',
+  //                       ),
+  //
+  //                        Image.asset(
+  //                         'assets/icons/staticChart.png',
+  //                         width: screenWidth * 0.48 ,
+  //                         height: screenHeight * 0.08,
+  //                         fit: BoxFit.contain,
+  //                       ),
+  //
+  //                        RichText(
+  //                         text:  TextSpan(
+  //                           text: 'Today up to ',
+  //                           style: TextStyle(
+  //                               fontFamily: 'Poppins',
+  //                               fontWeight: FontWeight.normal,
+  //                               color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
+  //                           children: <TextSpan>[
+  //                             TextSpan(
+  //                               text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
+  //                               style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
+  //                                 fontWeight: FontWeight.normal,
+  //                                 fontSize: getResponsiveFontSize(context, 10),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //               ],
+  //       )
+  //   );
+  // }
   Widget _EcmWithGraphChart(){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
-    return Container(
-        width: screenWidth,
-        height: screenHeight * 0.16,
-        decoration: BoxDecoration(
-          border: Border.all(
-              color: Colors.transparent
-          ),
-          image: const DecorationImage(
-            image: AssetImage('assets/icons/applyForListingBG.png'),
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Stack(
-          children: [
+    return FutureBuilder<String>(
+      future: walletVM.getBalance(),
+      builder: (context,snapshot){
+        String balanceText = '...';
+        if(snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active){
+          return Center(
+            child: const CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          );
 
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.035,
-                vertical: screenHeight * 0.015,
+        }else if(snapshot.connectionState == ConnectionState.done){
+          if(snapshot.hasData){
+            balanceText = snapshot.data!.toString();
+          }else if(snapshot.hasError){
+            balanceText = "Session expired";
+          }
+        }
+
+        return Container(
+            width: screenWidth,
+            height: screenHeight * 0.16,
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.transparent
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+              image: const DecorationImage(
+                image: AssetImage('assets/icons/applyForListingBG.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Stack(
+              children: [
 
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenWidth * 0.035,
+                    vertical: screenHeight * 0.015,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/ecm.png',
+                                  height: screenWidth * 0.04,
+                                  fit: BoxFit.contain,
+                                ),
+                                SizedBox(width: screenWidth * 0.01),
+                                Text(
+                                  'ECM Coin',
+                                  textAlign:TextAlign.start,
+                                  style: TextStyle(
+                                    color: const Color(0xffFFF5ED),
+                                    fontFamily: 'Poppins',
+                                    fontSize: getResponsiveFontSize(context, 16),
+                                    fontWeight: FontWeight.normal,
+                                    height: 1.6,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              formatBalance(balanceText),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Poppins',
+                                  fontSize: getResponsiveFontSize(context, 24),
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.3
+                              ),
+
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+
+                            /// Badge Icons (assuming this is related to the left text)
+                            Padding(
+                              padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
+                              child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+
+                            // Badge
+                            const UserBadgeLevel(
+                              label: 'Level-1',
+                              iconPath: 'assets/icons/check.svg',
+                            ),
+
                             Image.asset(
-                              'assets/icons/ecm.png',
-                              height: screenWidth * 0.04,
+                              'assets/icons/staticChart.png',
+                              width: screenWidth * 0.48 ,
+                              height: screenHeight * 0.08,
                               fit: BoxFit.contain,
                             ),
-                            SizedBox(width: screenWidth * 0.01),
-                            Text(
-                              'ECM Coin',
-                              textAlign:TextAlign.start,
-                              style: TextStyle(
-                                color: const Color(0xffFFF5ED),
-                                fontFamily: 'Poppins',
-                                fontSize: getResponsiveFontSize(context, 16),
-                                fontWeight: FontWeight.normal,
-                                height: 1.6,
+
+                            RichText(
+                              text:  TextSpan(
+                                text: 'Today up to ',
+                                style: TextStyle(
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
+                                    style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: getResponsiveFontSize(context, 10),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                          Text(
-                            '20000000', /// Get the Real Value  from Wallet
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Poppins',
-                                fontSize: getResponsiveFontSize(context, 24),
-                                fontWeight: FontWeight.w600,
-                                height: 1.3
-                          ),
-
-                        ),
-                        SizedBox(height: screenHeight * 0.01),
-
-                        /// Badge Icons (assuming this is related to the left text)
-                        Padding(
-                          padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
-                          child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
+              ],
+            )
+        );
+      },
 
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
 
-                        // Badge
-                        const UserBadgeLevel(
-                          label: 'Level-1',
-                          iconPath: 'assets/icons/check.svg',
-                        ),
-
-                         Image.asset(
-                          'assets/icons/staticChart.png',
-                          width: screenWidth * 0.48 ,
-                          height: screenHeight * 0.08,
-                          fit: BoxFit.contain,
-                        ),
-
-                         RichText(
-                          text:  TextSpan(
-                            text: 'Today up to ',
-                            style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.normal,
-                                color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
-                                style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: getResponsiveFontSize(context, 10),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-                ],
-        )
     );
   }
+
+
 
   Widget _joinPromoteEarn(){
     final Size screenSize = MediaQuery.of(context).size;
@@ -940,7 +1188,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               TextButton(
                 onPressed: () {
                   // Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
-
                 },
                 child: Text(
                   'View All',
@@ -981,26 +1228,31 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   children: [
 
 
-                    const TransactionStatCard(
+                    TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
-                      title: 'Your Transactions',
-                      value: '205',
+                      title: 'Transactions',
+                      // value: '205',
+                      value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+
                     ),
                     SizedBox(height: screenHeight * 0.01),
 
-                    const TransactionStatCard(
+                     TransactionStatCard(
                       bgImagePath: 'assets/icons/colorPurple.png',
-                      title: 'Total ECM',
-                      value: '205',
-                    ),
+                      title: 'Purchased Amount ',
+                      value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+
+                     ),
 
 
                      SizedBox(height: screenHeight * 0.01),
-                     const TransactionStatCard(
+                      TransactionStatCard(
                       bgImagePath: 'assets/icons/colorYellow.png',
-                      title: 'Total ETH',
-                      value: '205',
-                    ),
+                      // title: 'Total ETH',
+                      title: 'Attendant',
+                         value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
+
+                      ),
 
                     SizedBox(height: screenHeight * 0.001),
 
@@ -1021,14 +1273,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     );
   }
 
-
-
-
-
-
-
 }
-
-
-
-
+String formatBalance(String balance) {
+  if (balance.length <= 6) return balance;
+  return '${balance.substring(0, 8)}...';
+}

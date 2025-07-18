@@ -125,8 +125,7 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
       ),
     );
 
-    // Add the line image between items (not after the last one)
-    if (i < roadmapItems.length - 1) {
+     if (i < roadmapItems.length - 1) {
       roadmapWidgets.add(SizedBox(height: screenHeight * 0.03));
       roadmapWidgets.add(
         Center(

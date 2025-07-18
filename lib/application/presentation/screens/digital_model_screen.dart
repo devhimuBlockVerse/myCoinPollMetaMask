@@ -478,7 +478,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                     if (isETHActive) {
                                       await walletVM.buyECMWithETH(EtherAmount.inWei(paymentAmount),context);
                                     } else if (isUSDTActive) {
-                                      await walletVM.buyECMWithUSDT(paymentAmount,context);
+                                      // await walletVM.buyECMWithUSDT(paymentAmount,context);
                                     }
 
                                     ScaffoldMessenger.of(context).showSnackBar(

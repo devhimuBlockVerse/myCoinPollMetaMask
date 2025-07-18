@@ -7,7 +7,7 @@ import 'buy_Ecm.dart';
 
 class DialogModalView extends StatelessWidget {
   final VoidCallback onYes;
-  final VoidCallback onNo;
+  final VoidCallback? onNo;
   final String title;
   final String message;
   final String yesLabel;
@@ -15,7 +15,7 @@ class DialogModalView extends StatelessWidget {
   const DialogModalView({
     super.key,
     required this.onYes,
-    required this.onNo, required this.title, required this.message, required this.yesLabel,
+     this.onNo, required this.title, required this.message, required this.yesLabel,
   });
 
   @override
@@ -71,7 +71,10 @@ class DialogModalView extends StatelessWidget {
 
                   child: BlockButtonV2(
                     text: 'No',
-                    onPressed: onNo,
+                    // onPressed: onNo,
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
                     height: screenHeight * 0.045,
                     width: screenWidth * 0.7,
                   ),

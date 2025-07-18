@@ -662,8 +662,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           }
 
                           final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-                          // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
+                          // final ecmAmountInWeiUSDT = EtherAmount.fromUnitAndValue(EtherUnit.wei, (ethDouble * 1e6).round()).getInWei;
+
                           debugPrint("ETH in Wei: $ecmAmountInWeiETH");
                           debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 

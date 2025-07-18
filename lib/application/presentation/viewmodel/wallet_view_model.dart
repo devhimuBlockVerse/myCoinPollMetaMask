@@ -100,6 +100,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/FPbP1-XUOoRxMpYioocm5i4rdPSJSGKU";
   // static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
   static const String SALE_CONTRACT_ADDRESS = '0x02f2aA15675aED44A117aC0c55E795Be9908543D';
+  static const String USDT_CONTRACT_ADDRESS = '0xcfd9ee94fdeae5067da8d874b439ed996077f326';
+
   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x30C8E35377208ebe1b04f78B3008AAc408F00D1d';
   static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833';
   static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715';
@@ -157,8 +159,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           url: 'https://mycoinpoll.com/',
           icons: ['https://example.com/logo.png'],
           redirect: Redirect(
-            // native: 'exampleapp',
-            native: 'MyCoin Poll',
+             native: 'MyCoin Poll',
             universal: 'https://reown.com/exampleapp',
             linkMode: true,
           ),
@@ -186,8 +187,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       try {
         await appKitModal!.init();
       } catch (e) {
-        debugPrint("Error initializing modal: $e");
-        _isLoading = false;
+         _isLoading = false;
         notifyListeners();
         return;
       }
@@ -200,18 +200,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     // Simulate connection
     if (wasConnected && savedAddress != null && savedChainId != null) {
-      debugPrint("⚡ Simulating auto-connect flow...");
-      _walletAddress = savedAddress;
+       _walletAddress = savedAddress;
       _isConnected = true;
 
-      // Try opening the modal quietly, then fetch data
       try {
         await appKitModal!.openModalView();
         await fetchConnectedWalletData(isReconnecting: true);
         await getCurrentStageInfo();
       } catch (e) {
-        debugPrint("Silent modal trigger failed: $e");
-      }
+       }
     } else {
        await getCurrentStageInfo();
     }
@@ -229,34 +226,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     appKitModal!.onSessionExpireEvent.unsubscribeAll();
     appKitModal!.onSessionUpdateEvent.unsubscribeAll();
 
-    // appKitModal!.onModalConnect.subscribe((session) async {
-    //   _isConnected = true;
-    //   if (appKitModal!.session != null && appKitModal!.selectedChain != null) {
-    //     final chainId = appKitModal!.selectedChain!.chainId;
-    //     print("Chain ID: $chainId");
-    //
-    //     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    //     _walletAddress = appKitModal!.session!.getAddress(namespace)!;
-    //     await prefs.setBool('isConnected', true);
-    //     await prefs.setString('walletAddress', _walletAddress);
-    //     await prefs.setInt('chainId', int.parse(chainId));
-    //     // Save the session data
-    //     final sessionJson = appKitModal!.session?.toJson();
-    //     await prefs.setString('walletSession', jsonEncode(sessionJson));
-    //      await Future.wait([
-    //       fetchConnectedWalletData(),
-    //       getCurrentStageInfo(),
-    //     ]);
-    //   }
-    //   notifyListeners();
-    // });
     appKitModal!.onModalConnect.subscribe((session) async {
       _isConnected = true;
       if (appKitModal!.session != null && appKitModal!.selectedChain != null) {
         final chainId = appKitModal!.selectedChain!.chainId;
-        print("Chain ID: $chainId");
+
         final numericChainId = chainId.split(':').last;
-        print("Chain ID: $numericChainId");
+
 
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
         _walletAddress = appKitModal!.session!.getAddress(namespace)!;
@@ -275,7 +251,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     });
 
     appKitModal!.onModalUpdate.subscribe((ModalConnect? event) async {
-      print("Modal Update : ${event.toString()}");
+
       if (event != null) {
         _isConnected = true;
         final chainId = appKitModal!.selectedChain?.chainId;
@@ -284,14 +260,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           final updatedAddress = event.session.getAddress(namespace);
           if (updatedAddress != null && updatedAddress != _walletAddress) {
             _walletAddress = updatedAddress;
-            print("Modal Update - New Wallet Address: $_walletAddress");
             await fetchConnectedWalletData();
           }
         }
       } else {
         _isConnected = false;
         _walletAddress = '';
-        print("Modal Update - Session cleared or null");
+
       }
       await getCurrentStageInfo();
       notifyListeners();
@@ -307,7 +282,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     });
 
     appKitModal!.onSessionExpireEvent.subscribe((event) async {
-      print("Session expired: ${event.topic}");
+
       _isConnected = false;
       _walletAddress = '';
       await _clearWalletAndStageInfo();
@@ -315,14 +290,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     });
 
     appKitModal!.onSessionUpdateEvent.subscribe((event) async {
-      print("Session Update : ${event.topic}");
+
       if (appKitModal!.selectedChain != null && appKitModal!.session != null) {
         final chainId = appKitModal!.selectedChain!.chainId;
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
         final updateAddress = appKitModal!.session!.getAddress(namespace)!;
         if (updateAddress != _walletAddress) {
           _walletAddress = updateAddress;
-          print("Updated New Wallet Address: $_walletAddress");
+
         }
         await fetchConnectedWalletData();
       }
@@ -379,14 +354,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   ///LifeCycle Functions
   Future<void> _handleAppResume() async {
-    debugPrint("App resumed. Handling reconnection...");
-    if (appKitModal == null || appKitModal!.session == null) {
-      debugPrint("No active session found on resume.");
-      await _clearWalletAndStageInfo(shouldNotify: false);
+     if (appKitModal == null || appKitModal!.session == null) {
+       await _clearWalletAndStageInfo(shouldNotify: false);
       return;
     }
     try {
-      // await appKitModal?.init();
 
       final selectedChain = appKitModal!.selectedChain;
 
@@ -396,12 +368,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _walletAddress = appKitModal!.session!.getAddress(namespace)!;
         _isConnected = true;
 
-        print("Wallet reconnected: $_walletAddress");
-        await fetchConnectedWalletData(isReconnecting: true);
+         await fetchConnectedWalletData(isReconnecting: true);
         await getCurrentStageInfo();
       } else {
-        print("Session invalid after resume. Clearing.");
-        await _clearWalletAndStageInfo(shouldNotify: true);
+         await _clearWalletAndStageInfo(shouldNotify: true);
       }
     } catch (e, stack) {
       debugPrint("Resume error: $e\n$stack");
@@ -465,13 +435,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
    Future<void> fetchConnectedWalletData({bool isReconnecting = false}) async {
     // Crucial: Always check for fundamental modal components before proceeding
     if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
-      print("AppKitModal or session not fully initialized. Cannot fetch connected wallet data.");
         _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
       return;
     }
 
     if (!_isConnected) {
-      print("WalletViewModel is not marked as connected. Skipping connected wallet data fetch.");
        _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
       return;
     }
@@ -483,7 +451,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     final currentSessionAddress = appKitModal!.session!.getAddress(nameSpace);
 
     if (currentSessionAddress == null || currentSessionAddress.isEmpty) {
-      print("No valid wallet address found in the current session. Skipping connected wallet data fetch.");
        await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
       return;
     }
@@ -495,7 +462,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
     try {
-      print("Fetching connected wallet specific data for address: $_walletAddress...");
+
       await Future.wait([
         getBalance(),
         getMinimunStake(),
@@ -523,7 +490,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
       final abiData = jsonDecode(abiString);
       final saleContract = DeployedContract(
-        ContractAbi.fromJson(jsonEncode(abiData), 'ECMCoinICO'), //ABI contract name
+        ContractAbi.fromJson(jsonEncode(abiData), 'ECMCoinICO'),
         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
       );
 
@@ -639,9 +606,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         addressToQuery = appKitModal!.session!.getAddress(nameSpace)!;
       } else {
         addressToQuery = '0x0000000000000000000000000000000000000000'; // Placeholder
-        print("Wallet not connected, fetching balance for a placeholder address.");
+
       }
-      print("Wallet address used for getBalance: $addressToQuery");
+
 
       final balanceOfResult = await _web3Client!.call(
         contract: tetherContract,
@@ -652,7 +619,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final divisor = BigInt.from(10).pow(tokenDecimals);
       _balance = (balance / divisor).toString();
       print('balanceOf: ${balanceOfResult[0]}');
-      print('runtimeType: ${balanceOfResult[0].runtimeType}');
+
       return '$_balance';
     } catch (e) {
       _balance = null;
@@ -687,9 +654,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final totalSupply = totalSupplyResult[0] as BigInt;
       final divisor = BigInt.from(10).pow(tokenDecimals);
       final formattedTotalSupply = totalSupply / divisor;
-      print('totalSupply: ${totalSupplyResult[0]}');
-      print('runtimeType: ${totalSupplyResult[0].runtimeType}');
-      return '$formattedTotalSupply';
+        return '$formattedTotalSupply';
     } catch (e) {
       print('Error getting total supply: $e');
       rethrow;
@@ -752,7 +717,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final abiData = jsonDecode(abiString);
       final decimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-      print("Decimals for staking: $decimals");
+
 
       final stakingContract = DeployedContract(
         ContractAbi.fromJson(
@@ -769,8 +734,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
       final max = (maximumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
       _maximumStake = max.toDouble().toStringAsFixed(0);
-      print("Raw maximumStakeResult: ${maximumStakeResult[0]}");
-      return _maximumStake!;
+       return _maximumStake!;
     } catch (e) {
       print('Error getting Maximum stake: $e');
       _maximumStake = null;
@@ -832,7 +796,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         ],
       );
       print('Transfer Result: $result');
-      print('runtimeType: ${result.runtimeType}');
+
       ToastMessage.show(
         message: "Transaction Sent",
         subtitle: "Token transfer initiated successfully!",
@@ -899,8 +863,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         parameters: [EthereumAddress.fromHex(referrerAddress)],
       );
       print('Transaction Hash: $result');
-      print('runtimeType: ${result.runtimeType}');
-      print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
 
       if (result != null && result.toString().startsWith("0x") && result.toString().length == 66) {
         ToastMessage.show(
@@ -950,46 +912,78 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<String> buyECMWithUSDT(BigInt amount, BuildContext context) async {
+
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
+
       throw Exception("Wallet not Connected or selected chain not available.");
     }
     _isLoading = true;
     notifyListeners();
     try {
-      final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
-      final abiData = jsonDecode(abiString);
+      final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(
+          ReownAppKitModalNetworks.getNamespaceForChainId(appKitModal!.selectedChain!.chainId)
+      )!);
+
+       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
+      final abiJson = jsonDecode(abiString);
+      final abi = abiJson is Map && abiJson.containsKey("abi") ? abiJson["abi"] : abiJson;
+
       final saleContract = DeployedContract(
-        ContractAbi.fromJson(
-          jsonEncode(abiData),
-          'ECMCoinICO',
-        ),
+        ContractAbi.fromJson(jsonEncode(abi), 'ECMCoinICO',),
         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
       );
+      print(">>> Sale contract deployed at: $SALE_CONTRACT_ADDRESS");
+
+
+      final usdtAbiString = await rootBundle.loadString("assets/abi/IERC20ABI.json");
+      final usdtAbi = jsonDecode(usdtAbiString);
+
+      print(">>> Loaded USDT ABI.");
+
+      final usdtContract = DeployedContract(
+        ContractAbi.fromJson(jsonEncode(usdtAbi), "IERC20"),
+        EthereumAddress.fromHex(USDT_CONTRACT_ADDRESS),
+      );
+      print(">>> USDT contract deployed at: $USDT_CONTRACT_ADDRESS");
+
       final chainID = appKitModal!.selectedChain!.chainId;
       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-      const referrerAddress = "0x0000000000000000000000000000000000000000";
 
-      final metaMaskUrl = Uri.parse(
-        'metamask://dapp/exampleapp',
+
+      /// Step 1: Approve
+      final approveTxHash = await appKitModal!.requestWriteContract(
+        topic: appKitModal!.session!.topic,
+        chainId: chainID,
+        deployedContract: usdtContract,
+        functionName: 'approve',
+        transaction: Transaction(from: walletAddress),
+        // parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
+        parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
       );
-      await launchUrl(metaMaskUrl, mode: LaunchMode.externalApplication);
+      print(">>> USDT approved successfully.");
 
-      // No Future.delayed here.
+      await _waitForTransaction(approveTxHash);
+
+
+      final referrerAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+
+      print(">>> Sending buyECMWithUSDT transaction...");
       final result = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: chainID,
         deployedContract: saleContract,
         functionName: 'buyECMWithUSDT',
-        transaction: Transaction(
-          from: EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!),
-        ),
-        parameters: [amount, EthereumAddress.fromHex(referrerAddress)],
+        transaction: Transaction(from: walletAddress),
+        parameters: [amount, referrerAddress],
       );
-      print('Transaction Hash: $result');
-      print('runtimeType: ${result.runtimeType}');
-      print("ABI Functions: ${saleContract.functions.map((f) => f.name).toList()}");
+      await _waitForTransaction(result);
+      print('>>> Transaction result: $result');
 
-      if (result != null && result.toString().startsWith("0x") && result.toString().length == 66) {
+
+
+      if (result != null && result.toString().startsWith("0x")) {
+        print(">>> Purchase successful. Transaction hash: $result");
+
         ToastMessage.show(
           message: "Purchase Successful",
           subtitle: "USDT transaction submitted successfully!",
@@ -1001,6 +995,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await getCurrentStageInfo();
         return result;
       }else{
+
+
         ToastMessage.show(
           message: "Transaction Cancelled",
           subtitle: "You cancelled the transaction in your wallet.",
@@ -1013,7 +1009,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
     } catch (e) {
-      print("Error buying ECM with USDT: $e");
+      print(">>> Error occurred during buyECMWithUSDT: $e");
 
       final isUserRejected = isUserRejectedError(e);
 
@@ -1032,13 +1028,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } finally {
       _isLoading = false;
       notifyListeners();
+
     }
   }
 
 
   Future<String?> stakeNow(BuildContext context, double amount, int planIndex,
       {String referrerAddress = '0x0000000000000000000000000000000000000000'}) async {
-    print(">> stakeNow() called with amount=$amount, planIndex=$planIndex, referrerAddress=$referrerAddress");
 
     /// Modal Check
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
@@ -1047,8 +1043,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         subtitle: "Please connect your wallet before staking.",
         type: MessageType.error,
       );
-      print(" >> Wallet not connected or chain not selected.");
-      throw Exception("Wallet not connected or chain not selected.");
+       throw Exception("Wallet not connected or chain not selected.");
     }
 
     if (amount <= 0 || planIndex < 0) {
@@ -1057,18 +1052,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         subtitle: "Please enter a valid amount and select a plan",
         type: MessageType.info,
       );
-      print(">> Invalid amount or planIndex.");
-      return null;
+       return null;
     }
 
     _isLoading = true;
     notifyListeners();
-    print(">> Loading started...");
 
     try {
       /// Contract data setup
       final chainID = appKitModal!.selectedChain!.chainId;
-      print(">> Selected chain ID: $chainID");
 
       final tokenAbiString = await rootBundle.loadString("assets/abi/MyContract.json");
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
@@ -1084,18 +1076,18 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       final stakeFunction = stakingContract.function('stake');
       print('>> Staking function: ${stakeFunction.name}');
-      print('>> Parameters count: ${stakeFunction.parameters.length}');
+
       for (int i = 0; i < stakeFunction.parameters.length; i++) {
         final param = stakeFunction.parameters[i];
-        print(' >> - Param $i: name=${param.name}, type=${param.type}');
+
       }
 
       final tokenDecimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-      print(">> Token decimals: $tokenDecimals");
+
 
       final multiplier = Decimal.parse('1e$tokenDecimals');
       final stakeAmount = (Decimal.parse(amount.toString()) * multiplier).toBigInt();
-      print('>> stakeAmount: type=${stakeAmount.runtimeType}, value=$stakeAmount');
+
 
       /// Approval Transaction
       ToastMessage.show(
@@ -1126,10 +1118,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       } else {
         throw Exception("Unexpected type for approve transaction hash: ${approveTxResult.runtimeType}");
       }
-      print(">> Approval transaction hash: $approveTxHash");
+
 
       /// Wait for approval confirmation
-      print(">> Waiting for approval transaction confirmation...");
+
       final approveReceipt = await _waitForTransaction(approveTxHash);
       if (approveReceipt == null) {
         throw Exception("Approval transaction failed or timed out.");
@@ -1176,10 +1168,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       } else {
         throw Exception("Unexpected type for stake transaction hash: ${stakeTxResult.runtimeType}");
       }
-      print(">> Stake transaction hash: $stakeTxHash");
 
-      // Wait for stake confirmation and get receipt
-      print(">> Waiting for stake transaction confirmation...");
+
+
       final stakeReceipt = await _waitForTransaction(stakeTxHash);
 
       if (stakeReceipt == null) {
@@ -1193,9 +1184,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       bool successShown = false;
 
-      print(">> Logs count: ${stakeReceipt.logs.length}");
-      final stakeEventSignatureHex = bytesToHex(stakeEvent.signature);
-      print("  >> - Stake event signature hex: $stakeEventSignatureHex");
+       final stakeEventSignatureHex = bytesToHex(stakeEvent.signature);
 
       for (final log in stakeReceipt.logs) {
         try {
@@ -1204,8 +1193,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
              if (firstTopic == null) {
-               print(">> Null first topic, skipping this log");
-               continue;
+                continue;
              }
 
              String firstTopicHex;
@@ -1220,31 +1208,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
                final bytes = hexToBytes(firstTopic);
                firstTopicHex = bytesToHex(bytes);
              } else {
-               print(">> Unknown topic type: ${firstTopic.runtimeType}");
-               continue;
+                continue;
              }
 
             final stakeEventHex = bytesToHex(stakeEvent.signature);
-            print(" >>  - Log first topic hex: $firstTopicHex");
-            print("  >> - Stake event signature hex: $stakeEventHex");
+
 
             if (firstTopicHex.toLowerCase() == stakeEventHex.toLowerCase()) {
               print(">> Matched 'Staked' event log");
 
-              print(" >>  - Log topics:");
-              for (var t in log.topics!) {
-                print(" >>    • Topic: $t (${t.runtimeType})");
-              }
-
-              print(" >>  - Log data: ${log.data} (${log.data.runtimeType})");
-
               final decodedLog = stakeEvent.decodeResults(log.topics!, log.data!);
-
-              print(" >>  - Decoded log results:");
-              for (int i = 0; i < decodedLog.length; i++) {
-                print("  >>   • decoded[$i]: ${decodedLog[i]}");
-              }
-
               final payload = {
                 'hash': bytesToHex(stakeReceipt.transactionHash),
                 'staker': (decodedLog[0] as EthereumAddress).hex,
@@ -1264,11 +1237,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
               print(">> Sending POST request to: $apiUrl");
 
-              print(">> Entering backend sync block...");
+
               final prefs = await SharedPreferences.getInstance();
               final token = prefs.getString('token');
-              print(">> Token BEFORE sending request: $token");
-
 
               try {
 
@@ -1281,9 +1252,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
                   },
                   body: jsonEncode(payload),
                 );
-                print(">> POST request sent.");
-                print(">> Payload: $payload");
-                print(">> Response status: ${response.statusCode}");
+                 print(">> Response status: ${response.statusCode}");
                 print(">> Response body: ${response.body}");
                 final postToken = prefs.getString('token');
                 print(">> Token AFTER response: $postToken");
@@ -1307,7 +1276,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
               return bytesToHex(stakeReceipt.transactionHash);
             }
           } else {
-            print("⚠>> Skipping log with empty or null topics.");
+            print(">> Skipping log with empty or null topics.");
           }
         } catch (e) {
           print(">> Error decoding log: $e");
@@ -1326,11 +1295,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       return null;
     } catch (e) {
-      debugPrint("❌ Staking failed: $e");
-      // final errorMessage = e.toString().toLowerCase();
-      // final isUserRejected = errorMessage.contains("user rejected") ||
-      //     errorMessage.contains("user denied") ||
-      //     errorMessage.contains("user cancelled");
+      debugPrint("Staking failed: $e");
 
       final isUserRejected = isUserRejectedError(e);
       ToastMessage.show(
@@ -1345,8 +1310,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } finally {
       _isLoading = false;
       notifyListeners();
-      print(">> Loading ended.");
-    }
+     }
 
   }
 
@@ -1411,8 +1375,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
             final decoded = hexToBytes(topic0);
             topic0Hex = bytesToHex(decoded);
           } else {
-            print("Unknown topic type: ${topic0.runtimeType}");
-            continue;
+             continue;
           }
 
 
@@ -1428,8 +1391,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           }
         }catch(e){
           print("Error decoding log: $e");
-
-
         }
       }
 
@@ -1512,7 +1473,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
              final decoded = hexToBytes(topic0);
              topic0Hex = bytesToHex(decoded);
            } else {
-             print("Unknown topic type: ${topic0.runtimeType}");
              continue;
            }
 
@@ -1546,8 +1506,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
          type: isUserRejected ? MessageType.info : MessageType.error,
          duration: CustomToastLength.LONG,
        );
-
-       // ToastMessage.show(message: "Unstake failed: $e", type: MessageType.error);
        return null;
      } finally {
        _isLoading = false;
@@ -1615,8 +1573,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       const timeout = Duration(minutes: 3);
       final expiry = DateTime.now().add(timeout);
 
-      print("Waiting for transaction: $txHash");
-
       while (DateTime.now().isBefore(expiry)){
         try{
           final receipt = await _web3Client!.getTransactionReceipt(txHash);
@@ -1627,9 +1583,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
             }else{
               print("Transaction reverted by EVM: $txHash");
               throw Exception("Transaction failed. Please check the block explorer for details.");
-
             }
-
           }
         }catch(e){
           debugPrint("_waitForTransaction :$e");
@@ -1638,8 +1592,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
       throw Exception("Transaction timed out. Could not confirm transaction status.");
     }
-
-
 
    /// Mock function to format decimal value to token unit (BigInt)
   BigInt _formatValue(double amount, {required BigInt decimals}) {

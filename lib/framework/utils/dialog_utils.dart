@@ -43,7 +43,6 @@ class DialogUtils {
           subtitle: '2023',
           items: [
 
-
             DialogItem(text: 'MyCoinPoll.Com Site launched', icon: Icons.check_box),
             DialogItem(text: 'MyCoinPoll.Com ETH Community Donation Program launched', icon: Icons.check_box),
             DialogItem(text: 'MyCoinPoll.Com USDT Community Donation Program launched', icon: Icons.check_box),
@@ -150,7 +149,7 @@ class DialogUtils {
           subtitle: '2024-Q4',
           items: [
 
-             DialogItem(text: 'The founder company has done business registration as a crypto exchanger.', icon: Icons.check_box),
+            DialogItem(text: 'The founder company has done business registration as a crypto exchanger.', icon: Icons.check_box),
             DialogItem(text: 'Androverse Access & VA Selling Planning', icon: Icons.check_box),
             DialogItem(text: 'ECM ICO Launch(www.mycoinpoll.com)', icon: Icons.check_box),
             DialogItem(text: 'Telegram Tap to Earn Game Launching', icon: Icons.check_box),
@@ -178,7 +177,7 @@ class DialogUtils {
           subtitle: '2025-Q1',
           items: [
 
-             DialogItem(text: 'Launching Multi Trading Platform', icon: Icons.timer),
+            DialogItem(text: 'Launching Multi Trading Platform', icon: Icons.timer),
             DialogItem(text: 'CEX (Centralized Exchange) launch -bCoinMart.com', icon: Icons.timer),
             DialogItem(text: 'Tier 1 CEX listings', icon: Icons.timer),
             DialogItem(text: 'Tier 2 CEX listings (ECM COIN LISTING)', icon: Icons.timer),
@@ -206,7 +205,7 @@ class DialogUtils {
 
           items: [
 
-             DialogItem(text: 'Launching Multi Copy Trading Platform', icon: Icons.timer),
+            DialogItem(text: 'Launching Multi Copy Trading Platform', icon: Icons.timer),
             DialogItem(text: 'ECM COIN LISTING Other CEX (Binance , Bybit , Kucoin & others)', icon: Icons.timer),
             DialogItem(text: 'Staking Project Launching', icon: Icons.timer),
             DialogItem(text: 'Androverse Platform Update V0.2', icon: Icons.timer),

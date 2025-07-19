@@ -59,7 +59,7 @@ class _TransferState extends State<Transfer> {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  'assets/icons/dialogFrame.png',
+                  'assets/images/dialogFrame.png',
                   fit: BoxFit.fill,
                 ),
               ),
@@ -134,7 +134,7 @@ class _TransferState extends State<Transfer> {
                               SizedBox(height: screenHeight * 0.02),
 
                               FieldContainer(
-                                imgUrl: selected == "ETH" ? "assets/icons/eth.png" : "assets/icons/ecmSmall.png",
+                                imgUrl: selected == "ETH" ? "assets/images/eth.png" : "assets/images/ecmSmall.png",
                                 items: currencies,
                                 type: CustomInputType.dropdown,
                                 selectedItem: selected,

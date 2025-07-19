@@ -77,7 +77,7 @@ class _SideNavBarState extends State<SideNavBar> {
               color:   Color(0xff040C16),
 
               image: DecorationImage(
-                image: AssetImage('assets/icons/sideNav_BG.png'),
+                image: AssetImage('assets/images/sideNav_BG.png'),
                 fit: BoxFit.fill,
                ),
              ),
@@ -113,7 +113,7 @@ class _SideNavBarState extends State<SideNavBar> {
         children: <Widget>[
           CircleAvatar(
             radius: avatarRadius,
-            backgroundImage: const AssetImage('assets/icons/ecm.png'),
+            backgroundImage: const AssetImage('assets/images/ecm.png'),
             backgroundColor: Colors.white.withOpacity(0.3),
           ),
           SizedBox(height: drawerWidth * 0.03),
@@ -218,8 +218,8 @@ class _SideNavBarState extends State<SideNavBar> {
         image: DecorationImage(
           image: AssetImage(
             isSelected
-                ? 'assets/icons/sideNavSelectedOptionsBg.png'
-                : 'assets/icons/sideNavUnselectedOptionsBg.png',
+                ? 'assets/images/sideNavSelectedOptionsBg.png'
+                : 'assets/images/sideNavUnselectedOptionsBg.png',
           ),
           fit: BoxFit.fill,
         ),

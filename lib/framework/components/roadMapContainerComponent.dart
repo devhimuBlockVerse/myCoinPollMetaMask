@@ -38,7 +38,7 @@ class RoadmapContainerComponent extends StatelessWidget {
                 // Background image
                 Positioned.fill(
                   child: Image.asset(
-                    "assets/icons/roadmapFrame.png",
+                    "assets/images/roadmapFrame.png",
                     fit: BoxFit.fill,
                     alignment: Alignment.topCenter,
                   ),
@@ -53,7 +53,7 @@ class RoadmapContainerComponent extends StatelessWidget {
                     height: yearImageHeight,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/icons/yearCircular.png'),
+                        image: AssetImage('assets/images/yearCircular.png'),
                         fit: BoxFit.fitWidth,
                       ),
                     ),

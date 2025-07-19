@@ -118,7 +118,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             color: Color(0xFF01090B),
             image: DecorationImage(
 
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -167,7 +167,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage('assets/icons/forgotpassbg.png'),
+                                    image: AssetImage('assets/images/forgotpassbg.png'),
                                     fit: BoxFit.fill,
                                   ),
                                 ),

@@ -25,7 +25,7 @@ class CustomSettingsActionButton extends StatelessWidget {
 
         image: DecorationImage(
 
-          image: AssetImage('assets/icons/settingActionBg.png'),
+          image: AssetImage('assets/images/settingActionBg.png'),
           fit: BoxFit.fill,
           alignment: Alignment.topRight,
         ),

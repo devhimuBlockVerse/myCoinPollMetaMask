@@ -29,8 +29,8 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
   TextEditingController inputController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
-  List<EcmTaskModel> _masterData = []; // Holds the original, unfiltered list
-  List<EcmTaskModel> _displayData = []; // Holds the filtered and sorted list for display
+  List<EcmTaskModel> _masterData = [];
+  List<EcmTaskModel> _displayData = [];
 
   @override
   void initState() {
@@ -121,12 +121,12 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
       body: SafeArea(
         child: Container(
           width: double.infinity,
-          // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+              filterQuality: FilterQuality.low
             ),
           ),
           child: Column(
@@ -184,10 +184,11 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                             height: containerHeight < minContainerHeight
                                 ? minContainerHeight
                                 : containerHeight,
-                            decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage('assets/icons/buildStatCardBG.png'),
+                            decoration: const BoxDecoration(
+                              image:  DecorationImage(
+                                image: AssetImage('assets/images/buildStatCardBG.png'),
                                 fit: BoxFit.fill,
+                                filterQuality: FilterQuality.low
                               ),
                             ),
                             child: Padding(
@@ -347,7 +348,6 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
                                 children: [
                                   MilestoneLists(task: _displayData[index]),
                                   SizedBox(height: screenHeight * 0.020),
-
                                 ],
                               );
                             },
@@ -385,9 +385,10 @@ class _MilestoneScreenState extends State<MilestoneScreen> {
           color: borderColor ?? const Color(0xFF2B2D40),
           width: 1,
         ),
-          image: DecorationImage(
-            image: AssetImage('assets/icons/milestoneStatFrameBg.png'),
+          image:const DecorationImage(
+            image: AssetImage('assets/images/milestoneStatFrameBg.png'),
             fit: BoxFit.fill,
+            filterQuality: FilterQuality.low
           )
       ),
       child: Padding(

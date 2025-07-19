@@ -72,7 +72,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -138,13 +138,14 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                             // height: screenHeight,
                             decoration: const BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/icons/userActivityProgressBg.png'),
+                                image: AssetImage('assets/images/userActivityProgressBg.png'),
                                 fit: BoxFit.fill,
+                                filterQuality: FilterQuality.medium
                                ),
                             ),
                             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
 
-                            child: UserActivityProgressBar(
+                            child: const UserActivityProgressBar(
                               title: "Progress",
                               currentValue: 2,
                               maxValue: 5,
@@ -166,7 +167,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
                              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage('assets/icons/userActivityLogBg2.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
+                                  image: AssetImage('assets/images/userActivityLogBg2.png'),fit: BoxFit.fill,filterQuality: FilterQuality.high),
 
                             ),
 
@@ -239,7 +240,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
       padding: EdgeInsetsDirectional.zero,
       decoration: BoxDecoration(
         image: const DecorationImage(
-          image: AssetImage('assets/icons/rootContentBg.png'),
+          image: AssetImage('assets/images/rootContentBg.png'),
           fit: BoxFit.fill,
         ),
       ),
@@ -438,7 +439,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
           width: 1,
         ),
         image: DecorationImage(
-          image: AssetImage('assets/icons/milestoneStatFrameBg.png'),
+          image: AssetImage('assets/images/milestoneStatFrameBg.png'),
           fit: BoxFit.fill,
         )
       ),
@@ -507,7 +508,7 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
       width: double.infinity,
       decoration: const BoxDecoration(
         image:  DecorationImage(
-            image: AssetImage('assets/icons/rewardContainerBg.png'),filterQuality: FilterQuality.high,fit: BoxFit.fill
+            image: AssetImage('assets/images/rewardContainerBg.png'),filterQuality: FilterQuality.high,fit: BoxFit.fill
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04,vertical: screenHeight * 0.02),
@@ -527,19 +528,19 @@ class _MilestoneDetailsScreenState extends State<MilestoneDetailsScreen> {
           SizedBox(height: screenHeight * 0.02),
 
           RewardInfoCard(
-            imageUrl: 'assets/icons/worldTrip.png',
+            imageUrl: 'assets/images/worldTrip.png',
             message: 'We will provide you a tour trip from Dhaka to Cox’s Bazar for 2–3 days.',
           ),
           SizedBox(height: screenHeight * 0.02),
 
           RewardInfoCard(
-            imageUrl: 'assets/icons/money.png',
+            imageUrl: 'assets/images/money.png',
             message: 'You will Get \$200 after completing the milestone',
           ),
           SizedBox(height: screenHeight * 0.02),
 
           RewardInfoCard(
-            imageUrl: 'assets/icons/coin.png',
+            imageUrl: 'assets/images/coin.png',
             message: 'You will Get 150 ECM after completing the milestone',
           ),
 

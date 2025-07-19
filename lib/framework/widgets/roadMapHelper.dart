@@ -132,7 +132,7 @@ Widget buildRoadmapSection(BuildContext context, double screenHeight) {
           child: Transform.translate(
             offset: const Offset(0, -28),
             child: Image.asset(
-              'assets/icons/line.png',
+              'assets/images/line.png',
               height: screenHeight * 0.07,
               fit: BoxFit.contain,
             ),

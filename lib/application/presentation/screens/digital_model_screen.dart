@@ -147,7 +147,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                     decoration: const BoxDecoration(
 
                       image:DecorationImage(
-                        image: AssetImage('assets/icons/buyEcmContainerImage.png'),
+                        image: AssetImage('assets/images/buyEcmContainerImage.png'),
                         fit: BoxFit.fitHeight,
                       ),
                     ),
@@ -230,7 +230,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               //     Expanded(
                               //       child: CustomButton(
                               //         text: 'Buy with ETH',
-                              //         icon: 'assets/icons/eth.png',
+                              //         icon: 'assets/images/eth.png',
                               //         isActive: isETHActive,
                               //         onPressed: ()async {
                               //           try {
@@ -266,7 +266,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                               //       child:
                               //           CustomButton(
                               //         text: 'Buy with USDT',
-                              //         icon: 'assets/icons/usdt.png',
+                              //         icon: 'assets/images/usdt.png',
                               //         isActive: isUSDTActive,
                               //         onPressed: ()async {
                               //           try {
@@ -306,7 +306,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                   Expanded(
                                     child: CustomButton(
                                       text: 'Buy with ETH',
-                                      icon: 'assets/icons/eth.png',
+                                      icon: 'assets/images/eth.png',
                                       isActive: isETHActive,
                                       onPressed: () async {
                                         try {
@@ -339,7 +339,7 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
                                   Expanded(
                                     child: CustomButton(
                                       text: 'Buy with USDT',
-                                      icon: 'assets/icons/usdt.png',
+                                      icon: 'assets/images/usdt.png',
                                       isActive: isUSDTActive,
                                       onPressed: () async {
                                         // ✅ ADDED THIS LOGIC
@@ -387,13 +387,13 @@ class _DigitalModelScreenState extends State<DigitalModelScreen> {
 
                               CustomInputField(
                                 hintText: 'ECM Amount',
-                                iconAssetPath: 'assets/icons/ecm.png',
+                                iconAssetPath: 'assets/images/ecm.png',
                                 controller: ecmController,
                               ),
                               const SizedBox(height: 12),
                               CustomInputField(
                                 hintText: isETHActive ? 'ETH Payable' : 'USDT Payable',
-                                iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
+                                iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/icons/usdt.png',
                                 controller: usdtController,
 
                               ),

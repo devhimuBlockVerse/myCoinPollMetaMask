@@ -63,7 +63,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -172,7 +172,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                                     title: lesson.title,
                                     description: lesson.shortDescription,
                                     // imagePath: lesson.image,
-                                    imagePath: 'assets/icons/learnAndEarnImg.png',
+                                    imagePath: 'assets/images/learnAndEarnImg.png',
                                     onTap: () {
                                       Navigator.push(
                                         context,
@@ -187,7 +187,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                                 // LearnAndEarnContainer(
                                 //   title: 'Blockchain Fundamentals & Analysis',
                                 //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                                //   imagePath: 'assets/icons/learnAndEarnImg.png',
+                                //   imagePath: 'assets/images/learnAndEarnImg.png',
                                 //   onTap: () {
                                 //     Navigator.push(
                                 //       context,
@@ -201,7 +201,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                                 // LearnAndEarnContainer(
                                 //   title: 'Blockchain Fundamentals & Analysis',
                                 //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                                //   imagePath: 'assets/icons/lesson2.png',
+                                //   imagePath: 'assets/images/lesson2.png',
                                 //   onTap: () {
                                 //     Navigator.push(
                                 //       context,
@@ -256,7 +256,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     //           LearnAndEarnContainer(
                     //             title: 'Blockchain Fundamentals & Analysis',
                     //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                    //             imagePath: 'assets/icons/learnAndEarnImg.png',
+                    //             imagePath: 'assets/images/learnAndEarnImg.png',
                     //             onTap: () {
                     //               Navigator.push(
                     //                 context,
@@ -270,7 +270,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     //           LearnAndEarnContainer(
                     //             title: 'Blockchain Fundamentals & Analysis',
                     //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                    //             imagePath: 'assets/icons/lesson2.png',
+                    //             imagePath: 'assets/images/lesson2.png',
                     //             onTap: () {
                     //               Navigator.push(
                     //                 context,
@@ -313,7 +313,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
       height: screenHeight * 0.16,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/bgContainerImg.png'),
+          image: AssetImage('assets/images/bgContainerImg.png'),
           fit: BoxFit.fill,
         ),
       ),
@@ -363,7 +363,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
             Flexible(
               flex: 2,
               child: Image.asset(
-                'assets/icons/headerFrameContainer.png',
+                'assets/images/headerFrameContainer.png',
                 height: screenHeight * 0.12,
                 fit: BoxFit.contain,
               ),

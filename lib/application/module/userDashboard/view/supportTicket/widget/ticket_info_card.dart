@@ -29,7 +29,7 @@ class TicketInfoCard extends StatelessWidget {
       height: screenHeight * 0.15,
       decoration:const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/infoCardBg.png'),
+          image: AssetImage('assets/images/infoCardBg.png'),
           fit: BoxFit.fill,
         ),
       ),

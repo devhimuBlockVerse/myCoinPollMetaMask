@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
@@ -7,8 +6,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tra
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
-import '../../models/user_model.dart';
-import '../../viewmodel/bottom_nav_provider.dart';
+ import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import 'notification/notifications.dart';
 import 'personal_info/personal_information.dart';
@@ -51,10 +49,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             decoration: const BoxDecoration(
               color: Color(0xFF01090B),
               image: DecorationImage(
-                // image: AssetImage('assets/icons/starGradientBg.png'),
-                image: AssetImage('assets/icons/solidBackGround.png'),
+                 image: AssetImage('assets/images/solidBackGround.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
+                  filterQuality: FilterQuality.low
 
               ),
             ),
@@ -105,10 +103,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                width: double.infinity,
 
                                decoration: BoxDecoration(
-                                 // color: const Color(0xFF01090B),
-                                 image: const DecorationImage(
-                                    image: AssetImage('assets/icons/profileFrameBg.png'),
+                                  image: const DecorationImage(
+                                    image: AssetImage('assets/images/profileFrameBg.png'),
                                    fit: BoxFit.fill,
+                                      filterQuality: FilterQuality.low
                                   ),
                                  borderRadius: BorderRadius.circular(14),
                                  border: Border.all(
@@ -132,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       leadingIconPath: 'assets/icons/profile.svg',
                                       trailingIconPath: 'assets/icons/rightArrow.svg',
                                       onTrailingIconTap: () {
-                                        debugPrint("Trailing icon tapped");
+
                                         Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) => const PersonalInformationScreen()),
                                         );
@@ -146,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       leadingIconPath: 'assets/icons/tared.svg',
                                       trailingIconPath: 'assets/icons/rightArrow.svg',
                                       onTrailingIconTap: () {
-                                        debugPrint("Trailing icon tapped");
+
                                         Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
                                         );
@@ -160,8 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       leadingIconPath: 'assets/icons/taxStatement.svg',
                                       trailingIconPath: 'assets/icons/rightArrow.svg',
                                       onTrailingIconTap: () {
-                                        debugPrint("Trailing icon tapped");
-                                        Navigator.of(context).push(
+                                         Navigator.of(context).push(
                                           MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
                                         );
                                       },
@@ -174,8 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        leadingIconPath: 'assets/icons/notify.svg',
                                        trailingIconPath: 'assets/icons/rightArrow.svg',
                                        onTrailingIconTap: () {
-                                         debugPrint("Trailing icon tapped");
-                                         Navigator.of(context).push(
+                                          Navigator.of(context).push(
                                          MaterialPageRoute(builder: (context) => const NotificationsScreen()),
                                        );
                                        },
@@ -188,8 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        leadingIconPath: 'assets/icons/settings.svg',
                                        trailingIconPath: 'assets/icons/rightArrow.svg',
                                        onTrailingIconTap: () {
-                                         debugPrint("Trailing icon tapped");
-                                         Navigator.of(context).push(
+                                          Navigator.of(context).push(
                                            MaterialPageRoute(builder: (context) => const SettingsScreen()),
                                          );
                                        },

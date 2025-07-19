@@ -27,8 +27,9 @@ class WalletAddressComponent extends StatelessWidget {
       child: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/icons/Medium.png'),
+            image: AssetImage('assets/images/Medium.png'),
             fit: BoxFit.fill,
+            filterQuality: FilterQuality.low
           ),
           // borderRadius: BorderRadius.circular(30.0 * scaleFactor),
         ),

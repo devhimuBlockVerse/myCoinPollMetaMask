@@ -15,7 +15,7 @@ class StatusChip extends StatelessWidget {
     required this.textColor,
   });
 
-  // Factory constructors for common statuses
+
   factory StatusChip.approved() {
     return const StatusChip(
       label: 'Approved',

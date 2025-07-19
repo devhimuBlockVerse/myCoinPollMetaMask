@@ -230,7 +230,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/starGradientBg.png'),
+                  image: AssetImage('assets/images/starGradientBg.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.topRight,
                 ),
@@ -341,7 +341,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                   decoration: BoxDecoration(
                                     // color: const Color(0xFF01090B),
                                     image: const DecorationImage(
-                                      image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                      image: AssetImage('assets/images/buildStatCardBG.png'),
                                       fit: BoxFit.fill,
                                     ),
                                     borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
@@ -365,7 +365,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                               end: Alignment(-0.99, -0.14),
                                               colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                             ),
-                                            imageUrl: "assets/icons/totalTransactionRefBg.png",
+                                            imageUrl: "assets/images/totalTransactionRefBg.png",
                                           ),
                                         ),
                                         SizedBox(width: itemSpacing),
@@ -379,7 +379,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                               end: Alignment(-0.99, -0.14),
                                               colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                             ),
-                                            imageUrl: "assets/icons/totalEcmRefBg.png",
+                                            imageUrl: "assets/images/totalEcmRefBg.png",
                                           ),
                                         ),
                                         SizedBox(width: itemSpacing),
@@ -393,7 +393,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                               end: Alignment(-0.99, -0.14),
                                               colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                             ),
-                                            imageUrl: "assets/icons/totalRefUserBg.png",
+                                            imageUrl: "assets/images/totalRefUserBg.png",
                                           ),
                                         ),
                                       ],
@@ -563,7 +563,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
         children: <Widget>[
           CircleAvatar(
             radius: avatarRadius,
-            backgroundImage: const AssetImage('assets/icons/ecm.png'), // Ensure asset exists
+            backgroundImage: const AssetImage('assets/images/ecm.png'), // Ensure asset exists
             backgroundColor: Colors.white.withOpacity(0.3),
           ),
           SizedBox(width: drawerWidth * 0.02),

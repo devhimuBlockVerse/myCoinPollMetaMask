@@ -115,7 +115,7 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -226,7 +226,7 @@ class _UsersTicketDetailScreenState extends State<UsersTicketDetailScreen> {
                             height: screenHeight * 0.7,
                             decoration:BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/icons/chatContainerBg.png'),
+                                image: AssetImage('assets/images/chatContainerBg.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),

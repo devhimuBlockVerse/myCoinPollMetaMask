@@ -24,8 +24,7 @@ class ResponsiveSearchField extends StatelessWidget {
     double containerWidth = screenWidth * 0.55;
     double containerHeight = screenHeight * 0.040;
     double iconSize = screenHeight * 0.0135;
-    // double fontSize = screenHeight * 0.014;
-    double fontSize = getResponsiveFontSize(context, 13);
+     double fontSize = getResponsiveFontSize(context, 13);
 
     return Container(
       width: containerWidth,
@@ -48,7 +47,6 @@ class ResponsiveSearchField extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // SvgPicture.asset('assets/icons/search.svg',fit:BoxFit.contain,),
 
           Opacity(
             opacity: 0.80,

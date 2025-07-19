@@ -66,9 +66,10 @@ class _KycUploadImageState extends State<KycUploadImage> {
           width: double.infinity,
            decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/affiliateBg.png'),
+              image: AssetImage('assets/images/affiliateBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+              filterQuality: FilterQuality.low
             ),
           ),
           child: Column(

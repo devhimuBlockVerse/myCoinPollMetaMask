@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashboard/dashboard_screen.dart';
@@ -11,8 +10,6 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/profile/pro
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 import '../../framework/components/DialogModalViewComponent.dart';
-
-
 
 class DashboardBottomNavBar extends StatefulWidget {
   const DashboardBottomNavBar({super.key});
@@ -27,7 +24,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const StakingScreen(),
     const TransactionScreen(),
     const ProfileScreen(),
-
   ];
 
   final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Profile'];

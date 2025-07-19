@@ -46,7 +46,7 @@ class ProgressBarUserDashboard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(screenWidth! * 0.02),
             image: const DecorationImage(
-              image: AssetImage('assets/icons/progressFrameBg.png'),
+              image: AssetImage('assets/images/progressFrameBg.png'),
               fit: BoxFit.cover,
             ),
           ),

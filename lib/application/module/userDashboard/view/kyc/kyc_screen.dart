@@ -27,17 +27,17 @@ class _KycScreenState extends State<KycScreen> {
   final List<Map<String, String>> _documentTypes = [
     {
       'title': 'National Id Card',
-      'icon': 'assets/icons/nid.png',
+      'icon': 'assets/images/nid.png',
       'submissionText': 'NID Submission Required',
     },
     {
       'title': 'Passport',
-      'icon': 'assets/icons/passport.png',
+      'icon': 'assets/images/passport.png',
       'submissionText': 'Passport Submission Required',
     },
     {
       'title': 'Driving License',
-      'icon': 'assets/icons/drivingLicense.png',
+      'icon': 'assets/images/drivingLicense.png',
       'submissionText': 'Driving License Submission Required',
     },
   ];
@@ -85,7 +85,7 @@ class _KycScreenState extends State<KycScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -145,7 +145,7 @@ class _KycScreenState extends State<KycScreen> {
                             width: screenWidth,
                             decoration: BoxDecoration(
                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/selectDocumentBg.png'),
+                                image: AssetImage('assets/images/selectDocumentBg.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -202,7 +202,7 @@ class _KycScreenState extends State<KycScreen> {
                             width: screenWidth,
                             decoration:const BoxDecoration(
                               image:  DecorationImage(
-                                image: AssetImage('assets/icons/estimatedBG.png'),
+                                image: AssetImage('assets/images/estimatedBG.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -363,7 +363,7 @@ class _KycScreenState extends State<KycScreen> {
           width: screenWidth,
           decoration:const BoxDecoration(
             image:  DecorationImage(
-              image: AssetImage('assets/icons/selectDocumentBg.png'),
+              image: AssetImage('assets/images/selectDocumentBg.png'),
               fit: BoxFit.fill,
             ),
           ),

@@ -66,7 +66,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
       }).toList();
     }
 
-    //  sorting if a sort option is selected
     if (_currentSort != null) {
       currentFilteredData = _sortDataUseCase(currentFilteredData, _currentSort!);
     }
@@ -94,7 +93,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
 
   /// re-fetch on wallet connection
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -128,7 +126,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         },
       );
 
-      print('Response (${response.statusCode}): ${response.body}');
+      print('fetchTransactions Response  ${response.body}');
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
@@ -260,9 +258,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/starGradientBg.png'),
+                  image: AssetImage('assets/images/starGradientBg.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.topRight,
+                  filterQuality: FilterQuality.low
                 ),
               ),
               child:
@@ -302,9 +301,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           child: SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),
                             child: ConstrainedBox(
-
                               constraints: BoxConstraints(
-                                minHeight: screenHeight - kToolbarHeight, // or screenHeight * 0.9
+                                minHeight: screenHeight - kToolbarHeight,
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,17 +310,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 children: [
                                   SizedBox(height: screenHeight * 0.01),
 
-
-
                                   Container(
                                     width: double.infinity,
                                     height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
                                     decoration: BoxDecoration(
-                                      // color: const Color(0xFF01090B),
-                                      image: const DecorationImage(
-                                        image: AssetImage('assets/icons/buildStatCardBG.png'),
-                                        fit: BoxFit.fill,
+                                       image: const DecorationImage(
+                                        image: AssetImage('assets/images/buildStatCardBG.png'),
+                                        fit: BoxFit.fill, filterQuality: FilterQuality.low
                                        ),
                                       borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
                                     ),
@@ -346,7 +341,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                 end: Alignment(-0.99, -0.14),
                                                 colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                               ),
-                                              imageUrl: "assets/icons/totalTransactionBg.png",
+                                              imageUrl: "assets/images/totalTransactionBg.png",
                                             ),
                                           ),
                                           SizedBox(width: itemSpacing),
@@ -360,14 +355,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                 end: Alignment(-0.99, -0.14),
                                                 colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                               ),
-                                              imageUrl: "assets/icons/totalEthereumBG.png",
+                                              imageUrl: "assets/images/totalEthereumBG.png",
                                             ),
                                           ),
                                           SizedBox(width: itemSpacing),
                                           Expanded(
                                             child: _buildStatCard(
                                               title: 'Purchased\nAmount',
-                                              // value: '100',
+
                                               value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
 
                                               gradient: const LinearGradient(
@@ -375,7 +370,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                 end: Alignment(-0.99, -0.14),
                                                 colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                               ),
-                                              imageUrl: "assets/icons/totalEcommerceBG.png",
+                                              imageUrl: "assets/images/totalEcommerceBG.png",
                                             ),
                                           ),
                                         ],
@@ -420,8 +415,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           flex: 2,
                                           child: ResponsiveSearchField(
                                             controller: _searchController,
-                                            // onChanged:  (value) => _onSearchChanged(),
-                                            onChanged:  (value) => _applyFiltersAndSort(),
+                                             onChanged:  (value) => _applyFiltersAndSort(),
                                             svgAssetPath: 'assets/icons/search.svg',
 
                                           ),

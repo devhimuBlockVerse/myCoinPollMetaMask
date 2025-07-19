@@ -73,9 +73,9 @@ class _NewsScreenState extends State<NewsScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/icons/gradientBgImage.png'),
+              // image: AssetImage('assets/images/gradientBgImage.png'),
               // fit: BoxFit.contain,
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
               filterQuality: FilterQuality.medium,

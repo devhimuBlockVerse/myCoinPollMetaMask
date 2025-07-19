@@ -119,11 +119,10 @@ class _WhitePaperButtonComponentState extends State<WhitePaperButtonComponent> {
 class PaperClipper extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // Relative sizing based on width/height
-    final double cutSize = size.height * 0.15;        // 15% of height
-    final double notchWidth = size.width * 0.1;       // 10% of width
-    final double notchHeight = size.height * 0.1;     // 10% of height
-    final double topNotchOffset = size.width * 0.15;  // 15% of width
+     final double cutSize = size.height * 0.15;
+    final double notchWidth = size.width * 0.1;
+    final double notchHeight = size.height * 0.1;
+    final double topNotchOffset = size.width * 0.15;
     final double bottomNotchOffset = -size.width * 0.15;
 
     final path = Path();

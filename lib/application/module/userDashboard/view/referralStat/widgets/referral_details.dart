@@ -23,7 +23,7 @@ class ReferralDetails extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  'assets/icons/dialogFrame.png',
+                  'assets/images/dialogFrame.png',
                   fit: BoxFit.fill,
                 ),
               ),

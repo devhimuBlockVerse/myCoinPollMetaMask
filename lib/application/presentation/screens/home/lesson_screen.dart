@@ -39,7 +39,7 @@ class _LessonScreenState extends State<LessonScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -145,7 +145,7 @@ class _LessonScreenState extends State<LessonScreen> {
       height: screenHeight * 0.16,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/lessonHeaderBg.png'),
+          image: AssetImage('assets/images/lessonHeaderBg.png'),
           fit: BoxFit.fill,
         ),
       ),
@@ -197,7 +197,7 @@ class _LessonScreenState extends State<LessonScreen> {
             Flexible(
               flex: 2,
               child: Image.asset(
-                'assets/icons/lessonHeaderImg.png',
+                'assets/images/lessonHeaderImg.png',
                 height: screenHeight * 0.12,
                 fit: BoxFit.contain,
               ),
@@ -233,7 +233,7 @@ class _LessonScreenState extends State<LessonScreen> {
   //       ),
   //       decoration: BoxDecoration(
   //         image: const DecorationImage(
-  //           image: AssetImage("assets/icons/frameBg.png"),
+  //           image: AssetImage("assets/images/frameBg.png"),
   //           fit: BoxFit.fill,
   //         ),
   //         borderRadius: BorderRadius.circular(3),
@@ -290,7 +290,7 @@ class _LessonScreenState extends State<LessonScreen> {
         ),
         decoration: BoxDecoration(
           image: const DecorationImage(
-            image: AssetImage("assets/icons/frameBg.png"),
+            image: AssetImage("assets/images/frameBg.png"),
             fit: BoxFit.fill,
           ),
           borderRadius: BorderRadius.circular(3),

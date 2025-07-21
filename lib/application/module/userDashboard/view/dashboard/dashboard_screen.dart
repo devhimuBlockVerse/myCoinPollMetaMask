@@ -180,8 +180,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
                             /// User Name Data & Wallet Address
-                            // _headerSection(_scaffoldKey,walletModel),
-
                             Consumer<UserAuthProvider>(
                               builder: (context, userAuth, child) {
                                 return _headerSection(_scaffoldKey, walletModel, userAuth);

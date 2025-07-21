@@ -616,7 +616,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     const SizedBox(height: 12),
                     CustomInputField(
                       hintText: isETHActive ? 'ETH ' : 'USDT ',
-                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/icons/usdt.png',
+                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
                       controller: usdtController,
 
                     ),
@@ -630,7 +630,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       onTap: () async {
 
                         if (!walletVM.isConnected) {
-                           try {
+                          print("Wallet not connected. Prompting user to connect...");
+                          try {
                             await walletVM.ensureModalWithValidContext(context);
                             await walletVM.appKitModal?.openModalView();
                           } catch (e) {
@@ -643,8 +644,10 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                         try{
                           final inputEth = ecmController.text.trim();
-                           final ethDouble = double.tryParse(inputEth);
-                           if (ethDouble == null || ethDouble <= 0) {
+                          debugPrint("User input: $inputEth");
+                          final ethDouble = double.tryParse(inputEth);
+                          debugPrint("Parsed double: $ethDouble");
+                          if (ethDouble == null || ethDouble <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
                               subtitle: "Please enter a valid ECM amount.",
@@ -660,10 +663,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
                           // final ecmAmountInWeiUSDT = EtherAmount.fromUnitAndValue(EtherUnit.wei, (ethDouble * 1e6).round()).getInWei;
 
+                          debugPrint("ETH in Wei: $ecmAmountInWeiETH");
+                          debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 
                           final isETH = isETHActive;
                           final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-
+                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                          debugPrint("Purchase Button Pressed");
 
                           showDialog(
                             context: context,
@@ -674,10 +680,12 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           );
 
                           if (isETH) {
-                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                            debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
+                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
 
                           } else  {
-                             await walletVM.buyECMWithUSDT(amount,context);
+                            debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
+                            await walletVM.buyECMWithUSDT(amount,context);
                             // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
                           }
                           Navigator.of(context).pop();
@@ -694,6 +702,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         Color(0xFF2EE4A4)
                       ],
                     ),
+
                     const SizedBox(height: 18),
 
                     if (walletVM.isConnected)...[

@@ -977,7 +977,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 12),
                     CustomInputField(
                       hintText: isETHActive ? 'ETH ' : 'USDT ',
-                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/icons/usdt.png',
+                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
                       controller: usdtController,
 
                     ),

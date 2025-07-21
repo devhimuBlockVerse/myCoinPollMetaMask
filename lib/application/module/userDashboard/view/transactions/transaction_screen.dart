@@ -183,6 +183,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       if (address == null || address.isEmpty) {
         throw 'No valid Ethereum wallet address found from wallet or login.';
       }
+      print("✅ Fetching transactions for address: $address");
       final fetchedData = await fetchTransactions(address);
       if (!mounted) return;
       setState(() {

@@ -911,7 +911,127 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
      }
    }
 
-   Future<String> buyECMWithUSDT(BigInt amount, BuildContext context) async {
+   // Future<String> buyECMWithUSDT(BigInt amount, BuildContext context) async {
+   //
+   //   if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
+   //
+   //     throw Exception("Wallet not Connected or selected chain not available.");
+   //   }
+   //   _isLoading = true;
+   //   notifyListeners();
+   //   try {
+   //     final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(
+   //         ReownAppKitModalNetworks.getNamespaceForChainId(appKitModal!.selectedChain!.chainId)
+   //     )!);
+   //
+   //     final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
+   //     final abiJson = jsonDecode(abiString);
+   //     final abi = abiJson is Map && abiJson.containsKey("abi") ? abiJson["abi"] : abiJson;
+   //
+   //     final saleContract = DeployedContract(
+   //       ContractAbi.fromJson(jsonEncode(abi), 'ECMCoinICO',),
+   //       EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
+   //     );
+   //     print(">>> Sale contract deployed at: $SALE_CONTRACT_ADDRESS");
+   //
+   //
+   //     final usdtAbiString = await rootBundle.loadString("assets/abi/IERC20ABI.json");
+   //     final usdtAbi = jsonDecode(usdtAbiString);
+   //
+   //     print(">>> Loaded USDT ABI.");
+   //
+   //     final usdtContract = DeployedContract(
+   //       ContractAbi.fromJson(jsonEncode(usdtAbi), "IERC20"),
+   //       EthereumAddress.fromHex(USDT_CONTRACT_ADDRESS),
+   //     );
+   //     print(">>> USDT contract deployed at: $USDT_CONTRACT_ADDRESS");
+   //
+   //     final chainID = appKitModal!.selectedChain!.chainId;
+   //     final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
+   //
+   //
+   //     /// Step 1: Approve
+   //      await appKitModal!.requestWriteContract(
+   //       topic: appKitModal!.session!.topic,
+   //       chainId: chainID,
+   //       deployedContract: usdtContract,
+   //       functionName: 'approve',
+   //       transaction: Transaction(from: walletAddress),
+   //       // parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
+   //       parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
+   //     );
+   //     print(">>> USDT approved successfully.");
+   //
+   //
+   //
+   //     final referrerAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+   //
+   //     print(">>> Sending buyECMWithUSDT transaction...");
+   //     final result = await appKitModal!.requestWriteContract(
+   //       topic: appKitModal!.session!.topic,
+   //       chainId: chainID,
+   //       deployedContract: saleContract,
+   //       functionName: 'buyECMWithUSDT',
+   //       transaction: Transaction(from: walletAddress),
+   //       parameters: [amount, referrerAddress],
+   //     );
+   //     await _waitForTransaction(result);
+   //     print('>>> Transaction result: $result');
+   //
+   //
+   //
+   //     if (result != null && result.toString().startsWith("0x")) {
+   //       print(">>> Purchase successful. Transaction hash: $result");
+   //
+   //       ToastMessage.show(
+   //         message: "Purchase Successful",
+   //         subtitle: "USDT transaction submitted successfully!",
+   //         type: MessageType.success,
+   //         duration: CustomToastLength.LONG,
+   //         gravity: CustomToastGravity.BOTTOM,
+   //       );
+   //       await fetchConnectedWalletData();
+   //       await getCurrentStageInfo();
+   //       return result;
+   //     }else{
+   //
+   //
+   //       ToastMessage.show(
+   //         message: "Transaction Cancelled",
+   //         subtitle: "You cancelled the transaction in your wallet.",
+   //         type: MessageType.info,
+   //         duration: CustomToastLength.LONG,
+   //         gravity: CustomToastGravity.BOTTOM,
+   //       );
+   //       throw Exception("User cancelled the transaction.");
+   //     }
+   //
+   //
+   //   } catch (e) {
+   //     print(">>> Error occurred during buyECMWithUSDT: $e");
+   //
+   //     final isUserRejected = isUserRejectedError(e);
+   //
+   //     ToastMessage.show(
+   //       message: isUserRejected ? "Transaction Cancelled" : "Transaction Failed",
+   //       subtitle: isUserRejected
+   //           ? "You cancelled the transaction."
+   //           : "Could not complete the purchase. Please try again.",
+   //       type: isUserRejected ? MessageType.info : MessageType.error,
+   //       duration: CustomToastLength.LONG,
+   //       gravity: CustomToastGravity.BOTTOM,
+   //     );
+   //
+   //
+   //     rethrow;
+   //   } finally {
+   //     _isLoading = false;
+   //     notifyListeners();
+   //
+   //   }
+   // }
+
+   Future<String> buyECMWithUSDT(BigInt amount,EthereumAddress referralAddress, BuildContext context) async {
 
      if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
 
@@ -920,51 +1040,83 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
      _isLoading = true;
      notifyListeners();
      try {
-       final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(
-           ReownAppKitModalNetworks.getNamespaceForChainId(appKitModal!.selectedChain!.chainId)
-       )!);
+       final chainID = appKitModal!.selectedChain!.chainId;
+       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
+       final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!);
+
 
        final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
        final abiJson = jsonDecode(abiString);
        final abi = abiJson is Map && abiJson.containsKey("abi") ? abiJson["abi"] : abiJson;
-
        final saleContract = DeployedContract(
          ContractAbi.fromJson(jsonEncode(abi), 'ECMCoinICO',),
          EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
        );
-       print(">>> Sale contract deployed at: $SALE_CONTRACT_ADDRESS");
 
 
        final usdtAbiString = await rootBundle.loadString("assets/abi/IERC20ABI.json");
        final usdtAbi = jsonDecode(usdtAbiString);
-
-       print(">>> Loaded USDT ABI.");
-
        final usdtContract = DeployedContract(
          ContractAbi.fromJson(jsonEncode(usdtAbi), "IERC20"),
          EthereumAddress.fromHex(USDT_CONTRACT_ADDRESS),
        );
        print(">>> USDT contract deployed at: $USDT_CONTRACT_ADDRESS");
 
-       final chainID = appKitModal!.selectedChain!.chainId;
-       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-
-
-       /// Step 1: Approve
-        await appKitModal!.requestWriteContract(
-         topic: appKitModal!.session!.topic,
-         chainId: chainID,
-         deployedContract: usdtContract,
-         functionName: 'approve',
-         transaction: Transaction(from: walletAddress),
-         // parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
-         parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
+       final balanceResult = await _web3Client!.call(
+         contract: usdtContract,
+         function: usdtContract.function('balanceOf'),
+         params: [walletAddress],
        );
-       print(">>> USDT approved successfully.");
+       final balance = balanceResult[0] as BigInt;
+       print('>>> User USDT balance: ${balance.toString()} (raw units)');
 
+       if (balance < amount) {
+         ToastMessage.show(
+           message: "Insufficient USDT Balance",
+           subtitle: "Your USDT balance is too low for this purchase.",
+           type: MessageType.error,
+           duration: CustomToastLength.LONG,
+           gravity: CustomToastGravity.BOTTOM,
+         );
+         throw Exception("Insufficient USDT balance");
+       }
 
+       final allowanceResult = await _web3Client!.call(
+         contract: usdtContract,
+         function: usdtContract.function('allowance'),
+         params: [walletAddress, EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS)],
+       );
+       final allowance = allowanceResult[0] as BigInt;
 
-       final referrerAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+       if (allowance < amount) {
+         ToastMessage.show(
+           message: "Approving USDT...",
+           type: MessageType.info,
+           duration: CustomToastLength.SHORT,
+           gravity: CustomToastGravity.BOTTOM,
+         );
+
+         /// Step 1: Approve
+         final approveTxHash = await appKitModal!.requestWriteContract(
+           topic: appKitModal!.session!.topic,
+           chainId: chainID,
+           deployedContract: usdtContract,
+           functionName: 'approve',
+           transaction: Transaction(from: walletAddress),
+           parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
+         );
+         await _waitForTransaction(approveTxHash);
+         print(">>> USDT approved successfully.");
+
+       }
+
+        ToastMessage.show(
+         message: "Processing Purchase...",
+         type: MessageType.info,
+         duration: CustomToastLength.SHORT,
+         gravity: CustomToastGravity.BOTTOM,
+       );
+
 
        print(">>> Sending buyECMWithUSDT transaction...");
        final result = await appKitModal!.requestWriteContract(
@@ -973,39 +1125,23 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
          deployedContract: saleContract,
          functionName: 'buyECMWithUSDT',
          transaction: Transaction(from: walletAddress),
-         parameters: [amount, referrerAddress],
+         parameters: [amount, referralAddress],
        );
        await _waitForTransaction(result);
        print('>>> Transaction result: $result');
 
+       ToastMessage.show(
+         message: "Purchase Successful",
+         subtitle: "USDT transaction submitted successfully!",
+         type: MessageType.success,
+         duration: CustomToastLength.LONG,
+         gravity: CustomToastGravity.BOTTOM,
+       );
 
+       await fetchConnectedWalletData();
+       await getCurrentStageInfo();
 
-       if (result != null && result.toString().startsWith("0x")) {
-         print(">>> Purchase successful. Transaction hash: $result");
-
-         ToastMessage.show(
-           message: "Purchase Successful",
-           subtitle: "USDT transaction submitted successfully!",
-           type: MessageType.success,
-           duration: CustomToastLength.LONG,
-           gravity: CustomToastGravity.BOTTOM,
-         );
-         await fetchConnectedWalletData();
-         await getCurrentStageInfo();
-         return result;
-       }else{
-
-
-         ToastMessage.show(
-           message: "Transaction Cancelled",
-           subtitle: "You cancelled the transaction in your wallet.",
-           type: MessageType.info,
-           duration: CustomToastLength.LONG,
-           gravity: CustomToastGravity.BOTTOM,
-         );
-         throw Exception("User cancelled the transaction.");
-       }
-
+       return result;
 
      } catch (e) {
        print(">>> Error occurred during buyECMWithUSDT: $e");

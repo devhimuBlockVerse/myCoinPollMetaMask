@@ -567,7 +567,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                     isUSDTActive = true;
                                   });
                                   _updatePayableAmount();
-                                  debugPrint("Switched to USDT mode. USDT Price: $_usdtPrice");
 
                                 } catch (e) {
                                   if (context.mounted) {
@@ -642,9 +641,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                         try{
                           final inputEth = ecmController.text.trim();
-                          debugPrint("User input: $inputEth");
+
                           final ethDouble = double.tryParse(inputEth);
-                          debugPrint("Parsed double: $ethDouble");
+
                           if (ethDouble == null || ethDouble <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
@@ -659,15 +658,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                           final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                          // final ecmAmountInWeiUSDT = EtherAmount.fromUnitAndValue(EtherUnit.wei, (ethDouble * 1e6).round()).getInWei;
-
-                          debugPrint("ETH in Wei: $ecmAmountInWeiETH");
-                          debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
 
                           final isETH = isETHActive;
                           final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                          debugPrint("Purchase Button Pressed");
 
                           showDialog(
                             context: context,
@@ -678,21 +671,23 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           );
 
                           if (isETH) {
-                            debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
 
                           } else  {
-                            debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
-                            await walletVM.buyECMWithUSDT(amount,context);
-                            // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
+                            final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+                            await walletVM.buyECMWithUSDT(amount,referralAddress,context);
                           }
                           Navigator.of(context).pop();
-                          debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
                           ecmController.clear();
 
                         }catch (e) {
                           Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");
+                          ToastMessage.show(
+                            message: "Transaction Failed",
+                            subtitle: e.toString().contains("reverted") ? "Transaction reverted by EVM." : "An error occurred while processing your transaction.",
+                            type: MessageType.error,
+                          );
                         }
                       },
                       gradientColors: const [

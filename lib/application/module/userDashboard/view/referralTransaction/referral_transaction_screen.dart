@@ -168,7 +168,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -232,7 +232,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                             decoration: BoxDecoration(
                               // color: const Color(0xFF01090B),
                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/buildStatCardBG.png'),
+                                image: AssetImage('assets/images/buildStatCardBG.png'),
                                 fit: BoxFit.fill,
                               ),
                               borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
@@ -255,7 +255,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                                         end: Alignment(-0.99, -0.14),
                                         colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
                                       ),
-                                      imageUrl: "assets/icons/totalEcommerceBG.png",
+                                      imageUrl: "assets/images/totalEcommerceBG.png",
                                     ),
                                   ),
                                   SizedBox(width: itemSpacing),
@@ -269,7 +269,7 @@ class _ReferralTransactionScreenState extends State<ReferralTransactionScreen> {
                                         end: Alignment(-0.99, -0.14),
                                         colors: [Color(0xFF040C16), Color(0xFF162B4A)],
                                       ),
-                                      imageUrl: "assets/icons/totalEthereumBG.png",
+                                      imageUrl: "assets/images/totalEthereumBG.png",
                                     ),
                                   ),
 

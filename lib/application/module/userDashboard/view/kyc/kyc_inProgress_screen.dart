@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
@@ -63,9 +62,9 @@ class _KycInProgressScreenState extends State<KycInProgressScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
-              alignment: Alignment.topRight,
+              alignment: Alignment.topRight,filterQuality: FilterQuality.low
             ),
           ),
           child: Column(
@@ -108,7 +107,7 @@ class _KycInProgressScreenState extends State<KycInProgressScreen> {
                               Container(
                                 width: screenWidth * 0.5,
                                 height: screenWidth * 0.5,
-                                child: Image.asset("assets/icons/CTA.png",filterQuality: FilterQuality.high,fit: BoxFit.contain,),
+                                child: Image.asset("assets/images/CTA.png",filterQuality: FilterQuality.low,fit: BoxFit.contain,),
                               ),
                               SizedBox(height: screenHeight * 0.02),
                               Column(

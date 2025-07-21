@@ -18,8 +18,7 @@ class TransactionStatCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final containerWidth = screenWidth * 0.35;
-    final containerHeight = screenHeight * 0.07;
+     final containerHeight = screenHeight * 0.07;
 
     return Container(
        height: containerHeight,
@@ -28,6 +27,7 @@ class TransactionStatCard extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage(bgImagePath),
           fit: BoxFit.fill,
+          filterQuality: FilterQuality.low
         ),
       ),
       child: Column(

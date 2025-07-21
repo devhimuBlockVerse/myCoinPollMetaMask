@@ -33,7 +33,7 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
             color: Color(0xFF01090B),
             image: DecorationImage(
 
-              image: AssetImage('assets/icons/solidBackGround.png'),
+              image: AssetImage('assets/images/solidBackGround.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),

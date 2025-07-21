@@ -199,7 +199,8 @@ class _ListingFieldState extends State<ListingField> {
                             
                             keyboardType: widget.keyboard,
                             controller: widget.controller,
-                            maxLines: widget.isPassword ? 1 : null,
+                            // maxLines: widget.isPassword ? 1 : null,
+                              maxLines: widget.isPassword ? 1 : (widget.expandable ? null : 1),
 
                             minLines: 1,
                              obscureText: widget.isPassword ? _obscureText : false,

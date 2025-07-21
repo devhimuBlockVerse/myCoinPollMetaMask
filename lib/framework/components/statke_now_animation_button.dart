@@ -44,7 +44,6 @@ class _GradientButtonState extends State<GradientButton> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
 
     return GestureDetector(
       onTap: widget.onPressed,
@@ -67,7 +66,7 @@ class _GradientButtonState extends State<GradientButton> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Center(
             child: Row(
-              // mainAxisAlignment: MainAxisAlignment.center,
+
               mainAxisSize: MainAxisSize.min,
 
               children: [
@@ -78,8 +77,7 @@ class _GradientButtonState extends State<GradientButton> {
                     style:  const TextStyle(
                       fontFamily: 'SansSerif',
                       fontWeight: FontWeight.w700,
-                      // fontSize: screenWidth * 0.045 * textScale, // responsive text
-                      fontSize: 20,
+                       fontSize: 20,
                       color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
@@ -89,9 +87,8 @@ class _GradientButtonState extends State<GradientButton> {
 
                 if (widget.trailingIcon != null) ...[
                   const SizedBox(width: 8),
-                  // Apply the rotation here
-                  Transform.rotate(
-                    angle: 90 * 3.1415926535 / 50, // Convert degrees to radians
+                   Transform.rotate(
+                    angle: 90 * 3.1415926535 / 50,
                     child: widget.trailingIcon!,
                   ),
                 ],

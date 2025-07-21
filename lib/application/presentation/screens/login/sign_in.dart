@@ -11,8 +11,7 @@ import '../../../../framework/components/ListingFields.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
-import '../../../../framework/utils/general_utls.dart';
-import '../../../data/services/api_service.dart';
+ import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
@@ -206,9 +205,9 @@ class _SignInState extends State<SignIn> {
             // color: const Color(0xFF0B0A1E),
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/icons/gradientBgImage.png'),
+              // image: AssetImage('assets/images/gradientBgImage.png'),
               // fit: BoxFit.contain,
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -263,7 +262,7 @@ class _SignInState extends State<SignIn> {
                                 width: double.infinity,
                                 decoration: const BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage('assets/icons/longinContainer.png'),
+                                    image: AssetImage('assets/images/longinContainer.png'),
                                     fit: BoxFit.fill,
                                    ),
                                 ),
@@ -515,7 +514,7 @@ class _SignInState extends State<SignIn> {
          children: [
 
           Image.asset(
-            'assets/icons/applyForLisitngImg1.png',
+            'assets/images/applyForLisitngImg1.png',
             height: screenHeight * 0.05,
             fit: BoxFit.contain,
           ),

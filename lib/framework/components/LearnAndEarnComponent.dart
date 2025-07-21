@@ -30,7 +30,7 @@ class LearnAndEarnContainer extends StatelessWidget {
       height: screenHeight * 0.22,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/learnAndEarnBgContainer.png'),
+          image: AssetImage('assets/images/learnAndEarnBgContainer.png'),
           fit: BoxFit.fill,
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
@@ -14,7 +15,6 @@ import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
  import 'package:flutter/foundation.dart';
-// import 'package:device_preview/device_preview.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
@@ -22,6 +22,7 @@ final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>(
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+
   final kycProvider = KycNavigationProvider();
   await kycProvider.loadLastVisitedScreen();
 
@@ -44,10 +45,7 @@ void main() async {
 
    runApp(
        const MyApp(),
-     // DevicePreview(
-     //   enabled: !kReleaseMode,
-     //   builder: (context) => MyApp(), // Wrap your app
-     // ),
+
   );
 }
 

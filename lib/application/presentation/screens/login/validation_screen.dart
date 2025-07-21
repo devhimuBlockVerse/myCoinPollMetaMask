@@ -94,7 +94,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),

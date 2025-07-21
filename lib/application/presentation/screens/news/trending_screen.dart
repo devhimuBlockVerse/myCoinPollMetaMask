@@ -41,9 +41,9 @@ class _TrendingScreenState extends State<TrendingScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/icons/gradientBgImage.png'),
+              // image: AssetImage('assets/images/gradientBgImage.png'),
               // fit: BoxFit.contain,
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
               filterQuality: FilterQuality.medium,
@@ -107,7 +107,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
                          decoration: BoxDecoration(
                           // color:  Color(0xF2040C16),
                            image: const DecorationImage(
-                             image: AssetImage('assets/icons/newsFrame.png'),
+                             image: AssetImage('assets/images/newsFrame.png'),
                              fit: BoxFit.none,
                              filterQuality: FilterQuality.medium,
 

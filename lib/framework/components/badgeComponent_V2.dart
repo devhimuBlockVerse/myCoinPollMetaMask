@@ -47,7 +47,7 @@ class BadgeComponentV2 extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               image: const DecorationImage(
-                image: AssetImage('assets/icons/blockChainBg.png'),
+                image: AssetImage('assets/images/blockChainBg.png'),
                 fit: BoxFit.fill,
               ),
 

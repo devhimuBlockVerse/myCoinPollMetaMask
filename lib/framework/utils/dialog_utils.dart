@@ -38,7 +38,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'Launching Lots of Project',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
 
           subtitle: '2023',
           items: [
@@ -67,7 +67,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'Launching ICO or Androverse',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
 
           subtitle: '2024-Q1',
           items: [
@@ -93,7 +93,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'ECM Coin',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
 
           subtitle: '2024-Q2',
           items: [
@@ -119,7 +119,7 @@ class DialogUtils {
         return  CustomDialog(
           title: 'Update & Development',
           subtitle: '2024-Q3',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
           items: [
 
             DialogItem(text: 'Community building', icon: Icons.check_box),
@@ -145,7 +145,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'ECM ICO launch',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
           subtitle: '2024-Q4',
           items: [
 
@@ -173,7 +173,7 @@ class DialogUtils {
       pageBuilder: (_, __, ___) {
         return  CustomDialog(
           title: 'Launching & Listing',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
           subtitle: '2025-Q1',
           items: [
 
@@ -201,7 +201,7 @@ class DialogUtils {
         return  CustomDialog(
           title: 'More Project Launching',
           subtitle: '2025-Q2',
-          image: 'assets/icons/dialogBgvv.png',
+          image: 'assets/images/dialogBgvv.png',
 
           items: [
 

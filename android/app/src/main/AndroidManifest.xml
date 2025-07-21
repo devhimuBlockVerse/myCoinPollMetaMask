@@ -24,6 +24,7 @@
         android:label="MyCoinPoll"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="io.flutter.embedding.engine.FlutterEngine.Impelled" android:value="true" />
         android:usesCleartextTraffic="true">
         android:enableOnBackInvokedCallback="true"
         <activity

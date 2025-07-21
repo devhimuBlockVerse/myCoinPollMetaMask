@@ -213,6 +213,7 @@ class ApiService {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
+      await prefs.setString('user', jsonEncode(user.toJson()));
       await prefs.setString('firstName', user.name ?? '');
       await prefs.setString('userName', user.username ?? '');
       await prefs.setString('emailAddress', user.email ?? '');

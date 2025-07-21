@@ -28,8 +28,6 @@ import 'package:web3dart/web3dart.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/upload_image_provider.dart';
 
-
-
 class ECMIcoScreen extends StatefulWidget {
   const ECMIcoScreen({super.key});
 
@@ -97,7 +95,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
     double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
 
-    // Display converted amount in the usdtController
     usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
 
   }
@@ -136,9 +133,10 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/starGradientBg.png'),
+                  image: AssetImage('assets/images/starGradientBg.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.topRight,
+                    filterQuality : FilterQuality.low
                 ),
               ),
               child:Column(
@@ -220,9 +218,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                    color: Colors.transparent
                ),
                image:const DecorationImage(
-                 image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                 image: AssetImage('assets/images/viewTokenFrameBg.png'),
                  fit: BoxFit.fill,
-
+                   filterQuality : FilterQuality.low
                ),
             ),
             child: Padding(
@@ -325,8 +323,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       BlockButtonV2(
                         text: 'Official Website',
                          onPressed: () async{
-                          debugPrint('Button tapped!');
-                          const url = 'https://ecmcoin.com/';
+                           const url = 'https://ecmcoin.com/';
                           if (await canLaunchUrl(Uri.parse(url))) {
                            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                            } else {
@@ -395,6 +392,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           height: imageSize,
           color: Colors.white,
           fit: BoxFit.contain,
+            filterQuality : FilterQuality.low
         ),
       ),
     );
@@ -425,8 +423,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
+                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
+                    filterQuality : FilterQuality.low
                 ),
               ),
               child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
@@ -435,10 +434,10 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const SizedBox(height: 9),
+
                     const SizedBox(height: 18),
 
-                    // Stage &  MAx Section
+
                     ECMProgressIndicator(
                       stageIndex: _stageIndex,
                       currentECM: _currentECM,
@@ -461,7 +460,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+
                           CustomLabeledInputField(
                             labelText: 'Your Address:',
                             hintText: walletVM.walletAddress,
@@ -476,8 +475,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             isReadOnly: true,
                             trailingIconAsset: 'assets/icons/copyImg.svg',
                              onTrailingIconTap: () {
-                              debugPrint('Trailing icon tapped');
-                              const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+                               const referralLink = 'https://mycoinpoll.com?ref=125482458661';
 
                               Clipboard.setData(const ClipboardData(text:referralLink));
 
@@ -493,7 +491,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                           ),
                           SizedBox(height: screenHeight * 0.02),
-                          // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
+
                           CustomLabeledInputField(
                             labelText: 'Referred By:',
                             hintText: 'Show and Enter Referred id..',
@@ -524,7 +522,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           Expanded(
                             child: CustomButton(
                               text: 'Buy with ETH',
-                              icon: 'assets/icons/eth.png',
+                              icon: 'assets/images/eth.png',
                               isActive: isETHActive,
                               onPressed: ()async {
                                 try {
@@ -558,11 +556,11 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                             child:
                             CustomButton(
                               text: 'Buy with USDT',
-                              icon: 'assets/icons/usdt.png',
+                              icon: 'assets/images/usdt.png',
                               isActive: isUSDTActive,
                               onPressed: ()async {
                                 try {
-                                  final stageInfo = await walletVM.getCurrentStageInfo(); // Get the stage info
+                                  final stageInfo = await walletVM.getCurrentStageInfo();
                                   final usdtPrice = stageInfo['usdtPrice'];
 
                                   setState(() {
@@ -612,13 +610,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     /// ECm AMount INput Section
                     CustomInputField(
                       hintText: 'ECM',
-                      iconAssetPath: 'assets/icons/ecm.png',
+                      iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
                     ),
                     const SizedBox(height: 12),
                     CustomInputField(
                       hintText: isETHActive ? 'ETH ' : 'USDT ',
-                      iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
+                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
                       controller: usdtController,
 
                     ),
@@ -704,6 +702,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         Color(0xFF2EE4A4)
                       ],
                     ),
+
                     const SizedBox(height: 18),
 
                     if (walletVM.isConnected)...[

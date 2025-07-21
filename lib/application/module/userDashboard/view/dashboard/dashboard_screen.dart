@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:ui';
+ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,8 +8,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/milest
 import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../../framework/components/AddressFieldComponent.dart';
+ import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/buildProgressBar.dart';
 import '../../../../../framework/components/milestoneLegendtemComponent.dart';
@@ -22,20 +20,16 @@ import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/kyc_track.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
-import '../../../../../framework/utils/general_utls.dart';
-import '../../../../data/services/api_service.dart';
+ import '../../../../data/services/api_service.dart';
 import '../../../../presentation/models/get_purchase_stats.dart';
-import '../../../../presentation/models/user_model.dart';
-import '../../../../presentation/viewmodel/user_auth_provider.dart';
-import '../../../dashboard_bottom_nav.dart';
-import '../../viewmodel/kyc_navigation_provider.dart';
+ import '../../../../presentation/viewmodel/user_auth_provider.dart';
+ import '../../viewmodel/kyc_navigation_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import '../affiliate/affiliate_screen.dart';
 import '../kyc/kyc_inProgress_screen.dart';
 import '../kyc/kyc_status_screen.dart';
-import '../notification/notification_screen.dart';
-import '../transactions/transaction_screen.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -144,9 +138,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             height: screenHeight,
             decoration: const BoxDecoration(
                image: DecorationImage(
-                 image: AssetImage('assets/icons/starGradientBg.png'),
+                 image: AssetImage('assets/images/starGradientBg.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
+                   filterQuality : FilterQuality.low
               ),
             ),
             child: Padding(
@@ -162,13 +157,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
                   await userAuth.loadUserFromPrefs();
 
-                  // Also reload WalletViewModel data if needed
-                  final walletModel = Provider.of<WalletViewModel>(context, listen: false);
+                   final walletModel = Provider.of<WalletViewModel>(context, listen: false);
                   if (walletModel.isConnected) {
                     await walletModel.fetchConnectedWalletData();
                   } else {
-                    // Optionally, reset or re-init wallet model here
-                    await walletModel.reset();
+                     await walletModel.reset();
                   }
                 },
 
@@ -176,20 +169,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   behavior: const ScrollBehavior().copyWith(overscroll: false),
                   child: Consumer<WalletViewModel>(
                     builder: (context, walletModel, _) {
-                      // final isWalletConnected = walletModel.walletConnectedManually && walletModel.walletAddress.isNotEmpty;
-                      //
-                      // if (isWalletConnected && currentUser != null) {
-                      //   currentUser = null;
-                      //
-                      // }
-                      //
-                      // if (!isWalletConnected && currentUser == null) {
-                      //   // Wallet disconnected, reload user if previously logged in
-                      //   _loadUserFromPrefs(); // This updates currentUser in setState
-                      // }
+
                       return  SingleChildScrollView(
-                        // physics: const BouncingScrollPhysics(),
-                        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
 
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -229,7 +211,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     isReadOnly: true,
                                     trailingIconAsset: 'assets/icons/copyImg.svg',
                                     onTrailingIconTap: () {
-                                      debugPrint('Trailing icon tapped');
 
                                       const referralLink = 'https://mycoinpoll.com?ref=125482458661';
                                       Clipboard.setData(const ClipboardData(text:referralLink));
@@ -376,7 +357,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                               }
 
                             } catch (e) {
-                              print("❌ Error opening wallet modal: $e");
+                              print("Error opening wallet modal: $e");
                              }
                           }
 
@@ -396,136 +377,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
     );
   }
 
-
-  // Widget _EcmWithGraphChart(){
-  //   double screenWidth = MediaQuery.of(context).size.width;
-  //   double screenHeight = MediaQuery.of(context).size.height;
-  //
-  //   return Container(
-  //       width: screenWidth,
-  //       height: screenHeight * 0.16,
-  //       decoration: BoxDecoration(
-  //         border: Border.all(
-  //             color: Colors.transparent
-  //         ),
-  //         image: const DecorationImage(
-  //           image: AssetImage('assets/icons/applyForListingBG.png'),
-  //           fit: BoxFit.fill,
-  //         ),
-  //       ),
-  //       child: Stack(
-  //         children: [
-  //
-  //           Padding(
-  //             padding: EdgeInsets.symmetric(
-  //               horizontal: screenWidth * 0.035,
-  //               vertical: screenHeight * 0.015,
-  //             ),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //               crossAxisAlignment: CrossAxisAlignment.center,
-  //               children: [
-  //
-  //                 Expanded(
-  //                   flex: 2,
-  //                   child: Column(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Row(
-  //                         mainAxisAlignment: MainAxisAlignment.start,
-  //                         crossAxisAlignment: CrossAxisAlignment.center,
-  //                         children: [
-  //                           Image.asset(
-  //                             'assets/icons/ecm.png',
-  //                             height: screenWidth * 0.04,
-  //                             fit: BoxFit.contain,
-  //                           ),
-  //                           SizedBox(width: screenWidth * 0.01),
-  //                           Text(
-  //                             'ECM Coin',
-  //                             textAlign:TextAlign.start,
-  //                             style: TextStyle(
-  //                               color: const Color(0xffFFF5ED),
-  //                               fontFamily: 'Poppins',
-  //                               fontSize: getResponsiveFontSize(context, 16),
-  //                               fontWeight: FontWeight.normal,
-  //                               height: 1.6,
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                         Text(
-  //                           '20000000', /// Get the Real Value  from Wallet
-  //                           style: TextStyle(
-  //                               color: Colors.white,
-  //                               fontFamily: 'Poppins',
-  //                               fontSize: getResponsiveFontSize(context, 24),
-  //                               fontWeight: FontWeight.w600,
-  //                               height: 1.3
-  //                         ),
-  //
-  //                       ),
-  //                       SizedBox(height: screenHeight * 0.01),
-  //
-  //                       /// Badge Icons (assuming this is related to the left text)
-  //                       Padding(
-  //                         padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
-  //                         child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //
-  //                 Expanded(
-  //                   flex: 1,
-  //                   child: Column(
-  //                     // mainAxisAlignment: MainAxisAlignment.center,
-  //                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                     crossAxisAlignment: CrossAxisAlignment.end,
-  //                     children: [
-  //
-  //                       // Badge
-  //                       const UserBadgeLevel(
-  //                         label: 'Level-1',
-  //                         iconPath: 'assets/icons/check.svg',
-  //                       ),
-  //
-  //                        Image.asset(
-  //                         'assets/icons/staticChart.png',
-  //                         width: screenWidth * 0.48 ,
-  //                         height: screenHeight * 0.08,
-  //                         fit: BoxFit.contain,
-  //                       ),
-  //
-  //                        RichText(
-  //                         text:  TextSpan(
-  //                           text: 'Today up to ',
-  //                           style: TextStyle(
-  //                               fontFamily: 'Poppins',
-  //                               fontWeight: FontWeight.normal,
-  //                               color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
-  //                           children: <TextSpan>[
-  //                             TextSpan(
-  //                               text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
-  //                               style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
-  //                                 fontWeight: FontWeight.normal,
-  //                                 fontSize: getResponsiveFontSize(context, 10),
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //               ],
-  //       )
-  //   );
-  // }
   Widget _EcmWithGraphChart(){
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -536,8 +387,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
       builder: (context,snapshot){
         String balanceText = '...';
         if(snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active){
-          return Center(
-            child: const CircularProgressIndicator(
+          return const Center(
+            child: CircularProgressIndicator(
               strokeWidth: 2,
               color: Colors.white,
             ),
@@ -559,7 +410,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                   color: Colors.transparent
               ),
               image: const DecorationImage(
-                image: AssetImage('assets/icons/applyForListingBG.png'),
+                image: AssetImage('assets/images/applyForListingBG.png'),
+                filterQuality : FilterQuality.low,
                 fit: BoxFit.fill,
               ),
             ),
@@ -587,9 +439,10 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  'assets/icons/ecm.png',
+                                  'assets/images/ecm.png',
                                   height: screenWidth * 0.04,
                                   fit: BoxFit.contain,
+                                    filterQuality : FilterQuality.low
                                 ),
                                 SizedBox(width: screenWidth * 0.01),
                                 Text(
@@ -642,10 +495,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             ),
 
                             Image.asset(
-                              'assets/icons/staticChart.png',
+                              'assets/images/staticChart.png',
                               width: screenWidth * 0.48 ,
                               height: screenHeight * 0.08,
                               fit: BoxFit.contain,
+                                filterQuality : FilterQuality.low
                             ),
 
                             RichText(
@@ -721,7 +575,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             ),
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/icons/linearFrame.png'),
+                image: AssetImage('assets/images/linearFrame.png'),
+                filterQuality : FilterQuality.low,
                 fit: BoxFit.fill,
               ),
 
@@ -743,7 +598,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             width: screenWidth,
                             decoration: BoxDecoration(
                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/linearFrame2.png'),
+                                image: AssetImage('assets/images/linearFrame2.png'),
+                                filterQuality : FilterQuality.low,
                                 fit: BoxFit.fill,
                               ),
                               borderRadius: BorderRadius.circular(screenWidth * 0.02),
@@ -809,8 +665,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                              Color(0xFF1CD494),
                                            ],
                                            onTap: () {
-                                             debugPrint('Button tapped');
-                                             Navigator.push(context, MaterialPageRoute(builder: (context) =>  AffiliateScreen()));
+                                              Navigator.push(context, MaterialPageRoute(builder: (context) => const AffiliateScreen()));
 
                                             },
                                          ),
@@ -869,8 +724,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
               ),
               TextButton(
                 onPressed: () {
-                  debugPrint('View All button tapped');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  MilestoneScreen()));
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => const MilestoneScreen()));
                 },
                 child: Text(
                   'View All',
@@ -896,8 +750,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             ),
             decoration:const BoxDecoration(
               image:  DecorationImage(
-                image: AssetImage('assets/icons/linearFrame.png'),
+                image: AssetImage('assets/images/linearFrame.png'),
                 fit: BoxFit.fill,
+                  filterQuality : FilterQuality.low
               ),
             ),
             child: Row(
@@ -934,8 +789,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         ),
                         decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/icons/totalMilestoneFrame.png'),
+                            image: AssetImage('assets/images/totalMilestoneFrame.png'),
                             fit: BoxFit.fill,
+                              filterQuality : FilterQuality.low
                           ),
                         ),
                         // alignment: Alignment.topRight,
@@ -1052,8 +908,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             ),
             decoration:const BoxDecoration(
               image:  DecorationImage(
-                image: AssetImage('assets/icons/kycStatusBgFrame.png'),
+                image: AssetImage('assets/images/kycStatusBgFrame.png'),
                 fit: BoxFit.fill,
+                  filterQuality : FilterQuality.low
               ),
             ),
             child: Column(
@@ -1115,18 +972,16 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     ],
 
                       onTap: () {
-                        // final kycProvider = Provider.of<KycNavigationProvider>(context, listen: false);
-                        // final lastScreen = kycProvider.lastVisitedScreen;
 
                         final lastScreen = Provider.of<KycNavigationProvider>(context, listen: false).lastVisitedScreen;
 
                         Widget screenToNavigate;
                         switch (lastScreen) {
                           case KycScreenType.kycInProgress:
-                            screenToNavigate = KycInProgressScreen();
+                            screenToNavigate = const KycInProgressScreen();
                             break;
                           case KycScreenType.kycStatus:
-                            screenToNavigate = KycStatusScreen();
+                            screenToNavigate = const KycStatusScreen();
                             break;
                           case KycScreenType.kycScreen:
                           default:
@@ -1134,7 +989,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                             break;
                         }
 
-                        debugPrint('Button tapped');
+
 
                         Navigator.push(
                           context,
@@ -1212,8 +1067,9 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
             ),
             decoration:const BoxDecoration(
               image:  DecorationImage(
-                image: AssetImage('assets/icons/transactionBgContainer.png'),
+                image: AssetImage('assets/images/transactionBgContainer.png'),
                 fit: BoxFit.fill,
+                  filterQuality : FilterQuality.low
               ),
             ),
             child:  Row(
@@ -1229,7 +1085,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
                     TransactionStatCard(
-                      bgImagePath: 'assets/icons/colorYellow.png',
+                      bgImagePath: 'assets/images/colorYellow.png',
                       title: 'Transactions',
                       // value: '205',
                       value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
@@ -1238,7 +1094,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     SizedBox(height: screenHeight * 0.01),
 
                      TransactionStatCard(
-                      bgImagePath: 'assets/icons/colorPurple.png',
+                      bgImagePath: 'assets/images/colorPurple.png',
                       title: 'Purchased Amount ',
                       value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
 
@@ -1247,7 +1103,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                      SizedBox(height: screenHeight * 0.01),
                       TransactionStatCard(
-                      bgImagePath: 'assets/icons/colorYellow.png',
+                      bgImagePath: 'assets/images/colorYellow.png',
                       // title: 'Total ETH',
                       title: 'Attendant',
                          value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
@@ -1263,7 +1119,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                 Flexible(
                   flex: 1,
-                  child: Image.asset('assets/icons/transactionLoading.png',fit: BoxFit.contain,),
+                  child: Image.asset('assets/images/transactionLoading.png',fit: BoxFit.contain,filterQuality : FilterQuality.low),
                 ),
               ],
             ),

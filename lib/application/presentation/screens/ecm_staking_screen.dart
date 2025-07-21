@@ -485,7 +485,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                     ),
                     child: Center(
                       child: Image.asset(
-                        'assets/icons/ecm.png',
+                        'assets/images/ecm.png',
                         width: 20,
                         height: 20,
                       ),
@@ -750,7 +750,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                 ),
                 child: Center(
                   child: Image.asset(
-                    'assets/icons/timer.png',
+                    'assets/images/timer.png',
                     width: 20,
                     height: 20,
                   ),
@@ -982,7 +982,7 @@ class _EcmStakingScreenState extends State<EcmStakingScreen> {
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/icons/ecm.png',
+                      'assets/images/ecm.png',
                       width: screenWidth * 0.05,
                       height: screenWidth * 0.05,
                     ),

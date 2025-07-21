@@ -69,9 +69,10 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/affiliateBg.png'),
+              image: AssetImage('assets/images/affiliateBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+                filterQuality: FilterQuality.low
             ),
           ),
           child: Column(
@@ -132,7 +133,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                           SizedBox(height: screenHeight * 0.03),
 
                           const FeatureCard(
-                            iconPath: 'assets/icons/becomeAffiliate.png',
+                            iconPath: 'assets/images/becomeAffiliate.png',
                             title: 'Why Become an Affiliate?',
                             isSvg: false,
                             bulletPoints: [
@@ -144,7 +145,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                           SizedBox(height: screenHeight * 0.02),
 
                          const FeatureCard(
-                            iconPath: 'assets/icons/quality.png',
+                            iconPath: 'assets/images/quality.png',
                             isSvg: false,
                             title: 'How to Qualify?',
                             bulletPoints: [
@@ -171,7 +172,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                                   isReadOnly: true,
                                   trailingIconAsset: 'assets/icons/copyImg.svg',
                                   onTrailingIconTap: () {
-                                    debugPrint('Trailing icon tapped');
+
                                   },
                                 ),
                               ),
@@ -185,9 +186,9 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02,horizontal: screenWidth * 0.04),
                             decoration:const BoxDecoration(
                               image: DecorationImage(
-                                  image: AssetImage('assets/icons/userActivityLogBg2.png'),
+                                  image: AssetImage('assets/images/userActivityLogBg2.png'),
                                   fit: BoxFit.fill,
-                                  filterQuality: FilterQuality.high
+                                  filterQuality: FilterQuality.low
                               ),
                             ),
 
@@ -264,8 +265,9 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
             ),
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/icons/linearFrame.png'),
+                image: AssetImage('assets/images/linearFrame.png'),
                 fit: BoxFit.fill,
+                  filterQuality: FilterQuality.low
               ),
 
             ),
@@ -286,8 +288,9 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                             width: screenWidth,
                             decoration: BoxDecoration(
                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/linearFrame2.png'),
+                                image: AssetImage('assets/images/linearFrame2.png'),
                                 fit: BoxFit.fill,
+                                  filterQuality: FilterQuality.low
                               ),
                               borderRadius: BorderRadius.circular(screenWidth * 0.02),
                             ),
@@ -305,8 +308,7 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                                     percent: 0.9,
                                     percentText: "280/300",
                                     barColor: const Color(0xFF1CD494),
-                                    // textScale: textScale ,
-                                    // textScale: getResponsiveFontSize(context, 12),
+
                                     screenHeight: screenHeight,
                                     screenWidth: screenWidth,
                                   ),
@@ -322,17 +324,16 @@ class _AffiliateScreenState extends State<AffiliateScreen> {
                                   ),
                                   SizedBox(height: screenHeight * 0.016),
 
-                                  Row(
+                                  const Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
 
-                                      /// Refactor This Component Later with status Active or Inactive Variation.
                                       Flexible(
                                         child: StatusIndicator(
-                                          statusText: 'Not Yet an Affiliator',       /// Variation ->  Already an Affiliate
-                                          statusColor: Color(0xFFE04043),            /// Variation -> Color(0xff1CD494)
-                                          iconPath: 'assets/icons/crossIcon.svg',   ///Variation ->  checkIconAffiliate.svg
+                                          statusText: 'Not Yet an Affiliator',
+                                          statusColor: Color(0xFFE04043),
+                                          iconPath: 'assets/icons/crossIcon.svg',
                                         ),
                                       ),
 

@@ -257,7 +257,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
           decoration: const BoxDecoration(
              color: Color(0xFF01090B),
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
               filterQuality: FilterQuality.medium,
@@ -322,9 +322,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               description: tokens.first.description
                                   .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
                                   .trim(),
-                              imagePath: 'assets/icons/ecmLogo.png',
+                              imagePath: 'assets/images/ecmLogo.png',
                               // imagePath: tokens.first.logo,
-                              backgroundImagePath: 'assets/icons/bg.png',
+                              backgroundImagePath: 'assets/images/bg.png',
                               width: screenWidth ,
                             ),
 
@@ -337,9 +337,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               label1: tokens.first.tokenCompany,
                               label2: 'Founder',
                               description: tokens.first.companyDetails,
-                              imagePath: 'assets/icons/metaFutionImg.png',
-                              // backgroundImagePath: 'assets/icons/bg.png',
-                              width: screenWidth ,
+                              imagePath: 'assets/images/metaFutionImg.png',
+                               width: screenWidth ,
                             ),
 
                             SizedBox(height: screenHeight * 0.04),
@@ -356,7 +355,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               height: screenHeight * 0.19,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage('assets/icons/discoverIMG2.png'),
+                                  image: AssetImage('assets/images/discoverIMG2.png'),
                                   fit: BoxFit.fitWidth,
                                   filterQuality: FilterQuality.medium,
 
@@ -373,8 +372,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                       SizedBox(width: screenWidth * 0.03),
 
                                       Image.asset(
-                                        // 'assets/icons/discoverIMG.png',
-                                        'assets/icons/ecmLarge.png',
+                                        // 'assets/images/discoverIMG.png',
+                                        'assets/images/ecmLarge.png',
                                         fit: BoxFit.contain,
                                         width: screenWidth * 0.17,
                                       ),
@@ -466,7 +465,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
             width: screenWidth,
             decoration:const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                image: AssetImage('assets/images/viewTokenFrameBg.png'),
                  fit: BoxFit.fill,
               ),
             ),
@@ -810,8 +809,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  // image: AssetImage('assets/icons/buyEcmContainerImage.png'),
-                  image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
+                  // image: AssetImage('assets/images/buyEcmContainerImage.png'),
+                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),
@@ -917,7 +916,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           Expanded(
                             child: CustomButton(
                               text: 'Buy with ETH',
-                              icon: 'assets/icons/eth.png',
+                              icon: 'assets/images/eth.png',
                               isActive: isETHActive,
                               onPressed: () {
                                 if (isETHActive) return;
@@ -938,7 +937,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             child:
                             CustomButton(
                               text: 'Buy with USDT',
-                              icon: 'assets/icons/usdt.png',
+                              icon: 'assets/images/usdt.png',
                               isActive: isUSDTActive,
                               onPressed: () {
                                 if (isUSDTActive) return;
@@ -978,13 +977,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     /// ECm AMount INput Section
                     CustomInputField(
                       hintText: 'ECM',
-                      iconAssetPath: 'assets/icons/ecm.png',
+                      iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
                     ),
                     const SizedBox(height: 12),
                     CustomInputField(
                       hintText: isETHActive ? 'ETH ' : 'USDT ',
-                      iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
+                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
                       controller: usdtController,
 
                     ),
@@ -1112,7 +1111,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
             ),
             decoration: BoxDecoration(
               image: const DecorationImage(
-                image: AssetImage('assets/icons/gradientImg.png'),
+                image: AssetImage('assets/images/gradientImg.png'),
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.medium,
 
@@ -1157,7 +1156,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                     token.distributionImage!,
                                     fit: BoxFit.contain,
                                     // errorBuilder: (_, __, ___) => Image.asset(
-                                    //     'assets/icons/distribution_image.png'),
+                                    //     'assets/images/distribution_image.png'),
                                   ),
                                 ),
                               ),
@@ -1170,7 +1169,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         width: screenWidth,
                         decoration: BoxDecoration(
                           image: const DecorationImage(
-                            image: AssetImage('assets/icons/progressFrameBg.png'),
+                            image: AssetImage('assets/images/progressFrameBg.png'),
                             fit: BoxFit.fill,
                             filterQuality: FilterQuality.medium,
 
@@ -1260,7 +1259,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(screenWidth * 0.02),
             image: const DecorationImage(
-              image: AssetImage('assets/icons/progressFrameBg.png'),
+              image: AssetImage('assets/images/progressFrameBg.png'),
               fit: BoxFit.cover,
               filterQuality: FilterQuality.medium,
 

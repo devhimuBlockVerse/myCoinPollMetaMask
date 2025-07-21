@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../utils/dynamicFontSize.dart';
 
-
 class PercentageSelectorComponent extends StatefulWidget {
   final List<String> options;
   final ValueChanged<String> onSelected;

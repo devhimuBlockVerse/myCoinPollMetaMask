@@ -104,22 +104,6 @@ class ECMProgressIndicator extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(containerHeight / 2),
                     ),
-                    // Align the text inside this container
-                    // child: Align(
-                    //   alignment: Alignment.center,
-                    //   child: Text(
-                    //     '$percentage%',
-                    //     maxLines: 1,
-                    //     overflow: TextOverflow.clip,
-                    //     textAlign: TextAlign.end,
-                    //     style: TextStyle(
-                    //       color: Colors.white,
-                    //       fontWeight: FontWeight.bold,
-                    //       fontSize: textFontSize,
-                    //       fontFamily: 'Poppins',
-                    //     ),
-                    //   ),
-                    // ),
                     child: Center(
                        child: Transform.translate(
                          offset: const Offset(0, -0.9),
@@ -134,7 +118,7 @@ class ECMProgressIndicator extends StatelessWidget {
                             fontSize: textFontSize,
                             fontFamily: 'Poppins',
                           ),
-                                               ),
+                         ),
                        ),
                     ),
                   );

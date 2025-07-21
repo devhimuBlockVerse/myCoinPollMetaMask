@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
-import 'BlockButton.dart';
 import 'buy_Ecm.dart';
 
 class RoadmapContainerComponent extends StatelessWidget {

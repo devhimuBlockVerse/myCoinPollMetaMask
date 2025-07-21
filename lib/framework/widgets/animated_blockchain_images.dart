@@ -1,7 +1,6 @@
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math.dart' show radians;
 
 
  class AnimatedBlockchainImages extends StatefulWidget {
@@ -24,7 +23,6 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
   late AnimationController _controller;
   late Animation<double> _animation;
 
-  // Cache radians constants
   static final double _radians30 = 30 * pi / 180;
   static final double _twoPi = 2 * pi;
 
@@ -44,8 +42,7 @@ class _AnimatedBlockchainImagesState extends State<AnimatedBlockchainImages> wit
       curve: Curves.easeInOut,
     );
 
-    // Cache images with ClipOval and fixed size + cacheWidth/cacheHeight for optimization
-    final effectiveDimension = min(widget.containerWidth, widget.containerHeight);
+     final effectiveDimension = min(widget.containerWidth, widget.containerHeight);
     final baseImageSize = effectiveDimension * 0.55;
 
     _cachedImages = widget.imageAssets.map((asset) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-
 class ProfileOptionContainer extends StatelessWidget {
   final String labelText;
   final String leadingIconPath;

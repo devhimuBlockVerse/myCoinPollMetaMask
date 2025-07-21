@@ -12,6 +12,7 @@ class StatusStyling {
     required this.textColor,
   });
 }
+
 StatusStyling getStatusStyling(String status) {
   final normalized = status.toLowerCase();
 
@@ -50,8 +51,7 @@ StatusStyling getStatusStyling(String status) {
   }
 }
 
-
- StatusStyling getTransactionStatusStyling(String status) {
+StatusStyling getTransactionStatusStyling(String status) {
   if (status == 'In') {
     return StatusStyling(
       backgroundColor: const Color(0xFF1A3E39), // Dark green background
@@ -71,37 +71,6 @@ StatusStyling getStatusStyling(String status) {
     borderColor: Colors.grey.shade600,
   );
 }
-
- StatusStyling getMilestoneStatusStyling(String status) {
-  if (status == 'Active') {
-    return StatusStyling(
-      backgroundColor: const Color(0xff1CD494).withOpacity(0.20),
-      textColor: const Color(0xff1CD494),
-      borderColor: const Color(0xff1CD494),
-     );
-  } else if (status == 'On Going') {
-    return StatusStyling(
-      backgroundColor: Colors.transparent,
-       textColor:  Colors.white,
-      borderColor:  Colors.white,
-    );
-  } else if (status == 'Completed') {
-    return StatusStyling(
-      backgroundColor: Colors.transparent,
-       textColor:  Colors.white,
-      borderColor: const Color(0xff2680EF),
-
-
-    );
-  }
-   return StatusStyling(
-    backgroundColor: Colors.grey.shade800,
-    textColor: Colors.white70,
-    borderColor: Colors.grey.shade600,
-  );
-}
-
-
 
 StatusStyling getReferralUserStatusStyle(String status) {
   if (status == 'Active') {
@@ -124,127 +93,3 @@ StatusStyling getReferralUserStatusStyle(String status) {
     borderColor: Colors.grey.shade600,
   );
 }
-
-
-StatusStyling getKycUserStatusStyle(String status) {
-  switch (status) {
-    case 'Approved':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF0A2A1F), // Very dark, desaturated green
-        borderColor: const Color(0xFF29C77F),    // Bright Green
-        textColor: const Color(0xFF29C77F),       // Bright Green
-      );
-    case 'Rejected':
-      return StatusStyling(
-        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
-        textColor: const Color(0xFFE04043),
-        borderColor: const Color(0xFFE04043),
-      );
-    case 'Pending':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF3D3013), // Very dark, desaturated orange/yellow
-        borderColor: const Color(0xFFFABE2B),    // Bright Orange/Yellow
-        textColor: const Color(0xFFFABE2B),       // Bright Orange/Yellow
-      );
-    default: // Fallback for unknown statuses
-      return StatusStyling(
-        backgroundColor: const Color(0xFF2A2A2A), // Dark grey
-        borderColor: Colors.grey[600]!,
-        textColor: Colors.white,
-      );
-  }
-}
-
-
-
-StatusStyling getTicketListStatusStyle(String status) {
-  switch (status) {
-    case 'In progress':
-      return StatusStyling(
-        backgroundColor: const Color(0XFF2680EF).withOpacity(0.20),
-        borderColor: const Color(0xFF2680EF),
-        textColor: const Color(0xFF2680EF),
-      );
-    case 'Open':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
-        borderColor: const Color(0xFF1CD494),
-        textColor: const Color(0xFF1CD494),
-      );
-    case 'Pending':
-      return StatusStyling(
-        backgroundColor: const Color(0xFFFFB41F).withOpacity(0.20),
-        borderColor: const Color(0xFFFFB41F),
-        textColor: const Color(0xFFFFB41F),
-      );
-    case 'Resolved':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF1B9914).withOpacity(0.20),
-        borderColor: const Color(0xFF1B9914),
-        textColor: const Color(0xFF1B9914),
-      );
-    case 'Closed':
-      return StatusStyling(
-        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
-        borderColor: const Color(0xFFE04043),
-        textColor: const Color(0xFFE04043),
-      );
-    default:
-      return StatusStyling(
-        backgroundColor: const Color(0xFF2A2A2A),
-        borderColor: Colors.grey[600]!,
-        textColor: Colors.white,
-      );
-  }
-}
-
-
-
-StatusStyling getTicketStatusStyle(String status) {
-  switch (status) {
-
-    case 'Reopen Ticket':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
-        borderColor: const Color(0xFF1CD494),
-        textColor: const Color(0xFF1CD494),
-      );
-    case 'Close Ticket':
-      return StatusStyling(
-        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
-        borderColor: const Color(0xFFE04043),
-        textColor: const Color(0xFFE04043),
-      );
-    default:
-      return StatusStyling(
-        backgroundColor: const Color(0xFF2A2A2A),
-        borderColor: Colors.grey[600]!,
-        textColor: Colors.white,
-      );
-  }
-}
-
-StatusStyling getActionStatusStyle(String status) {
-  switch (status) {
-
-    case 'Accept':
-      return StatusStyling(
-        backgroundColor: const Color(0xFF1CD494).withOpacity(0.20),
-        borderColor: const Color(0xFF1CD494),
-        textColor: const Color(0xFF1CD494),
-      );
-    case 'Decline':
-      return StatusStyling(
-        backgroundColor: const Color(0xFFE04043).withOpacity(0.20),
-        borderColor: const Color(0xFFE04043),
-        textColor: const Color(0xFFE04043),
-      );
-    default:
-      return StatusStyling(
-        backgroundColor: const Color(0xFF2A2A2A),
-        borderColor: Colors.grey[600]!,
-        textColor: Colors.white,
-      );
-  }
-}
-

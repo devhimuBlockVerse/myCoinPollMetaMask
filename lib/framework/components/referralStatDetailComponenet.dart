@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../utils/status_styling_utils.dart';
-
 
 class ReferralDetailsComponent extends StatelessWidget {
   final String label;

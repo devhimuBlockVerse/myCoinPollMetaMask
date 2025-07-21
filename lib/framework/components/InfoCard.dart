@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class InfoCard extends StatelessWidget {
   final String label1;
   final String label2;

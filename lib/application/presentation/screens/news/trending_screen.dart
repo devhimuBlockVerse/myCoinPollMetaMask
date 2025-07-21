@@ -136,15 +136,31 @@ class _TrendingScreenState extends State<TrendingScreen> {
                                   ),
 
                                   CustomShareButton(
-                                    iconPath:'assets/icons/shareIcon.svg',
+                                    iconPath: 'assets/icons/shareIcon.svg',
                                     color: Colors.white,
-                                    onPressed: ()=> Share.share(
-                                      subject: title,
-                                      '$imageUrl\n\n$title\n\n$description',
-                                    ),
-                                     width: screenWidth * 0.07,
+                                    onPressed: () {
+                                      final cleanDescription = _stripHtmlTags(description).trim();
+                                      final shortDescription = cleanDescription.length > 100
+                                          ? '${cleanDescription.substring(0, 100)}...'
+                                          : cleanDescription;
+
+                                      final String shareMessage = '''
+                                      📢 *Trending Now on CoinPoll!*
+                                      📰 *${title.trim()}*
+                                      $shortDescription
+                                      ${imageUrl.isNotEmpty ? '📷 View Image: $imageUrl\n' : ''}🔗 Read More: https://coinpoll.app/posts?id=${widget.blogData['id']}
+                                      🚀 Stay updated with the crypto world!
+                                       ''';
+
+                                      Share.share(
+                                        shareMessage,
+                                        subject: "Check this out on CoinPoll!",
+                                      );
+                                    },
+                                    width: screenWidth * 0.07,
                                     height: screenWidth * 0.07,
-                                  )
+                                  ),
+
 
                                 ],
                               ),

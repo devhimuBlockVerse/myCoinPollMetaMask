@@ -48,7 +48,7 @@ class WalletCard extends StatelessWidget {
             width: screenWidth,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/icons/walletCardBg.png'),
+                image: AssetImage('assets/images/walletCardBg.png'),
                 fit: BoxFit.fill,
               ),
             ),
@@ -161,7 +161,7 @@ class WalletCard extends StatelessWidget {
                             height: screenWidth * 0.08,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: AssetImage('assets/icons/addFundsBg.png'),
+                                image: AssetImage('assets/images/addFundsBg.png'),
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -233,7 +233,7 @@ class WalletCard extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset(
-                              'assets/icons/BTC.png',
+                              'assets/images/BTC.png',
                               width: screenWidth * 0.053,
                               height: screenWidth * 0.053,
                               fit: BoxFit.contain,
@@ -257,7 +257,7 @@ class WalletCard extends StatelessWidget {
                         Row(
                           children: [
                             Image.asset(
-                              'assets/icons/EthCoin.png',
+                              'assets/images/EthCoin.png',
                               width: screenWidth * 0.053,
                               height: screenWidth * 0.053,
                               fit: BoxFit.contain,

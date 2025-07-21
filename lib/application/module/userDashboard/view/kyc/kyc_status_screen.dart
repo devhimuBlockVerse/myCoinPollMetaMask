@@ -28,17 +28,17 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
   final List<Map<String, String>> _documentTypes = [
     {
       'title': 'National Id Card',
-      'icon': 'assets/icons/nid.png',
+      'icon': 'assets/images/nid.png',
       'submissionText': 'NID Submission Required',
     },
     {
       'title': 'Passport',
-      'icon': 'assets/icons/passport.png',
+      'icon': 'assets/images/passport.png',
       'submissionText': 'Passport Submission Required',
     },
     {
       'title': 'Driving License',
-      'icon': 'assets/icons/drivingLicense.png',
+      'icon': 'assets/images/drivingLicense.png',
       'submissionText': 'Driving License Submission Required',
     },
   ];
@@ -85,9 +85,10 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
+                filterQuality: FilterQuality.low
             ),
           ),
           child: Column(
@@ -144,10 +145,11 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
 
                           Container(
                             width: screenWidth,
-                            decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage('assets/icons/selectDocumentBg.png'),
+                            decoration:const BoxDecoration(
+                              image:  DecorationImage(
+                                image: AssetImage('assets/images/selectDocumentBg.png'),
                                 fit: BoxFit.fill,
+                                  filterQuality: FilterQuality.low
                               ),
                             ),
                             child: FittedBox(
@@ -203,8 +205,9 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
                             width: screenWidth,
                             decoration:const BoxDecoration(
                               image:  DecorationImage(
-                                image: AssetImage('assets/icons/estimatedBG.png'),
+                                image: AssetImage('assets/images/estimatedBG.png'),
                                 fit: BoxFit.fill,
+                                  filterQuality: FilterQuality.low
                               ),
                             ),
                             child: Row(
@@ -359,8 +362,9 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
           width: screenWidth,
           decoration:const BoxDecoration(
             image:  DecorationImage(
-              image: AssetImage('assets/icons/selectDocumentBg.png'),
+              image: AssetImage('assets/images/selectDocumentBg.png'),
               fit: BoxFit.fill,
+                filterQuality: FilterQuality.low
             ),
           ),
           child: Row(
@@ -524,8 +528,9 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
                       width: screenWidth,
                       decoration:const BoxDecoration(
                         image:  DecorationImage(
-                          image: AssetImage('assets/icons/estimatedBG.png'),
+                          image: AssetImage('assets/images/estimatedBG.png'),
                           fit: BoxFit.fill,
+                            filterQuality: FilterQuality.low
                         ),
                       ),
                       child: Row(
@@ -596,8 +601,9 @@ class _KycStatusScreenState extends State<KycStatusScreen> {
                       width: screenWidth,
                       decoration:const BoxDecoration(
                         image:  DecorationImage(
-                          image: AssetImage('assets/icons/rejectedStatusBg.png'),
+                          image: AssetImage('assets/images/rejectedStatusBg.png'),
                           fit: BoxFit.fill,
+                            filterQuality: FilterQuality.low
                         ),
                       ),
                       child: Flexible(

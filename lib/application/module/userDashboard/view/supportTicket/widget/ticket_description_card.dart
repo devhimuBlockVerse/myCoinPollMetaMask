@@ -31,7 +31,7 @@ class TicketDescriptionCard extends StatelessWidget {
       padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/infoCardBg.png'),
+          image: AssetImage('assets/images/infoCardBg.png'),
           fit: BoxFit.fill,
         ),
       ),

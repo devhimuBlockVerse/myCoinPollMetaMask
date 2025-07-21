@@ -404,7 +404,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
             color: Color(0xFF01090B),
             image: DecorationImage(
 
-              image: AssetImage('assets/icons/solidBackGround.png'),
+              image: AssetImage('assets/images/solidBackGround.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -477,7 +477,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
                               decoration: BoxDecoration(
                                  image: const DecorationImage(
-                                  image: AssetImage('assets/icons/profileFrameBg.png'),
+                                  image: AssetImage('assets/images/profileFrameBg.png'),
                                   fit: BoxFit.fill,
                                 ),
                                 borderRadius: BorderRadius.circular(14),

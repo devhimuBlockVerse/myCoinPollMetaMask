@@ -31,7 +31,7 @@ class MilestoneLists extends StatelessWidget {
           width: double.infinity,
           decoration:  const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/milestoneBG.png'),
+              image: AssetImage('assets/images/milestoneBG.png'),
               fit: BoxFit.fill,
 
             ),
@@ -154,7 +154,7 @@ class MilestoneLists extends StatelessWidget {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/detailsBg.png'),
+              image: AssetImage('assets/images/detailsBg.png'),
               fit: BoxFit.fill
               ,
             ),

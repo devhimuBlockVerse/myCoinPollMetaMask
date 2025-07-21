@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: const BoxDecoration(
 
               image: DecorationImage(
-                 image: AssetImage('assets/icons/starGradientBg.png'),
+                 image: AssetImage('assets/images/starGradientBg.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
                 filterQuality: FilterQuality.low,
@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   right: screenWidth * 0.02
                               ),
                               child: Image.asset(
-                                'assets/icons/mycoinpolllogo.png',
+                                'assets/images/mycoinpolllogo.png',
                                 width: screenWidth * 0.40,
                                 height: screenHeight * 0.040,
                                 fit: BoxFit.contain,
@@ -320,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.transparent
                             ),
                             image:const DecorationImage(
-                              image: AssetImage('assets/icons/applyForListingBG.png'),
+                              image: AssetImage('assets/images/applyForListingBG.png'),
                               fit: BoxFit.fill,
                               filterQuality: FilterQuality.low,
                             ),
@@ -395,9 +395,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         containerWidth: screenWidth * 0.4,
                                         containerHeight: screenHeight * 0.4,
                                         imageAssets: const [
-                                          'assets/icons/animatedImg1.png',
-                                          'assets/icons/animatedImg2.png',
-                                          'assets/icons/animatedImg3.png',
+                                          'assets/images/animatedImg1.png',
+                                          'assets/images/animatedImg2.png',
+                                          'assets/images/animatedImg3.png',
                                         ],
                                       ),
                                     ),
@@ -493,7 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: screenWidth,
             decoration:const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/icons/viewTokenFrameBg.png'),
+                image: AssetImage('assets/images/viewTokenFrameBg.png'),
                 fit: BoxFit.fill,
                 filterQuality: FilterQuality.low,
               ),
@@ -809,7 +809,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                   image: AssetImage('assets/icons/buyEcmContainerImageV.png'),
+                   image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.low,
                 ),
@@ -909,7 +909,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: CustomButton(
                               text: 'Buy with ETH',
-                              icon: 'assets/icons/eth.png',
+                              icon: 'assets/images/eth.png',
                               isActive: isETHActive,
                               onPressed: () {
                                 if (isETHActive) return;
@@ -929,7 +929,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child:
                             CustomButton(
                               text: 'Buy with USDT',
-                              icon: 'assets/icons/usdt.png',
+                              icon: 'assets/images/usdt.png',
                               isActive: isUSDTActive,
                               onPressed: () {
                                 if (isUSDTActive) return;
@@ -971,13 +971,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     /// ECm AMount INput Section
                     CustomInputField(
                       hintText: 'ECM',
-                      iconAssetPath: 'assets/icons/ecm.png',
+                      iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
                     ),
                     const SizedBox(height: 12),
                     CustomInputField(
                       hintText: isETHActive ? 'ETH ' : 'USDT ',
-                      iconAssetPath: isETHActive ? 'assets/icons/eth.png' : 'assets/icons/usdt.png',
+                      iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
                       controller: usdtController,
 
                     ),
@@ -1075,7 +1075,7 @@ class _HomeScreenState extends State<HomeScreen> {
       width: screenWidth,
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/icons/learnAndEarnFrame.png'),
+          image: AssetImage('assets/images/learnAndEarnFrame.png'),
           fit: BoxFit.fill,
           filterQuality: FilterQuality.low,
 
@@ -1093,7 +1093,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               width: screenWidth * 0.28,
               height: screenHeight * 0.14,
-              child: Image.asset('assets/icons/learnAndEarnImg.png',fit: BoxFit.fill,filterQuality: FilterQuality.low,
+              child: Image.asset('assets/images/learnAndEarnImg.png',fit: BoxFit.fill,filterQuality: FilterQuality.low,
               ),
             ),
 

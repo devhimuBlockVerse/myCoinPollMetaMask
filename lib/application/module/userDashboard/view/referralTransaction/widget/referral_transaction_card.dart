@@ -28,7 +28,7 @@ class ReferralTransactionCard extends StatelessWidget {
           decoration: BoxDecoration(
 
             image: DecorationImage(
-              image: AssetImage('assets/icons/logBg.png'),
+              image: AssetImage('assets/images/logBg.png'),
               fit: BoxFit.fill,
             ),
             color: const Color(0xFF1E283A),
@@ -45,7 +45,7 @@ class ReferralTransactionCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/icons/logEcm.png',
+                      'assets/images/logEcm.png',
                       width: screenWidth * 0.11,
                     ),
                     SizedBox(width: screenWidth * 0.01),

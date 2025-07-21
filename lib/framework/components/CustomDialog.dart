@@ -42,8 +42,8 @@ class CustomDialog extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        // image: AssetImage('assets/icons/dialogBg.png'),
-                        image: AssetImage(image ?? 'assets/icons/dialogBgv.png'),
+                        // image: AssetImage('assets/images/dialogBg.png'),
+                        image: AssetImage(image ?? 'assets/images/dialogBgv.png'),
                         fit: BoxFit.fill,
                         // fit: BoxFit.contain,
                       ),

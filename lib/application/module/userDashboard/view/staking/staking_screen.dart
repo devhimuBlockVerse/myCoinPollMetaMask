@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
@@ -24,7 +23,6 @@ import '../../../side_nav_bar.dart';
 import 'widgets/staking_table.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart'as http;
-
 
 class StakingScreen extends StatefulWidget {
   const StakingScreen({super.key});
@@ -62,7 +60,7 @@ class _StakingScreenState extends State<StakingScreen> {
   List<StakingHistoryModel> stakingHistory = [];
   List<StakingHistoryModel> filteredHistory = [];
   bool _isLoadingHistory = false;
-   List<String> durationDropdownItems = ['Select Duration'];
+  List<String> durationDropdownItems = ['Select Duration'];
 
 
   @override
@@ -88,7 +86,6 @@ class _StakingScreenState extends State<StakingScreen> {
      final prefs = await SharedPreferences.getInstance();
      final token = prefs.getString('token');
 
-
      if (token == null) {
        print("No login token found.");
        return [];
@@ -104,18 +101,13 @@ class _StakingScreenState extends State<StakingScreen> {
            'Authorization': 'Bearer $token',
          },
        );
-
-       print('>>>>get-staking-plans BODY >  ${response.body}');
-
        if (response.statusCode == 200) {
-         print('fetchStakingPlans Status: ${response.statusCode}');
-         print('Response Body: ${response.body}');
+          print('Response Body: ${response.body}');
 
          final List<dynamic> decoded = json.decode(response.body);
          return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
        } else {
-         print('>>>>>>>>>>>Failed to fetch staking plans: ${response.body}');
-         return [];
+          return [];
        }
      } catch (e) {
        print("Error fetching staking plans: $e");
@@ -134,7 +126,6 @@ class _StakingScreenState extends State<StakingScreen> {
        return;
      }
      final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
-     print('API URL: ${ApiConstants.baseUrl}/get-staking-history');
 
      try {
        final response = await http.get(url, headers: {
@@ -146,7 +137,6 @@ class _StakingScreenState extends State<StakingScreen> {
 
           print(">> Response Staking history: ${response.body}");
 
-
          final List<dynamic> decoded = json.decode(response.body);
          final List<StakingHistoryModel> history = decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
          setState(() {
@@ -155,12 +145,7 @@ class _StakingScreenState extends State<StakingScreen> {
            _isLoadingHistory = false;
 
          });
-         for (var h in history) {
-           debugPrint(">>> [Staking ID: ${h.id}] Duration: ${h.duration}, Amount: ${h.amount}, Status: ${h.status}");
-         }
        }
-
-
      } catch (e) {
        print('Error fetching staking history: \$e');
        setState(() => _isLoadingHistory = false);
@@ -191,10 +176,6 @@ class _StakingScreenState extends State<StakingScreen> {
        isLoading = false;
      });
 
-     //   DEBUG: Print all loaded durations
-     for (var plan in stakingPlans) {
-       debugPrint(">> Loaded Plan: ${plan.id}, Duration: ${plan.duration}");
-     }
    }
 
    /// Search Filtering
@@ -265,8 +246,6 @@ class _StakingScreenState extends State<StakingScreen> {
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
 
-    // durationDropdownItems.addAll(stakingPlans.map((plan) => '${plan.duration} Days').toList());
-
     const baseWidth = 375.0;
     const baseHeight = 812.0;
 
@@ -298,9 +277,10 @@ class _StakingScreenState extends State<StakingScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/starGradientBg.png'),
+                  image: AssetImage('assets/images/starGradientBg.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.topRight,
+                    filterQuality : FilterQuality.low
                 ),
               ),
               child:
@@ -407,14 +387,6 @@ class _StakingScreenState extends State<StakingScreen> {
                                               updatedAt: DateTime.now(),
                                             ),
                                           );
-                                          print("=== STAKE DEBUG INFO ===");
-                                          print("Amount: $amount");
-                                          print("Selected Duration String: $_selectedDuration");
-                                          print("Parsed Duration (days): $durationDays");
-                                          print("Selected Plan ID: ${selectedPlan.id}");
-                                          print("Selected Plan Duration (days): ${selectedPlan.duration}");
-                                          print("=========================");
-
 
                                           if (selectedPlan.id == -1) {
                                             ToastMessage.show(
@@ -433,22 +405,13 @@ class _StakingScreenState extends State<StakingScreen> {
                                               );
                                             },
                                           );
-                                          print("Calling stakeNow with:");
-                                          print("  - amount: $amount");
-                                          print("  - selectedPlan.id: ${selectedPlan.id}");
-                                          print("  - selectedPlan.duration: ${selectedPlan.duration}");
-
 
                                           try {
-
-
                                             final planIndex = stakingPlans.indexWhere((plan) => plan.id == selectedPlan.id);
                                             if (planIndex == -1) {
                                               print("==== Plan ID not found in list.");
                                               return;
                                             }
-                                            print("___________ Staking with ID: ${selectedPlan.id}, mapped index: $planIndex, duration: ${selectedPlan.duration}");
-
 
                                             final txHash = await walletVM.stakeNow(
                                               context,
@@ -460,7 +423,6 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
                                             if (txHash != null) {
-                                              debugPrint("Staking successful with txHash: $txHash");
 
                                               ToastMessage.show(
                                                 message: "Staking Successful!",
@@ -482,8 +444,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                             }
                                           } catch (e) {
                                             Navigator.of(context).pop();
-                                            debugPrint("Error in UI staking flow: $e");
-                                            ToastMessage.show(
+                                             ToastMessage.show(
                                               message: "Staking Failed",
                                               subtitle: e.toString(),
                                               type: MessageType.error,
@@ -502,8 +463,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                     text: 'Buy ECM',
                                     leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                                      onPressed: () {
-                                      debugPrint('Button tapped!');
-                                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+                                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
 
                                     },
                                     textStyle: TextStyle(
@@ -655,8 +615,9 @@ class _StakingScreenState extends State<StakingScreen> {
           height: containerHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/headerbg.png'),
+              image: AssetImage('assets/images/headerbg.png'),
               fit: BoxFit.fill,
+                filterQuality : FilterQuality.low
             ),
           ),
           child: Center(
@@ -669,7 +630,7 @@ class _StakingScreenState extends State<StakingScreen> {
                   height: imageSize,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/icons/ecmSmall.png'),
+                        image: AssetImage('assets/images/ecmSmall.png'),
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.low
                     ),
@@ -706,8 +667,9 @@ class _StakingScreenState extends State<StakingScreen> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/stakingFrame.png'),
+              image: AssetImage('assets/images/stakingFrame.png'),
               fit: BoxFit.fill,
+                filterQuality : FilterQuality.low
             ),
           ),
           padding: EdgeInsets.symmetric(
@@ -756,7 +718,7 @@ class _StakingScreenState extends State<StakingScreen> {
                             });
                           },
                           width: double.infinity,
-                          prefixPngPath: 'assets/icons/ecm.png',
+                          prefixPngPath: 'assets/images/ecm.png',
                         ),
                       ],
                     ),
@@ -772,10 +734,9 @@ class _StakingScreenState extends State<StakingScreen> {
                         const SizedBox(height: 26),
                         ListingField(
                           isDropdown: true,
-                          labelText: '', // no label
+                          labelText: '',
                           prefixSvgPath: 'assets/icons/timerImg.svg',
-                          // dropdownItems: const ['Select Duration','7 Days', '30 Days', '90 Days', '180 Days', '365 Days'],
-                          dropdownItems: durationDropdownItems,
+                           dropdownItems: durationDropdownItems,
 
                           selectedDropdownItem: _selectedDuration,
                           height: listingFieldHeight,
@@ -788,8 +749,7 @@ class _StakingScreenState extends State<StakingScreen> {
                               selectedDay = newValue;
                             });
                             calculateRewards();
-                            print('Selected duration: $newValue');
-                          },
+                           },
 
                         ),
                       ],
@@ -804,8 +764,7 @@ class _StakingScreenState extends State<StakingScreen> {
               Consumer<WalletViewModel>(builder: (context, walletVM, child){
                 final balanceStr = walletVM.balance;
                 final balance = double.tryParse(balanceStr ?? '0') ?? 0.0;
-                print('UI sees balance: $balance');
-                return PercentageSelectorComponent(
+                 return PercentageSelectorComponent(
                   options: ecmPercentageOptions,
                   initialSelection: _currentSelectedPercentage,
                   onSelected: (selected) {
@@ -832,7 +791,7 @@ class _StakingScreenState extends State<StakingScreen> {
                     setState(() {
                       _currentSelectedPercentage = selected;
                     });
-                    print('Selected: $_currentSelectedPercentage');
+
 
                   },
                 );
@@ -910,16 +869,11 @@ class _StakingScreenState extends State<StakingScreen> {
                 children: [
                   Builder(
                     builder: (context) {
-
                       int? durationKey = int.tryParse(selectedDay.replaceAll(' Days', '').trim());
-                      // int? durationKey = int.tryParse(selectedDay.replaceAll(RegExp(r'[^0-9]'), ''));
 
                       String rateText = durationKey != null
                           ? "${(annualReturnRates[durationKey] ?? 0.0) * 100}%"
                           : "0%";
-
-                      print("durationKey: $durationKey, rate: ${annualReturnRates[durationKey]}");
-
                       return _buildInfoRow("Annual Return Rate", rateText);
                     },
                   ),

@@ -28,9 +28,9 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
               decoration: const BoxDecoration(
                  color: Color(0xFF01090B),
                 image: DecorationImage(
-                  // image: AssetImage('assets/icons/gradientBgImage.png'),
+                  // image: AssetImage('assets/images/gradientBgImage.png'),
                   // fit: BoxFit.contain,
-                  image: AssetImage('assets/icons/starGradientBg.png'),
+                  image: AssetImage('assets/images/starGradientBg.png'),
                   fit: BoxFit.cover,
                   alignment: Alignment.topRight,
                   filterQuality: FilterQuality.medium,
@@ -71,7 +71,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
                              children: [
                               // SizedBox(height: screenHeight * 0.02),
                               FeatureCard(
-                                iconPath: 'assets/icons/cryptoLaunchpad.png',
+                                iconPath: 'assets/images/cryptoLaunchpad.png',
                                 title: 'Crypto Launchpad',
                                 description: 'Discover and support new cryptocurrency projects with our secure, innovative, and user-friendly platform.',
                                 isSvg: false,
@@ -84,7 +84,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
 
                               SizedBox(height: screenHeight * 0.016),
                               FeatureCard(
-                                iconPath: 'assets/icons/ecmToken.png',
+                                iconPath: 'assets/images/ecmToken.png',
                                 title: 'ECM Token',
                                 description: 'Powering the ecosystem, ECM Token enhances the experience, offering exclusive access to investments.',
                                 isSvg: false,
@@ -96,7 +96,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
 
                               SizedBox(height: screenHeight * 0.016),
                               FeatureCard(
-                                iconPath: 'assets/icons/communityVoting.png',
+                                iconPath: 'assets/images/communityVoting.png',
                                 title: 'Community Voting',
                                 description: 'Our platform integrates community voting to allow users to participate in deciding which projects receive funding.',
                                 isSvg: false,
@@ -107,7 +107,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
                               ),
                               SizedBox(height: screenHeight * 0.016),
                               FeatureCard(
-                                iconPath: 'assets/icons/educationalRes.png',
+                                iconPath: 'assets/images/educationalRes.png',
                                 title: 'Educational Resources',
                                 description: 'Learn about blockchain, crypto, and launchpads with our comprehensive educational content.',
                                 isSvg: false,
@@ -118,7 +118,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
                               ),
                               SizedBox(height: screenHeight * 0.016),
                               FeatureCard(
-                                iconPath: 'assets/icons/metaVerseIntegration.png',
+                                iconPath: 'assets/images/metaVerseIntegration.png',
                                 title: 'Metaverse Integration',
                                 description: 'Access Androverse, our innovative metaverse, where users can buy virtual land and enjoy exclusive experiences with ECM Tokens.',
                                 isSvg: false,
@@ -129,7 +129,7 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
                               ),
                               SizedBox(height: screenHeight * 0.016),
                               FeatureCard(
-                                iconPath: 'assets/icons/projectLaunch.png',
+                                iconPath: 'assets/images/projectLaunch.png',
                                 title: 'Project Launches',
                                 description: 'Gain early access to exclusive crypto launches and opportunities for ECM Token holders and MyCoinPoll community members.',
                                 isSvg: false,

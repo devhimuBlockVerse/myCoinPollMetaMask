@@ -75,7 +75,7 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
           // height: screenHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/icons/starGradientBg.png'),
+              image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
             ),
@@ -138,7 +138,7 @@ class _CreateNewTicketScreenState extends State<CreateNewTicketScreen> {
 
                             decoration: BoxDecoration(
                               image: const DecorationImage(
-                                image: AssetImage('assets/icons/createTicketBg.png'),
+                                image: AssetImage('assets/images/createTicketBg.png'),
                                 fit: BoxFit.fill,
                               ),
 

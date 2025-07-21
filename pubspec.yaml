@@ -89,7 +89,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/mycoinLOGO.png"
+  image_path: "assets/Mycoinpoll_Icon.png"
   remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the

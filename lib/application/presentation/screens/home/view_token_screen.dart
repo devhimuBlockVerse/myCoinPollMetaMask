@@ -694,7 +694,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       BlockButtonV2(
                         text: 'Official Website',
                         onPressed: () async{
-                          debugPrint('Button tapped!');
                           const url = 'https://ecmcoin.com/';
                           if (await canLaunchUrl(Uri.parse(url))) {
                           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
@@ -862,7 +861,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               isReadOnly: true,
                               trailingIconAsset: 'assets/icons/copyImg.svg',
                                onTrailingIconTap: () {
-                                debugPrint('Trailing icon tapped');
+
                                 const referralLink = 'https://mycoinpoll.com?ref=125482458661';
 
                                 Clipboard.setData(const ClipboardData(text:referralLink));
@@ -989,9 +988,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
-                        debugPrint("ECM Purchase triggered");
+
                         if (!walletVM.isConnected) {
-                          print("Wallet not connected. Prompting user to connect...");
+
                           try {
                             await walletVM.ensureModalWithValidContext(context);
                             await walletVM.appKitModal?.openModalView();
@@ -1005,9 +1004,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                         try{
                           final inputEth = ecmController.text.trim();
-                          debugPrint("User input: $inputEth");
                           final ethDouble = double.tryParse(inputEth);
-                          debugPrint("Parsed double: $ethDouble");
                           if (ethDouble == null || ethDouble <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
@@ -1020,28 +1017,36 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           }
 
                           final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-                          // final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e16);
                           final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-                          debugPrint("ETH in Wei: $ecmAmountInWeiETH");
-                          debugPrint("USDT in smallest unit: $ecmAmountInWeiUSDT");
+
 
                           final isETH = isETHActive;
                           final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
-                          debugPrint("Purchase Button Pressed");
+
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (_) => const Center(
+                              child: CircularProgressIndicator(color: Colors.white),
+                            ),
+                          );
 
                           if (isETH) {
-                            debugPrint("Calling buyECMWithETH with: $ecmAmountInWeiETH");
-                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
                           } else  {
-                            debugPrint("Calling buyECMWithUSDT with: $ecmAmountInWeiUSDT");
-                            await walletVM.buyECMWithUSDT(amount,context);
-                            // await walletVM.buyECMWithUSDT(EtherAmount.inWei(amount),context);
-                          }
-                          debugPrint("${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} completed");
-
+                             final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+                            await walletVM.buyECMWithUSDT(amount,referralAddress,context);
+                           }
+                          Navigator.pop(context);
+                          ecmController.clear();
                         }catch (e) {
+                          Navigator.pop(context);
                           debugPrint("Buy ECM failed: $e");
+                          ToastMessage.show(
+                            message: "Transaction Failed",
+                            subtitle: e.toString().contains("reverted") ? "Transaction reverted by EVM." : "An error occurred while processing your transaction.",
+                            type: MessageType.error,
+                          );
                         }
                       },
                       gradientColors: const [

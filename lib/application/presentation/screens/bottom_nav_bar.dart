@@ -20,12 +20,9 @@ class BottomNavBar extends StatefulWidget {
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
-
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
 
   final PageStorageBucket bucket = PageStorageBucket();
-
-
 
   final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
 
@@ -50,9 +47,9 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           onYes: () {
             Navigator.of(context).pop(true);
           },
-          onNo: () {
-            Navigator.of(context).pop(false);
-          },
+          // onNo: () {
+          //   Navigator.of(context).pop(false);
+          // },
         );
       },
     );
@@ -68,7 +65,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     final screenWidth = media.size.width;
     final screenHeight = media.size.height;
 
-    // Inline scaling functions
+
     double scaleFont(double size) => size * (screenWidth + screenHeight) / 1700;
     double scaleWidth(double size) => size * screenWidth / 375;
     double scaleHeight(double size) => size * screenHeight / 812;
@@ -82,8 +79,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
       const AndroVerseScreen(),
       const NewsScreen(),
       const SignIn(showBackButton: false),
-      // isLoggedInOrConnected ? const ProfileScreen() : const SignIn(),
-    ];
+     ];
 
 
     return SafeArea(

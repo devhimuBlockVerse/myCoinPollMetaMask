@@ -27,7 +27,6 @@ class CardNewsComponent extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // width: containerWidth,
         width: double.infinity,
         height: imageHeight + overlayHeight * 0.6,
         clipBehavior: Clip.antiAlias,
@@ -51,7 +50,6 @@ class CardNewsComponent extends StatelessWidget {
               ),
             ),
 
-            // News card overlay
             Positioned(
               left: screenWidth * 0.05,
               top: overlayTopOffset,
@@ -69,7 +67,6 @@ class CardNewsComponent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Source and time
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -80,8 +77,8 @@ class CardNewsComponent extends StatelessWidget {
                               color: const Color(0xFF5CA4FF),
                               fontSize: containerWidth * 0.04,
                               fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700, // Bold
-                              height: 1.6, // 160% line height
+                              fontWeight: FontWeight.w700,
+                              height: 1.6,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -93,8 +90,8 @@ class CardNewsComponent extends StatelessWidget {
                             color: const Color(0xFF77798D),
                             fontSize: containerWidth * 0.032,
                             fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700, // Bold
-                            height: 1.6, // 160% line height
+                            fontWeight: FontWeight.w700,
+                            height: 1.6,
                           ),
                         ),
                       ],
@@ -108,7 +105,7 @@ class CardNewsComponent extends StatelessWidget {
                         fontSize: containerWidth * 0.04,
                         fontFamily: 'Poppins',
                         fontWeight: FontWeight.w300,
-                        height: 1.6, // 160% line height
+                        height: 1.6,
 
                       ),
                       maxLines: 2,

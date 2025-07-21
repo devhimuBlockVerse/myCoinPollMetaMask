@@ -88,8 +88,7 @@ class _SideNavBarState extends State<SideNavBar> {
 
                 ...widget.navItems.map((item) => _buildNavItem(context, item, drawerWidth)).toList(),
 
-                // if (widget.onLogoutTapped != null) _buildLogoutItem(context, drawerWidth),
-              ],
+               ],
             ),
           ),
         ),
@@ -199,12 +198,6 @@ class _SideNavBarState extends State<SideNavBar> {
             MaterialPageRoute(builder: item.screenBuilder!),
           );
         }
-
-        // widget.onScreenSelected(item.id);
-        //  await Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: item.screenBuilder!),
-        // );
 
       },
     );

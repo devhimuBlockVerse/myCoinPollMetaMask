@@ -36,29 +36,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     'assets/icons/profileIcon.svg',
   ];
 
-  Future<bool> _onWillPop(double screenWidth, double screenHeight) async {
-    final value = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return DialogModalView(
-          title: "Exit MyCoinPoll",
-          message: "Are you sure you want to exit?",
-          yesLabel: "Yes",
-          onYes: () {
-            Navigator.of(context).pop(true);
-          },
-          onNo: () {
-            Navigator.of(context).pop(false);
-          },
-        );
-      },
-    );
-    if (value == true) {
-      exit(0);
-    }
-    return false;
-  }
+
 
   @override
   Widget build(BuildContext context) {

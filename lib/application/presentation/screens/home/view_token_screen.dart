@@ -809,8 +809,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  // image: AssetImage('assets/images/buyEcmContainerImage.png'),
-                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
+                   image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),
@@ -823,10 +822,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // const SizedBox(height: 9),
-                    const SizedBox(height: 18),
-
-                    // Stage &  MAx Section
+                     const SizedBox(height: 18),
 
                     ECMProgressIndicator(
                       stageIndex: walletVM.stageIndex,
@@ -850,11 +846,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // if (walletVM.walletAddress != null && walletVM.walletAddress.isNotEmpty)
-                            CustomLabeledInputField(
+                             CustomLabeledInputField(
                               labelText: 'Your Address:',
-                              // hintText: walletVM.walletAddress,
-                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                               hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
                                   ? walletVM.walletAddress
                                   : 'Not connected',
                               controller: readingMoreController,
@@ -1155,8 +1149,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                                   child: Image.network(
                                     token.distributionImage!,
                                     fit: BoxFit.contain,
-                                    // errorBuilder: (_, __, ___) => Image.asset(
-                                    //     'assets/images/distribution_image.png'),
+
                                   ),
                                 ),
                               ),
@@ -1174,8 +1167,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             filterQuality: FilterQuality.medium,
 
                           ),
-                          // borderRadius: BorderRadius.circular(screenWidth * 0.02),
-                        ),
+                         ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.06,

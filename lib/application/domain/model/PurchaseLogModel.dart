@@ -1,37 +1,6 @@
-// class PurchaseLogModel {
-//   final String coinName;
-//   final String refName;
-//   final DateTime date;
-//   final String contractName;
-//   final String senderName;
-//   final double ecmAmount;
-//   final String hash;
-//
-//   PurchaseLogModel({
-//     required this.coinName,
-//     required this.refName,
-//     required this.date,
-//     required this.contractName,
-//     required this.senderName,
-//     required this.ecmAmount,
-//     required this.hash,
-//   });
-//
-//   factory PurchaseLogModel.fromJson(Map<String, dynamic> json) {
-//     return PurchaseLogModel(
-//       coinName: json['coinName'],
-//       refName: json['refName'],
-//       date: DateTime.parse(json['date']),
-//       contractName: json['contractName'],
-//       senderName: json['senderName'],
-//       ecmAmount: json['ecmAmount'].toDouble(),
-//       hash: json['hash'],
-//     );
-//   }
-// }
+
 class PurchaseLogModel {
-  // final String coinName;
-  final int id;
+   final int id;
   final String hash;
   final int userId;
   final String buyer;
@@ -43,8 +12,7 @@ class PurchaseLogModel {
   final double referralEth;
 
   PurchaseLogModel({
-    // required this.coinName,
-    required this.id,
+     required this.id,
     required this.hash,
     required this.userId,
     required this.buyer,
@@ -58,8 +26,7 @@ class PurchaseLogModel {
 
   factory PurchaseLogModel.fromJson(Map<String, dynamic> json) {
     return PurchaseLogModel(
-      // coinName: json['coinName'] ?? 'ECM',
-      id: json['id'] ?? 0,
+       id: json['id'] ?? 0,
       hash: json['hash'] ?? '',
       userId: json['user_id'] ?? 0,
       buyer: json['buyer'] ?? '',

@@ -42,16 +42,14 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
               ),
             ),
             child: SingleChildScrollView(
-              // padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Center(
+               child: Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.04,
                     vertical: screenHeight * 0.09,
                   ),
                   child: Column(
-                    // mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
 
                     children: [
@@ -60,12 +58,10 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         'Welcome to Androverse',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600, // SemiBold in Figma
-                          // fontSize: baseSize * 0.05,
-                          fontSize: getResponsiveFontSize(context, 20),
+                          fontWeight: FontWeight.w600,
+                           fontSize: getResponsiveFontSize(context, 20),
                           height: 1.6,
-                          // height: 0.8,
-                          color: const Color(0xFFFFF5ED),
+                           color: const Color(0xFFFFF5ED),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -76,8 +72,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         'The Future is Loading...',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          // fontSize: baseSize * 0.035,
-                          // height: 1.2,
+
                           fontSize: getResponsiveFontSize(context, 14),
                           height: 1.6,
                           color:const Color(0xCCFFF5ED),
@@ -106,8 +101,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.italic,
-                          // fontSize: baseSize * 0.038,
-                          // height: 0.8,
+
                           fontSize: getResponsiveFontSize(context, 14),
                           height: 1.6,
                           color: const Color(0xFFFFF5ED),
@@ -122,8 +116,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                           fontFamily: 'Poppins',
                           color:const Color(0xCCFFF5ED),
                           fontWeight: FontWeight.w400,
-                          // fontSize: baseSize * 0.032,
-                          // height: 1.23,
+
                           fontSize: getResponsiveFontSize(context, 12),
                           height: 1.6,
                         ),
@@ -146,8 +139,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         gradientColors: const [
                           Color(0xFF2680EF),
                           Color(0xFF1CD494)
-                          // 1CD494
-                        ],
+                         ],
                         onTap: () {
                           Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);  // Go to Home Screen
                         },

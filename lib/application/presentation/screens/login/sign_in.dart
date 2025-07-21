@@ -202,11 +202,8 @@ class _SignInState extends State<SignIn> {
           width: screenWidth,
           height: screenHeight,
           decoration: const BoxDecoration(
-            // color: const Color(0xFF0B0A1E),
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/images/gradientBgImage.png'),
-              // fit: BoxFit.contain,
               image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
@@ -448,28 +445,7 @@ class _SignInState extends State<SignIn> {
                                                 text: isConnected ? 'Go To Dashboard' : 'Connect Wallet',
                                                 height: screenHeight * 0.05,
                                                 width: screenWidth * 0.88,
-                                                // onPressed: walletVM.isLoading ? null : () async {
-                                                  //   setState(() => _isNavigating = true);
-                                                  //   try {
-                                                  //
-                                                  //     if (!walletVM.isConnected) {
-                                                  //        await walletVM.connectWallet(context);
-                                                  //     }
-                                                  //
-                                                  //     if (walletVM.appKitModal != null && walletVM.isConnected) {
-                                                  //
-                                                  //       Navigator.pushAndRemoveUntil(
-                                                  //         context,
-                                                  //         MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
-                                                  //             (_) => false,
-                                                  //       );
-                                                  //     }
-                                                  //   } catch (e, stack) {
-                                                  //     print('Wallet Connect Error: $e\n$stack');
-                                                  //    } finally {
-                                                  //     if (mounted) setState(() => _isNavigating = false);
-                                                  //   }
-                                                  // }
+
                                                 onPressed: walletVM.isLoading ? null : _handleWeb3Login,
                                               );
                                             },

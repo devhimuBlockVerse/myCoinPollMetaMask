@@ -58,23 +58,18 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
     final screenWidth = media.size.width;
     final screenHeight = media.size.height;
 
-    // Button sizing relative to screen
-    final buttonWidth = widget.width ?? screenWidth * 0.8;
+     final buttonWidth = widget.width ?? screenWidth * 0.8;
     final buttonHeight = widget.height ?? screenHeight * 0.065;
 
-    // Responsive font size scaling using combined screen dimensions
-    double responsiveFontSize = (screenWidth + screenHeight) * 0.014;
+     double responsiveFontSize = (screenWidth + screenHeight) * 0.014;
 
 
-    final calculatedFontSize = buttonHeight * 0.4;
-    // Override fontSize if textStyle has it, else fallback to responsive size
-    final effectiveTextStyle = (widget.textStyle ?? const TextStyle()).copyWith(
+      final effectiveTextStyle = (widget.textStyle ?? const TextStyle()).copyWith(
       fontSize: widget.textStyle?.fontSize ?? responsiveFontSize,
       color: widget.textStyle?.color ?? Colors.white,
     );
 
-    // Padding scales with button height
-    final horizontalPadding = buttonWidth * 0.02;
+     final horizontalPadding = buttonWidth * 0.02;
     final verticalPadding = buttonHeight * 0.25;
     final imageSize = buttonHeight * 0.5;
 
@@ -82,14 +77,13 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
       onTapDown: _handleTapDown,
       onTapUp: _handleTapUp,
       onTapCancel: _handleTapCancel,
-      onTap: widget.onPressed,
+      // onTap: widget.onPressed,
       child: Container(
         width: buttonWidth,
         height: buttonHeight,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9),
-          // Add gradient border or background if you want here
-        ),
+         ),
         child: Stack(
           children: [
             ShaderMask(

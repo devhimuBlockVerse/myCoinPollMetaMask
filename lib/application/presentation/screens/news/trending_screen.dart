@@ -139,10 +139,8 @@ class _TrendingScreenState extends State<TrendingScreen> {
                                     iconPath:'assets/icons/shareIcon.svg',
                                     color: Colors.white,
                                     onPressed: ()=> Share.share(
-                                      // Replace the imageUrl with the actual URL/Src link (In Future)
                                       subject: title,
                                       '$imageUrl\n\n$title\n\n$description',
-
                                     ),
                                      width: screenWidth * 0.07,
                                     height: screenWidth * 0.07,

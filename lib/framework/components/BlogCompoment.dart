@@ -18,9 +18,7 @@ class Blog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    final double containerWidth = screenWidth * 0.42;
     final double padding = screenWidth * 0.02;
     final double fontSmall = screenWidth * 0.025;
     final double fontMedium = screenWidth * 0.028;
@@ -29,7 +27,6 @@ class Blog extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // width: containerWidth,
          clipBehavior: Clip.none,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
@@ -98,7 +95,6 @@ class Blog extends StatelessWidget {
                         child: Text(
                           date,
                           overflow: TextOverflow.ellipsis,
-
                           style: TextStyle(
                             color: const Color(0xff7E8088),
                             fontSize: fontSmall,
@@ -114,7 +110,6 @@ class Blog extends StatelessWidget {
                   Text(
                     title,
                     maxLines: 2,
-
                     style: TextStyle(
                       fontSize: fontMedium,
                       color: Colors.white,

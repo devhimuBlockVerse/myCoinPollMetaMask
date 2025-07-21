@@ -132,11 +132,6 @@ Widget buildStakingTable(
                           builder: (context) {
                             final normalizedStatus = data.status.trim().toLowerCase();
 
-                            // final statusStyle = normalizedStatus == 'pending'
-                            //     ? getStatusStyling('unstack')
-                            //     : getStatusStyling(normalizedStatus);
-
-                            // final endTime = int.tryParse(data.endTimeFormatted) ?? 0;
                             final endTime = data.endTime;
 
 
@@ -161,7 +156,7 @@ Widget buildStakingTable(
                                            onYes: () {
                                              Navigator.of(context).pop(true);
                                            },
-                                           onNo: () => Navigator.pop(context, false),
+                                           // onNo: () => Navigator.pop(context, false),
                                          ),
                                    );
 
@@ -211,7 +206,7 @@ Widget buildStakingTable(
                                        message: 'Do you want to unstake your matured amount?',
                                        yesLabel: 'Yes',
                                        onYes: () => Navigator.of(context).pop(true),
-                                       onNo: () => Navigator.of(context).pop(false),
+                                       // onNo: () => Navigator.of(context).pop(false),
                                      ),
                                    );
 

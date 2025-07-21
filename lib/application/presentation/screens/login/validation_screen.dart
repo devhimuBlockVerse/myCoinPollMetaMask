@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -225,12 +224,8 @@ class _ValidationScreenState extends State<ValidationScreen> {
                                         Color(0xFF1CD494),
                                       ],
                                       onTap: () {
-                                        // Check / Read the user Email and password and navigate
                                         _validateAndSubmit();
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(builder: (context) => ValidationScreen()),
-                                        // );
+
                                       },
                                     ),
                                   ],
@@ -306,13 +301,13 @@ class _ValidationScreenState extends State<ValidationScreen> {
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: baseSize * 0.05), // Responsive horizontal padding
+      padding: EdgeInsets.symmetric(horizontal: baseSize * 0.05),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: baseSize * 0.7, // Scalable width instead of fixed 272
+            width: baseSize * 0.7,
             child: Text.rich(
               TextSpan(
                 children: [
@@ -320,7 +315,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                     text: 'Code has been sent to your email',
                     style: TextStyle(
                       color: const Color(0xFF77798D),
-                      fontSize: baseSize * 0.035, // Scalable font size
+                      fontSize: baseSize * 0.035,
                       fontFamily: 'Poppins',
                       height: 1.4,
                     ),
@@ -329,7 +324,7 @@ class _ValidationScreenState extends State<ValidationScreen> {
                     text: '\n${widget.getUserNameOrId}',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: baseSize * 0.037, // Slightly larger for emphasis
+                      fontSize: baseSize * 0.037,
                       fontFamily: 'Poppins',
                       height: 1.4,
                     ),

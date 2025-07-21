@@ -5,8 +5,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/news/trendi
 import '../../../../framework/components/BlogCompoment.dart';
 import '../../../../framework/components/CardNewsComponent.dart';
 import '../../../domain/constants/api_constants.dart';
-import '../../../domain/model/blogModel.dart';
-import '../../models/news_model.dart';
+ import '../../models/news_model.dart';
 import 'package:http/http.dart'as http;
 
 class NewsScreen extends StatefulWidget {
@@ -332,7 +331,7 @@ class _NewsScreenState extends State<NewsScreen> {
         SizedBox(height: screenHeight * 0.02),
 
         /// ✅ Add a tiny spacing to control vertical gap
-        // GridView section
+
 
         SizedBox(
           width: double.infinity,

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
+ import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
-import 'application/module/userDashboard/viewmodel/kyc_navigation_provider.dart';
-import 'application/module/userDashboard/viewmodel/upload_image_provider.dart';
-import 'application/presentation/screens/bottom_nav_bar.dart';
+ import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/countdown_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -22,9 +19,6 @@ final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>(
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  final kycProvider = KycNavigationProvider();
-  await kycProvider.loadLastVisitedScreen();
 
   // Force portrait mode
   await SystemChrome.setPreferredOrientations([
@@ -63,9 +57,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
-        ChangeNotifierProvider(create: (_) => UploadProvider()),
-        ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
+         ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
           targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
         ),),
 
@@ -76,8 +68,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           navigatorKey: ToastMessage.toastContextNavigatorKey, // Add this line
           useInheritedMediaQuery: true,
-          // locale: DevicePreview.locale(context),
-          // builder: DevicePreview.appBuilder,
+
           title: 'MyCoinPoll',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -86,11 +77,7 @@ class MyApp extends StatelessWidget {
           ),
            home:  const BottomNavBar(),
           navigatorObservers: [routeObserver],
-        
-          // home: const UnderMaintenance(),
-          // onGenerateRoute: Routes.generateRoute,
-          // initialRoute: RoutesName.walletLogin,
-        
+
         
         ),
       ),

@@ -213,67 +213,6 @@ class _LessonScreenState extends State<LessonScreen> {
     );
   }
 
-
-  // Widget _description(LessonModel lesson){
-  //   final screenWidth = MediaQuery.of(context).size.width;
-  //   final screenHeight = MediaQuery.of(context).size.height;
-  //
-  //   double titleFontSize = screenWidth * 0.032;
-  //   double bodyFontSize = screenWidth * 0.027;
-  //   double containerHeight = screenHeight * 0.22;
-  //
-  //
-  //   return Center(
-  //     child: Container(
-  //       width: double.infinity,
-  //       height: containerHeight,
-  //       padding: EdgeInsets.symmetric(
-  //         horizontal: screenWidth * 0.04,
-  //         vertical: screenHeight * 0.014,
-  //       ),
-  //       decoration: BoxDecoration(
-  //         image: const DecorationImage(
-  //           image: AssetImage("assets/images/frameBg.png"),
-  //           fit: BoxFit.fill,
-  //         ),
-  //         borderRadius: BorderRadius.circular(3),
-  //       ),
-  //       child: SingleChildScrollView(
-  //         physics: const BouncingScrollPhysics(),
-  //         child: Text.rich(
-  //           TextSpan(
-  //             children: [
-  //               TextSpan(
-  //                 // text: 'A Deep Dive Into Blockchain Analysis and Fundamentasdasals\n\n',
-  //                 text:"${lesson.title}\n\n",
-  //                 style: TextStyle(
-  //                   color: Colors.white.withOpacity(0.9),
-  //                   fontSize: titleFontSize,
-  //                   fontFamily: 'Poppins',
-  //                   fontWeight: FontWeight.w500, // Poppins-Medium
-  //                   height: 1.6,
-  //                 ),
-  //               ),
-  //
-  //               TextSpan(
-  //                 text: lesson.description,
-  //
-  //                 // 'Blockchain enables secure, transparent, and efficient transactions without middlemen. It’s transforming industries like finance, healthcare, and supply chains. Key benefit: Data can’t be altered once recorded.\n\nAdoption is booming—\$11B in 2020 to \$70B by 2026.',
-  //                 style: TextStyle(
-  //                   color: Colors.white.withOpacity(0.9),
-  //                   fontSize: bodyFontSize,
-  //                   fontFamily: 'Poppins', // Poppins-Regular
-  //                   fontWeight: FontWeight.normal,
-  //                   height: 1.6,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   Widget _description(LessonModel lesson) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;

@@ -7,15 +7,14 @@ import 'buy_Ecm.dart';
 
 class DialogModalView extends StatelessWidget {
   final VoidCallback onYes;
-  final VoidCallback? onNo;
-  final String title;
+   final String title;
   final String message;
   final String yesLabel;
 
   const DialogModalView({
     super.key,
     required this.onYes,
-     this.onNo, required this.title, required this.message, required this.yesLabel,
+      required this.title, required this.message, required this.yesLabel,
   });
 
   @override
@@ -29,7 +28,7 @@ class DialogModalView extends StatelessWidget {
       backgroundColor: const Color(0XFF040C16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.white24, width: 1),
+        side: const BorderSide(color: Colors.white24, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -42,7 +41,7 @@ class DialogModalView extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -58,7 +57,7 @@ class DialogModalView extends StatelessWidget {
             // Message
             Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 16,
               ),
@@ -71,10 +70,7 @@ class DialogModalView extends StatelessWidget {
 
                   child: BlockButtonV2(
                     text: 'No',
-                    // onPressed: onNo,
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
+                    onPressed: () => Navigator.of(context).pop(),
                     height: screenHeight * 0.045,
                     width: screenWidth * 0.7,
                   ),

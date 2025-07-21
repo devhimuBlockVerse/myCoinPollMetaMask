@@ -15,16 +15,7 @@ class Utils {
     return double.parse((avgRating / rating.length).toStringAsFixed(1));
   }
 
-  //Focus Node
-  static void fieldFocusChange(BuildContext context, FocusNode current, FocusNode nextFocus){
-    current.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
 
-  //Normal Toast
-  static toastMessage(String message) {
-    Fluttertoast.showToast(msg: message);
-  }
 
   //FlushBar Toast
   static void flushBarErrorMessage(String message, BuildContext context) {
@@ -46,15 +37,6 @@ class Utils {
     );
   }
 
-  //SnackBar Toast
-  static snackBar(String message, BuildContext context){
-    return ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(message)
-        )
-    );
-  }
 
 
   static void showToast(String message, {bool isError = false}) {

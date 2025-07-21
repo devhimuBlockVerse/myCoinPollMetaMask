@@ -87,7 +87,7 @@ class CustomRadioOption extends StatelessWidget {
               color: Colors.white,
               fontSize: fontSize,
               fontFamily: 'Poppins',
-              fontWeight: FontWeight.w400, // Regular
+              fontWeight: FontWeight.w400,
               height: lineHeight,
             ),
           ),

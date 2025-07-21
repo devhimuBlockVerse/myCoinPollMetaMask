@@ -25,12 +25,9 @@ import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/widgets/animated_blockchain_images.dart';
 import '../../../data/services/api_service.dart';
-import '../../../module/dashboard_bottom_nav.dart';
 import '../../countdown_timer_helper.dart';
 import '../../models/token_model.dart';
-import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -239,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                        return SizedBox(
                                         height: screenHeight * 0.040,
                                         width: screenWidth * 0.3,
-                                        child: Center(
+                                        child: const Center(
                                           child: CircularProgressIndicator(
                                             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                             strokeWidth: 3,
@@ -312,10 +309,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       RepaintBoundary(
                         child: Container(
                           width: screenWidth,
-                          // height: screenHeight * 0.16,
-                          height: screenHeight * 0.17,
-                          // height: screenHeight * 0.30,
-                          decoration: BoxDecoration(
+                           height: screenHeight * 0.17,
+                           decoration: BoxDecoration(
                             border: Border.all(
                                 color: Colors.transparent
                             ),
@@ -350,7 +345,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         maxLines: 2,
                                       ),
-                                      // SizedBox(height: screenHeight * 0.01), // Make this smaller the Space)
 
                                       /// Apply For Lising Button
                                       Padding(
@@ -362,8 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           textStyle:  TextStyle(
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white,
-                                            // fontSize: screenWidth * 0.030,
-                                            fontSize: getResponsiveFontSize(context, 12),
+                                             fontSize: getResponsiveFontSize(context, 12),
 
                                           ),
                                           gradientColors: const [
@@ -410,7 +403,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       SizedBox(height: screenHeight * 0.03),
 
-                      // _buildTokenCard(),
                       ...tokens.map((token) => RepaintBoundary(child: _buildTokenCard(context, token))).toList(),
 
                       SizedBox(height: screenHeight * 0.05),
@@ -567,7 +559,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
-                                // fontSize: baseSize * 0.028,
+
                                 fontSize: getResponsiveFontSize(context, 13),
                                 color: const Color(0xffFFF5ED),
                                 height: null,
@@ -603,7 +595,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
-                          // fontSize: baseSize * 0.025,
+
                           fontSize: getResponsiveFontSize(context, 12),
                           color: const Color(0xffFFF5ED),
                           height : 1.6,
@@ -619,7 +611,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
-                              // fontSize: baseSize * 0.025,
+
                               fontSize: getResponsiveFontSize(context, 12),
 
                               color: const Color(0xffFFF5ED),
@@ -628,12 +620,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Text(
-                            // '1118527.50 / 10000000.00',
+
                             '${token.alreadySell} / ${token.sellTarget}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
-                              // fontSize: baseSize * 0.025,
+
                               fontSize: getResponsiveFontSize(context, 12),
 
                               color: const Color(0xffFFF5ED),
@@ -648,7 +640,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(height: baseSize * 0.02),
 
                   LinearProgressIndicator(
-                    // value: 0.5,
+
                     value: token.sellPercentage / 100,
                     minHeight: 3,
                     backgroundColor: Colors.white24,
@@ -662,7 +654,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisSize: MainAxisSize.min,
+
                       children: [
                         Row(
                           children: [
@@ -692,7 +684,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           textStyle: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
-                            // fontSize: baseSize * 0.030,
+
                             fontSize: getResponsiveFontSize(context, 12),
 
                           ),

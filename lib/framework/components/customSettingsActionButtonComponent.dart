@@ -13,21 +13,20 @@ class CustomSettingsActionButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.text ,
-    required this.icon , // Default icon
-    this.foregroundColor = Colors.white, // White text and icon
-    this.borderRadius = 10.0, // Default border radius
+    required this.icon ,
+    this.foregroundColor = Colors.white,
+    this.borderRadius = 10.0,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-
         image: DecorationImage(
-
           image: AssetImage('assets/images/settingActionBg.png'),
           fit: BoxFit.fill,
           alignment: Alignment.topRight,
+          filterQuality: FilterQuality.low
         ),
 
       ),
@@ -50,7 +49,7 @@ class CustomSettingsActionButton extends StatelessWidget {
                 text,
                 style: TextStyle(
                   color: foregroundColor,
-                  fontSize: 18, // Adjust font size
+                  fontSize: 18,
                 ),
               ),
             ],

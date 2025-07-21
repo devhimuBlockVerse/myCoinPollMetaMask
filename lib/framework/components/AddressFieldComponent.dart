@@ -3,8 +3,6 @@ import 'package:flutter_svg/svg.dart';
 
 import '../utils/dynamicFontSize.dart';
 
-
-
 class CustomLabeledInputField extends StatelessWidget {
   final String hintText;
   final String labelText;

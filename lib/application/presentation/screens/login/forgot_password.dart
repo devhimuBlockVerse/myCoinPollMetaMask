@@ -273,11 +273,3 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
 }
 
-
-
-// Navigator.push(
-// context,
-// MaterialPageRoute(builder: (context) => ValidationScreen(
-// getUserNameOrId: userNameOrIdController.text,
-// )),
-// );

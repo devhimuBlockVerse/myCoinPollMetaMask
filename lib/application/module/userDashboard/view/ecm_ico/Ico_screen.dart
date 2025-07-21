@@ -20,13 +20,11 @@ import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../viewmodel/dashboard_nav_provider.dart';
-import '../../viewmodel/kyc_navigation_provider.dart';
-import '../../viewmodel/side_navigation_provider.dart';
+ import '../../viewmodel/side_navigation_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:web3dart/web3dart.dart';
 import '../../../side_nav_bar.dart';
-import '../../viewmodel/upload_image_provider.dart';
 
 class ECMIcoScreen extends StatefulWidget {
   const ECMIcoScreen({super.key});
@@ -729,9 +727,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                   ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
                                   ChangeNotifierProvider(create: (_) => PersonalViewModel()),
                                   ChangeNotifierProvider(create: (_) => NavigationProvider()),
-                                  ChangeNotifierProvider(create: (_) => KycNavigationProvider()),
-                                  ChangeNotifierProvider(create: (_) => UploadProvider()),
-                                ],
+                                 ],
                                 child: const BottomNavBar(),
                               ),
                             ),

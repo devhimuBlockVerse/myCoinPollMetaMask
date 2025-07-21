@@ -165,7 +165,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
 
 
                                 SizedBox(height: screenHeight * 0.03),
-// Dynamic lesson containers
+
                                 ...lessons.map((lesson) => Padding(
                                   padding: EdgeInsets.only(bottom: screenHeight * 0.02),
                                   child: LearnAndEarnContainer(
@@ -184,31 +184,6 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                                   ),
                                 )),
 
-                                // LearnAndEarnContainer(
-                                //   title: 'Blockchain Fundamentals & Analysis',
-                                //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                                //   imagePath: 'assets/images/learnAndEarnImg.png',
-                                //   onTap: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(builder: (context) => const LessonScreen()),
-                                //     );
-                                //   },
-                                // ),
-                                //
-                                // SizedBox(height: screenHeight * 0.02),
-                                //
-                                // LearnAndEarnContainer(
-                                //   title: 'Blockchain Fundamentals & Analysis',
-                                //   description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                                //   imagePath: 'assets/images/lesson2.png',
-                                //   onTap: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(builder: (context) => const LessonScreen()),
-                                //     );
-                                //   },
-                                // ),
 
                                 SizedBox(height: screenHeight * 0.05),
 
@@ -225,75 +200,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                         ),
                       );
                     },
-                    // child: ScrollConfiguration(
-                    //   behavior: const ScrollBehavior().copyWith(overscroll: false),
-                    //   child: SingleChildScrollView(
-                    //       physics: const BouncingScrollPhysics(),
-                    //
-                    //       child: Column(
-                    //         crossAxisAlignment: CrossAxisAlignment.start,
-                    //
-                    //         mainAxisAlignment: MainAxisAlignment.center,
-                    //         children: [
-                    //
-                    //            _headerSection(context),
-                    //           SizedBox(height: screenHeight * 0.04),
-                    //           Text(
-                    //             'Learn & Earn',
-                    //             style: TextStyle(
-                    //               fontFamily: 'Poppins',
-                    //               fontWeight: FontWeight.w500,
-                    //               fontSize: baseSize * 0.045,
-                    //               height: 1.2,
-                    //               color: Colors.white,
-                    //             ),
-                    //           ),
-                    //
-                    //
-                    //
-                    //           SizedBox(height: screenHeight * 0.03),
-                    //
-                    //           LearnAndEarnContainer(
-                    //             title: 'Blockchain Fundamentals & Analysis',
-                    //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                    //             imagePath: 'assets/images/learnAndEarnImg.png',
-                    //             onTap: () {
-                    //               Navigator.push(
-                    //                 context,
-                    //                 MaterialPageRoute(builder: (context) => const LessonScreen()),
-                    //               );
-                    //             },
-                    //           ),
-                    //
-                    //           SizedBox(height: screenHeight * 0.02),
-                    //
-                    //           LearnAndEarnContainer(
-                    //             title: 'Blockchain Fundamentals & Analysis',
-                    //             description: 'Explore how blockchain is revolutionizing industries with secure, transparent, and efficient data handling.',
-                    //             imagePath: 'assets/images/lesson2.png',
-                    //             onTap: () {
-                    //               Navigator.push(
-                    //                 context,
-                    //                 MaterialPageRoute(builder: (context) => const LessonScreen()),
-                    //               );
-                    //             },
-                    //           ),
-                    //
-                    //           SizedBox(height: screenHeight * 0.05),
-                    //
-                    //
-                    //           // Frame1321314874(),
-                    //
-                    //           _disclaimerSection(),
-                    //
-                    //           SizedBox(height: screenHeight * 0.03),
-                    //
-                    //
-                    //         ],
-                    //       )
-                    //   ),
-                    // ),
-                  ),
+                   ),
                 ),
               ),
             ],
@@ -376,7 +283,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
 
   Widget _disclaimerSection(){
     final screenWidth = MediaQuery.of(context).size.width;
-    final baseSize = screenWidth / 375; // base size for scaling fonts and paddings
+    final baseSize = screenWidth / 375;
 
     return Container(
       width: double.infinity,

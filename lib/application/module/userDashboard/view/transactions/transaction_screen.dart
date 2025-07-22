@@ -219,8 +219,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
     final containerWidth = screenWidth;
-    final containerHeight = screenHeight * 0.12;
-    final minContainerHeight = screenHeight * 0.13;
+    // final containerHeight = screenHeight * 0.12;
+    // final minContainerHeight = screenHeight * 0.15;
 
     final horizontalPadding = containerWidth * 0.03;
     final itemSpacing = screenWidth * 0.02;
@@ -311,70 +311,72 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                 children: [
                                   SizedBox(height: screenHeight * 0.01),
 
-                                  Container(
-                                    width: double.infinity,
-                                    height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+                                  IntrinsicHeight(
+                                    child: Container(
+                                      width: double.infinity,
+                                      // height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-                                    decoration: BoxDecoration(
-                                       image: const DecorationImage(
-                                        image: AssetImage('assets/images/buildStatCardBG.png'),
-                                        fit: BoxFit.fill, filterQuality: FilterQuality.low
-                                       ),
-                                      borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: horizontalPadding,
-                                        vertical: screenHeight * 0.014,
+                                      decoration: BoxDecoration(
+                                         image: const DecorationImage(
+                                          image: AssetImage('assets/images/buildStatCardBG.png'),
+                                          fit: BoxFit.fill, filterQuality: FilterQuality.low
+                                         ),
+                                        borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                            child: _buildStatCard(
-                                              title: 'Total\nPurchases',
-                                              // value: '125',
-                                              value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: horizontalPadding,
+                                          vertical: screenHeight * 0.014,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: _buildStatCard(
+                                                title: 'Total\nPurchases',
+                                                // value: '125',
+                                                value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
 
-                                          gradient: const LinearGradient(
-                                                begin: Alignment(0.99, 0.14),
-                                                end: Alignment(-0.99, -0.14),
-                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                            gradient: const LinearGradient(
+                                                  begin: Alignment(0.99, 0.14),
+                                                  end: Alignment(-0.99, -0.14),
+                                                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                                ),
+                                                imageUrl: "assets/images/totalTransactionBg.png",
                                               ),
-                                              imageUrl: "assets/images/totalTransactionBg.png",
                                             ),
-                                          ),
-                                          SizedBox(width: itemSpacing),
-                                          Expanded(
-                                            child: _buildStatCard(
-                                              title: 'Attendant',
-                                              // value: '125',
-                                              value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
-                                              gradient: const LinearGradient(
-                                                begin: Alignment(0.99, 0.14),
-                                                end: Alignment(-0.99, -0.14),
-                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                            SizedBox(width: itemSpacing),
+                                            Expanded(
+                                              child: _buildStatCard(
+                                                title: 'Attendant',
+                                                // value: '125',
+                                                value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
+                                                gradient: const LinearGradient(
+                                                  begin: Alignment(0.99, 0.14),
+                                                  end: Alignment(-0.99, -0.14),
+                                                  colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                                ),
+                                                imageUrl: "assets/images/totalEthereumBG.png",
                                               ),
-                                              imageUrl: "assets/images/totalEthereumBG.png",
                                             ),
-                                          ),
-                                          SizedBox(width: itemSpacing),
-                                          Expanded(
-                                            child: _buildStatCard(
-                                              title: 'Purchased\nAmount',
+                                            SizedBox(width: itemSpacing),
+                                            Expanded(
+                                              child: _buildStatCard(
+                                                title: 'Purchased\nAmount',
 
-                                              value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
+                                                value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
 
-                                              gradient: const LinearGradient(
-                                                begin: Alignment(0.99, 0.14),
-                                                end: Alignment(-0.99, -0.14),
-                                                colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                                gradient: const LinearGradient(
+                                                  begin: Alignment(0.99, 0.14),
+                                                  end: Alignment(-0.99, -0.14),
+                                                  colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                                ),
+                                                imageUrl: "assets/images/totalEcommerceBG.png",
                                               ),
-                                              imageUrl: "assets/images/totalEcommerceBG.png",
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -520,7 +522,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
 
 
 
-  Widget _buildStatCard({
+Widget _buildStatCard({
     required String title,
     required String value,
     required LinearGradient gradient,
@@ -531,7 +533,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
      final cardWidth = screenWidth / 3.5;
-    final cardHeight = screenHeight * 0.13;
+    final cardHeight = screenHeight * 0.12;
     final borderRadius = screenWidth * 0.02;
     final padding = screenWidth * 0.025;
 
@@ -548,9 +550,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
         image: imageUrl != null
             ? DecorationImage(
           image: AssetImage(imageUrl),
-          fit: BoxFit.fitHeight,
-          // alignment: Alignment.center,
-        ) : null,
+          fit: BoxFit.fill,
+         ) : null,
       ),
       child: Padding(
         padding: EdgeInsets.all(padding),
@@ -582,7 +583,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontFamily: 'Poppins',
-
                     fontSize:getResponsiveFontSize(context, 16),
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

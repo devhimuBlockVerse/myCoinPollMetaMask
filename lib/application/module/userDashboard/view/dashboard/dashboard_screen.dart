@@ -271,6 +271,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       },
                       child: SvgPicture.asset(
                         'assets/icons/drawerIcon.svg',
+                        fit: BoxFit.contain,
                         height: getResponsiveFontSize(context, 16),
                       ),
                     ),
@@ -392,7 +393,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.035,
+                    horizontal: screenWidth * 0.025,
                     vertical: screenHeight * 0.015,
                   ),
                   child: Row(
@@ -403,7 +404,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                       Expanded(
                         flex: 2,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
@@ -428,6 +428,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                                     height: 1.6,
                                   ),
                                 ),
+
+
                               ],
                             ),
                             Text(
@@ -442,18 +444,11 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
                             ),
                             SizedBox(height: screenHeight * 0.01),
-
-                            /// Badge Icons (assuming this is related to the left text)
-                            Padding(
-                              padding:  EdgeInsets.only(left: screenWidth * 0.00), // Adjusted padding
-                              child:Text('Show Badge Icons',style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.025),), // Added font size
-                            ),
                           ],
                         ),
                       ),
 
                       SingleChildScrollView(
-
                         child: Column(
                           // mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -466,32 +461,15 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                               iconPath: 'assets/icons/check.svg',
                             ),
 
+                            SizedBox(height: screenHeight * 0.01),
                             Image.asset(
                               'assets/images/staticChart.png',
-                              width: screenWidth * 0.48 ,
+                              width: screenWidth * 0.38 ,
                               height: screenHeight * 0.08,
                               fit: BoxFit.contain,
                                 filterQuality : FilterQuality.low
                             ),
 
-                            RichText(
-                              text:  TextSpan(
-                                text: 'Today up to ',
-                                style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.normal,
-                                    color: Colors.grey, fontSize: getResponsiveFontSize(context, 10)),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: '+5.34%', // This text will be dynamically updated by the RealtimeChart widget
-                                    style: TextStyle(color: const Color(0xFF29FFA5),  fontFamily: 'Poppins',
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: getResponsiveFontSize(context, 10),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ),

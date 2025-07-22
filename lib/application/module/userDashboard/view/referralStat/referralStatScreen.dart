@@ -334,69 +334,71 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                 SizedBox(height: screenHeight * 0.03),
 
 
-                                Container(
-                                  width: double.infinity,
-                                  height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
+                                IntrinsicHeight(
+                                  child: Container(
+                                    width: double.infinity,
+                                    // height: containerHeight < minContainerHeight ? minContainerHeight : containerHeight,
 
-                                  decoration: BoxDecoration(
-                                    // color: const Color(0xFF01090B),
-                                    image: const DecorationImage(
-                                      image: AssetImage('assets/images/buildStatCardBG.png'),
-                                      fit: BoxFit.fill,
+                                    decoration: BoxDecoration(
+                                      // color: const Color(0xFF01090B),
+                                      image: const DecorationImage(
+                                        image: AssetImage('assets/images/buildStatCardBG.png'),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
                                     ),
-                                    borderRadius: BorderRadius.circular(getResponsiveRadius(4)),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: horizontalPadding,
-                                      vertical: screenHeight * 0.014,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total \nReferrals',
-                                             value: _referralStats != null ? _referralStats!.totalReferrals.toString() : '0',
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: horizontalPadding,
+                                        vertical: screenHeight * 0.014,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total \nReferrals',
+                                               value: _referralStats != null ? _referralStats!.totalReferrals.toString() : '0',
 
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                              ),
+                                              imageUrl: "assets/images/totalTransactionRefBg.png",
                                             ),
-                                            imageUrl: "assets/images/totalTransactionRefBg.png",
                                           ),
-                                        ),
-                                        SizedBox(width: itemSpacing),
-                                        Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total ECM Bought',
-                                            // value: '30.000',
-                                            value: _referralStats != null ? _referralStats!.totalReferralAmount.truncate().toString() : '0',
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                          SizedBox(width: itemSpacing),
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total ECM Bought',
+                                              // value: '30.000',
+                                              value: _referralStats != null ? _referralStats!.totalReferralAmount.truncate().toString() : '0',
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF040C16), Color(0xFF162B4A)],
+                                              ),
+                                              imageUrl: "assets/images/totalEcmRefBg.png",
                                             ),
-                                            imageUrl: "assets/images/totalEcmRefBg.png",
                                           ),
-                                        ),
-                                        SizedBox(width: itemSpacing),
-                                        Expanded(
-                                          child: _buildStatCard(
-                                            title: 'Total ECM Paid',
-                                            // value: '450',
-                                            value: _referralStats != null ? _referralStats!.totalPurchaseUsers.toString() : '0',
-                                            gradient: const LinearGradient(
-                                              begin: Alignment(0.99, 0.14),
-                                              end: Alignment(-0.99, -0.14),
-                                              colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                          SizedBox(width: itemSpacing),
+                                          Expanded(
+                                            child: _buildStatCard(
+                                              title: 'Total ECM Paid',
+                                              // value: '450',
+                                              value: _referralStats != null ? _referralStats!.totalPurchaseUsers.toString() : '0',
+                                              gradient: const LinearGradient(
+                                                begin: Alignment(0.99, 0.14),
+                                                end: Alignment(-0.99, -0.14),
+                                                colors: [Color(0xFF101A29), Color(0xFF162B4A), Color(0xFF132239)],
+                                              ),
+                                              imageUrl: "assets/images/totalRefUserBg.png",
                                             ),
-                                            imageUrl: "assets/images/totalRefUserBg.png",
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -638,7 +640,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     final cardWidth = screenWidth / 3.5;
-    final cardHeight = screenHeight * 0.13;
+    final cardHeight = screenHeight * 0.12;
     final borderRadius = screenWidth * 0.02;
     final padding = screenWidth * 0.025;
 

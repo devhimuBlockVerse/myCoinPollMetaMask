@@ -452,8 +452,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                         ),
                       ),
 
-                      Expanded(
-                        flex: 1,
+                      SingleChildScrollView(
+
                         child: Column(
                           // mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

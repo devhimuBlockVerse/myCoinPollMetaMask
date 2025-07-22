@@ -8,8 +8,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/apply_
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/learn_earn_screen.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_token_screen.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
-import 'package:mycoinpoll_metamask/framework/utils/general_utls.dart';
-import 'package:provider/provider.dart';
+ import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -130,7 +129,14 @@ class _HomeScreenState extends State<HomeScreen> {
         } catch (e) {
           debugPrint("Error fetching wallet data after connection: $e");
           if (mounted) {
-            Utils.flushBarErrorMessage("Failed to fetch wallet data or stage info", context);
+             ToastMessage.show(
+              message: "Something went wrong",
+              subtitle: "Couldn't fetch wallet or stage information. Please try again.",
+              type: MessageType.error,
+              duration: CustomToastLength.SHORT,
+              gravity: CustomToastGravity.BOTTOM,
+            );
+
           }
         }
       } else {
@@ -267,7 +273,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                }
 
                                                if (!canOpenModal) {
-                                                 Utils.flushBarErrorMessage("Wallet network not selected or invalid. Please reconnect your wallet.", context);
+                                                  ToastMessage.show(
+                                                   message: "Invalid Wallet Network",
+                                                   subtitle: "Network not selected or invalid. Reconnecting...",
+                                                   type: MessageType.info,
+                                                 );
                                                  await walletVM.connectWallet(context);
                                                  return;
                                                }
@@ -276,14 +286,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                                await Future.delayed(const Duration(milliseconds: 200));
                                                await walletVM.appKitModal!.openModalView();
 
-                                             } else {
-                                               Utils.flushBarErrorMessage("Wallet modal not ready", context);
                                              }
                                            }
                                          } catch (e, stack) {
                                            debugPrint('Wallet Error: $e\n$stack');
                                            if (context.mounted) {
-                                             Utils.flushBarErrorMessage("Error: ${e.toString()}", context);
+                                              ToastMessage.show(
+                                               message: "Something went wrong",
+                                               subtitle: "Error: ${e.toString()}",
+                                               type: MessageType.error,
+                                             );
                                            }
                                          }
                                        },
@@ -305,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       RepaintBoundary(
                         child: Container(
                           width: screenWidth,
-                           height: screenHeight * 0.17,
+                           height: screenHeight * 0.18,
                            decoration: BoxDecoration(
                             border: Border.all(
                                 color: Colors.transparent
@@ -380,12 +392,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: EdgeInsets.only(left: screenWidth * 0.02),
                                     child: RepaintBoundary(
                                       child: AnimatedBlockchainImages(
-                                        containerWidth: screenWidth * 0.4,
-                                        containerHeight: screenHeight * 0.4,
+                                        containerWidth: screenWidth * 0.3,
+                                        containerHeight: screenHeight * 0.3,
                                         imageAssets: const [
+                                          'assets/images/animatedImg4.png',
                                           'assets/images/animatedImg1.png',
-                                          'assets/images/animatedImg2.png',
-                                          'assets/images/animatedImg3.png',
+                                          'assets/images/animatedImg5.png',
+
+
                                         ],
                                       ),
                                     ),

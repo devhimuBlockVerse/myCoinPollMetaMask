@@ -27,7 +27,7 @@ class Blog extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-         clipBehavior: Clip.none,
+        clipBehavior: Clip.none,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -38,7 +38,7 @@ class Blog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AspectRatio(
-              aspectRatio: 9 /8,
+              aspectRatio: 10 /7,
               child: Container(
                 width: double.infinity,
                 // height: imageHeight,
@@ -81,7 +81,7 @@ class Blog extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: padding * 0.5),
+                      // SizedBox(width: padding * 0.5),
                       Container(
                         width: dotSize,
                         height: dotSize,
@@ -106,7 +106,7 @@ class Blog extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: padding * 0.5),
+                  // SizedBox(height: padding * 0.5),
                   Text(
                     title,
                     maxLines: 2,
@@ -128,5 +128,3 @@ class Blog extends StatelessWidget {
     );
   }
 }
-
-

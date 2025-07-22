@@ -20,7 +20,6 @@ import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
-import '../../../../framework/utils/general_utls.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
 import '../../../data/services/api_service.dart';
 import '../../../data/services/download_white_paper.dart';
@@ -106,7 +105,10 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
       } catch (e) {
         if (mounted) {
-          Utils.flushBarErrorMessage("Please connect your wallet", context);
+           ToastMessage.show(
+            message: "Please connect your wallet",
+            type: MessageType.error,
+          );
 
         }
       }
@@ -149,7 +151,10 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
     } catch (e) {
       if (mounted) {
-        Utils.flushBarErrorMessage("Please connect your wallet", context);
+         ToastMessage.show(
+          message: "Please connect your wallet",
+          type: MessageType.error,
+        );
 
       }
     }

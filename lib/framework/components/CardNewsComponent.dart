@@ -7,117 +7,106 @@ class CardNewsComponent extends StatelessWidget {
   final String headline;
   final VoidCallback onTap;
 
-
   const CardNewsComponent({
     super.key,
     required this.imageUrl,
     required this.source,
     required this.timeAgo,
-    required this.headline, required this.onTap,
+    required this.headline,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final containerWidth = screenWidth;
-    final imageHeight = containerWidth * 0.48;
-    final overlayTopOffset = imageHeight * 0.6;
-    final overlayHeight = imageHeight * 0.7;
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      final imageHeight = width * 0.5;
+      final overlayHeight = width * 0.3;
+      final overlayTop = imageHeight * 0.65;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        height: imageHeight + overlayHeight * 0.6,
-        clipBehavior: Clip.antiAlias,
-        decoration: const BoxDecoration(),
-        child: Stack(
-          children: [
-            // Background image
-            Positioned(
-              left: 0,
-              top: 0,
-              child: Container(
-                width: containerWidth,
+      return GestureDetector(
+        onTap: onTap,
+        child: SizedBox(
+          width: width,
+          height: imageHeight + overlayHeight * 0.5,
+          child: Stack(
+            children: [
+              // Background image
+              Container(
+                width: width,
                 height: imageHeight,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   image: DecorationImage(
                     image: NetworkImage(imageUrl),
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
-            ),
-
-            Positioned(
-              left: screenWidth * 0.05,
-              top: overlayTopOffset,
-              child: Container(
-                width: containerWidth - screenWidth * 0.3,
-                height: overlayHeight,
-                decoration: BoxDecoration(
-                  color: const Color(0xF2040C16),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: containerWidth * 0.05,
-                  vertical: overlayHeight * 0.15,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            source,
-                            style: TextStyle(
-                              color: const Color(0xFF5CA4FF),
-                              fontSize: containerWidth * 0.04,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w700,
-                              height: 1.6,
+              // Overlay container
+              Positioned(
+                left: width * 0.05,
+                top: overlayTop,
+                child: Container(
+                  width: width * 0.9,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: width * 0.04,
+                    vertical: overlayHeight * 0.15,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xF2040C16),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              source,
+                              style: TextStyle(
+                                color: const Color(0xFF5CA4FF),
+                                fontSize: width * 0.04,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          timeAgo,
-                          style: TextStyle(
-                            color: const Color(0xFF77798D),
-                            fontSize: containerWidth * 0.032,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            height: 1.6,
+                          Text(
+                            timeAgo,
+                            style: TextStyle(
+                              color: const Color(0xFF77798D),
+                              fontFamily: 'Poppins',
+                              fontSize: width * 0.032,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // Headline
-                    Text(
-                      headline,
-                      style: TextStyle(
-                        color: const Color(0xFFFFF5ED),
-                        fontSize: containerWidth * 0.04,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w300,
-                        height: 1.6,
-
+                        ],
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                      const SizedBox(height: 6),
+                      // Headline
+                      Text(
+                        headline,
+                        style: TextStyle(
+                          color: const Color(0xFFFFF5ED),
+                          fontSize: width * 0.04,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w300,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

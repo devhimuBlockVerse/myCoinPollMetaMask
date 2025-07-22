@@ -13,7 +13,6 @@ import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
-import '../../../../../framework/utils/general_utls.dart';
 import '../../../../data/services/download_white_paper.dart';
 import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
@@ -81,8 +80,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
         });
       } catch (e) {
         if (mounted) {
-          Utils.flushBarErrorMessage("Please connect your wallet", context);
 
+          ToastMessage.show(
+            message: "Please connect your wallet",
+            subtitle: "Wallet not detected or network issue",
+            type: MessageType.error,
+            duration: CustomToastLength.SHORT,
+            gravity: CustomToastGravity.BOTTOM,
+          );
         }
       }
     });
@@ -539,8 +544,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
-                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
-
+                                     ToastMessage.show(
+                                      message: "Price fetch failed",
+                                      subtitle: "Please connect your wallet and try again.",
+                                      type: MessageType.error,
+                                      duration: CustomToastLength.SHORT,
+                                      gravity: CustomToastGravity.BOTTOM,
+                                    );
                                   }
                                 }
 
@@ -572,8 +582,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
 
-                                    Utils.flushBarErrorMessage("We couldn't get the price details. Please connect your wallet and try again.", context);
-
+                                     ToastMessage.show(
+                                      message: "Price fetch failed",
+                                      subtitle: "Please connect your wallet and try again.",
+                                      type: MessageType.error,
+                                      duration: CustomToastLength.SHORT,
+                                      gravity: CustomToastGravity.BOTTOM,
+                                    );
                                   }
                                 }
 
@@ -661,6 +676,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                           final isETH = isETHActive;
                           final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
+                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                          debugPrint("Purchase Button Pressed");
 
                           showDialog(
                             context: context,

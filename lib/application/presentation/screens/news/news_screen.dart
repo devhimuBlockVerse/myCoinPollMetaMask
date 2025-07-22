@@ -204,7 +204,7 @@ class _NewsScreenState extends State<NewsScreen> {
                         child: Transform.scale(
                           scale: Curves.easeOut.transform(scale),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.002),
                             child: CardNewsComponent(
                               imageUrl: news.image,
                               source: 'Mycoinpoll',
@@ -380,6 +380,5 @@ class _NewsScreenState extends State<NewsScreen> {
 
 
 }
-
 
 

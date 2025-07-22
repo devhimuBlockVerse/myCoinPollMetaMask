@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../framework/components/BlockButton.dart';
 import '../../framework/utils/dynamicFontSize.dart';
-import '../../framework/utils/general_utls.dart';
-import 'viewmodel/countdown_provider.dart';
+ import 'viewmodel/countdown_provider.dart';
 
 class UnderMaintenance extends StatelessWidget {
   const UnderMaintenance({super.key});

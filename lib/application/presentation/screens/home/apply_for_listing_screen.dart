@@ -852,73 +852,70 @@ class _ApplyForListingScreenState extends State<ApplyForListingScreen> {
     );
   }
 
-
   Widget _headerSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       width: screenWidth,
-      height: screenHeight * 0.16,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/bgContainerImg.png'),
           fit: BoxFit.fill,
           filterQuality: FilterQuality.medium,
-
         ),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.035,
-          vertical: screenHeight * 0.015,
+          vertical: 18,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'MyCoinPoll IDO Launch Application',
-                    style: TextStyle(
-                      color: const Color(0xFFFFF5ED),
-                      fontFamily: 'Poppins',
-                      fontSize: screenWidth * 0.045,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    maxLines: 2,
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-                  Flexible(
-                    child: Text(
-                      'Apply to launch your project—our team ensures thorough review and investor protection',
-                      style: TextStyle(
-                        color: const Color(0xFFFFF5ED),
-                        fontFamily: 'Poppins',
-                        fontSize: screenWidth * 0.032,
-                        fontWeight: FontWeight.w400,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'MyCoinPoll IDO Launch Application',
+                        style: TextStyle(
+                          color: const Color(0xFFFFF5ED),
+                          fontFamily: 'Poppins',
+                          fontSize: screenWidth * 0.045,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      maxLines: 3,
-                    ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Apply to launch your project—our team ensures thorough review and investor protection',
+                        style: TextStyle(
+                          color: const Color(0xFFFFF5ED),
+                          fontFamily: 'Poppins',
+                          fontSize: screenWidth * 0.032,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Flexible(
-              flex: 1,
-              child: Image.asset(
-                'assets/images/applyForLisitngImg1.png',
-                height: screenHeight * 0.9,
-                fit: BoxFit.contain,
-                filterQuality: FilterQuality.medium,
-
-              ),
-            ),
-          ],
+                ),
+                // const SizedBox(width: 12),
+                Flexible(
+                  flex: 2,
+                  child: Image.asset(
+                    'assets/images/applyForLisitngImg1.png',
+                    height: screenWidth * 0.22,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.medium,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

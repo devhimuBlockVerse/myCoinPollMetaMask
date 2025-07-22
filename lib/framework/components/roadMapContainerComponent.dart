@@ -17,137 +17,120 @@ class RoadmapContainerComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final baseSize = MediaQuery.of(context).size.shortestSide;
+    final size = MediaQuery.of(context).size;
+    final base = size.shortestSide;
+    final width = size.width * 0.78;
+    final yearSize = base * 0.21;
+    final fontScale = base * 0.037;
 
-    final double yearImageWidth = baseSize * 0.21;
-    final double yearImageHeight = baseSize * 0.21;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Center(
-          child: Container(
-            width: screenWidth * 0.78,
-            constraints: const BoxConstraints(maxWidth: 540),
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // Background image
-                Positioned.fill(
-                  child: Image.asset(
-                    "assets/images/roadmapFrame.png",
-                    fit: BoxFit.fill,
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-
-                // Year badge
-                Positioned(
-                  top: -baseSize * 0.17,
-                  left: (screenWidth * 0.78 - yearImageWidth) / 2,
-                  child: Container(
-                    width: yearImageWidth,
-                    height: yearImageHeight,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/yearCircular.png'),
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        mapYear,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontSize: yearImageHeight * 0.25,
-                          height: 10,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Content
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.04,
-                    vertical: baseSize * 0.025,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                     children: [
-                      SizedBox(height: baseSize * 0.018),
-
-                      Text(
-                        title,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Poppins',
-                          fontSize: baseSize * 0.048,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-
-                      SizedBox(height: baseSize * 0.020),
-
-                      ...labels.map(
-                            (label) => Padding(
-                          padding: EdgeInsets.only(bottom: baseSize * 0.012),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.check_box,
-                                size: baseSize * 0.034,
-                                color: Colors.white54,
-                              ),
-                              SizedBox(width: baseSize * 0.015),
-                              Expanded(
-                                child: Text(
-                                  label,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: Colors.white54,
-                                    fontFamily: 'Poppins',
-                                    fontSize: baseSize * 0.037,
-                                    height: 1.6,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: baseSize * 0.15),
-                    ],
-                  ),
-                ),
-
-                if (onTap != null)
-                  Positioned(
-                    bottom: baseSize * 0.05,
-                    left: screenWidth * 0.03,
-                    child: BlockButtonV2(
-                      text: 'Show Other Roadmap',
-                      onPressed: onTap,
-                      height: screenHeight * 0.036,
-                      width: screenWidth * 0.31,
-                    ),
-                  ),
-              ],
+    return Center(
+      child: SizedBox(
+        width: width,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            // Background
+            Positioned.fill(
+              child: Image.asset(
+                "assets/images/roadmapFrame.png",
+                fit: BoxFit.fill,
+                alignment: Alignment.topCenter,
+              ),
             ),
-          ),
-        );
-      },
+
+            // Year Badge (fixed center position)
+            Positioned(
+              top: -yearSize * 0.8,
+              left: (width - yearSize) / 2,
+              child: SizedBox(
+                width: yearSize,
+                height: yearSize,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/yearCircular.png',
+                      fit: BoxFit.cover,
+                      width: yearSize,
+                      height: yearSize,
+                    ),
+                    Text(
+                      mapYear,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: yearSize * 0.12,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Main Content
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.04,
+                vertical: base * 0.025,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: base * 0.018),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: base * 0.048,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  SizedBox(height: base * 0.02),
+                  ...labels.map(
+                        (label) => Padding(
+                      padding: EdgeInsets.only(bottom: base * 0.012),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check_box, size: fontScale, color: Colors.white54),
+                          SizedBox(width: base * 0.015),
+                          Expanded(
+                            child: Text(
+                              label,
+                              style: TextStyle(
+                                color: Colors.white54,
+                                fontSize: fontScale,
+                                height: 1.6,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: base * 0.15),
+                ],
+              ),
+            ),
+
+            // Button (if exists)
+            if (onTap != null)
+              Positioned(
+                bottom: base * 0.05,
+                left: size.width * 0.03,
+                child: BlockButtonV2(
+                  text: 'Show Other Roadmap',
+                  onPressed: onTap,
+                  height: size.height * 0.036,
+                  width: size.width * 0.31,
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import '../../../../framework/components/LearnAndEarnComponent.dart';
 import '../../../domain/constants/api_constants.dart';
 import '../../models/get_lessons.dart';
@@ -187,9 +186,6 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
 
                                 SizedBox(height: screenHeight * 0.05),
 
-
-                                // Frame1321314874(),
-
                                 _disclaimerSection(),
 
                                 SizedBox(height: screenHeight * 0.03),
@@ -321,7 +317,8 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     'Disclaimer and Risk Warning: This content is for educational purposes only and not financial advice. Digital assets are volatile; invest at your own risk. Binance Academy is not liable for any losses. For more information, see our ',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
-                      fontSize: baseSize * 11,
+                      // fontSize: baseSize * 11,
+                      fontSize: getResponsiveFontSize(context, 11),
                       fontStyle: FontStyle.italic,
                       fontFamily: 'Poppins',
                       height: 1.6,
@@ -343,7 +340,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // TODO: Handle Terms of Use tap
+
                       },
                   ),
                   TextSpan(
@@ -371,7 +368,7 @@ class _LearnEarnScreenState extends State<LearnEarnScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // TODO: Handle Risk Warning tap
+
                       },
                   ),
                   TextSpan(

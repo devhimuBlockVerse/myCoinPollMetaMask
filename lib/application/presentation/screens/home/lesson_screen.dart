@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/widgets/video_player.dart';
 import '../../models/get_lessons.dart';
 
@@ -304,7 +305,9 @@ class _LessonScreenState extends State<LessonScreen> {
                     'Disclaimer and Risk Warning: This content is for educational purposes only and not financial advice. Digital assets are volatile; invest at your own risk. Binance Academy is not liable for any losses. For more information, see our ',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
-                      fontSize: baseSize * 11,
+                      // fontSize: baseSize * 11,
+                      fontSize: getResponsiveFontSize(context, 11),
+
                       fontStyle: FontStyle.italic,
                       fontFamily: 'Poppins',
                       height: 1.6,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 
 class InfoCard extends StatelessWidget {
   final String label1;
@@ -64,7 +65,7 @@ class InfoCard extends StatelessWidget {
                                 color: Colors.white,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600, // Medium
-                                fontSize: baseSize * 0.045,
+                                fontSize: getResponsiveFontSize(context, 16),
                                 height: 1.3, // 130%
                               ),
                             ),
@@ -78,7 +79,8 @@ class InfoCard extends StatelessWidget {
                                 color: Colors.white,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400, // Regular
-                                fontSize: baseSize * 0.035,
+                                fontSize: getResponsiveFontSize(context, 14),
+
                                 height: 1.3,
                               ),
                             ),
@@ -113,7 +115,7 @@ class InfoCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.85),
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400, // Regular
-                    fontSize: baseSize * 0.03,
+                    fontSize: getResponsiveFontSize(context, 12),
                     height: 1.6,
                   ),
                 ),

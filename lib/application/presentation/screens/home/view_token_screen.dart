@@ -1170,8 +1170,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       SizedBox(height: screenHeight * 0.015),
                       Container(
                         width: screenWidth,
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
+                        decoration:const BoxDecoration(
+                          image:  DecorationImage(
                             image: AssetImage('assets/images/progressFrameBg.png'),
                             fit: BoxFit.fill,
                             filterQuality: FilterQuality.medium,

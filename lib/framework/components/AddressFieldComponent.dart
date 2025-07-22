@@ -26,7 +26,6 @@ class CustomLabeledInputField extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final textScale = MediaQuery.of(context).textScaleFactor;
-    final safePadding = MediaQuery.of(context).padding;
 
     final baseFontSize = screenWidth < screenHeight
         ? screenWidth * 0.03
@@ -45,11 +44,9 @@ class CustomLabeledInputField extends StatelessWidget {
 
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.022,
-        // vertical: screenHeight * 0.006,
-      ),
+       ),
 
-      // color: Colors.white12,
-      child: IntrinsicHeight(
+       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -91,8 +88,7 @@ class CustomLabeledInputField extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: hintText,
                         hintStyle: TextStyle(
-                          // fontSize: fontSize * 0.95,
-                          fontSize: getResponsiveFontSize(context, 14),
+                           fontSize: getResponsiveFontSize(context, 14),
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
                           color: const Color(0xffFFF5ED),

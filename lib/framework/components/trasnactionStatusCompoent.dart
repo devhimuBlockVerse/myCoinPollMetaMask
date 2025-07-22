@@ -18,33 +18,37 @@ class TransactionStatCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-     final containerHeight = screenHeight * 0.07;
+    final horizontalPadding = screenWidth * 0.02;
+    final verticalPadding = screenHeight * 0.01;
+    final spacing = screenHeight * 0.005;
 
     return Container(
-       height: containerHeight,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: verticalPadding,
+      ),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(bgImagePath),
           fit: BoxFit.fill,
-          filterQuality: FilterQuality.low
+          filterQuality: FilterQuality.low,
         ),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // wrap content
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-             style: TextStyle(
-               fontFamily: 'Poppins',
-               fontWeight: FontWeight.w400,
-               fontSize: getResponsiveFontSize(context, 12),
-               height: 1.6,
-               color: Colors.white.withOpacity(0.8),
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+              fontSize: getResponsiveFontSize(context, 12),
+              height: 1.6,
+              color: Colors.white.withOpacity(0.8),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: spacing),
           Text(
             value,
             style: TextStyle(

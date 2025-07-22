@@ -17,8 +17,9 @@ class WalletAddressComponent extends StatelessWidget {
     final Size screenSize = MediaQuery.of(context).size;
     const double baseWidth = 375.0;
     final double scaleFactor = screenSize.width / baseWidth;
+    final double screenWidth = MediaQuery.of(context).size.width;
 
-    final double iconSize = 15.0 * scaleFactor.clamp(0.85, 1.4);
+     final double iconSize = screenWidth * 0.04;
     final double horizontalPadding = 12.0 * scaleFactor.clamp(0.85, 1.0);
     final double verticalPadding = 14.0 * scaleFactor.clamp(0.85, 1.4);
 
@@ -31,8 +32,7 @@ class WalletAddressComponent extends StatelessWidget {
             fit: BoxFit.fill,
             filterQuality: FilterQuality.low
           ),
-          // borderRadius: BorderRadius.circular(30.0 * scaleFactor),
-        ),
+         ),
         padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding,
           vertical: verticalPadding,
@@ -41,7 +41,7 @@ class WalletAddressComponent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(width: 5.0 * scaleFactor),
+            SizedBox(width: 8.0 * scaleFactor),
 
             Flexible(
               child: Text(
@@ -55,12 +55,15 @@ class WalletAddressComponent extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(width: 6.0 * scaleFactor),
+            SizedBox(width: 2.0 * scaleFactor),
             SvgPicture.asset(
               'assets/icons/walletIcon.svg',
+              fit: BoxFit.contain,
               width: iconSize,
               height: iconSize,
             ),
+            SizedBox(width: 6.0 * scaleFactor),
+
           ],
         ),
       ),

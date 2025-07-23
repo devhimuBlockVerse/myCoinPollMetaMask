@@ -360,7 +360,6 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                             child: _buildStatCard(
                                               title: 'Total \nReferrals',
                                                value: _referralStats != null ? _referralStats!.totalReferrals.toString() : '0',
-
                                               gradient: const LinearGradient(
                                                 begin: Alignment(0.99, 0.14),
                                                 end: Alignment(-0.99, -0.14),

@@ -194,7 +194,9 @@ class ApiService {
 
     final response = await http.post(
       Uri.parse('${ApiConstants.baseUrl}/auth/web3-login'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode({
         'message': message,
         'address': address,

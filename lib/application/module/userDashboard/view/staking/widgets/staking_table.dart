@@ -87,7 +87,7 @@ Widget buildStakingTable(
                 final data = stakingData[index];
                 final statusText = data.status.trim().toLowerCase();
                 final statusStyle = getStatusStyling(statusText);
-                debugPrint(">>>end_time: ${data.endTime} , >>> Duration : ${data.duration} , >> Status :${data.status}");
+                debugPrint(">>>end_time: ${data.endTime} ,>>> Amount :${data.amount}, >>> Duration : ${data.duration} , >> Status :${data.status}");
 
 
                 return DataRow2(
@@ -141,6 +141,10 @@ Widget buildStakingTable(
                                 : (normalizedStatus == 'pending' ? 'force' : normalizedStatus);
 
                             final statusStyle = getStatusStyling(actionLabel);
+
+                            if (normalizedStatus == 'ready' && !isStakeMatured) {
+                              return const SizedBox();
+                            }
 
                             return GestureDetector(
                                 onTap:() async {
@@ -206,7 +210,7 @@ Widget buildStakingTable(
                                        message: 'Do you want to unstake your matured amount?',
                                        yesLabel: 'Yes',
                                        onYes: () => Navigator.of(context).pop(true),
-                                       // onNo: () => Navigator.of(context).pop(false),
+
                                      ),
                                    );
 
@@ -267,8 +271,6 @@ Widget buildStakingTable(
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     actionLabel,
-
-                                     // normalizedStatus == 'pending'  ? 'Force Unstake' : normalizedStatus == 'ready' ? 'Unstake' : normalizedStatus,
                                     style: cellTextStyle.copyWith(color: statusStyle.textColor,),
                                     textAlign: TextAlign.center,
                                   ),

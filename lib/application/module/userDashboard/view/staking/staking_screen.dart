@@ -102,7 +102,7 @@ class _StakingScreenState extends State<StakingScreen> {
          },
        );
        if (response.statusCode == 200) {
-          print('Response Body: ${response.body}');
+          print('Response Body staking-plans: ${response.body}');
 
          final List<dynamic> decoded = json.decode(response.body);
          return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
@@ -387,6 +387,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                               updatedAt: DateTime.now(),
                                             ),
                                           );
+                                          print("🔍 Selected Plan: ${selectedPlan.name}, ID: ${selectedPlan.id}");
 
                                           if (selectedPlan.id == -1) {
                                             ToastMessage.show(
@@ -414,10 +415,10 @@ class _StakingScreenState extends State<StakingScreen> {
                                             }
 
                                             final txHash = await walletVM.stakeNow(
-                                              context,
-                                              amount,
-                                              // selectedPlan.id,
+                                                context,
+                                                amount,
                                                 planIndex
+
                                             );
                                             Navigator.of(context).pop();
 

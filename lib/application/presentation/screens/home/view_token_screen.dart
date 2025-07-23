@@ -269,6 +269,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
             ),
           ),
           child: Column(
+
             children: [
               // SizedBox(height: screenHeight * 0.01),
 
@@ -281,14 +282,12 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     color: Colors.white,
                       width: screenWidth * 0.04,
                       height: screenWidth * 0.04,
-
-
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
               /// Main Scrollable Content
-              isLoading || tokens.isEmpty ? const Center(child: CircularProgressIndicator()) :
+              isLoading || tokens.isEmpty ? const Center(child: CircularProgressIndicator(color: Colors.white,)) :
               Expanded(
                 child: Padding(
 
@@ -298,15 +297,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   ),
                   child: ScrollConfiguration(
                     behavior: const ScrollBehavior().copyWith(overscroll: false),
-
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
-
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
-                        children: [
+                        children:  [
 
 
                         /// White Paper Section
@@ -409,7 +406,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           ),
 
 
-                          SizedBox(height: screenHeight * 0.06),
+                          SizedBox(height: screenHeight * 0.09),
 
                           /// Road Map Component Functionalities
 

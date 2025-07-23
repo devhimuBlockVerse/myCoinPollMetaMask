@@ -100,10 +100,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
       final walletVM = Provider.of<WalletViewModel>(context);
       if (walletVM.isConnected && walletVM.walletAddress.isNotEmpty) {
         _loadTransactions();
+        _loadPurchaseStats();
+
         _hasLoaded = true;
       }
     }
   }
+
 
   /// Fetch transactions from API with Wallet Connection
    Future<List<Map<String, dynamic>>> fetchTransactions(String walletAddress) async {

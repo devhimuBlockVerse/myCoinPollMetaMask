@@ -98,7 +98,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                                style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
-                                fontSize: getResponsiveFontSize(context, 13),
+                                fontSize: getResponsiveFontSize(context, 12),
                                 height: 1.6,
                                 letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
                                 color: Colors.white,

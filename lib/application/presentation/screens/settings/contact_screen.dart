@@ -108,7 +108,7 @@ class _ContactScreenState extends State<ContactScreen> {
                             Container(
                               width: double.infinity,
                               padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.05,
+                                horizontal: MediaQuery.of(context).size.width * 0.04,
                                 vertical: MediaQuery.of(context).size.height * 0.02,
                               ),
                               decoration: BoxDecoration(
@@ -117,7 +117,7 @@ class _ContactScreenState extends State<ContactScreen> {
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min, // Content height
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
 
                                   ListingField(
@@ -194,12 +194,12 @@ class _ContactScreenState extends State<ContactScreen> {
 
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.02,
+                                // horizontal: MediaQuery.of(context).size.width * 0.02,
                                 vertical: MediaQuery.of(context).size.height * 0.02,
                               ),
                               child: const CustomContactInfo(
                                 phoneNumber: '012 3456 789',
-                                emailAddress: 'info@mycoinpoll.com',
+                                emailAddress: 'support@mycoinpoll.com',
                               ),
                             ),
 

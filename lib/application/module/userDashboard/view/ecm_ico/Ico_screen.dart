@@ -473,7 +473,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                            SizedBox(height: screenHeight * 0.02),
                           CustomLabeledInputField(
                             labelText: 'Referral Link:',
-                            hintText: ' https://mycoinpoll.com?ref=125482458661',
+                            hintText: 'https://mycoinpoll.com?ref=125482458661',
                             controller: referredController,
                             isReadOnly: true,
                             trailingIconAsset: 'assets/icons/copyImg.svg',
@@ -497,7 +497,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                           CustomLabeledInputField(
                             labelText: 'Referred By:',
-                            hintText: 'Show and Enter Referred id..',
+                            hintText: '0x0000000000000000000000000000000000000000',
                             controller: referredController,
                             isReadOnly:
                             false, // or false

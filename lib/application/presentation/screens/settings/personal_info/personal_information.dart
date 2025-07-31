@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
- import '../../../../../framework/utils/customToastMessage.dart';
+import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../domain/constants/api_constants.dart';
 import '../../../models/user_model.dart';
@@ -16,48 +16,35 @@ import '../../../viewmodel/bottom_nav_provider.dart';
 import 'package:http/http.dart' as http;
 
 class PersonalInformationScreen extends StatefulWidget {
-
   const PersonalInformationScreen({super.key});
 
   @override
-  State<PersonalInformationScreen> createState() => _PersonalInformationScreenState();
+  State<PersonalInformationScreen> createState() =>
+      _PersonalInformationScreenState();
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
-
   TextEditingController emailAddressController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController userNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
-  // TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  // String _selectedGender = 'Male';
-  // String _selectedCountry = 'USA';
+
   bool _isProfileUpdated = false;
   bool _isLoading = false;
-  // String fullName = '';
 
-
-
-
-  // Store original values to check for changes
   String _originalFirstName = '';
   String _originalLastName = '';
   String _originalEmailAddress = '';
   String _originalPhoneNumber = '';
   String _originalAddress = '';
-  String _originalSelectedGender = '';
-  String _originalSelectedCountry = '';
-  String _storedPassword = '';
-
 
   @override
   void initState() {
     super.initState();
-
 
     _loadInitialProfileData().then((_) {
       firstNameController.addListener(_onFieldChanged);
@@ -66,9 +53,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       phoneNumberController.addListener(_onFieldChanged);
       addressController.addListener(_onFieldChanged);
 
-      Provider.of<PersonalViewModel>(context, listen: false).addListener(_onImageChanged);
-
-
+      Provider.of<PersonalViewModel>(context, listen: false)
+          .addListener(_onImageChanged);
     });
   }
 
@@ -80,8 +66,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     phoneNumberController.removeListener(_onFieldChanged);
     addressController.removeListener(_onFieldChanged);
 
-    Provider.of<PersonalViewModel>(context, listen: false).removeListener(_onImageChanged);
-
+    Provider.of<PersonalViewModel>(context, listen: false)
+        .removeListener(_onImageChanged);
 
     // Dispose controllers to free up resources
     emailAddressController.dispose();
@@ -89,7 +75,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     userNameController.dispose();
     phoneNumberController.dispose();
     addressController.dispose();
-    // oldPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -99,7 +84,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');
 
-
     if (userJson != null) {
       final user = UserModel.fromJson(jsonDecode(userJson));
       firstNameController.text = user.name ?? '';
@@ -107,7 +91,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       emailAddressController.text = user.email ?? '';
       phoneNumberController.text = user.phone ?? '';
       addressController.text = user.ethAddress ?? '';
-    }else{
+    } else {
       firstNameController.text = prefs.getString('firstName') ?? '';
       userNameController.text = prefs.getString('userName') ?? '';
       emailAddressController.text = prefs.getString('emailAddress') ?? '';
@@ -115,13 +99,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       addressController.text = prefs.getString('ethAddress') ?? '';
     }
 
-
-
-
     setState(() {
-
-
-       _originalFirstName = firstNameController.text;
+      _originalFirstName = firstNameController.text;
       _originalLastName = userNameController.text;
       _originalEmailAddress = emailAddressController.text;
       _originalPhoneNumber = phoneNumberController.text;
@@ -134,15 +113,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   void _onFieldChanged() {
     final profileVM = Provider.of<PersonalViewModel>(context, listen: false);
 
-    bool hasChanges =
-        firstNameController.text != _originalFirstName ||
-            userNameController.text != _originalLastName ||
-            emailAddressController.text != _originalEmailAddress ||
-            phoneNumberController.text != _originalPhoneNumber ||
-            addressController.text != _originalAddress ||
-            // _selectedGender != _originalSelectedGender ||
-            // _selectedCountry != _originalSelectedCountry;
-            profileVM.hasImageChanged();
+    bool hasChanges = firstNameController.text != _originalFirstName ||
+        userNameController.text != _originalLastName ||
+        emailAddressController.text != _originalEmailAddress ||
+        phoneNumberController.text != _originalPhoneNumber ||
+        addressController.text != _originalAddress ||
+        profileVM.hasImageChanged();
 
     if (hasChanges != _isProfileUpdated) {
       setState(() {
@@ -150,6 +126,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       });
     }
   }
+
   void _onImageChanged() {
     _checkForProfileChanges();
   }
@@ -162,8 +139,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         emailAddressController.text != _originalEmailAddress ||
         phoneNumberController.text != _originalPhoneNumber ||
         addressController.text != _originalAddress ||
-        // _selectedGender != _originalSelectedGender ||
-        // _selectedCountry != _originalSelectedCountry ||
         profileVM.hasImageChanged();
 
     if (hasChanges != _isProfileUpdated) {
@@ -189,7 +164,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       _isLoading = true;
     });
 
-    // Collect all data
     final updatedProfile = {
       "name": firstNameController.text.trim(),
       "username": userNameController.text.trim(),
@@ -222,26 +196,18 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         uri,
         headers: {
           'Content-Type': 'application/json',
-           'Accept': 'application/json',
+          'Accept': 'application/json',
           if (token != null) 'Authorization': 'Bearer $token',
-         },
+        },
         body: jsonEncode(updatedProfile),
       );
 
       print(">>> Token: $token");
 
-
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
 
-
         setState(() {
-          // _originalFirstName = updatedProfile['name']!;
-          // _originalFirstName = updatedProfile['username']!;
-          // _originalFirstName = updatedProfile['email']!;
-          // _originalFirstName = updatedProfile['phone']!;
-          // _originalAddress = updatedProfile['eth_address']!;
-          // _isProfileUpdated = false;
           _originalFirstName = updatedProfile['name'] ?? '';
           _originalLastName = updatedProfile['username'] ?? '';
           _originalEmailAddress = updatedProfile['email'] ?? '';
@@ -254,33 +220,26 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         await prefs.setString('userName', updatedProfile['username'] ?? '');
         await prefs.setString('emailAddress', updatedProfile['email'] ?? '');
         await prefs.setString('phoneNumber', updatedProfile['phone'] ?? '');
-        await prefs.setString('ethAddress', updatedProfile['eth_address'] ?? '');
-
+        await prefs.setString(
+            'ethAddress', updatedProfile['eth_address'] ?? '');
 
         Provider.of<BottomNavProvider>(context, listen: false)
             .setFullName("${updatedProfile['name'] ?? ''}".trim());
 
-
         print(">> Profile update successful:");
         print(">>Profile Updated : $responseData");
-          ToastMessage.show(
+        ToastMessage.show(
           message: "Profile Updated",
           subtitle: "Your changes have been saved successfully.",
           type: MessageType.success,
           duration: CustomToastLength.LONG,
           gravity: CustomToastGravity.BOTTOM,
         );
-
-
       } else {
-
         print(">> Failed response: ${response.statusCode}");
         print(">> Response body: ${response.body}");
         throw Exception('Failed to update profile');
-
       }
-
-
     } catch (e) {
       print("Error updating profile: $e");
       if (mounted) {
@@ -300,39 +259,35 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   }
 
   Future<void> validateAndUpdatePassword() async {
-     String newPass = newPasswordController.text.trim();
+    String newPass = newPasswordController.text.trim();
     String confirmPass = confirmPasswordController.text.trim();
 
-
     if (newPass.isEmpty || newPass.length < 6) {
-    ToastMessage.show(
-    message: "Weak Password",
-    subtitle: "New password must be at least 6 characters.",
-    type: MessageType.info,
-    duration: CustomToastLength.SHORT,
-    gravity: CustomToastGravity.BOTTOM,
-    );
+      ToastMessage.show(
+        message: "Weak Password",
+        subtitle: "New password must be at least 6 characters.",
+        type: MessageType.info,
+        duration: CustomToastLength.SHORT,
+        gravity: CustomToastGravity.BOTTOM,
+      );
       return;
     }
 
     if (newPass != confirmPass) {
-    ToastMessage.show(
-    message: "Password Mismatch",
-    subtitle: "New password and confirmation do not match.",
-    type: MessageType.error,
-    duration: CustomToastLength.SHORT,
-    gravity: CustomToastGravity.BOTTOM,
-    );
+      ToastMessage.show(
+        message: "Password Mismatch",
+        subtitle: "New password and confirmation do not match.",
+        type: MessageType.error,
+        duration: CustomToastLength.SHORT,
+        gravity: CustomToastGravity.BOTTOM,
+      );
       return;
     }
 
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
-     final prefs = await SharedPreferences.getInstance();
-     final token = prefs.getString('token');
-
-
-
-     try{
+    try {
       final uri = Uri.parse('${ApiConstants.baseUrl}/update-password');
       final response = await http.post(
         uri,
@@ -347,7 +302,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         }),
       );
 
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         newPasswordController.clear();
         confirmPasswordController.clear();
 
@@ -363,38 +318,32 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         Future.delayed(const Duration(milliseconds: 100), () {
           Provider.of<BottomNavProvider>(context, listen: false).setIndex(4);
         });
-
-      }else{
+      } else {
         throw Exception('Password update failed');
       }
-
-    }catch(e){
-       print("Error updating password: $e");
-       ToastMessage.show(
-         message: "Update Failed",
-         subtitle: "Could not update password. Please try again.",
-         type: MessageType.error,
-         duration: CustomToastLength.LONG,
-         gravity: CustomToastGravity.BOTTOM,
-       );
+    } catch (e) {
+      print("Error updating password: $e");
+      ToastMessage.show(
+        message: "Update Failed",
+        subtitle: "Could not update password. Please try again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
     }
-
   }
-
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
-
-    return  Scaffold(
+    return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor:  Colors.transparent,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Container(
           width: screenWidth,
@@ -402,7 +351,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-
               image: AssetImage('assets/images/solidBackGround.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
@@ -411,21 +359,16 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-
             children: [
               SizedBox(height: screenHeight * 0.01),
-
               Row(
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    icon: SvgPicture.asset(
-                        'assets/icons/back_button.svg',
+                    icon: SvgPicture.asset('assets/icons/back_button.svg',
                         color: Colors.white,
                         width: screenWidth * 0.04,
-                        height: screenWidth * 0.04
-                    ),
+                        height: screenWidth * 0.04),
                     onPressed: () => Navigator.pop(context),
                   ),
                   Expanded(
@@ -442,10 +385,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(width: screenWidth * 0.12), // Responsive spacer for balance
+                  SizedBox(width: screenWidth * 0.12),
                 ],
               ),
-
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
@@ -453,38 +395,34 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     vertical: screenHeight * 0.01,
                   ),
                   child: ScrollConfiguration(
-                    behavior: const ScrollBehavior().copyWith(overscroll: false),
+                    behavior:
+                        const ScrollBehavior().copyWith(overscroll: false),
                     child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
-
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(height: screenHeight * 0.01),
-
-                            Center(
-                                child: _profileHeaderSection(context)
-                            ),
-
+                            Center(child: _profileHeaderSection(context)),
                             SizedBox(height: screenHeight * 0.03),
-
                             Container(
                               width: double.infinity,
-                              height: screenHeight ,
-
+                              height: screenHeight,
                               decoration: BoxDecoration(
-                                 image: const DecorationImage(
-                                  image: AssetImage('assets/images/profileFrameBg.png'),
+                                image: const DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/profileFrameBg.png'),
                                   fit: BoxFit.fill,
                                 ),
                                 borderRadius: BorderRadius.circular(14),
-
                                 border: const Border(
-                                  top: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
-                                  left: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
-                                  right: BorderSide(color: Color(0xFFFFF5ED), width: 0.1),
+                                  top: BorderSide(
+                                      color: Color(0xFFFFF5ED), width: 0.1),
+                                  left: BorderSide(
+                                      color: Color(0xFFFFF5ED), width: 0.1),
+                                  right: BorderSide(
+                                      color: Color(0xFFFFF5ED), width: 0.1),
                                   bottom: BorderSide.none,
                                 ),
                                 boxShadow: [
@@ -496,49 +434,45 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                   ),
                                 ],
                               ),
-
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: screenWidth * 0.05,
                                   vertical: screenHeight * 0.02,
                                 ),
                                 child: Column(
-                                  // mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-
                                     /// First & last Name
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                       crossAxisAlignment: CrossAxisAlignment.center,
-                                       children: [
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
                                         Expanded(
                                           child: ListingField(
                                             controller: firstNameController,
                                             labelText: 'Name',
                                             height: screenHeight * 0.05,
-                                             expandable: false,
+                                            expandable: false,
                                             keyboard: TextInputType.name,
-                                            onChanged: (value) => _onFieldChanged(),
-
+                                            onChanged: (value) =>
+                                                _onFieldChanged(),
                                           ),
                                         ),
-
-                                         SizedBox(width: screenWidth * 0.01),
-
-                                         Expanded(
-                                           child: ListingField(
-                                             controller: userNameController,
-                                             labelText: 'Username',
-                                             height: screenHeight * 0.05,
-                                              expandable: false,
-                                             keyboard: TextInputType.name,
-                                             onChanged: (value) => _onFieldChanged(),
-
-                                           ),
-                                         ),
-
+                                        SizedBox(width: screenWidth * 0.01),
+                                        Expanded(
+                                          child: ListingField(
+                                            controller: userNameController,
+                                            labelText: 'Username',
+                                            height: screenHeight * 0.05,
+                                            expandable: false,
+                                            keyboard: TextInputType.name,
+                                            onChanged: (value) =>
+                                                _onFieldChanged(),
+                                          ),
+                                        ),
                                       ],
                                     ),
 
@@ -549,11 +483,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       controller: emailAddressController,
                                       labelText: 'Email Address',
                                       height: screenHeight * 0.05,
-                                      width: screenWidth* 0.88,
+                                      width: screenWidth * 0.88,
                                       expandable: false,
                                       keyboard: TextInputType.name,
                                       onChanged: (value) => _onFieldChanged(),
-
                                     ),
 
                                     SizedBox(height: screenHeight * 0.02),
@@ -567,81 +500,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       onChanged: (value) => _onFieldChanged(),
                                     ),
 
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                                    //   children: [
-                                    //     Expanded(
-                                    //       flex: 2,
-                                    //       child: ListingField(
-                                    //         controller: TextEditingController(text: '+880'), // Fixed country code prefix
-                                    //         labelText: '',
-                                    //         height: screenHeight * 0.05,
-                                    //         expandable: false,
-                                    //         keyboard: TextInputType.name,
-                                    //         onChanged: (value) {
-                                    //           // later implement
-                                    //         },
-                                    //       ),
-                                    //     ),
-                                    //
-                                    //     SizedBox(width: screenWidth * 0.01),
-                                    //
-                                    //     Expanded(
-                                    //       flex: 4,
-                                    //        child: ListingField(
-                                    //         controller: phoneNumberController,
-                                    //         labelText: 'Contract Number',
-                                    //         height: screenHeight * 0.05,
-                                    //         expandable: false,
-                                    //         keyboard: TextInputType.number,
-                                    //          onChanged: (value) => _onFieldChanged(),
-                                    //        ),
-                                    //     ),
-                                    //
-                                    //   ],
-                                    // ),
-                                    // SizedBox(height: screenHeight * 0.02),
-                                    //
-                                    //  /// Country and Address
-                                    //  Row(
-                                    //    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    //    crossAxisAlignment: CrossAxisAlignment.center,
-                                    //
-                                    //    children: [
-                                    //      Expanded(
-                                    //        child: CustomDropdown(
-                                    //          label: 'Country',
-                                    //          items: const ['Dubai', 'USA', 'Bangladesh'],
-                                    //          selectedValue: _selectedCountry,
-                                    //          onChanged: (value) {
-                                    //            setState(() {
-                                    //              _selectedCountry = value ?? _selectedCountry;
-                                    //              _onFieldChanged();
-                                    //
-                                    //            });
-                                    //          },
-                                    //        ),
-                                    //      ),
-                                    //      SizedBox(width: screenWidth * 0.01),
-                                    //
-                                    //      Expanded(
-                                    //        child: CustomDropdown(
-                                    //          label: 'Gender',
-                                    //          items: const ['Male', 'Female', 'Other'],
-                                    //          selectedValue: _selectedGender,
-                                    //          onChanged: (value) {
-                                    //            setState(() {
-                                    //              _selectedGender = value ?? _selectedCountry;
-                                    //              _onFieldChanged();
-                                    //            });
-                                    //          },
-                                    //        ),
-                                    //      ),
-                                    //    ],
-                                    //  ),
-
-
                                     SizedBox(height: screenHeight * 0.02),
 
                                     /// Address
@@ -649,43 +507,49 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       controller: addressController,
                                       labelText: 'Address',
                                       height: screenHeight * 0.05,
-                                      width: screenWidth* 0.88,
+                                      width: screenWidth * 0.88,
                                       expandable: false,
                                       keyboard: TextInputType.emailAddress,
                                       onChanged: (value) => _onFieldChanged(),
-
                                     ),
 
-                                     SizedBox(height: screenHeight * 0.05),
+                                    SizedBox(height: screenHeight * 0.05),
 
                                     if (_isLoading)
-                                      const Center(child: CircularProgressIndicator(color: Colors.white))
+                                      const Center(
+                                          child: CircularProgressIndicator(
+                                              color: Colors.white))
                                     else
                                       BlockButton(
-                                      height: screenHeight * 0.045,
-                                      width: screenWidth * 0.7,
-                                      label: 'Update Profile',
-                                      textStyle: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        // fontSize: baseSize * 0.030,
-                                        fontSize: getResponsiveFontSize(context, 16),
+                                        height: screenHeight * 0.045,
+                                        width: screenWidth * 0.7,
+                                        label: 'Update Profile',
+                                        textStyle: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                          // fontSize: baseSize * 0.030,
+                                          fontSize: getResponsiveFontSize(
+                                              context, 16),
+                                        ),
+                                        gradientColors: const [
+                                          Color(0xFF2680EF),
+                                          Color(0xFF1CD494),
+                                        ],
+                                        onTap: _isProfileUpdated
+                                            ? _updateProfile
+                                            : () {
+                                                ToastMessage.show(
+                                                    message:
+                                                        "No Changes Detected",
+                                                    subtitle:
+                                                        "You haven't made any edits to your profile.",
+                                                    type: MessageType.info,
+                                                    duration:
+                                                        CustomToastLength.SHORT,
+                                                    gravity: CustomToastGravity
+                                                        .BOTTOM);
+                                              },
                                       ),
-                                      gradientColors: const [
-                                        Color(0xFF2680EF),
-                                        Color(0xFF1CD494),
-                                      ],
-
-                                        onTap: _isProfileUpdated ? _updateProfile : () {
-
-                                        ToastMessage.show(
-                                          message: "No Changes Detected",
-                                          subtitle: "You haven't made any edits to your profile.",
-                                          type: MessageType.info,duration: CustomToastLength.SHORT,
-                                          gravity: CustomToastGravity.BOTTOM);
-
-                                        },
-                                    ),
 
                                     SizedBox(height: screenHeight * 0.05),
 
@@ -698,14 +562,14 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                           color: Colors.white,
                                           fontFamily: 'Poppins',
                                           fontWeight: FontWeight.w600,
-                                          fontSize: getResponsiveFontSize(context, 16),
+                                          fontSize: getResponsiveFontSize(
+                                              context, 16),
                                           height: 1.6,
                                         ),
                                       ),
                                     ),
 
                                     SizedBox(height: screenHeight * 0.03),
-
 
                                     SizedBox(height: screenHeight * 0.02),
                                     ListingField(
@@ -735,28 +599,21 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                       textStyle: TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
-                                        // fontSize: baseSize * 0.030,
-                                        fontSize: getResponsiveFontSize(context, 16),
+                                        fontSize:
+                                            getResponsiveFontSize(context, 16),
                                       ),
                                       gradientColors: const [
                                         Color(0xFF2680EF),
                                         Color(0xFF1CD494),
                                       ],
-
                                       onTap: () => validateAndUpdatePassword(),
-
                                     ),
-
-
                                   ],
                                 ),
                               ),
                             ),
-
-
                           ],
-                        )
-                    ),
+                        )),
                   ),
                 ),
               ),
@@ -767,7 +624,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     );
   }
 
-
   Widget _profileHeaderSection(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -776,11 +632,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     final profileVM = Provider.of<PersonalViewModel>(context);
     final pickedImage = profileVM.pickedImage;
 
-
-    final fullName = (firstNameController.text.isNotEmpty || userNameController.text.isNotEmpty)
+    final fullName = (firstNameController.text.isNotEmpty ||
+            userNameController.text.isNotEmpty)
         ? "${firstNameController.text} ${userNameController.text}".trim()
         : "Your Name";
-
 
     return Column(
       children: [
@@ -799,9 +654,13 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         // image:profileImage,
                         image: pickedImage != null
                             ? FileImage(pickedImage)
-                            : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
-                            ? FileImage(File(profileVM.originalImagePath!))
-                            : const NetworkImage("https://mycoinpoll.com/_ipx/q_20&s_50x50/images/dashboard/icon/user.png") as ImageProvider,
+                            : (profileVM.originalImagePath != null &&
+                                    File(profileVM.originalImagePath!)
+                                        .existsSync())
+                                ? FileImage(File(profileVM.originalImagePath!))
+                                : const NetworkImage(
+                                        "https://mycoinpoll.com/_ipx/q_20&s_50x50/images/dashboard/icon/user.png")
+                                    as ImageProvider,
 
                         fit: BoxFit.contain,
                       ),
@@ -846,9 +705,4 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
       ],
     );
   }
-
-
 }
-
-
-

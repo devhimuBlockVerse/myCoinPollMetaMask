@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/settings/settings_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/tax_statement/terms_condition_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/trade_confirmation/trade_confirmation_screen.dart';
+import 'package:mycoinpoll_metamask/application/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
- import '../../viewmodel/bottom_nav_provider.dart';
+ import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import '../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
+import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
-import 'notification/notifications.dart';
+import '../../viewmodel/wallet_view_model.dart';
 import 'personal_info/personal_information.dart';
+import 'contact_screen.dart';
+import 'terms_condition_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,6 +21,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool isDisconnecting = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,13 +70,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                  Align(
                    alignment: Alignment.topCenter,
                    child:  Text(
-                     'Profile',
+                     'Account Settings',
                      style: TextStyle(
                        fontFamily: 'Poppins',
                        color: Colors.white,
                        fontWeight: FontWeight.w600,
-                       // fontSize: 20
-                       fontSize: screenWidth * 0.05,
+                        fontSize: screenWidth * 0.05,
                      ),
                      textAlign: TextAlign.center,
                    ),
@@ -124,7 +127,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                    mainAxisSize: MainAxisSize.min,
                                    children: [
 
-                                     // Personal ,
                                      ProfileOptionContainer(
                                       labelText: 'Personal Information',
                                       leadingIconPath: 'assets/icons/profile.svg',
@@ -136,64 +138,111 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         );
                                       },
                                      ),
+
                                      SizedBox(height: screenHeight * 0.02),
 
-                                     // Trade Confirmation,
                                      ProfileOptionContainer(
-                                      labelText: 'Trade Confirmation',
-                                      leadingIconPath: 'assets/icons/tared.svg',
-                                      trailingIconPath: 'assets/icons/rightArrow.svg',
-                                      onTrailingIconTap: () {
-
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => const TradeConfirmationScreen()),
-                                        );
-                                      },
-                                     ),
-                                     SizedBox(height: screenHeight * 0.02),
-
-                                     // Tax Statements,
-                                     ProfileOptionContainer(
-                                      labelText: 'Tax Statements',
-                                      leadingIconPath: 'assets/icons/taxStatement.svg',
-                                      trailingIconPath: 'assets/icons/rightArrow.svg',
-                                      onTrailingIconTap: () {
-                                         Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
-                                        );
-                                      },
-                                     ),
-                                     SizedBox(height: screenHeight * 0.02),
-
-                                     // Notification Settings,
-                                     ProfileOptionContainer(
-                                       labelText: 'Notification Settings',
-                                       leadingIconPath: 'assets/icons/notify.svg',
+                                       labelText: 'Privacy Policy',
+                                       leadingIconPath: 'assets/icons/privecyImg.svg',
                                        trailingIconPath: 'assets/icons/rightArrow.svg',
                                        onTrailingIconTap: () {
-                                          Navigator.of(context).push(
-                                         MaterialPageRoute(builder: (context) => const NotificationsScreen()),
-                                       );
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+                                         );
                                        },
                                      ),
                                      SizedBox(height: screenHeight * 0.02),
 
-                                     // Settings
                                      ProfileOptionContainer(
-                                       labelText: 'Settings',
-                                       leadingIconPath: 'assets/icons/settings.svg',
+                                       labelText: 'Terms and Conditions',
+                                       leadingIconPath: 'assets/icons/termsImg.svg',
                                        trailingIconPath: 'assets/icons/rightArrow.svg',
                                        onTrailingIconTap: () {
-                                          Navigator.of(context).push(
-                                           MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(builder: (context) => const TermsConditionScreen()),
+                                         );
+                                       },
+                                     ),
+                                     SizedBox(height: screenHeight * 0.02),
+
+                                     ProfileOptionContainer(
+                                       labelText: 'Contact',
+                                       leadingIconPath: 'assets/icons/contactImg.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(builder: (context) => const ContactScreen()),
                                          );
                                        },
                                      ),
 
                                      SizedBox(height: screenHeight * 0.02),
 
+                                     ProfileOptionContainer(
+                                       labelText: 'Share App',
+                                       leadingIconPath: 'assets/icons/shareImg.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+
+                                       },
+                                     ),
+
+                                     SizedBox(height: screenHeight * 0.02),
+
+                                     ProfileOptionContainer(
+                                       labelText: 'Logout',
+                                       labelTextColor: Colors.redAccent.withOpacity(0.9),
+                                       leadingIconPath: 'assets/icons/logoutImg.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       iconColor: Colors.redAccent.withOpacity(0.9),
+                                       onTrailingIconTap: ()async {
+                                         setState(() {
+                                           isDisconnecting = true;
+                                         });
+                                         final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+                                         try{
+                                           await walletVm.disconnectWallet(context);
+                                           walletVm.reset();
+                                           Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+
+                                           if(context.mounted && !walletVm.isConnected){
+                                             Navigator.of(context).pushAndRemoveUntil(
+                                                 MaterialPageRoute(
+                                                   builder: (context) => MultiProvider(
+                                                     providers: [
+                                                       ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                                       ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                                       ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                                       ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                                       ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                                     ],
+                                                     child: const BottomAppBar(),
+                                                   )
+                                                 ),(Route<dynamic> route) => false,
+                                             );
+                                           }
+
+                                         }catch(e){
+                                           debugPrint("Error Wallet Disconnecting : $e");
+                                         }finally{
+                                           if(mounted){
+                                             setState(() {
+                                               isDisconnecting = false;
+                                             });
+                                           }
+                                         }
+                                       },
+                                     ),
+
+                                     SizedBox(height: screenHeight * 0.02),
+
+
+
                                      SizedBox(
-                                       width: screenWidth * 0.8, // Responsive width
+                                       width: screenWidth * 0.8,
                                        child: Opacity(
                                          opacity: 0.50,
                                          child: Text(
@@ -273,9 +322,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               SizedBox(height: 10 * scale),
 
-              // Name
               Text(
-                 // fullName,
+
                 fullName.isNotEmpty ? fullName : 'Ethereum User',
 
                 textAlign: TextAlign.center,
@@ -290,67 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               SizedBox(height: 10 * scale),
 
-              // Membership Badge
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10 * scale,
-                  vertical: 6 * scale,
-                ),
-                decoration: ShapeDecoration(
-                  color: const Color(0xFFF7F9B7),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5 * scale),
-                  ),
-                ),
-                child: Text(
-                  'Premium Member',
-                  style: TextStyle(
-                    color: const Color(0xFF18181D),
-                    fontSize: 12 * scale,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                    height: 1.3,
 
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 5 * scale),
-
-              // Upgrade Plan Button
-              GestureDetector(
-                onTap: () {
-                  /// Handle upgrade tap
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10 * scale,
-                    vertical: 4 * scale,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Upgrade your plan',
-                        style: TextStyle(
-                          color: const Color(0xFFF7F9B7),
-                          fontSize: 10 * scale,
-                          fontFamily: 'Poppins',
-                          letterSpacing: -0.3,
-                          fontWeight: FontWeight.w400,
-                          height: 1.3,
-                        ),
-                      ),
-                      SizedBox(width: 6 * scale),
-                      Icon(
-                        Icons.arrow_forward,
-                        size: 12 * scale,
-                        color: const Color(0xFFF7F9B7),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ],
           ),
         ),

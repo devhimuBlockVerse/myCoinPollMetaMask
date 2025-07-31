@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,10 +5,9 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashbo
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/ecm_ico/Ico_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/staking/staking_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/transaction_screen.dart';
-import 'package:mycoinpoll_metamask/application/presentation/screens/profile/profile_screen.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+ import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
-import '../../framework/components/DialogModalViewComponent.dart';
+import '../presentation/screens/settings/settings_screen.dart';
 
 class DashboardBottomNavBar extends StatefulWidget {
   const DashboardBottomNavBar({super.key});
@@ -26,7 +24,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ProfileScreen(),
   ];
 
-  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Profile'];
+  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Settings'];
 
   final List<String> _imgPaths = [
     'assets/icons/dasboard.svg',

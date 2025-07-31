@@ -24,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
   final PageStorageBucket bucket = PageStorageBucket();
 
-  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Profile'];
+  final List<String> _labels = ['Home', 'Features', 'Androverse', 'News', 'Dashboard'];
 
   final List<String> _imgPaths = [
     'assets/icons/home.svg',
@@ -47,9 +47,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           onYes: () {
             Navigator.of(context).pop(true);
           },
-          // onNo: () {
-          //   Navigator.of(context).pop(false);
-          // },
+
         );
       },
     );

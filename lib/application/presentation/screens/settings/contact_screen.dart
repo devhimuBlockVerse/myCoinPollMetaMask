@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../../../framework/components/BlockButton.dart';
-import '../../../../../framework/components/ListingFields.dart';
-import '../../../../../framework/widgets/custom_contact_info.dart';
+import '../../../../framework/components/BlockButton.dart';
+import '../../../../framework/components/ListingFields.dart';
+import '../../../../framework/widgets/custom_contact_info.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});

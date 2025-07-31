@@ -2,17 +2,16 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../framework/utils/dynamicFontSize.dart';
 
-
-class TermsConditionScreen extends StatefulWidget {
-  const TermsConditionScreen({super.key});
+class PrivacyPolicyScreen extends StatefulWidget {
+  const PrivacyPolicyScreen({super.key});
 
   @override
-  State<TermsConditionScreen> createState() => _TermsConditionScreenState();
+  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState();
 }
 
-class _TermsConditionScreenState extends State<TermsConditionScreen> {
+class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
 
@@ -62,7 +61,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Terms and Conditions',
+                        'Privacy Policy',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -123,7 +122,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                                 letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
                                 color: Colors.white,
                               ),
-                              textAlign: TextAlign.left,
+                               textAlign: TextAlign.left,
                             ),
 
 
@@ -186,6 +185,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               ),
                               textAlign: TextAlign.left,
                             ),
+
                             SizedBox(height: screenHeight * 0.02),
                             Align(
                               alignment: Alignment.topLeft,
@@ -204,7 +204,7 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                             SizedBox(height: screenHeight * 0.02),
                             AutoSizeText(
                               "Lorem ipsum dolor sit amen, consectetur adipescent alit, sed do eiusmod temper incident ut labored et dolore magna aliquant. Ut enim ad minim veniam, quips nostrum exercitation ullamco laboris nisi ut aliquip ex ea commode consequent.",
-                               style: TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                                 fontSize: getResponsiveFontSize(context, 12),
@@ -214,7 +214,6 @@ class _TermsConditionScreenState extends State<TermsConditionScreen> {
                               ),
                               textAlign: TextAlign.left,
                             ),
-
 
                           ],
                         )

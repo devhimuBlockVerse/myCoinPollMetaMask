@@ -2,16 +2,17 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../framework/utils/dynamicFontSize.dart';
 
-class TradeConfirmationScreen extends StatefulWidget {
-  const TradeConfirmationScreen({super.key});
+
+class TermsConditionScreen extends StatefulWidget {
+  const TermsConditionScreen({super.key});
 
   @override
-  State<TradeConfirmationScreen> createState() => _TradeConfirmationScreenState();
+  State<TermsConditionScreen> createState() => _TermsConditionScreenState();
 }
 
-class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
+class _TermsConditionScreenState extends State<TermsConditionScreen> {
   @override
   Widget build(BuildContext context) {
 
@@ -61,7 +62,7 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        'Privacy Policy',
+                        'Terms and Conditions',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.white,
@@ -122,7 +123,7 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
                                 letterSpacing: getResponsiveFontSize(context, 12) * 0.0025,
                                 color: Colors.white,
                               ),
-                               textAlign: TextAlign.left,
+                              textAlign: TextAlign.left,
                             ),
 
 
@@ -185,7 +186,6 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
                               ),
                               textAlign: TextAlign.left,
                             ),
-
                             SizedBox(height: screenHeight * 0.02),
                             Align(
                               alignment: Alignment.topLeft,
@@ -204,7 +204,7 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
                             SizedBox(height: screenHeight * 0.02),
                             AutoSizeText(
                               "Lorem ipsum dolor sit amen, consectetur adipescent alit, sed do eiusmod temper incident ut labored et dolore magna aliquant. Ut enim ad minim veniam, quips nostrum exercitation ullamco laboris nisi ut aliquip ex ea commode consequent.",
-                              style: TextStyle(
+                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                                 fontSize: getResponsiveFontSize(context, 12),
@@ -214,6 +214,7 @@ class _TradeConfirmationScreenState extends State<TradeConfirmationScreen> {
                               ),
                               textAlign: TextAlign.left,
                             ),
+
 
                           ],
                         )

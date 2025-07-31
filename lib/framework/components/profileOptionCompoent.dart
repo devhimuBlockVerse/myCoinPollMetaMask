@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 
 class ProfileOptionContainer extends StatelessWidget {
   final String labelText;
+  final Color? labelTextColor;
+  final Color? iconColor;
   final String leadingIconPath;
   final String trailingIconPath;
   final VoidCallback? onTrailingIconTap;
@@ -13,12 +15,16 @@ class ProfileOptionContainer extends StatelessWidget {
     required this.leadingIconPath,
     required this.trailingIconPath,
     this.onTrailingIconTap,
+    this.labelTextColor, this.iconColor ,
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final scaleFactor = screenWidth / 375;
+    final Color textColor = labelTextColor ?? const Color(0xffFFF5ED).withOpacity(0.8);
+    final Color leadingIconColor = iconColor ?? Colors.white.withOpacity(0.8);
+    final Color trailingIconColor = iconColor ?? Colors.white.withOpacity(0.3);
 
     return GestureDetector(
       onTap: onTrailingIconTap,
@@ -29,7 +35,6 @@ class ProfileOptionContainer extends StatelessWidget {
           horizontal: 20 * scaleFactor,
         ),
         decoration: ShapeDecoration(
-          // color: const Color(0xFF12161D),
           color: const Color(0xFF12161D),
           shape: RoundedRectangleBorder(
             side: const BorderSide(width: 1, color: Color(0xFF141317)),
@@ -38,15 +43,15 @@ class ProfileOptionContainer extends StatelessWidget {
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
+
           children: [
             /// Leading Icon
             Center(
               child: SvgPicture.asset(
                 leadingIconPath,
-                width: 1 * scaleFactor,
-                height: 1 * scaleFactor,
-                color: Colors.white.withOpacity(0.8),
-                // color: Color(0XFFFFF5ED),
+                width: 20 * scaleFactor,
+                height: 20 * scaleFactor,
+                color: leadingIconColor
               ),
             ),
 
@@ -59,11 +64,11 @@ class ProfileOptionContainer extends StatelessWidget {
                 child: Text(
                   labelText,
                   style: TextStyle(
-                    color: const Color(0xffFFF5ED).withOpacity(0.8),
+                    color:textColor ,
                     fontSize: 14 * scaleFactor,
                     fontFamily: 'Poppins',
                     fontWeight: FontWeight.w400,
-                    height: 1.2, // Slightly lower for vertical centering
+                    height: 1.2,
                   ),
                 ),
               ),
@@ -75,7 +80,7 @@ class ProfileOptionContainer extends StatelessWidget {
                 trailingIconPath,
                 width: 10 * scaleFactor,
                 height: 10 * scaleFactor,
-                color: Colors.white.withOpacity(0.3),
+                color: trailingIconColor
               ),
             ),
           ],

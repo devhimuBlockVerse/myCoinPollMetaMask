@@ -831,15 +831,19 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
      if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
        throw Exception("Wallet not Connected or selected chain not available.");
      }
-     _isLoading = true;
-     notifyListeners();
+
      try {
+       _isLoading = true;
+       notifyListeners();
+
        final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
        final abiData = jsonDecode(abiString);
+
        final saleContract = DeployedContract(
          ContractAbi.fromJson(
            jsonEncode(abiData),
-           'ECMCoinICO',
+           // 'ECMCoinICO',
+           'eCommerce Coin',
          ),
          EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
        );
@@ -1030,7 +1034,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
    //
    //   }
    // }
-
    Future<String> buyECMWithUSDT(BigInt amount,EthereumAddress referralAddress, BuildContext context) async {
 
      if (appKitModal == null || !_isConnected || appKitModal!.session == null || appKitModal!.selectedChain == null) {
@@ -1049,7 +1052,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
        final abiJson = jsonDecode(abiString);
        final abi = abiJson is Map && abiJson.containsKey("abi") ? abiJson["abi"] : abiJson;
        final saleContract = DeployedContract(
-         ContractAbi.fromJson(jsonEncode(abi), 'ECMCoinICO',),
+         ContractAbi.fromJson(
+           jsonEncode(abi),
+           // 'ECMCoinICO',
+           'eCommerce Coin',
+         ),
          EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
        );
 
@@ -1057,7 +1064,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
        final usdtAbiString = await rootBundle.loadString("assets/abi/IERC20ABI.json");
        final usdtAbi = jsonDecode(usdtAbiString);
        final usdtContract = DeployedContract(
-         ContractAbi.fromJson(jsonEncode(usdtAbi), "IERC20"),
+         ContractAbi.fromJson(
+             jsonEncode(usdtAbi),
+             "IERC20"
+         ),
          EthereumAddress.fromHex(USDT_CONTRACT_ADDRESS),
        );
        print(">>> USDT contract deployed at: $USDT_CONTRACT_ADDRESS");

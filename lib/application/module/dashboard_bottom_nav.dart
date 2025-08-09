@@ -51,7 +51,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFF0E0F1A),
+        // backgroundColor: const Color(0xFF0E0F1A),
+        backgroundColor: Colors.transparent,
         // body: _pages[currentIndex],
         body: IndexedStack(
           index: currentIndex,
@@ -65,7 +66,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
-              height: scaleHeight(70),
+              height: scaleHeight(75),
               padding: EdgeInsets.symmetric(
                 horizontal: scaleWidth(15),
                 vertical: scaleHeight(8),

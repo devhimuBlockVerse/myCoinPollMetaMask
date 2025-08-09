@@ -75,7 +75,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     userNameController.dispose();
     phoneNumberController.dispose();
     addressController.dispose();
-    newPasswordController.dispose();
+    newPasswordController.dispose();A
     confirmPasswordController.dispose();
     super.dispose();
   }

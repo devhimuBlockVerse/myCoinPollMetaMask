@@ -102,7 +102,6 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
          return false;
       },
       child: Scaffold(
-        // key: navProvider.scaffoldKey,
         key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
@@ -122,7 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         body: SafeArea(
           child: Container(
             width: screenWidth,
-            height: screenHeight,
+            // height: screenHeight * 0.9,
             decoration: const BoxDecoration(
                image: DecorationImage(
                  image: AssetImage('assets/images/starGradientBg.png'),
@@ -216,6 +215,8 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
 
 
                             _transactionsReferral(),
+
+                            SizedBox(height: screenHeight * 0.1),
 
 
                           ],
@@ -500,39 +501,18 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Top Title Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Transactions',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                  fontSize: baseSize * 0.045,
-                  height: 1.2,
-                  color: Colors.white,
-                ),
-              ),
-              SizedBox(width: screenWidth * 0.01),
-
-              TextButton(
-                onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) =>  TransactionScreen()));
-                },
-                child: Text(
-                  'View All',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    fontSize: baseSize * 0.038,
-                    height: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            'Transactions',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: baseSize * 0.045,
+              height: 1.2,
+              color: Colors.white,
+            ),
           ),
-          SizedBox(height: screenHeight * 0.001),
+          SizedBox(height: screenWidth * 0.05),
+
           // Main Milestone Container
           Container(
             width: double.infinity,
@@ -562,8 +542,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                     TransactionStatCard(
                       bgImagePath: 'assets/images/colorYellow.png',
                       title: 'Transactions',
-                      // value: '205',
-                      value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+                       value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
 
                     ),
                     SizedBox(height: screenHeight * 0.01),
@@ -579,8 +558,7 @@ class _DashboardScreenState extends State<DashboardScreen> with TickerProviderSt
                      SizedBox(height: screenHeight * 0.01),
                       TransactionStatCard(
                       bgImagePath: 'assets/images/colorYellow.png',
-                      // title: 'Total ETH',
-                      title: 'Attendant',
+                       title: 'Attendant',
                          value: _purchaseStats != null ? _purchaseStats!.uniqueStages.toString() : '0',
 
                       ),

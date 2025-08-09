@@ -49,6 +49,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
           },
 
         );
+
       },
     );
     if (value == true) {

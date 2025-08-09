@@ -114,7 +114,8 @@ class _NewsScreenState extends State<NewsScreen> {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator(color: Colors.white));
                         } else if (snapshot.hasError) {
-                          return Center(child: Text("Error: \${snapshot.error}", style: TextStyle(color: Colors.red)));
+                          print("Error: ${snapshot.error}");
+                          return Center(child: Text("Error: ${snapshot.error}", style: TextStyle(color: Colors.red)));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return const Center(child: Text("No news available", style: TextStyle(color: Colors.white)));
                         }

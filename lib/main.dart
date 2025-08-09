@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
  import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
@@ -36,13 +37,18 @@ void main() async {
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
+  // HttpOverrides.global = MyHttpOverrides();
 
-   runApp(
-       const MyApp(),
-
-  );
+   runApp(const MyApp(),);
 }
-
+// class MyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..badCertificateCallback =
+//           (X509Certificate cert, String host, int port) => true;
+//   }
+// }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -66,7 +72,7 @@ class MyApp extends StatelessWidget {
 
       child: WalletAppInitializer(
         child: MaterialApp(
-          navigatorKey: ToastMessage.toastContextNavigatorKey, // Add this line
+          navigatorKey: ToastMessage.toastContextNavigatorKey,
           useInheritedMediaQuery: true,
 
           title: 'MyCoinPoll',

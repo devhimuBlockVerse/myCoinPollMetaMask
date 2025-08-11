@@ -32,8 +32,8 @@ class StakingScreen extends StatefulWidget {
 }
 
 class _StakingScreenState extends State<StakingScreen> {
-   List<String> ecmPercentageOptions = ['25%', '50%', '75%', 'Max'];
-   SortOption? _currentSort;
+  List<String> ecmPercentageOptions = ['25%', '50%', '75%', 'Max'];
+  SortOption? _currentSort;
 
   final SortDataUseCase _sortDataUseCase = SortDataUseCase();
   TextEditingController ecmAmountController = TextEditingController();
@@ -66,7 +66,7 @@ class _StakingScreenState extends State<StakingScreen> {
   @override
   void initState() {
     super.initState();
-     _searchController.addListener(_onSearchChanged);
+    _searchController.addListener(_onSearchChanged);
     ecmAmountController.addListener(calculateRewards);
 
     _loadStakingPlans();
@@ -83,124 +83,124 @@ class _StakingScreenState extends State<StakingScreen> {
   }
 
   Future<List<StakingPlanModel>> fetchStakingPlans( ) async {
-     final prefs = await SharedPreferences.getInstance();
-     final token = prefs.getString('token');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
-     if (token == null) {
-       print("No login token found.");
-       return [];
-     }
+    if (token == null) {
+      print("No login token found.");
+      return [];
+    }
 
-     final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-plans');
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-plans');
 
-     try {
-       final response = await http.get(
-         url,
-         headers: {
-           'Accept': 'application/json',
-           'Authorization': 'Bearer $token',
-         },
-       );
-       if (response.statusCode == 200) {
-          print('Response Body staking-plans: ${response.body}');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        print('Response Body staking-plans: ${response.body}');
 
-         final List<dynamic> decoded = json.decode(response.body);
-         return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
-       } else {
-          return [];
-       }
-     } catch (e) {
-       print("Error fetching staking plans: $e");
-     }
+        final List<dynamic> decoded = json.decode(response.body);
+        return decoded.map((json) => StakingPlanModel.fromJson(json)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching staking plans: $e");
+    }
 
-     return [];
-   }
+    return [];
+  }
 
-   Future<void> fetchStakingHistory() async {
-     setState(() => _isLoadingHistory = true);
+  Future<void> fetchStakingHistory() async {
+    setState(() => _isLoadingHistory = true);
 
-     final prefs = await SharedPreferences.getInstance();
-     final token = prefs.getString('token');
-      if (token == null) {
-       setState(() => _isLoadingHistory = false);
-       return;
-     }
-     final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) {
+      setState(() => _isLoadingHistory = false);
+      return;
+    }
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-staking-history');
 
-     try {
-       final response = await http.get(url, headers: {
-         'Accept': 'application/json',
-         'Authorization': 'Bearer $token',
-       });
+    try {
+      final response = await http.get(url, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
-       if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
 
-          print(">> Response Staking history: ${response.body}");
+        print(">> Response Staking history: ${response.body}");
 
-         final List<dynamic> decoded = json.decode(response.body);
-         final List<StakingHistoryModel> history = decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
-         setState(() {
-           stakingHistory = history;
-           filteredHistory = history;
-           _isLoadingHistory = false;
+        final List<dynamic> decoded = json.decode(response.body);
+        final List<StakingHistoryModel> history = decoded.map((json) => StakingHistoryModel.fromJson(json)).toList();
+        setState(() {
+          stakingHistory = history;
+          filteredHistory = history;
+          _isLoadingHistory = false;
 
-         });
-       }
-     } catch (e) {
-       print('Error fetching staking history: \$e');
-       setState(() => _isLoadingHistory = false);
+        });
+      }
+    } catch (e) {
+      print('Error fetching staking history: \$e');
+      setState(() => _isLoadingHistory = false);
 
-     }
-   }
+    }
+  }
 
-   Future<void> _loadStakingPlans() async {
+  Future<void> _loadStakingPlans() async {
 
-     setState(() {
-       isLoading = true;
-     });
-     final plans = await fetchStakingPlans();
+    setState(() {
+      isLoading = true;
+    });
+    final plans = await fetchStakingPlans();
 
-     Map<int,double> rates = {};
-     for (var plan in plans){
-       rates[plan.duration] = plan.rewardPercentage / 100.0;
+    Map<int,double> rates = {};
+    for (var plan in plans){
+      rates[plan.duration] = plan.rewardPercentage / 100.0;
 
-     }
-
-
-     setState(() {
-       stakingPlans = plans;
-       filteredPlans = List.from(plans);
-       annualReturnRates = rates;
-       durationDropdownItems = ['Select Duration'] + stakingPlans.map((plan) => '${plan.duration} Days').toList();
-
-       isLoading = false;
-     });
-
-   }
-
-   /// Search Filtering
-   void _onSearchChanged() {
-     String query = _searchController.text.toLowerCase();
-     setState(() {
-       if (query.isEmpty) {
-         filteredHistory = stakingHistory;
-       } else {
-         filteredHistory = stakingHistory.where((item) {
-           return item.status.toLowerCase().contains(query) ||
-               item.createdAtFormatted.toLowerCase().contains(query) ||
-               item.amount.toLowerCase().contains(query);
-         }).toList();
-       }
-     });
-   }
+    }
 
 
-   void _sortData(SortOption option) {
-     setState(() {
-       _currentSort = option;
-       filteredHistory = _sortDataUseCase(filteredHistory, option);
-     });
-   }
+    setState(() {
+      stakingPlans = plans;
+      filteredPlans = List.from(plans);
+      annualReturnRates = rates;
+      durationDropdownItems = ['Select Duration'] + stakingPlans.map((plan) => '${plan.duration} Days').toList();
+
+      isLoading = false;
+    });
+
+  }
+
+  /// Search Filtering
+  void _onSearchChanged() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        filteredHistory = stakingHistory;
+      } else {
+        filteredHistory = stakingHistory.where((item) {
+          return item.status.toLowerCase().contains(query) ||
+              item.createdAtFormatted.toLowerCase().contains(query) ||
+              item.amount.toLowerCase().contains(query);
+        }).toList();
+      }
+    });
+  }
+
+
+  void _sortData(SortOption option) {
+    setState(() {
+      _currentSort = option;
+      filteredHistory = _sortDataUseCase(filteredHistory, option);
+    });
+  }
 
   @override
   void dispose() {
@@ -210,31 +210,31 @@ class _StakingScreenState extends State<StakingScreen> {
   }
 
   ///Calculates the Estimated Profits , Rewards ,  Rates ...etc
-   void calculateRewards() {
-     double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
+  void calculateRewards() {
+    double ecmAmount = double.tryParse(ecmAmountController.text) ?? 0.0;
 
-     int? numberOfDays = _selectedDuration != null ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), '')) : null;
+    int? numberOfDays = _selectedDuration != null ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), '')) : null;
 
-     double annualRate = numberOfDays != null ? annualReturnRates[numberOfDays] ?? 0.0 : 0.0;
-     double dailyRate = annualRate / 365;
+    double annualRate = numberOfDays != null ? annualReturnRates[numberOfDays] ?? 0.0 : 0.0;
+    double dailyRate = annualRate / 365;
 
-     estimatedProfit = (ecmAmount > 0 && numberOfDays != null) ? ecmAmount * dailyRate * numberOfDays : 0.0;
-     totalWithReward = ecmAmount + estimatedProfit;
-     unlockDate = (numberOfDays != null) ? DateTime.now().add(Duration(days: numberOfDays)) : null;
-     lockOverviewText = (ecmAmount > 0 && numberOfDays != null) ? "My ${ecmAmount.toStringAsFixed(2)} ECM Staked for $numberOfDays Days" : "";
-     setState(() {});
-   }
+    estimatedProfit = (ecmAmount > 0 && numberOfDays != null) ? ecmAmount * dailyRate * numberOfDays : 0.0;
+    totalWithReward = ecmAmount + estimatedProfit;
+    unlockDate = (numberOfDays != null) ? DateTime.now().add(Duration(days: numberOfDays)) : null;
+    lockOverviewText = (ecmAmount > 0 && numberOfDays != null) ? "My ${ecmAmount.toStringAsFixed(2)} ECM Staked for $numberOfDays Days" : "";
+    setState(() {});
+  }
 
-   String formatDateWithSuffix(DateTime date) {
-     int day = date.day;
-     String suffix = 'th';
-     if (day == 1 || day == 21 || day == 31)
-       suffix = 'st';
-     else if (day == 2 || day == 22)
-       suffix = 'nd';
-     else if (day == 3 || day == 23) suffix = 'rd';
-     return "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
-   }
+  String formatDateWithSuffix(DateTime date) {
+    int day = date.day;
+    String suffix = 'th';
+    if (day == 1 || day == 21 || day == 31)
+      suffix = 'st';
+    else if (day == 2 || day == 22)
+      suffix = 'nd';
+    else if (day == 3 || day == 23) suffix = 'rd';
+    return "$day$suffix, ${DateFormat('MMMM yyyy hh:mm a').format(date)}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,9 +277,9 @@ class _StakingScreenState extends State<StakingScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/images/starGradientBg.png'),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topRight,
+                    image: AssetImage('assets/images/starGradientBg.png'),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topRight,
                     filterQuality : FilterQuality.low
                 ),
               ),
@@ -445,7 +445,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                             }
                                           } catch (e) {
                                             Navigator.of(context).pop();
-                                             ToastMessage.show(
+                                            ToastMessage.show(
                                               message: "Staking Failed",
                                               subtitle: e.toString(),
                                               type: MessageType.error,
@@ -463,8 +463,8 @@ class _StakingScreenState extends State<StakingScreen> {
                                   child: BlockButtonV2(
                                     text: 'Buy ECM',
                                     leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
-                                     onPressed: () {
-                                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+                                    onPressed: () {
+                                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
 
                                     },
                                     textStyle: TextStyle(
@@ -540,14 +540,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                                   value: SortOption.dateOldest,
                                                   child: Text('Date: Oldest First'),
                                                 ),
-                                                const PopupMenuItem<SortOption>(
-                                                  value: SortOption.statusAsc,
-                                                  child: Text('Status: A-Z'),
-                                                ),
-                                                const PopupMenuItem<SortOption>(
-                                                  value: SortOption.statusDesc,
-                                                  child: Text('Status: Z-A'),
-                                                ),
+
                                               ],
                                             )
                                         ),
@@ -556,7 +549,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.016),
-                                 Consumer<WalletViewModel>(
+                                Consumer<WalletViewModel>(
                                   builder: (context, walletVM, _) {
 
                                     if (isLoading) {
@@ -564,8 +557,7 @@ class _StakingScreenState extends State<StakingScreen> {
                                     }
 
                                     return filteredHistory.isNotEmpty
-                                        // ? buildStakingTable(filteredHistory, screenWidth, context)
-                                        ? buildStakingTable(filteredHistory, screenWidth, context,stakingPlans,walletVM ,fetchStakingHistory)
+                                         ? buildStakingTable(filteredHistory, screenWidth, context,stakingPlans,walletVM ,fetchStakingHistory)
                                         : Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -616,8 +608,8 @@ class _StakingScreenState extends State<StakingScreen> {
           height: containerHeight,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/headerbg.png'),
-              fit: BoxFit.fill,
+                image: AssetImage('assets/images/headerbg.png'),
+                fit: BoxFit.fill,
                 filterQuality : FilterQuality.low
             ),
           ),
@@ -668,8 +660,8 @@ class _StakingScreenState extends State<StakingScreen> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/stakingFrame.png'),
-              fit: BoxFit.fill,
+                image: AssetImage('assets/images/stakingFrame.png'),
+                fit: BoxFit.fill,
                 filterQuality : FilterQuality.low
             ),
           ),
@@ -737,7 +729,7 @@ class _StakingScreenState extends State<StakingScreen> {
                           isDropdown: true,
                           labelText: '',
                           prefixSvgPath: 'assets/icons/timerImg.svg',
-                           dropdownItems: durationDropdownItems,
+                          dropdownItems: durationDropdownItems,
 
                           selectedDropdownItem: _selectedDuration,
                           height: listingFieldHeight,
@@ -750,7 +742,7 @@ class _StakingScreenState extends State<StakingScreen> {
                               selectedDay = newValue;
                             });
                             calculateRewards();
-                           },
+                          },
 
                         ),
                       ],
@@ -765,7 +757,7 @@ class _StakingScreenState extends State<StakingScreen> {
               Consumer<WalletViewModel>(builder: (context, walletVM, child){
                 final balanceStr = walletVM.balance;
                 final balance = double.tryParse(balanceStr ?? '0') ?? 0.0;
-                 return PercentageSelectorComponent(
+                return PercentageSelectorComponent(
                   options: ecmPercentageOptions,
                   initialSelection: _currentSelectedPercentage,
                   onSelected: (selected) {

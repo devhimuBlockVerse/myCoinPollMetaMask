@@ -12,20 +12,30 @@ class SortDataUseCase {
     sorted.sort((a, b) {
       switch (option) {
         case SortOption.dateLatest:
-          return DateParser.fromReadableFormat(b.createdAtFormatted)
-              .compareTo(DateParser.fromReadableFormat(a.createdAtFormatted));
+
+          DateTime aDate = _parseDate(a.createdAtFormatted);
+          DateTime bDate = _parseDate(b.createdAtFormatted);
+          return bDate.compareTo(aDate);
         case SortOption.dateOldest:
-          return DateParser.fromReadableFormat(a.createdAtFormatted)
-              .compareTo(DateParser.fromReadableFormat(b.createdAtFormatted));
-        case SortOption.statusAsc:
-          return a.status.compareTo(b.status);
-        case SortOption.statusDesc:
-          return b.status.compareTo(a.status);
+
+          DateTime aDate = _parseDate(a.createdAtFormatted);
+          DateTime bDate = _parseDate(b.createdAtFormatted);
+          return aDate.compareTo(bDate);
+
       }
     });
 
     return sorted;
   }
+  DateTime _parseDate(String formattedDate) {
+    try {
+      return DateParser.fromReadableFormat(formattedDate);
+    } catch (_) {
+      // fallback if parsing fails
+      return DateTime.fromMillisecondsSinceEpoch(0);
+    }
+  }
+
 }
 
 class SortTransactionDataUseCase {

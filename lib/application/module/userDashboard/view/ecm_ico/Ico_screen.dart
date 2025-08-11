@@ -700,11 +700,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         }catch (e) {
                           Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");
-                          ToastMessage.show(
-                            message: "Transaction Failed",
-                            subtitle: e.toString().contains("reverted") ? "Transaction reverted by EVM." : "An error occurred while processing your transaction.",
-                            type: MessageType.error,
-                          );
+
                         }
                       },
                       gradientColors: const [

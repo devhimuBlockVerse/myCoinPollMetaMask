@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _NewsScreenState extends State<NewsScreen> {
   final PageController _pageController = PageController(viewportFraction: 0.9);
   int _currentPage = 0;
   bool _showAllBlogs = false;
+  Timer? _autoScrollTimer;
+
   late Future<List<NewsModel>> _newsFuture;
 
 
@@ -30,6 +33,7 @@ class _NewsScreenState extends State<NewsScreen> {
   void initState() {
     super.initState();
     _newsFuture = fetchNewsData();
+
   }
 
   Future<List<NewsModel>> fetchNewsData() async {
@@ -44,9 +48,27 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   }
 
+  void _startAutoScroll(int totalPages) {
+    _autoScrollTimer?.cancel();
+    _autoScrollTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_pageController.hasClients) {
+        _currentPage++;
+        if (_currentPage >= totalPages) {
+          _currentPage = 0; // loop back to first page
+        }
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
 
   @override
   void dispose() {
+    _autoScrollTimer?.cancel();
+
     _pageController.dispose();
     super.dispose();
   }
@@ -61,8 +83,8 @@ class _NewsScreenState extends State<NewsScreen> {
 
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
+      // extendBodyBehindAppBar: true,
+      // backgroundColor: Colors.transparent,
 
       body: SafeArea(
         top: false,
@@ -122,7 +144,9 @@ class _NewsScreenState extends State<NewsScreen> {
                         final newsList = snapshot.data!;
                         final trendingNews = newsList.take(5).toList();
                         final blogsToShow = _showAllBlogs ? newsList : newsList.take(10).toList();
-
+                        if (_autoScrollTimer == null || !_autoScrollTimer!.isActive) {
+                          _startAutoScroll(trendingNews.length);
+                        }
                         return SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
                           child: Column(
@@ -296,7 +320,7 @@ class _NewsScreenState extends State<NewsScreen> {
             children: [
               Text(
                 textAlign: TextAlign.start,
-                'Running Tokens',
+                'News',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
@@ -305,27 +329,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   color: Colors.white,
                 ),
               ),
-              TextButton(
-                onPressed: () => setState(() => _showAllBlogs = true),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(0, 0),
-                  tapTargetSize:
-                      MaterialTapTargetSize
-                          .shrinkWrap,
-                ),
-                child: Text(
-                  textAlign: TextAlign.end,
-                  'View All',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    fontSize: baseSize * 0.038,
-                    height: 1.2,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+
             ],
           ),
         ),

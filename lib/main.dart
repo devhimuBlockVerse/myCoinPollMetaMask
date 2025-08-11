@@ -27,9 +27,17 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+  //   statusBarColor: Colors.transparent,
+  //   systemNavigationBarColor: Colors.transparent,
+  //   statusBarIconBrightness: Brightness.light,
+  //   systemNavigationBarIconBrightness: Brightness.light,
+  //
+  // ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
+    statusBarColor: Color(0x80000000), // Semi-transparent black
     systemNavigationBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     systemNavigationBarIconBrightness: Brightness.light,

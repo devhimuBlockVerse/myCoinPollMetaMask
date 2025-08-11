@@ -136,9 +136,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
               decoration: const BoxDecoration(
                 color: Color(0xFF01090B),
                 image: DecorationImage(
-                  image: AssetImage('assets/images/starGradientBg.png'),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topRight,
+                    image: AssetImage('assets/images/starGradientBg.png'),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topRight,
                     filterQuality : FilterQuality.low
                 ),
               ),
@@ -216,15 +216,15 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           /// Token Card
           Container(
             width: screenWidth,
-             decoration: BoxDecoration(
-               border: Border.all(
-                   color: Colors.transparent
-               ),
-               image:const DecorationImage(
-                 image: AssetImage('assets/images/viewTokenFrameBg.png'),
-                 fit: BoxFit.fill,
-                   filterQuality : FilterQuality.low
-               ),
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.transparent
+              ),
+              image:const DecorationImage(
+                  image: AssetImage('assets/images/viewTokenFrameBg.png'),
+                  fit: BoxFit.fill,
+                  filterQuality : FilterQuality.low
+              ),
             ),
             child: Padding(
               padding: EdgeInsets.all(baseSize * 0.030),
@@ -283,21 +283,21 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
 
-                              _imageButton(
+                            _imageButton(
                                 context,
                                 'assets/icons/xIcon.svg',
                                 'https://x.com/ecmcoin'
 
-                                // socialMedia!.twitter!,
+                              // socialMedia!.twitter!,
 
-                              ),
+                            ),
                             SizedBox(width: baseSize * 0.02),
-                               _imageButton(
+                            _imageButton(
                                 context,
                                 'assets/icons/teleImage.svg',
                                 'https://t.me/ecmcoin'
-                                // socialMedia!.telegram!,
-                              )
+                              // socialMedia!.telegram!,
+                            )
                           ],
                         ),
                       ),
@@ -325,13 +325,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                       BlockButtonV2(
                         text: 'Official Website',
-                         onPressed: () async{
-                           const url = 'https://ecmcoin.com/';
+                        onPressed: () async{
+                          const url = 'https://ecmcoin.com/';
                           if (await canLaunchUrl(Uri.parse(url))) {
-                           await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                           } else {
-                           debugPrint('Could not launch $url');
-                           }
+                            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                          } else {
+                            debugPrint('Could not launch $url');
+                          }
                         },
                         textStyle: TextStyle(
                           fontWeight: FontWeight.w700,
@@ -390,11 +390,11 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           color: Colors.white,
         )
             : Image.asset(
-          imagePath,
-          width: imageSize,
-          height: imageSize,
-          color: Colors.white,
-          fit: BoxFit.contain,
+            imagePath,
+            width: imageSize,
+            height: imageSize,
+            color: Colors.white,
+            fit: BoxFit.contain,
             filterQuality : FilterQuality.low
         ),
       ),
@@ -403,7 +403,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
   /// Buy ECM Section
   Widget _buildBuyEcmSection() {
-     final Size screenSize = MediaQuery.of(context).size;
+    final Size screenSize = MediaQuery.of(context).size;
 
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -426,8 +426,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
-                  fit: BoxFit.fill,
+                    image: AssetImage('assets/images/buyEcmContainerImageV.png'),
+                    fit: BoxFit.fill,
                     filterQuality : FilterQuality.low
                 ),
               ),
@@ -457,64 +457,64 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       ),
                     ),
                     /// Address Section
-                if (walletVM.isConnected)...[
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
+                    if (walletVM.isConnected)...[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
 
-                          CustomLabeledInputField(
-                            labelText: 'Your Address:',
-                            hintText: walletVM.walletAddress,
-                            controller: readingMoreController,
-                            isReadOnly: true,
-                          ),
-                           SizedBox(height: screenHeight * 0.02),
-                          CustomLabeledInputField(
-                            labelText: 'Referral Link:',
-                            hintText: 'https://mycoinpoll.com?ref=125482458661',
-                            controller: referredController,
-                            isReadOnly: true,
-                            trailingIconAsset: 'assets/icons/copyImg.svg',
-                             onTrailingIconTap: () {
-                               const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+                            CustomLabeledInputField(
+                              labelText: 'Your Address:',
+                              hintText: walletVM.walletAddress,
+                              controller: readingMoreController,
+                              isReadOnly: true,
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            CustomLabeledInputField(
+                              labelText: 'Referral Link:',
+                              hintText: 'https://mycoinpoll.com?ref=125482458661',
+                              controller: referredController,
+                              isReadOnly: true,
+                              trailingIconAsset: 'assets/icons/copyImg.svg',
+                              onTrailingIconTap: () {
+                                const referralLink = 'https://mycoinpoll.com?ref=125482458661';
 
-                              Clipboard.setData(const ClipboardData(text:referralLink));
+                                Clipboard.setData(const ClipboardData(text:referralLink));
 
-                              ToastMessage.show(
-                                message: "Referral link copied!",
-                                subtitle: referralLink,
-                                type: MessageType.success,
-                                duration: CustomToastLength.SHORT,
-                                gravity: CustomToastGravity.BOTTOM,
-                              );
+                                ToastMessage.show(
+                                  message: "Referral link copied!",
+                                  subtitle: referralLink,
+                                  type: MessageType.success,
+                                  duration: CustomToastLength.SHORT,
+                                  gravity: CustomToastGravity.BOTTOM,
+                                );
 
-                            },
+                              },
 
-                          ),
-                          SizedBox(height: screenHeight * 0.02),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
 
-                          CustomLabeledInputField(
-                            labelText: 'Referred By:',
-                            hintText: '0x0000000000000000000000000000000000000000',
-                            controller: referredController,
-                            isReadOnly:
-                            false, // or false
-                          ),
+                            CustomLabeledInputField(
+                              labelText: 'Referred By:',
+                              hintText: '0x0000000000000000000000000000000000000000',
+                              controller: referredController,
+                              isReadOnly:
+                              false, // or false
+                            ),
 
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: screenWidth * 0.9,
-                      child: const Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                        height: 20,
+                      SizedBox(
+                        width: screenWidth * 0.9,
+                        child: const Divider(
+                          color: Colors.white12,
+                          thickness: 1,
+                          height: 20,
+                        ),
                       ),
-                    ),
-                ],
+                    ],
                     ///Action Buttons
                     Padding(
                       padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),
@@ -544,7 +544,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
-                                     ToastMessage.show(
+                                    ToastMessage.show(
                                       message: "Price fetch failed",
                                       subtitle: "Please connect your wallet and try again.",
                                       type: MessageType.error,
@@ -582,7 +582,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                   if (context.mounted) {
                                     debugPrint('Error fetching stage info: ${e.toString()}');
 
-                                     ToastMessage.show(
+                                    ToastMessage.show(
                                       message: "Price fetch failed",
                                       subtitle: "Please connect your wallet and try again.",
                                       type: MessageType.error,
@@ -700,7 +700,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         }catch (e) {
                           Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");
-
                         }
                       },
                       gradientColors: const [
@@ -714,54 +713,54 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     if (walletVM.isConnected)...[
 
                       DisconnectButton(
-                    label: 'Disconnect',
-                    color: const Color(0xffE04043),
-                    icon: 'assets/icons/disconnected.svg',
-                    onPressed: () async {
-                      setState(() {
-                        isDisconnecting = true;
-                      });
-                      try {
-                        await walletVM.disconnectWallet(context);
-                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-
-                        if (context.mounted) {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                              builder: (context) => MultiProvider(
-                                providers: [
-                                  ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-                                  ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-                                  ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-                                  ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-                                  ChangeNotifierProvider(create: (_) => NavigationProvider()),
-                                 ],
-                                child: const BottomNavBar(),
-                              ),
-                            ),
-                                (Route<dynamic> route) => false,
-                          );
-                        }
-                      }catch (e) {
-                        if (context.mounted) {
-                          print('Error disconnecting: $e');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error disconnecting: ${e.toString()}'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }finally{
-                        if (mounted) {
+                        label: 'Disconnect',
+                        color: const Color(0xffE04043),
+                        icon: 'assets/icons/disconnected.svg',
+                        onPressed: () async {
                           setState(() {
-                            isDisconnecting = false;
+                            isDisconnecting = true;
                           });
-                        }
-                      }
-                    },
+                          try {
+                            await walletVM.disconnectWallet(context);
+                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
 
-                  ),
+                            if (context.mounted) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => MultiProvider(
+                                    providers: [
+                                      ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                      ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                      ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                      ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                      ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                    ],
+                                    child: const BottomNavBar(),
+                                  ),
+                                ),
+                                    (Route<dynamic> route) => false,
+                              );
+                            }
+                          }catch (e) {
+                            if (context.mounted) {
+                              print('Error disconnecting: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error disconnecting: ${e.toString()}'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }finally{
+                            if (mounted) {
+                              setState(() {
+                                isDisconnecting = false;
+                              });
+                            }
+                          }
+                        },
+
+                      ),
 
                     ],
                     const SizedBox(height: 18),

@@ -194,9 +194,8 @@ class _SignInState extends State<SignIn> {
     final textScale = MediaQuery.of(context).textScaleFactor;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-
-      backgroundColor: Colors.transparent,
+      // extendBodyBehindAppBar: true,
+      // backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Container(
           width: screenWidth,

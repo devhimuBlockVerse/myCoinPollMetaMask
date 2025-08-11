@@ -24,9 +24,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
     final baseSize = isPortrait ? screenWidth : screenHeight;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-       // backgroundColor: Color(0xFF01090B),
-      backgroundColor: Colors.transparent,
+      // extendBodyBehindAppBar: true,
+      // backgroundColor: Colors.transparent,
       body: SafeArea(
           top: false,
           child: Container(

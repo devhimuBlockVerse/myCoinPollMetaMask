@@ -105,7 +105,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
       } catch (e) {
         if (mounted) {
-           ToastMessage.show(
+          ToastMessage.show(
             message: "Please connect your wallet",
             type: MessageType.error,
           );
@@ -151,7 +151,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
     } catch (e) {
       if (mounted) {
-         ToastMessage.show(
+        ToastMessage.show(
           message: "Please connect your wallet",
           type: MessageType.error,
         );
@@ -260,7 +260,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
           width: screenWidth,
           height: screenHeight,
           decoration: const BoxDecoration(
-             color: Color(0xFF01090B),
+            color: Color(0xFF01090B),
             image: DecorationImage(
               image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
@@ -280,8 +280,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   icon: SvgPicture.asset(
                     'assets/icons/back_button.svg',
                     color: Colors.white,
-                      width: screenWidth * 0.04,
-                      height: screenWidth * 0.04,
+                    width: screenWidth * 0.04,
+                    height: screenWidth * 0.04,
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -306,7 +306,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         children:  [
 
 
-                        /// White Paper Section
+                          /// White Paper Section
                           // _buildTokenCard(),
                           ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
@@ -318,34 +318,34 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                           SizedBox(height: screenHeight * 0.04),
 
-                            InfoCard(
-                              label1: tokens.first.symbol,
-                              label2: tokens.first.fullName,
-                              description: tokens.first.description
-                                  .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
-                                  .trim(),
-                              imagePath: 'assets/images/ecmLogo.png',
-                              // imagePath: tokens.first.logo,
-                              backgroundImagePath: 'assets/images/bg.png',
-                              width: screenWidth ,
-                            ),
+                          InfoCard(
+                            label1: tokens.first.symbol,
+                            label2: tokens.first.fullName,
+                            description: tokens.first.description
+                                .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
+                                .trim(),
+                            imagePath: 'assets/images/ecmLogo.png',
+                            // imagePath: tokens.first.logo,
+                            backgroundImagePath: 'assets/images/bg.png',
+                            width: screenWidth ,
+                          ),
 
-                            /// Submit & Clear Button Section
+                          /// Submit & Clear Button Section
 
-                            SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.04),
 
-                            InfoCard(
-                              // label1: 'METAFUSION LABS',
-                              label1: tokens.first.tokenCompany,
-                              label2: 'Founder',
-                              description: tokens.first.companyDetails,
-                              imagePath: 'assets/images/metaFutionImg.png',
-                               width: screenWidth ,
-                            ),
+                          InfoCard(
+                            // label1: 'METAFUSION LABS',
+                            label1: tokens.first.tokenCompany,
+                            label2: 'Founder',
+                            description: tokens.first.companyDetails,
+                            imagePath: 'assets/images/metaFutionImg.png',
+                            width: screenWidth ,
+                          ),
 
-                            SizedBox(height: screenHeight * 0.04),
+                          SizedBox(height: screenHeight * 0.04),
 
-                            _strategicTokenSection(tokens.first),
+                          _strategicTokenSection(tokens.first),
 
 
 
@@ -353,55 +353,55 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                           Center(
                             child: Container(
-                              width: screenWidth * 0.82,
-                              height: screenHeight * 0.19,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/discoverIMG2.png'),
-                                  fit: BoxFit.fitWidth,
-                                  filterQuality: FilterQuality.medium,
+                                width: screenWidth * 0.82,
+                                height: screenHeight * 0.19,
+                                decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('assets/images/discoverIMG2.png'),
+                                    fit: BoxFit.fitWidth,
+                                    filterQuality: FilterQuality.medium,
 
+                                  ),
                                 ),
-                              ),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                   child:  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(width: screenWidth * 0.03),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                                    child:  Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(width: screenWidth * 0.03),
 
-                                      Image.asset(
-                                        // 'assets/images/discoverIMG.png',
-                                        'assets/images/ecmLarge.png',
-                                        fit: BoxFit.contain,
-                                        width: screenWidth * 0.17,
-                                      ),
+                                        Image.asset(
+                                          // 'assets/images/discoverIMG.png',
+                                          'assets/images/ecmLarge.png',
+                                          fit: BoxFit.contain,
+                                          width: screenWidth * 0.17,
+                                        ),
 
-                                      SizedBox(width: screenWidth * 0.01),
-                                      Flexible(
-                                        child: AutoSizeText(
-                                          "Discover Our Visionary Roadmap",
-                                          textAlign: TextAlign.left,
-                                          maxLines: 2,
+                                        SizedBox(width: screenWidth * 0.01),
+                                        Flexible(
+                                          child: AutoSizeText(
+                                            "Discover Our Visionary Roadmap",
+                                            textAlign: TextAlign.left,
+                                            maxLines: 2,
 
-                                          style:  TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Poppins',
-                                            fontWeight: FontWeight.w500,
-                                            height: 1.3,
-                                            // fontSize: baseSize * 0.036,
-                                            fontSize: baseSize * 0.045,
+                                            style:  TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Poppins',
+                                              fontWeight: FontWeight.w500,
+                                              height: 1.3,
+                                              // fontSize: baseSize * 0.036,
+                                              fontSize: baseSize * 0.045,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                      ],
+                                    ),
 
-                                ),
-                              )
+                                  ),
+                                )
                             ),
                           ),
 
@@ -410,7 +410,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                           /// Road Map Component Functionalities
 
-                           SizedBox(
+                          SizedBox(
                             width: double.infinity,
 
                             child: Column(
@@ -468,7 +468,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
             decoration:const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/viewTokenFrameBg.png'),
-                 fit: BoxFit.fill,
+                fit: BoxFit.fill,
               ),
             ),
             child: Padding(
@@ -485,7 +485,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         children: [
 
                           ClipRRect(
-                             child: Image.network(
+                            child: Image.network(
                               token.featureImage,
                               width: screenWidth * 0.4,
                               height: screenHeight * 0.18,
@@ -519,7 +519,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       ),
 
 
-                       SizedBox(width: baseSize * 0.02),
+                      SizedBox(width: baseSize * 0.02),
 
                       /// Token details
                       Flexible(
@@ -634,7 +634,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   ),
                   SizedBox(height: baseSize * 0.02),
 
-                   LinearProgressIndicator(
+                  LinearProgressIndicator(
                     // value: 0.5,
                     value: token.sellPercentage / 100,
                     minHeight: 2,
@@ -688,7 +688,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         ],
 
                         onTap: () async {
-                           await DownloadService.downloadWhitepaperPdf(context);
+                          await DownloadService.downloadWhitepaperPdf(context);
 
                         },
                       ),
@@ -698,9 +698,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         onPressed: () async{
                           const url = 'https://ecmcoin.com/';
                           if (await canLaunchUrl(Uri.parse(url))) {
-                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                           } else {
-                          debugPrint('Could not launch $url');
+                            debugPrint('Could not launch $url');
                           }
                         },
                         textStyle: TextStyle(
@@ -810,7 +810,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                   image: AssetImage('assets/images/buyEcmContainerImageV.png'),
+                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.medium,
                 ),
@@ -823,7 +823,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                     const SizedBox(height: 18),
+                    const SizedBox(height: 18),
 
                     ECMProgressIndicator(
                       stageIndex: walletVM.stageIndex,
@@ -847,9 +847,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             CustomLabeledInputField(
+                            CustomLabeledInputField(
                               labelText: 'Your Address:',
-                               hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
                                   ? walletVM.walletAddress
                                   : 'Not connected',
                               controller: readingMoreController,
@@ -862,7 +862,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               controller: referredController,
                               isReadOnly: true,
                               trailingIconAsset: 'assets/icons/copyImg.svg',
-                               onTrailingIconTap: () {
+                              onTrailingIconTap: () {
 
                                 const referralLink = 'https://mycoinpoll.com?ref=125482458661';
 
@@ -1034,11 +1034,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           );
 
                           if (isETH) {
-                             await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
                           } else  {
-                             final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+                            final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
                             await walletVM.buyECMWithUSDT(amount,referralAddress,context);
-                           }
+                          }
                           Navigator.pop(context);
                           ecmController.clear();
                         }catch (e) {
@@ -1170,7 +1170,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             filterQuality: FilterQuality.medium,
 
                           ),
-                         ),
+                        ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: screenWidth * 0.06,
@@ -1179,7 +1179,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
-                             children: token.distributions.map((dist) {
+                            children: token.distributions.map((dist) {
                               final percent = double.tryParse(dist.value) ?? 0.0;
                               return Column(
                                 children: [

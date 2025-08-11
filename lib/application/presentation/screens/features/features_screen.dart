@@ -16,8 +16,8 @@ class _FeaturesScreenState extends State<FeaturesScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return  Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
+        // extendBodyBehindAppBar: true,
+        // backgroundColor: Colors.transparent,
 
         body:  SafeArea(
           top: false,

@@ -38,145 +38,150 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-    String selectedBadge = 'AIRDROP';
-  
-    void _onBadgeTap(String badge) {
-      setState(() {
-        selectedBadge = badge;
-      });
-    }
-  
-    final usdtController = TextEditingController();
-    final ecmController = TextEditingController();
-    final readingMoreController = TextEditingController();
-    final referredController = TextEditingController();
-    final String defaultReferrerAddress = '0x0000000000000000000000000000000000000000';
-  
-    bool isETHActive = true;
-    bool isUSDTActive = false;
-    bool isDisconnecting = false;
-  
-    List<TokenModel> tokens = [];
-    bool isLoading = true;
+  String selectedBadge = 'AIRDROP';
 
-    bool _isNavigating = false;
+  void _onBadgeTap(String badge) {
+    setState(() {
+      selectedBadge = badge;
+    });
+  }
 
-    @override
-    void initState() {
-      super.initState();
-      fetchTokens();
-      ecmController.addListener(_updatePayableAmount);
-       WidgetsBinding.instance.addPostFrameCallback((_) async {
-         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  final usdtController = TextEditingController();
+  final ecmController = TextEditingController();
+  final readingMoreController = TextEditingController();
+  final referredController = TextEditingController();
+  final String defaultReferrerAddress = '0x0000000000000000000000000000000000000000';
 
-         final prefs = await SharedPreferences.getInstance();
-         final wasConnected = prefs.getBool('isConnected') ?? false;
+  bool isETHActive = true;
+  bool isUSDTActive = false;
+  bool isDisconnecting = false;
 
-          if (!walletVM.isConnected && wasConnected) {
+  List<TokenModel> tokens = [];
+  bool isLoading = true;
 
-           await walletVM.init(context);
-         }
-  
-         await _initializeWalletData();
-  
-      });
-    }
-    Future<void> fetchTokens() async {
-      try {
-        final response = await ApiService().fetchTokens();
-        setState(() {
-          tokens = response;
-          isLoading = false;
-        });
-      } catch (e) {
-        print('Error fetching tokens: $e');
-        setState(() => isLoading = false);
-      }
-    }
-  
-    Future<void> _initializeWalletData() async {
+  bool _isNavigating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTokens();
+    ecmController.addListener(_updatePayableAmount);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-  
-      /// Step 1: Ensure the wallet modal is initialized
-      if (walletVM.appKitModal == null) {
-        await walletVM.init(context);
-      }
-  
-      /// Step 2: Check if user was previously connected (using shared prefs)
+
       final prefs = await SharedPreferences.getInstance();
       final wasConnected = prefs.getBool('isConnected') ?? false;
 
-  
-      /// Step 3: Reconnect silently if needed
       if (!walletVM.isConnected && wasConnected) {
 
-        try {
-          await walletVM.fetchConnectedWalletData(isReconnecting: true);
-          await walletVM.getCurrentStageInfo();
-          _updatePayableAmount();
-        } catch (e) {
-          debugPrint("Silent reconnect failed: $e");
-        }
-        return;
+        await walletVM.init(context);
       }
-  
-      /// Step 4: If already connected, fetch wallet info and stage data
-      if (walletVM.isConnected) {
-        try {
-          await walletVM.fetchConnectedWalletData();
-          await walletVM.getCurrentStageInfo();
-          _updatePayableAmount();
-        } catch (e) {
-          debugPrint("Error fetching wallet data after connection: $e");
-          if (mounted) {
-             ToastMessage.show(
-              message: "Something went wrong",
-              subtitle: "Couldn't fetch wallet or stage information. Please try again.",
-              type: MessageType.error,
-              duration: CustomToastLength.SHORT,
-              gravity: CustomToastGravity.BOTTOM,
-            );
 
-          }
-        }
-      } else {
+      await _initializeWalletData();
+
+    });
+  }
+  Future<void> fetchTokens() async {
+    try {
+      final response = await ApiService().fetchTokens();
+      setState(() {
+        tokens = response;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching tokens: $e');
+      setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _initializeWalletData() async {
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+    /// Step 1: Ensure the wallet modal is initialized
+    if (walletVM.appKitModal == null) {
+      await walletVM.init(context);
+    }
+
+    /// Step 2: Check if user was previously connected (using shared prefs)
+    final prefs = await SharedPreferences.getInstance();
+    final wasConnected = prefs.getBool('isConnected') ?? false;
+
+
+    /// Step 3: Reconnect silently if needed
+    if (!walletVM.isConnected && wasConnected) {
+
+      try {
+        await walletVM.fetchConnectedWalletData(isReconnecting: true);
         await walletVM.getCurrentStageInfo();
-       }
-    }
-  
-    /// Helper function to fetch contract data and update the UI state.
-  
-    void _updatePayableAmount() {
-      final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
-      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-      double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
-
-      usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
-  
+        _updatePayableAmount();
+      } catch (e) {
+        debugPrint("Silent reconnect failed: $e");
+      }
+      return;
     }
 
+    /// Step 4: If already connected, fetch wallet info and stage data
+    if (walletVM.isConnected) {
+      try {
+        await walletVM.fetchConnectedWalletData();
+        await walletVM.getCurrentStageInfo();
+        _updatePayableAmount();
+      } catch (e) {
+        debugPrint("Error fetching wallet data after connection: $e");
+        if (mounted) {
+          ToastMessage.show(
+            message: "Something went wrong",
+            subtitle: "Couldn't fetch wallet or stage information. Please try again.",
+            type: MessageType.error,
+            duration: CustomToastLength.SHORT,
+            gravity: CustomToastGravity.BOTTOM,
+          );
 
-    @override
-    void dispose() {
-  
-      ecmController.removeListener(_updatePayableAmount);
-      ecmController.dispose();
-      usdtController.dispose();
-      readingMoreController.dispose();
-      super.dispose();
+        }
+      }
+    } else {
+      await walletVM.getCurrentStageInfo();
     }
-  
-    @override
-    Widget build(BuildContext context) {
-      double screenWidth = MediaQuery.of(context).size.width;
-      double screenHeight = MediaQuery.of(context).size.height;
-      final isPortrait = screenHeight > screenWidth;
-  
-      // Dynamic multipliers
-      final baseSize = isPortrait ? screenWidth : screenHeight;
-      bool canOpenModal = false;
-  
-      return Scaffold(
+  }
+
+  /// Helper function to fetch contract data and update the UI state.
+
+  void _updatePayableAmount() {
+    final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
+
+    usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
+
+  }
+
+
+  @override
+  void dispose() {
+
+    ecmController.removeListener(_updatePayableAmount);
+    ecmController.dispose();
+    usdtController.dispose();
+    readingMoreController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    final isPortrait = screenHeight > screenWidth;
+
+    // Dynamic multipliers
+    final baseSize = isPortrait ? screenWidth : screenHeight;
+    bool canOpenModal = false;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Color(0x80000000), // Semi-transparent
+        statusBarIconBrightness: Brightness.light,
+      ),
+      child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
         body: SafeArea(
@@ -184,9 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
             width: screenWidth,
             height: screenHeight,
             decoration: const BoxDecoration(
-
+      
               image: DecorationImage(
-                 image: AssetImage('assets/images/starGradientBg.png'),
+                image: AssetImage('assets/images/starGradientBg.png'),
                 fit: BoxFit.cover,
                 alignment: Alignment.topRight,
                 filterQuality: FilterQuality.low,
@@ -196,13 +201,13 @@ class _HomeScreenState extends State<HomeScreen> {
               behavior: const ScrollBehavior().copyWith(overscroll: false),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-
+      
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.01,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: Column(
+                   child: Column(
                     children: [
 
                       ///MyCoinPoll & Connected Wallet Button
@@ -235,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Consumer<WalletViewModel>(
                                   builder: (context, walletVM, _){
                                     if (walletVM.isLoading) {
-                                       return SizedBox(
+                                      return SizedBox(
                                         height: screenHeight * 0.040,
                                         width: screenWidth * 0.3,
                                         child: const Center(
@@ -246,10 +251,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       );
                                     }
-                                     return  BlockButton(
+                                    return  BlockButton(
                                       height: screenHeight * 0.040,
                                       width: screenWidth * 0.3,
-                                      label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
+                                      // label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
+                                      label: walletVM.isConnected ? (walletVM.walletAddress != null && walletVM.walletAddress!.isNotEmpty
+                                          ? '${walletVM.walletAddress!.substring(0, 6)}...${walletVM.walletAddress!.substring(walletVM.walletAddress!.length - 4)}'
+                                          : 'Wallet Connected') : "Connect Wallet",
                                       textStyle:  TextStyle(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
@@ -259,48 +267,48 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Color(0xFF2680EF),
                                         Color(0xFF1CD494)
                                       ],
-                                        onTap: walletVM.isLoading ? null : () async {
-                                         try {
-                                           if (!walletVM.isConnected) {
-                                             await walletVM.connectWallet(context);
-                                           } else {
-                                             if (walletVM.appKitModal != null) {
-                                               try {
-                                                 canOpenModal = walletVM.appKitModal!.selectedChain != null;
-                                               } catch (e) {
-                                                 debugPrint("Error accessing selectedChain: $e");
-                                                 canOpenModal = false;
-                                               }
+                                      onTap: walletVM.isLoading ? null : () async {
+                                        try {
+                                          if (!walletVM.isConnected) {
+                                            await walletVM.connectWallet(context);
+                                          } else {
+                                            if (walletVM.appKitModal != null) {
+                                              try {
+                                                canOpenModal = walletVM.appKitModal!.selectedChain != null;
+                                              } catch (e) {
+                                                debugPrint("Error accessing selectedChain: $e");
+                                                canOpenModal = false;
+                                              }
 
-                                               if (!canOpenModal) {
-                                                  ToastMessage.show(
-                                                   message: "Invalid Wallet Network",
-                                                   subtitle: "Network not selected or invalid. Reconnecting...",
-                                                   type: MessageType.info,
-                                                 );
-                                                 await walletVM.connectWallet(context);
-                                                 return;
-                                               }
+                                              if (!canOpenModal) {
+                                                ToastMessage.show(
+                                                  message: "Invalid Wallet Network",
+                                                  subtitle: "Network not selected or invalid. Reconnecting...",
+                                                  type: MessageType.info,
+                                                );
+                                                await walletVM.connectWallet(context);
+                                                return;
+                                              }
 
-                                               await walletVM.ensureModalWithValidContext(context);
-                                               await Future.delayed(const Duration(milliseconds: 200));
-                                               await walletVM.appKitModal!.openModalView();
+                                              await walletVM.ensureModalWithValidContext(context);
+                                              await Future.delayed(const Duration(milliseconds: 200));
+                                              await walletVM.appKitModal!.openModalView();
 
-                                             }
-                                           }
-                                         } catch (e, stack) {
-                                           debugPrint('Wallet Error: $e\n$stack');
-                                           if (context.mounted) {
-                                              ToastMessage.show(
-                                               message: "Something went wrong",
-                                               subtitle: "Error: ${e.toString()}",
-                                               type: MessageType.error,
-                                             );
-                                           }
-                                         }
-                                       },
+                                            }
+                                          }
+                                        } catch (e, stack) {
+                                          debugPrint('Wallet Error: $e\n$stack');
+                                          if (context.mounted) {
+                                            ToastMessage.show(
+                                              message: "Something went wrong",
+                                              subtitle: "Error: ${e.toString()}",
+                                              type: MessageType.error,
+                                            );
+                                          }
+                                        }
+                                      },
 
-                                     );}
+                                    );}
                               ),
 
 
@@ -317,8 +325,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       RepaintBoundary(
                         child: Container(
                           width: screenWidth,
-                           height: screenHeight * 0.18,
-                           decoration: BoxDecoration(
+                          height: screenHeight * 0.18,
+                          decoration: BoxDecoration(
                             border: Border.all(
                                 color: Colors.transparent
                             ),
@@ -364,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           textStyle:  TextStyle(
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white,
-                                             fontSize: getResponsiveFontSize(context, 12),
+                                            fontSize: getResponsiveFontSize(context, 12),
 
                                           ),
                                           gradientColors: const [
@@ -431,8 +439,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
 
   Widget _buildTokenCard(BuildContext context, TokenModel token) {
@@ -446,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
- 
+
     return Padding(
       padding: const EdgeInsets.all(1.0),
       child: Column(
@@ -565,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: baseSize * 0.02),
                             Text(
                               token.shortDescription,
-                               style: TextStyle(
+                              style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
 
@@ -587,7 +596,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
 
-                           ],
+                          ],
                         ),
                       ),
 
@@ -600,7 +609,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                         'Supporters: ${token.supporter}',
+                        'Supporters: ${token.supporter}',
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
@@ -670,18 +679,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(width: baseSize * 0.02),
                             if (token.socialMedia?.twitter != null && token.socialMedia!.twitter!.isNotEmpty)
                               _imageButton(
-                              context,
-                              'assets/icons/xIcon.svg',
+                                context,
+                                'assets/icons/xIcon.svg',
                                 token.socialMedia!.twitter!,
 
                               ),
                             SizedBox(width: baseSize * 0.02),
                             if (token.socialMedia?.telegram != null && token.socialMedia!.telegram!.isNotEmpty)
                               _imageButton(
-                              context,
-                              'assets/icons/teleImage.svg',
+                                context,
+                                'assets/icons/teleImage.svg',
                                 token.socialMedia!.telegram!,
-                            )
+                              )
                           ],
                         ),
                         SizedBox(width: baseSize * 0.02),
@@ -810,7 +819,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.transparent
                 ),
                 image:const DecorationImage(
-                   image: AssetImage('assets/images/buyEcmContainerImageV.png'),
+                  image: AssetImage('assets/images/buyEcmContainerImageV.png'),
                   fit: BoxFit.fill,
                   filterQuality: FilterQuality.low,
                 ),
@@ -846,9 +855,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                             CustomLabeledInputField(
+                            CustomLabeledInputField(
                               labelText: 'Your Address:',
-                               hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
+                              hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
                                   ? walletVM.walletAddress
                                   : 'Not connected',
                               controller: readingMoreController,
@@ -991,7 +1000,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () async {
 
                         if (!walletVM.isConnected) {
-                           try {
+                          try {
                             await walletVM.ensureModalWithValidContext(context);
                             await walletVM.appKitModal?.openModalView();
                           } catch (e) {
@@ -1002,10 +1011,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           return;
                         }
 
-                         try{
+                        try{
                           final inputEth = ecmController.text.trim();
-                           final ethDouble = double.tryParse(inputEth);
-                           if (ethDouble == null || ethDouble <= 0) {
+                          final ethDouble = double.tryParse(inputEth);
+                          if (ethDouble == null || ethDouble <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
                               subtitle: "Please enter a valid ECM amount.",
@@ -1030,13 +1039,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
 
                           if (isETH) {
-                              await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
                           } else  {
-                             final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+                            final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
                             await walletVM.buyECMWithUSDT(amount,referralAddress,context);
-                           }
-                        Navigator.of(context).pop();
-                         ecmController.clear();
+                          }
+                          Navigator.of(context).pop();
+                          ecmController.clear();
                         }catch (e) {
                           Navigator.of(context).pop();
                           debugPrint("Buy ECM failed: $e");

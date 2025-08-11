@@ -557,7 +557,8 @@ class _StakingScreenState extends State<StakingScreen> {
                                     }
 
                                     return filteredHistory.isNotEmpty
-                                         ? buildStakingTable(filteredHistory, screenWidth, context,stakingPlans,walletVM ,fetchStakingHistory)
+                                    // ? buildStakingTable(filteredHistory, screenWidth, context)
+                                        ? buildStakingTable(filteredHistory, screenWidth, context,stakingPlans,walletVM ,fetchStakingHistory)
                                         : Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
@@ -922,6 +923,7 @@ class _StakingScreenState extends State<StakingScreen> {
 
 
 }
+
 
 
 

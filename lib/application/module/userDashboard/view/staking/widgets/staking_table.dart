@@ -87,7 +87,6 @@ Widget buildStakingTable(
                 final data = stakingData[index];
                 final statusText = data.status.trim().toLowerCase();
                 final statusStyle = getStatusStyling(statusText);
-                debugPrint(">>>end_time: ${data.endTime} ,>>> Amount :${data.amount}, >>> Duration : ${data.duration} , >> Status :${data.status}");
 
 
                 return DataRow2(

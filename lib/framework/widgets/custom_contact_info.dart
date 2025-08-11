@@ -4,12 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/dynamicFontSize.dart';
 class CustomContactInfo extends StatefulWidget {
-  final String phoneNumber;
+  final String? phoneNumber;
   final String emailAddress;
 
   const CustomContactInfo({
     super.key,
-    required this.phoneNumber,
+     this.phoneNumber,
     required this.emailAddress,
   });
 
@@ -39,11 +39,8 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    // Responsive text scaling factor
-    double scaleFactor = screenWidth / 375.0; // 375 is a base iPhone width
-
+    double scaleFactor = screenWidth / 375.0;
+    bool  hasPhone = widget.phoneNumber != null && widget.phoneNumber!.trim().isNotEmpty;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.0 * scaleFactor),
@@ -57,9 +54,10 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Phone Info
-              Flexible(
+              if(hasPhone)
+                Flexible(
                 child: InkWell(
-                  onTap: () => _callPhone(widget.phoneNumber),
+                  onTap: () => _callPhone(widget.phoneNumber!),
                   child: Row(
                     children: [
                        SvgPicture.asset(
@@ -83,7 +81,7 @@ class _CustomContactInfoState extends State<CustomContactInfo> {
                               ),
                             ),
                             Text(
-                              widget.phoneNumber,
+                              widget.phoneNumber!,
                               style: TextStyle(
                                 color: const Color(0xffDBE2FB),
                                 fontSize:getResponsiveFontSize(context, 12.3),

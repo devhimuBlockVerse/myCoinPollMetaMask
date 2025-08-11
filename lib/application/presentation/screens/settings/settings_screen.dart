@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
- import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+ import '../../../../framework/widgets/custom_contact_info.dart';
+import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import '../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'personal_info/personal_information.dart';
-import 'contact_screen.dart';
-import 'terms_condition_screen.dart';
+ import 'terms_condition_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,6 +35,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final prefs = await SharedPreferences.getInstance();
     final name = prefs.getString('firstName') ?? '';
     Provider.of<BottomNavProvider>(context, listen: false).setFullName(name);
+  }
+
+  Future<void> _shareApkFile()async{
+    const String playStoreLink = "https://play.google.com/store/apps/details?id=com.example.yourapp";
+
+    try{
+      //path to the installed apk (Android)
+      final apkPath = '/data/app/${Platform.resolvedExecutable.split('/data/app/').last.split('/')[0]}/base.apk';
+
+      if(Platform.isAndroid && await File(apkPath).exists()){
+        await Share.shareXFiles(
+          [XFile(apkPath)],
+          text: "Install MyCoinPoll!",
+        );
+      }else{
+        await Share.share("Check out this app on the Play Store: $playStoreLink");
+      }
+
+
+    }catch(e){
+      debugPrint("Error while sharing apk file : $e");
+      await Share.share("Check out this app on the Play Store: $playStoreLink");
+
+    }
   }
 
   @override
@@ -166,32 +191,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                          );
                                        },
                                      ),
-                                     SizedBox(height: screenHeight * 0.02),
-
-                                     ProfileOptionContainer(
-                                       labelText: 'Contact',
-                                       leadingIconPath: 'assets/icons/contactImg.svg',
-                                       trailingIconPath: 'assets/icons/rightArrow.svg',
-                                       onTrailingIconTap: () {
-                                         Navigator.push(
-                                           context,
-                                           MaterialPageRoute(builder: (context) => const ContactScreen()),
-                                         );
-                                       },
-                                     ),
 
                                      SizedBox(height: screenHeight * 0.02),
 
-                                     ProfileOptionContainer(
-                                       labelText: 'Share App',
-                                       leadingIconPath: 'assets/icons/shareImg.svg',
-                                       trailingIconPath: 'assets/icons/rightArrow.svg',
-                                       onTrailingIconTap: () {
+                                     // ProfileOptionContainer(
+                                     //   labelText: 'Share App',
+                                     //   leadingIconPath: 'assets/icons/shareImg.svg',
+                                     //   trailingIconPath: 'assets/icons/rightArrow.svg',
+                                     //   onTrailingIconTap: _shareApkFile,
+                                     // ),
 
-                                       },
-                                     ),
-
-                                     SizedBox(height: screenHeight * 0.02),
 
                                      ProfileOptionContainer(
                                        labelText: 'Logout',
@@ -238,10 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        },
                                      ),
 
-                                     SizedBox(height: screenHeight * 0.02),
-
-
-
+                                     SizedBox(height: screenHeight * 0.04),
                                      SizedBox(
                                        width: screenWidth * 0.8,
                                        child: Opacity(
@@ -259,7 +265,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                          ),
                                        ),
                                      ),
-                                     SizedBox(height: screenHeight * 0.04),
+                                     SizedBox(height: screenHeight * 0.01),
+
+                                     const CustomContactInfo(
+                                       emailAddress: 'support@mycoinpoll.com',
+                                     ),
+                                     SizedBox(height: screenHeight * 0.01),
 
 
                                    ],

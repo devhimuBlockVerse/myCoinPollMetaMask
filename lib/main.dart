@@ -21,16 +21,13 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Force portrait mode
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Force edge-to-edge UI
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-  // Set system bar style globally (transparent + white icons)
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: Colors.transparent,
@@ -48,7 +45,7 @@ void main() async {
 //       ..badCertificateCallback =
 //           (X509Certificate cert, String host, int port) => true;
 //   }
-// }
+// }  +
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

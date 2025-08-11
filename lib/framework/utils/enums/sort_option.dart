@@ -1,4 +1,4 @@
-enum SortOption { dateLatest, dateOldest, statusAsc, statusDesc }
+enum SortOption { dateLatest, dateOldest}
 
 enum SortTransactionHistoryOption { dateLatest, dateOldest, statusAsc, statusDesc, amountAsc, amountDesc, }
 

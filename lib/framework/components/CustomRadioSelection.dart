@@ -33,7 +33,7 @@ class CustomRadioOption extends StatelessWidget {
     spacing = spacing.clamp(6.0, 14.0);
 
      double baseCircleSize = 10.0;
-    double circleSize = baseCircleSize * (screenWidth / 400);
+    double circleSize = baseCircleSize * (screenWidth / 300);
     circleSize = circleSize.clamp(8.0, 14.0);
 
      double baseBorderWidth = 1.5;

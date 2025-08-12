@@ -19,6 +19,7 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../data/services/download_white_paper.dart';
+import '../../../../presentation/models/eCommerce_model.dart';
 import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
@@ -63,6 +64,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   bool _isReferredByLoading = false;
   String _uniqueId = '';
 
+  TokenDetails? _tokenDetails;
+  bool _isLoadingToken = true;
 
   @override
   void initState() {
@@ -107,6 +110,8 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
         }
       }
       await _fetchReferredByAddress();
+      await _fetchTokenData();
+
 
     });
   }
@@ -130,6 +135,36 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
       setState(() {
         _isReferredByLoading = false;
       });
+    }
+  }
+  Future<void> _fetchTokenData() async {
+     if (mounted) {
+      setState(() {
+        _isLoadingToken = true;
+      });
+    }
+
+    try {
+
+      final details = await ApiService().fetchTokenDetails('e-commerce-coin');
+      if (mounted) {
+        setState(() {
+          _tokenDetails = details;
+          _isLoadingToken = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching token details: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingToken = false;
+        });
+        ToastMessage.show(
+          message: "Could not load token info",
+          subtitle: "Please check your connection.",
+          type: MessageType.error,
+        );
+      }
     }
   }
 
@@ -302,14 +337,15 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                   CustomLabeledInputField(
                     labelText: 'ECM Address:',
-                    hintText: ' https://mycoinpoll.com?ref=125482458661',
+                    hintText:  _isLoadingToken
+                        ? 'Loading...'
+                        : _tokenDetails?.contractAddress ?? 'Address not available',
                     isReadOnly: true,
                     trailingIconAsset: 'assets/icons/copyImg.svg',
                     onTrailingIconTap: () {
-                      final ecmAddress =  _uniqueId.isNotEmpty
-                          ? 'https://mycoinpoll.com?ref=$_uniqueId'
-                          : '';
-                      if(ecmAddress.isNotEmpty){
+                      final ecmAddress =  _tokenDetails?.contractAddress;
+
+                      if(ecmAddress != null && ecmAddress.isNotEmpty){
                         Clipboard.setData(ClipboardData(text:ecmAddress));
                         ToastMessage.show(
                           message: "ECM Address copied!",

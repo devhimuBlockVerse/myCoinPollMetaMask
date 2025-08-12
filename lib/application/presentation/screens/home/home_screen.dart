@@ -90,6 +90,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     });
   }
+  Future<void>_refreshData()async{
+    await Future.wait([
+      fetchTokens(),
+      _initializeWalletData(),
+      _fetchReferredByAddress()
+    ]);
+  }
   Future<void> fetchTokens() async {
     try {
       final response = await ApiService().fetchTokens();
@@ -123,7 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
   Future<void> _initializeWalletData() async {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
@@ -175,101 +181,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Helper function to fetch contract data and update the UI state.
-
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     double result = isETHActive ? ecmAmount * walletVM.ethPrice : ecmAmount * walletVM.usdtPrice;
-
     usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
-
-  }
-  String _generateSignatureMessage(String address) {
-    return [
-      "Welcome to MyCoinPoll!",
-      "",
-      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
-      "",
-      "Wallet: $address",
-      "",
-      "Thank you for being a part of our community!"
-    ].join("\n");
   }
 
-  Future<void> _handleWeb3Login() async {
-    if (_isNavigating) return;
-    setState(() => _isNavigating = true);
-
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-
-    try {
-      //Ensure wallet is connected
-      if (!walletVM.isConnected) {
-        await walletVM.connectWallet(context);
-      }
-
-      // If connection fails or is cancelled, exit the flow
-      if (!walletVM.isConnected || walletVM.appKitModal?.session == null) {
-        ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
-        return;
-      }
-
-      //Generate message and request signature
-      final message = _generateSignatureMessage(walletVM.walletAddress);
-
-      // The message must be hex-encoded for the personal_sign method
-      final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
-
-      final signature = await walletVM.appKitModal!.request(
-        topic: walletVM.appKitModal!.session!.topic,
-        chainId: walletVM.appKitModal!.selectedChain!.chainId,
-        request: SessionRequestParams(
-          method: 'personal_sign',
-          params: [hexMessage, walletVM.walletAddress],
-        ),
-      );
-
-      //Verify signature with your backend
-      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
-      print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
-
-      //Save session and navigate
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', response.token);
-      await prefs.setString('user', jsonEncode(response.user.toJson()));
-
-      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
-      await userAuth.loadUserFromPrefs();
-
-      ToastMessage.show(message: "Login Successful", type: MessageType.success);
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
-            (_) => false,
-      );
-
-    } catch (e) {
-      final errorString = e.toString().toLowerCase();
-      String subtitle;
-
-      if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
-        subtitle = "You cancelled the signature request in your wallet.";
-      } else {
-        subtitle = "An unexpected error occurred. Please try again.";
-        print("Web3 Login Error: $e");
-      }
-
-      ToastMessage.show(
-        message: "Login Failed",
-        subtitle: subtitle,
-        type: MessageType.error,
-        duration: CustomToastLength.LONG,
-      );
-    } finally {
-      if (mounted) setState(() => _isNavigating = false);
-    }
-  }
 
   @override
   void dispose() {
@@ -285,38 +203,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final isPortrait = screenHeight > screenWidth;
 
-    // Dynamic multipliers
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-    bool canOpenModal = false;
+     bool canOpenModal = false;
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0x80000000), // Semi-transparent
-        statusBarIconBrightness: Brightness.light,
-      ),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Container(
-            width: screenWidth,
-            height: screenHeight,
-            decoration: const BoxDecoration(
-      
-              image: DecorationImage(
-                image: AssetImage('assets/images/starGradientBg.png'),
-                fit: BoxFit.cover,
-                alignment: Alignment.topRight,
-                filterQuality: FilterQuality.low,
-              ),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        child: Container(
+          width: screenWidth,
+          height: screenHeight,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/starGradientBg.png'),
+              fit: BoxFit.cover,
+              alignment: Alignment.topRight,
+              filterQuality: FilterQuality.low,
             ),
+          ),
+          child: RefreshIndicator(
+            onRefresh: _refreshData,
             child: ScrollConfiguration(
               behavior: const ScrollBehavior().copyWith(overscroll: false),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-      
+
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: screenWidth * 0.01,
@@ -385,8 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         try {
                                           if (!walletVM.isConnected) {
                                             await walletVM.connectWallet(context);
-                                            // await _handleWeb3Login();
-                                          } else {
+                                           } else {
                                             if (walletVM.appKitModal != null) {
                                               try {
                                                 canOpenModal = walletVM.appKitModal!.selectedChain != null;

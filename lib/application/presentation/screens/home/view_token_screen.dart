@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mycoinpoll_metamask/application/presentation/models/eCommerce_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,6 +40,7 @@ class ViewTokenScreen extends StatefulWidget {
 class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObserver {
 
   String selectedBadge = 'AIRDROP';
+  late Future<TokenDetails> _tokenDetailsFuture;
 
   void _onBadgeTap(String badge) {
     setState(() {
@@ -94,7 +96,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
             _maxECM = maxECM;
             _ethPrice = ethPrice;
             _usdtPrice = usdtPrice;
-
           });
         }else{
           setState(() {
@@ -115,7 +116,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
         }
       }
       await _fetchReferredByAddress();
-
+      _tokenDetailsFuture = ApiService().fetchTokenDetails('e-commerce-coin');
     });
 
   }
@@ -435,22 +436,52 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                           /// Road Map Component Functionalities
 
-                          SizedBox(
-                            width: double.infinity,
+                          FutureBuilder<TokenDetails>(
+                            future: _tokenDetailsFuture,
+                            builder: (context, snapshot){
+                              if(snapshot.connectionState == ConnectionState.waiting){
+                                return CircularProgressIndicator();
+                              }else if(snapshot.hasError){
+                                return Text('Error: ${snapshot.error}');
+                              }else{
+                                final tokenDetails = snapshot.data!;
+                               return SizedBox(
+                                  width: double.infinity,
 
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
 
-                              children: [
+                                    children: [
 
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: buildRoadmapSection(context, screenHeight),
-                                ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                                        child: buildRoadmapSection(context, screenHeight,tokenDetails),
+                                      ),
 
-                              ],
-                            ),
+                                    ],
+                                  ),
+                                );
+                              }
+
+                            }
+                            // child: SizedBox(
+                            //   width: double.infinity,
+                            //
+                            //   child: Column(
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //
+                            //     children: [
+                            //
+                            //       Padding(
+                            //         padding: const EdgeInsets.symmetric(horizontal: 16),
+                            //         child: buildRoadmapSection(context, screenHeight),
+                            //       ),
+                            //
+                            //     ],
+                            //   ),
+                            // ),
                           ),
 
 

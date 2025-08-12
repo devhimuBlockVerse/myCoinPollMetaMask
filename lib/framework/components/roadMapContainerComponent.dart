@@ -3,7 +3,7 @@ import 'buy_Ecm.dart';
 
 class RoadmapContainerComponent extends StatelessWidget {
   final String title;
-  final List<String> labels;
+  final List<Widget> labels;
   final VoidCallback? onTap;
   final String mapYear;
 
@@ -88,27 +88,11 @@ class RoadmapContainerComponent extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: base * 0.02),
+
                   ...labels.map(
                         (label) => Padding(
                       padding: EdgeInsets.only(bottom: base * 0.012),
-                      child: Row(
-                        children: [
-                          Icon(Icons.check_box, size: fontScale, color: Colors.white54),
-                          SizedBox(width: base * 0.015),
-                          Expanded(
-                            child: Text(
-                              label,
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: fontScale,
-                                height: 1.6,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: 'Poppins',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: label,
                     ),
                   ),
                   SizedBox(height: base * 0.15),

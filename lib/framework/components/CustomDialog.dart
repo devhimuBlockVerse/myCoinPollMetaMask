@@ -42,8 +42,7 @@ class CustomDialog extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        // image: AssetImage('assets/images/dialogBg.png'),
-                        image: AssetImage(image ?? 'assets/images/dialogBgv.png'),
+                         image: AssetImage(image ?? 'assets/images/dialogBgv.png'),
                         fit: BoxFit.fill,
                         // fit: BoxFit.contain,
                       ),
@@ -57,7 +56,7 @@ class CustomDialog extends StatelessWidget {
                           // Title Row
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+                             children: [
                               Flexible(
                                 flex: 2,
                                 child: Text(
@@ -66,12 +65,13 @@ class CustomDialog extends StatelessWidget {
                                     color: const Color(0xFFFFF5ED),
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w600,
-                                    fontSize: getResponsiveFontSize(context, 20),
+                                    fontSize: getResponsiveFontSize(context, 18),
                                     height: 1.3,
                                   ),
                                   maxLines: 2,
                                 ),
                               ),
+                              SizedBox(width: 10,),
                               Flexible(
                                 child: Text(
                                   subtitle,
@@ -79,7 +79,7 @@ class CustomDialog extends StatelessWidget {
                                     color: const Color(0xFFFFF5ED),
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w600,
-                                    fontSize: getResponsiveFontSize(context, 20),
+                                    fontSize: getResponsiveFontSize(context, 18),
                                     height: 1.3,
                                   ),
                                 ),
@@ -102,12 +102,17 @@ class CustomDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(BuildContext context, IconData icon, String text) {
+  Widget _buildItem(BuildContext context, Widget  icon, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white70, size: 16),
+          SizedBox(
+            height: getResponsiveFontSize(context, 18),
+            child: icon,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

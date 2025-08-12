@@ -10,6 +10,7 @@ class CustomLabeledInputField extends StatelessWidget {
   final bool isReadOnly;
   final String? trailingIconAsset;
   final VoidCallback? onTrailingIconTap;
+  final bool expands;
 
   const CustomLabeledInputField({
     super.key,
@@ -19,6 +20,7 @@ class CustomLabeledInputField extends StatelessWidget {
     this.isReadOnly = false,
     this.trailingIconAsset,
     this.onTrailingIconTap,
+    this.expands = false,
   });
 
   @override
@@ -33,10 +35,13 @@ class CustomLabeledInputField extends StatelessWidget {
 
     final fontSize = baseFontSize * textScale;
 
+    double getResponsiveFontSize(BuildContext context, double baseSize) {
+      return baseSize;
+    }
+
     return Container(
       width: double.infinity,
-      height: screenHeight * 0.03,
-      decoration: BoxDecoration(
+       decoration: BoxDecoration(
       color: Colors.white12,
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
 
@@ -84,11 +89,11 @@ class CustomLabeledInputField extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                         // fontSize: fontSize,
                         fontSize: getResponsiveFontSize(context, 14),
-                ),
+                                    ),
                       decoration: InputDecoration(
                         hintText: hintText,
                         hintStyle: TextStyle(
-                           fontSize: getResponsiveFontSize(context, 14),
+                           fontSize: getResponsiveFontSize(context, 12),
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w400,
                           color: const Color(0xffFFF5ED),
@@ -99,6 +104,8 @@ class CustomLabeledInputField extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                       cursorColor: Colors.white,
+                      maxLines: 1,
+                      minLines: 1,
                     ),
                   ),
                   if (trailingIconAsset != null)
@@ -122,4 +129,8 @@ class CustomLabeledInputField extends StatelessWidget {
     );
   }
 }
+
+
+
+
 

@@ -50,6 +50,7 @@ class _SideNavBarState extends State<SideNavBar> {
       });
     }
   }
+
   void _loadUserId() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {

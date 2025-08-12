@@ -14,6 +14,7 @@ import '../../presentation/models/user_model.dart';
 import '../../presentation/viewmodel/bottom_nav_provider.dart';
 
 class ApiService {
+
   Future<List<TokenModel>> fetchTokens() async {
     final url = Uri.parse('${ApiConstants.baseUrl}/tokens');
     final headers = {
@@ -124,6 +125,56 @@ class ApiService {
     }
   }
 
+   Future<String> fetchPurchaseReferral() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null || token.isEmpty) {
+
+      print('No token found, returning default referral address.');
+      return '0x0000000000000000000000000000000000000000';
+    }
+
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-referral');
+    print('Fetching purchase referral from: $url');
+
+    try {
+      final response = await http.get(url, headers: headers);
+      print(">> Raw Response Body (Referral): ${response.body}");
+      print(">> Response Status Code (Referral): ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+
+        String responseBody = response.body.trim();
+
+        if (responseBody.startsWith('0x') && responseBody.length == 42) {
+          return responseBody;
+        } else if (responseBody.isEmpty || responseBody.toLowerCase() == 'not referred by anyone') {
+
+          print('Referral address is empty or "not referred by anyone".');
+          return 'Not referred by anyone';
+        }
+        else {
+
+          print('Unexpected response format for referral address: $responseBody');
+
+          return 'Not referred by anyone';
+        }
+      } else {
+        print('Failed to fetch referral data. Status: ${response.statusCode}, Body: ${response.body}');
+         throw Exception('Failed to fetch referral data: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('Error fetching referral: $e');
+
+      rethrow;
+    }
+  }
 
    Future<List<ReferralUserListModel>> fetchReferralUsers() async {
     final prefs = await SharedPreferences.getInstance();
@@ -147,7 +198,6 @@ class ApiService {
       throw Exception('Failed to fetch referral users: ${response.statusCode}');
     }
   }
-
 
   Future<PurchaseStatsModel> fetchPurchaseStats() async {
     final prefs = await SharedPreferences.getInstance();

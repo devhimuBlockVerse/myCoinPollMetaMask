@@ -69,9 +69,6 @@ class NavigationProvider extends ChangeNotifier {
             yesLabel: 'Yes',
             onYes: () async {
               try {
-                // Clear all shared preferences
-                // final prefs = await SharedPreferences.getInstance();
-                // await prefs.clear();
 
                 /// Only remove token-based login prefs
                 final prefs = await SharedPreferences.getInstance();

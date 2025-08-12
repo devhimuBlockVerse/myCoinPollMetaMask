@@ -47,15 +47,25 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   String? uniqueId;
+  String _uniqueId = '';
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    // _displayData = List.from(referralUserListData);
+
     _searchController.addListener(_applyFiltersAndSort);
 
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final prefs = await SharedPreferences.getInstance();
+      final uniqueIdFromPrefs = prefs.getString('unique_id');
+      if(uniqueIdFromPrefs != null){
+        setState(() {
+          _uniqueId = uniqueIdFromPrefs;
+        });
+      }
+    });
     _loadCurrentUser();
     _loadReferralUsers();
     _loadReferralStats();
@@ -305,27 +315,27 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                   child: ClipRRect(
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
-                                      child: CustomLabeledInputField(
+                                      child:  CustomLabeledInputField(
                                         labelText: 'Referral Link:',
-                                        hintText: ' https://mycoinpoll.com?ref=125482458661',
+                                        hintText: _uniqueId.isNotEmpty ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                            : 'Loading...',
                                         isReadOnly: true,
                                         trailingIconAsset: 'assets/icons/copyImg.svg',
-                                         onTrailingIconTap: () {
-                                          debugPrint('Trailing icon tapped');
-                                          const referralLink = 'https://mycoinpoll.com?ref=125482458661';
-
-                                          Clipboard.setData(const ClipboardData(text:referralLink));
-
-                                          ToastMessage.show(
-                                            message: "Referral link copied!",
-                                            subtitle: referralLink,
-                                            type: MessageType.success,
-                                            duration: CustomToastLength.SHORT,
-                                            gravity: CustomToastGravity.BOTTOM,
-                                          );
-
+                                        onTrailingIconTap: () {
+                                          final referralLink =  _uniqueId.isNotEmpty
+                                              ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                              : '';
+                                          if(referralLink.isNotEmpty){
+                                            Clipboard.setData(ClipboardData(text:referralLink));
+                                            ToastMessage.show(
+                                              message: "Referral link copied!",
+                                              subtitle: referralLink,
+                                              type: MessageType.success,
+                                              duration: CustomToastLength.SHORT,
+                                              gravity: CustomToastGravity.BOTTOM,
+                                            );
+                                          }
                                         },
-
                                       ),
                                     ),
                                   ),

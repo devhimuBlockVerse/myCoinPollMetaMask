@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,7 @@ import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
@@ -24,8 +26,10 @@ import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/widgets/animated_blockchain_images.dart';
 import '../../../data/services/api_service.dart';
+import '../../../module/dashboard_bottom_nav.dart';
 import '../../countdown_timer_helper.dart';
 import '../../models/token_model.dart';
+import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,6 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
 
   bool _isNavigating = false;
+   String _referredByAddress = '';
+  bool _isReferredByLoading = false;
+
 
   @override
   void initState() {
@@ -72,12 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
       final prefs = await SharedPreferences.getInstance();
       final wasConnected = prefs.getBool('isConnected') ?? false;
 
-      if (!walletVM.isConnected && wasConnected) {
 
+      if (!walletVM.isConnected && wasConnected) {
         await walletVM.init(context);
       }
 
       await _initializeWalletData();
+      await _fetchReferredByAddress();
 
     });
   }
@@ -91,6 +99,27 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('Error fetching tokens: $e');
       setState(() => isLoading = false);
+    }
+  }
+  Future<void> _fetchReferredByAddress() async {
+   setState(() {
+     _isReferredByLoading = true;
+     _referredByAddress = '';
+   });
+    try {
+      final address = await ApiService().fetchPurchaseReferral();
+      setState(() {
+       _referredByAddress = address;
+      });
+    } catch (e) {
+      setState(() {
+        _referredByAddress = 'Error fetching referral address';
+      });
+      print('Error fetching referral address: $e');
+    }finally{
+      setState(() {
+        _isReferredByLoading = false;
+      });
     }
   }
 
@@ -154,7 +183,92 @@ class _HomeScreenState extends State<HomeScreen> {
     usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
 
   }
+  String _generateSignatureMessage(String address) {
+    return [
+      "Welcome to MyCoinPoll!",
+      "",
+      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
+      "",
+      "Wallet: $address",
+      "",
+      "Thank you for being a part of our community!"
+    ].join("\n");
+  }
 
+  Future<void> _handleWeb3Login() async {
+    if (_isNavigating) return;
+    setState(() => _isNavigating = true);
+
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+    try {
+      //Ensure wallet is connected
+      if (!walletVM.isConnected) {
+        await walletVM.connectWallet(context);
+      }
+
+      // If connection fails or is cancelled, exit the flow
+      if (!walletVM.isConnected || walletVM.appKitModal?.session == null) {
+        ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+        return;
+      }
+
+      //Generate message and request signature
+      final message = _generateSignatureMessage(walletVM.walletAddress);
+
+      // The message must be hex-encoded for the personal_sign method
+      final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+
+      final signature = await walletVM.appKitModal!.request(
+        topic: walletVM.appKitModal!.session!.topic,
+        chainId: walletVM.appKitModal!.selectedChain!.chainId,
+        request: SessionRequestParams(
+          method: 'personal_sign',
+          params: [hexMessage, walletVM.walletAddress],
+        ),
+      );
+
+      //Verify signature with your backend
+      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
+      print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
+
+      //Save session and navigate
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', response.token);
+      await prefs.setString('user', jsonEncode(response.user.toJson()));
+
+      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+      await userAuth.loadUserFromPrefs();
+
+      ToastMessage.show(message: "Login Successful", type: MessageType.success);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
+            (_) => false,
+      );
+
+    } catch (e) {
+      final errorString = e.toString().toLowerCase();
+      String subtitle;
+
+      if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
+        subtitle = "You cancelled the signature request in your wallet.";
+      } else {
+        subtitle = "An unexpected error occurred. Please try again.";
+        print("Web3 Login Error: $e");
+      }
+
+      ToastMessage.show(
+        message: "Login Failed",
+        subtitle: subtitle,
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+      );
+    } finally {
+      if (mounted) setState(() => _isNavigating = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -254,7 +368,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     return  BlockButton(
                                       height: screenHeight * 0.040,
                                       width: screenWidth * 0.3,
-                                      // label: walletVM.isConnected ? 'Wallet Connected' : "Connect Wallet",
                                       label: walletVM.isConnected ? (walletVM.walletAddress != null && walletVM.walletAddress!.isNotEmpty
                                           ? '${walletVM.walletAddress!.substring(0, 6)}...${walletVM.walletAddress!.substring(walletVM.walletAddress!.length - 4)}'
                                           : 'Wallet Connected') : "Connect Wallet",
@@ -271,6 +384,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         try {
                                           if (!walletVM.isConnected) {
                                             await walletVM.connectWallet(context);
+                                            // await _handleWeb3Login();
                                           } else {
                                             if (walletVM.appKitModal != null) {
                                               try {
@@ -845,7 +959,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Divider(
                         color: Colors.white12,
                         thickness: 1,
-                        height: 20,
+                        height: 15,
                       ),
                     ),
                     /// Address Section
@@ -864,34 +978,14 @@ class _HomeScreenState extends State<HomeScreen> {
                               isReadOnly: true,
                             ),
                             SizedBox(height: screenHeight * 0.02),
-                            CustomLabeledInputField(
-                              labelText: 'Referral Link:',
-                              hintText: ' https://mycoinpoll.com?ref=125482458661',
-                              controller: referredController,
-                              isReadOnly: true,
-                              trailingIconAsset: 'assets/icons/copyImg.svg',
-                              onTrailingIconTap: () {
-                                const referralLink = 'https://mycoinpoll.com?ref=125482458661';
 
-                                Clipboard.setData(const ClipboardData(text:referralLink));
-
-                                ToastMessage.show(
-                                  message: "Referral link copied!",
-                                  subtitle: referralLink,
-                                  type: MessageType.success,
-                                  duration: CustomToastLength.SHORT,
-                                  gravity: CustomToastGravity.BOTTOM,
-                                );
-
-                              },
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
                             CustomLabeledInputField(
                               labelText: 'Referred By:',
-                              hintText: '0x0000000000000000000000000000000000000000',
+                              // hintText: '0x0000000000000000000000000000000000000000',
+                              hintText: _isReferredByLoading ?'Loading...'
+                              : (_referredByAddress.isNotEmpty ? _referredByAddress : 'Not found'),
                               controller: referredController,
-                              isReadOnly:
-                              false, // or false
+                              isReadOnly: false,
                             ),
 
                           ],

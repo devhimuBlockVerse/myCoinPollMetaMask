@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mycoinpoll_metamask/application/presentation/viewmodel/user_auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
@@ -13,6 +17,7 @@ import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../data/services/api_service.dart';
 import '../../../../data/services/download_white_paper.dart';
 import '../../../../presentation/models/token_model.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
@@ -54,6 +59,10 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   bool isDisconnecting = false;
 
   List<TokenModel> tokens = [];
+  String _referredByAddress = '';
+  bool _isReferredByLoading = false;
+  String _uniqueId = '';
+
 
   @override
   void initState() {
@@ -61,6 +70,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     ecmController.addListener(_updatePayableAmount);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final prefs = await SharedPreferences.getInstance();
+      final uniqueIdFromPrefs = prefs.getString('unique_id');
+      if(uniqueIdFromPrefs != null){
+        setState(() {
+          _uniqueId = uniqueIdFromPrefs;
+        });
+      }
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
       try {
         final stageInfo = await walletVM.getCurrentStageInfo();
@@ -90,9 +106,32 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
           );
         }
       }
+      await _fetchReferredByAddress();
+
     });
   }
 
+  Future<void> _fetchReferredByAddress() async {
+    setState(() {
+      _isReferredByLoading = true;
+      _referredByAddress = '';
+    });
+    try {
+      final address = await ApiService().fetchPurchaseReferral();
+      setState(() {
+        _referredByAddress = address;
+      });
+    } catch (e) {
+      setState(() {
+        _referredByAddress = 'Error fetching referral address';
+      });
+      print('Error fetching referral address: $e');
+    }finally{
+      setState(() {
+        _isReferredByLoading = false;
+      });
+    }
+  }
 
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
@@ -264,8 +303,24 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                   CustomLabeledInputField(
                     labelText: 'ECM Address:',
                     hintText: ' https://mycoinpoll.com?ref=125482458661',
-                    controller: referredController,
                     isReadOnly: true,
+                    trailingIconAsset: 'assets/icons/copyImg.svg',
+                    onTrailingIconTap: () {
+                      final ecmAddress =  _uniqueId.isNotEmpty
+                          ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                          : '';
+                      if(ecmAddress.isNotEmpty){
+                        Clipboard.setData(ClipboardData(text:ecmAddress));
+                        ToastMessage.show(
+                          message: "ECM Address copied!",
+                          subtitle: ecmAddress,
+                          type: MessageType.success,
+                          duration: CustomToastLength.SHORT,
+                          gravity: CustomToastGravity.BOTTOM,
+                        );
+                      }
+                    },
+
 
                   ),
 
@@ -408,9 +463,22 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final bool isPortrait = screenSize.height > screenSize.width;
-    final double textScale = isPortrait ? screenWidth / 400 : screenHeight / 400;
-    final double paddingScale = screenWidth * 0.04;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
+
+    final authViewModel = Provider.of<UserAuthProvider>(context);
+    final walletVM = Provider.of<WalletViewModel>(context);
+     String addressToDisplay = "Connect wallet or login";
+
+    if (walletVM.walletAddress.isNotEmpty) {
+      addressToDisplay = walletVM.walletAddress;
+     }
+     else if (authViewModel.isLoggedIn && authViewModel.user != null && authViewModel.user!.ethAddress.isNotEmpty) {
+      addressToDisplay = authViewModel.user!.ethAddress;
+     }
+
+    else if (authViewModel.isLoggedIn && authViewModel.user != null && authViewModel.user!.ethAddress.isEmpty) {
+      addressToDisplay = "No ETH address on file";
+     }
+
     return  Padding(
       padding: const EdgeInsets.all(2.0),
       child: Column(
@@ -457,7 +525,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       ),
                     ),
                     /// Address Section
-                    if (walletVM.isConnected)...[
+
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -466,42 +534,47 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                             CustomLabeledInputField(
                               labelText: 'Your Address:',
-                              hintText: walletVM.walletAddress,
+                               hintText: addressToDisplay,
                               controller: readingMoreController,
                               isReadOnly: true,
                             ),
                             SizedBox(height: screenHeight * 0.02),
+
                             CustomLabeledInputField(
                               labelText: 'Referral Link:',
-                              hintText: 'https://mycoinpoll.com?ref=125482458661',
-                              controller: referredController,
+                              hintText: _uniqueId.isNotEmpty ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                  : 'Loading...',
                               isReadOnly: true,
                               trailingIconAsset: 'assets/icons/copyImg.svg',
                               onTrailingIconTap: () {
-                                const referralLink = 'https://mycoinpoll.com?ref=125482458661';
-
-                                Clipboard.setData(const ClipboardData(text:referralLink));
-
-                                ToastMessage.show(
-                                  message: "Referral link copied!",
-                                  subtitle: referralLink,
-                                  type: MessageType.success,
-                                  duration: CustomToastLength.SHORT,
-                                  gravity: CustomToastGravity.BOTTOM,
-                                );
-
+                                final referralLink =  _uniqueId.isNotEmpty
+                                    ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                    : '';
+                                if(referralLink.isNotEmpty){
+                                  Clipboard.setData(ClipboardData(text:referralLink));
+                                  ToastMessage.show(
+                                    message: "Referral link copied!",
+                                    subtitle: referralLink,
+                                    type: MessageType.success,
+                                    duration: CustomToastLength.SHORT,
+                                    gravity: CustomToastGravity.BOTTOM,
+                                  );
+                                }
                               },
-
                             ),
                             SizedBox(height: screenHeight * 0.02),
 
                             CustomLabeledInputField(
                               labelText: 'Referred By:',
-                              hintText: '0x0000000000000000000000000000000000000000',
+                              // hintText: '0x0000000000000000000000000000000000000000',
+                              hintText: _isReferredByLoading ?'Loading...'
+                                  : (_referredByAddress.isNotEmpty ? _referredByAddress : 'Not found'),
+
                               controller: referredController,
                               isReadOnly:
                               false, // or false
                             ),
+
 
                           ],
                         ),
@@ -514,7 +587,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                           height: 20,
                         ),
                       ),
-                    ],
+
                     ///Action Buttons
                     Padding(
                       padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),

@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
  import 'package:mycoinpoll_metamask/application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:mycoinpoll_metamask/framework/components/trasnactionStatusCompoent.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
  import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/userBadgeLevelCompoenet.dart';
 import '../../../../../framework/components/walletAddressComponent.dart';
@@ -32,6 +33,7 @@ class DashboardScreen extends StatefulWidget {
    PurchaseStatsModel? _purchaseStats;
    bool _isNavigating = false;
 
+   String _uniqueId = '';
 
    @override
    void initState() {
@@ -39,6 +41,17 @@ class DashboardScreen extends StatefulWidget {
      _setGreeting();
      // _loadUserFromPrefs();
      _loadPurchaseStats();
+
+     WidgetsBinding.instance.addPostFrameCallback((_) async {
+       final prefs = await SharedPreferences.getInstance();
+       final uniqueIdFromPrefs = prefs.getString('unique_id');
+       if(uniqueIdFromPrefs != null){
+         setState(() {
+           _uniqueId = uniqueIdFromPrefs;
+         });
+       }
+     });
+
    }
 
 
@@ -189,25 +202,48 @@ class DashboardScreen extends StatefulWidget {
                                child: ClipRRect(
                                  child: Padding(
                                    padding: const EdgeInsets.all(12.0),
-                                   child: CustomLabeledInputField(
+                                   // child: CustomLabeledInputField(
+                                   //   labelText: 'Referral Link:',
+                                   //   hintText: 'https://mycoinpoll.com?ref=125482458661',
+                                   //   isReadOnly: true,
+                                   //   trailingIconAsset: 'assets/icons/copyImg.svg',
+                                   //   onTrailingIconTap: () {
+                                   //
+                                   //     const referralLink = 'https://mycoinpoll.com?ref=125482458661';
+                                   //     Clipboard.setData(const ClipboardData(text:referralLink));
+                                   //
+                                   //     ToastMessage.show(
+                                   //       message: "Referral link copied!",
+                                   //       subtitle: referralLink,
+                                   //       type: MessageType.success,
+                                   //       duration: CustomToastLength.SHORT,
+                                   //       gravity: CustomToastGravity.BOTTOM,
+                                   //     );
+                                   //   },
+                                   // ),
+                                  child: CustomLabeledInputField(
                                      labelText: 'Referral Link:',
-                                     hintText: 'https://mycoinpoll.com?ref=125482458661',
-                                     isReadOnly: true,
+                                     hintText: _uniqueId.isNotEmpty ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                     : 'Loading...',
+                                      isReadOnly: true,
                                      trailingIconAsset: 'assets/icons/copyImg.svg',
                                      onTrailingIconTap: () {
-
-                                       const referralLink = 'https://mycoinpoll.com?ref=125482458661';
-                                       Clipboard.setData(const ClipboardData(text:referralLink));
-
-                                       ToastMessage.show(
-                                         message: "Referral link copied!",
-                                         subtitle: referralLink,
-                                         type: MessageType.success,
-                                         duration: CustomToastLength.SHORT,
-                                         gravity: CustomToastGravity.BOTTOM,
-                                       );
+                                       final referralLink =  _uniqueId.isNotEmpty
+                                           ? 'https://mycoinpoll.com?ref=$_uniqueId'
+                                           : '';
+                                       if(referralLink.isNotEmpty){
+                                         Clipboard.setData(ClipboardData(text:referralLink));
+                                         ToastMessage.show(
+                                           message: "Referral link copied!",
+                                           subtitle: referralLink,
+                                           type: MessageType.success,
+                                           duration: CustomToastLength.SHORT,
+                                           gravity: CustomToastGravity.BOTTOM,
+                                         );
+                                       }
                                      },
                                    ),
+
                                  ),
                                ),
                              ),

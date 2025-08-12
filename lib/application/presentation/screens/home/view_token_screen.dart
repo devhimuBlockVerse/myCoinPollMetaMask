@@ -67,6 +67,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
   List<TokenModel> tokens = [];
   bool isLoading = true;
 
+  String _referredByAddress = '';
+  bool _isReferredByLoading = false;
 
   @override
   void initState() {
@@ -112,6 +114,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
         }
       }
+      await _fetchReferredByAddress();
+
     });
 
   }
@@ -125,6 +129,27 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     } catch (e) {
       print('Error fetching tokens: $e');
       setState(() => isLoading = false);
+    }
+  }
+  Future<void> _fetchReferredByAddress() async {
+    setState(() {
+      _isReferredByLoading = true;
+      _referredByAddress = '';
+    });
+    try {
+      final address = await ApiService().fetchPurchaseReferral();
+      setState(() {
+        _referredByAddress = address;
+      });
+    } catch (e) {
+      setState(() {
+        _referredByAddress = 'Error fetching referral address';
+      });
+      print('Error fetching referral address: $e');
+    }finally{
+      setState(() {
+        _isReferredByLoading = false;
+      });
     }
   }
 
@@ -856,33 +881,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               isReadOnly: true,
                             ),
                             SizedBox(height: screenHeight * 0.02),
-                            CustomLabeledInputField(
-                              labelText: 'Referral Link:',
-                              hintText: ' https://mycoinpoll.com?ref=125482458661',
-                              controller: referredController,
-                              isReadOnly: true,
-                              trailingIconAsset: 'assets/icons/copyImg.svg',
-                              onTrailingIconTap: () {
 
-                                const referralLink = 'https://mycoinpoll.com?ref=125482458661';
-
-                                Clipboard.setData(const ClipboardData(text:referralLink));
-
-                                ToastMessage.show(
-                                  message: "Referral link copied!",
-                                  subtitle: referralLink,
-                                  type: MessageType.success,
-                                  duration: CustomToastLength.SHORT,
-                                  gravity: CustomToastGravity.BOTTOM,
-                                );
-
-                              },
-
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
                             CustomLabeledInputField(
                               labelText: 'Referred By:',
-                              hintText: '0x0000000000000000000000000000000000000000',
+                              // hintText: '0x0000000000000000000000000000000000000000',
+                              hintText: _isReferredByLoading ?'Loading...'
+                                  : (_referredByAddress.isNotEmpty ? _referredByAddress : 'Not found'),
+
                               controller: referredController,
                               isReadOnly:
                               false, // or false

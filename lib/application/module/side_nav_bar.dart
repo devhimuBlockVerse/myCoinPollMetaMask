@@ -167,8 +167,8 @@ class _SideNavBarState extends State<SideNavBar> {
   Widget _buildNavItem(BuildContext context, NavItem item, double drawerWidth) {
     final bool isSelected = item.id == widget.currentScreenId;
     final double itemHorizontalPadding = drawerWidth * 0.05;
-    final double itemFontSize = drawerWidth * 0.045;
-    final double itemIconSize = drawerWidth * 0.07;
+    final double itemFontSize = drawerWidth * 0.058;
+    final double itemIconSize = drawerWidth * 0.09;
 
     Widget navTile = ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: itemHorizontalPadding, vertical: drawerWidth * 0.001),

@@ -6,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/constants/api_constants.dart';
 import '../../domain/model/PurchaseLogModel.dart';
 import '../../domain/model/ReferralUserListModel.dart';
- import '../../presentation/models/get_purchase_stats.dart';
+ import '../../presentation/models/eCommerce_model.dart';
+import '../../presentation/models/get_purchase_stats.dart';
 import '../../presentation/models/get_referral_stats.dart';
 import '../../presentation/models/get_staking_history.dart';
 import '../../presentation/models/token_model.dart';
@@ -76,6 +77,23 @@ class ApiService {
         throw error['message'] ?? 'Login failed';
       }
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<TokenDetails> fetchTokenDetails(String slug) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/token/$slug');
+    final headers = {'Content-Type': 'application/json'};
+
+    try {
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+         return tokenDetailsFromJson(response.body);
+      } else {
+        throw Exception('Failed to load token details: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      // Rethrow the exception to be handled by the UI
       rethrow;
     }
   }

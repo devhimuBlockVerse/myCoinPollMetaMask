@@ -29,6 +29,7 @@ import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
 import '../../countdown_timer_helper.dart';
 import '../../models/token_model.dart';
+import '../../viewmodel/countdown_provider.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 
@@ -701,14 +702,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
                             /// Timer Section
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal:baseSize * 0.02, vertical: baseSize * 0.01),
-                              child: CountdownTimer(
-                                scaleWidth: scaleWidth,
-                                scaleHeight: scaleHeight,
-                                scaleText: scaleText,
+
+                            if (tokens.isNotEmpty && tokens.first.stageStatus) ...[
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: baseSize * 0.01, vertical: baseSize * 0.01),
+                                child: ChangeNotifierProvider(
+                                  create: (_) => CountdownTimerProvider(
+                                    targetDateTime: DateTime.parse(tokens.first.stageDate),
+                                  ),
+                                  child: CountdownTimer(
+                                    scaleWidth: scaleWidth,
+                                    scaleHeight: scaleHeight,
+                                    scaleText: scaleText,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ]
 
                           ],
                         ),

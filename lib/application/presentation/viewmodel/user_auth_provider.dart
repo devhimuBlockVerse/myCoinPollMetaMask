@@ -58,15 +58,7 @@ class UserAuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user');
-    await prefs.remove('token');
 
-    _user = null;
-    _token = null;
-    notifyListeners();
-  }
 
 
 

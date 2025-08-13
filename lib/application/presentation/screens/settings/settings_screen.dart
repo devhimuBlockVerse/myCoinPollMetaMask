@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/profileOptionCompoent.dart';
  import '../../../../framework/widgets/custom_contact_info.dart';
 import '../../../module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import '../../../module/userDashboard/viewmodel/side_navigation_provider.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
 import 'personal_info/personal_information.dart';
  import 'terms_condition_screen.dart';
@@ -37,29 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Provider.of<BottomNavProvider>(context, listen: false).setFullName(name);
   }
 
-  Future<void> _shareApkFile()async{
-    const String playStoreLink = "https://play.google.com/store/apps/details?id=com.example.yourapp";
-
-    try{
-      //path to the installed apk (Android)
-      final apkPath = '/data/app/${Platform.resolvedExecutable.split('/data/app/').last.split('/')[0]}/base.apk';
-
-      if(Platform.isAndroid && await File(apkPath).exists()){
-        await Share.shareXFiles(
-          [XFile(apkPath)],
-          text: "Install MyCoinPoll!",
-        );
-      }else{
-        await Share.share("Check out this app on the Play Store: $playStoreLink");
-      }
-
-
-    }catch(e){
-      debugPrint("Error while sharing apk file : $e");
-      await Share.share("Check out this app on the Play Store: $playStoreLink");
-
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,13 +170,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                      ),
 
                                      SizedBox(height: screenHeight * 0.02),
-
-                                     // ProfileOptionContainer(
-                                     //   labelText: 'Share App',
-                                     //   leadingIconPath: 'assets/icons/shareImg.svg',
-                                     //   trailingIconPath: 'assets/icons/rightArrow.svg',
-                                     //   onTrailingIconTap: _shareApkFile,
-                                     // ),
 
 
                                      ProfileOptionContainer(

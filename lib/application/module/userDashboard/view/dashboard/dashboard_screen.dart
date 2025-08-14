@@ -29,9 +29,8 @@ class DashboardScreen extends StatefulWidget {
  class _DashboardScreenState extends State<DashboardScreen> with TickerProviderStateMixin {
 
    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-   // UserModel? currentUser;
-   PurchaseStatsModel? _purchaseStats;
-   bool _isNavigating = false;
+    PurchaseStatsModel? _purchaseStats;
+
 
    String _uniqueId = '';
 
@@ -39,10 +38,13 @@ class DashboardScreen extends StatefulWidget {
    void initState() {
      super.initState();
      _setGreeting();
-     // _loadUserFromPrefs();
-     _loadPurchaseStats();
+      _loadPurchaseStats();
 
      WidgetsBinding.instance.addPostFrameCallback((_) async {
+       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+       await walletVM.ensureModalWithValidContext(context);
+       await walletVM.rehydrate();
+
        final prefs = await SharedPreferences.getInstance();
        final uniqueIdFromPrefs = prefs.getString('unique_id');
        if(uniqueIdFromPrefs != null){
@@ -54,23 +56,6 @@ class DashboardScreen extends StatefulWidget {
 
    }
 
-
-   // Future<void> _loadUserFromPrefs() async {
-   //   final prefs = await SharedPreferences.getInstance();
-   //   final token = prefs.getString('token');
-   //   final userJson = prefs.getString('user');
-   //
-   //   if (token != null && userJson != null) {
-   //     final userMap = jsonDecode(userJson);
-   //     final loadedUser = UserModel.fromJson(userMap);
-   //
-   //     if (currentUser == null || currentUser?.id != loadedUser.id) {
-   //       setState(() {
-   //         currentUser = loadedUser;
-   //       });
-   //     }
-   //   }
-   // }
    String greeting = "";
 
    void _setGreeting() {
@@ -158,9 +143,9 @@ class DashboardScreen extends StatefulWidget {
 
                    final walletModel = Provider.of<WalletViewModel>(context, listen: false);
                    if (walletModel.isConnected) {
-                     await walletModel.fetchConnectedWalletData();
+                     await walletModel.fetchConnectedWalletData(isReconnecting: true);
                    } else {
-                     await walletModel.reset();
+                     await walletModel.init(context);
                    }
                  },
 
@@ -202,25 +187,7 @@ class DashboardScreen extends StatefulWidget {
                                child: ClipRRect(
                                  child: Padding(
                                    padding: const EdgeInsets.all(12.0),
-                                   // child: CustomLabeledInputField(
-                                   //   labelText: 'Referral Link:',
-                                   //   hintText: 'https://mycoinpoll.com?ref=125482458661',
-                                   //   isReadOnly: true,
-                                   //   trailingIconAsset: 'assets/icons/copyImg.svg',
-                                   //   onTrailingIconTap: () {
-                                   //
-                                   //     const referralLink = 'https://mycoinpoll.com?ref=125482458661';
-                                   //     Clipboard.setData(const ClipboardData(text:referralLink));
-                                   //
-                                   //     ToastMessage.show(
-                                   //       message: "Referral link copied!",
-                                   //       subtitle: referralLink,
-                                   //       type: MessageType.success,
-                                   //       duration: CustomToastLength.SHORT,
-                                   //       gravity: CustomToastGravity.BOTTOM,
-                                   //     );
-                                   //   },
-                                   // ),
+
                                   child: CustomLabeledInputField(
                                      labelText: 'Referral Link:',
                                      hintText: _uniqueId.isNotEmpty ? 'https://mycoinpoll.com?ref=$_uniqueId'

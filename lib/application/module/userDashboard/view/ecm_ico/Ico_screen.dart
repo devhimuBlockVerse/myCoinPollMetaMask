@@ -171,10 +171,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
   void _updatePayableAmount() {
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
     double result = isETHActive ? ecmAmount * _ethPrice : ecmAmount * _usdtPrice;
-
     usdtController.text =  isETHActive ? result.toStringAsFixed(5) : result.toStringAsFixed(1);
-
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -750,22 +749,15 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
 
-                        if (!walletVM.isConnected) {
-                          print("Wallet not connected. Prompting user to connect...");
-                          try {
-                            await walletVM.ensureModalWithValidContext(context);
-                            await walletVM.appKitModal?.openModalView();
-                          } catch (e) {
-                            debugPrint("Failed to open wallet modal: $e");
-                            return;
-                          }
+                        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
-                          return;
+                        if (!walletVM.isConnected) {
+                          final ok = await walletVM.connectWallet(context);
+                          if (!ok) return;
                         }
 
                         try{
                           final inputEth = ecmController.text.trim();
-
                           final ethDouble = double.tryParse(inputEth);
 
                           if (ethDouble == null || ethDouble <= 0) {

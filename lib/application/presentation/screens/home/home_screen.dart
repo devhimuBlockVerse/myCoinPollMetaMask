@@ -1135,8 +1135,8 @@ class _HomeScreenState extends State<HomeScreen> {
     ecmController.addListener(_updatePayableAmount);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-      await walletVM.init(context);
-
+      await walletVM.ensureModalWithValidContext(context);
+      await walletVM.rehydrate();
       await _initializeWalletData();
       await _fetchReferredByAddress();
 
@@ -1144,6 +1144,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   Future<void>_refreshData()async{
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    await  walletVM.ensureModalWithValidContext(context);
+
+    if(!walletVM.isConnected){
+      await walletVM.init(context);
+    }
+
     await Future.wait([
       fetchTokens(),
       _fetchReferredByAddress(),
@@ -1153,6 +1159,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ]);
     _updatePayableAmount();
   }
+
   Future<void> fetchTokens() async {
     try {
       final response = await ApiService().fetchTokens();
@@ -1951,8 +1958,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         try{
                           final inputEth = ecmController.text.trim();
-                          final ecm = Decimal.tryParse(inputEth);
-                          if (ecm == null || ecm <= Decimal.zero) {
+
+                          final ethDouble = double.tryParse(inputEth);
+
+                          if (ethDouble == null || ethDouble <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
                               subtitle: "Please enter a valid ECM amount.",
@@ -1960,8 +1969,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               duration: CustomToastLength.SHORT,
                               gravity: CustomToastGravity.BOTTOM,
                             );
+
                             return;
                           }
+
+                          final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
+                          final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
+
+                          final isETH = isETHActive;
+                          final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
+                          debugPrint("Calling ${isETH ? 'buyECMWithETH' : 'buyECMWithUSDT'} with: $amount");
+                          debugPrint("Purchase Button Pressed");
 
                           showDialog(
                             context: context,
@@ -1971,21 +1989,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           );
 
-                          if (isETHActive) {
-                            final ethToPay = ecm * Decimal.parse(walletVM.ethPrice.toString());
-                            final wei = (ethToPay * Decimal.parse('1e18')).toBigInt();
-                            await walletVM.buyECMWithETH(EtherAmount.inWei(wei),context);
+                          if (isETH) {
+                            await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
+
                           } else  {
-                             final usdtToPay = ecm * Decimal.parse(walletVM.usdtPrice.toString());
-                            final usdtUnits = (usdtToPay * Decimal.parse('1e6')).toBigInt();
-
-                            final refRaw = referredController.text.trim().isNotEmpty ? referredController.text.trim() : _referredByAddress.trim();
-                            final refAddr = (refRaw.startsWith('0x') && refRaw.length == 42)
-                                ? EthereumAddress.fromHex(refRaw)
-                                : EthereumAddress.fromHex(defaultReferrerAddress);
-
-                             await walletVM.buyECMWithUSDT(usdtUnits, refAddr, context);
-
+                            final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
+                            await walletVM.buyECMWithUSDT(amount,referralAddress,context);
                           }
                           Navigator.of(context).pop();
                           ecmController.clear();
@@ -2000,6 +2009,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Color(0xFF2EE4A4)
                       ],
                     ),
+
                     const SizedBox(height: 18),
 
 

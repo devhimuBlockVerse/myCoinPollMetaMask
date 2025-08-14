@@ -17,7 +17,7 @@ import 'application/presentation/viewmodel/wallet_view_model.dart';
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
 
-void main() async {
+void main() async   {
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -37,10 +37,10 @@ void main() async {
   // ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Color(0x80000000), // Semi-transparent black
+    statusBarColor: Color(0xFFFFFFFF),
     systemNavigationBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarIconBrightness: Brightness.dark,
   ));
   // HttpOverrides.global = MyHttpOverrides();
 
@@ -54,6 +54,47 @@ void main() async {
 //           (X509Certificate cert, String host, int port) => true;
 //   }
 // }  +
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//
+//     return MultiProvider(
+//       providers: [
+//         ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
+//         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+//         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+//         ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+//         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+//         ChangeNotifierProvider(create: (_) => NavigationProvider()),
+//          ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
+//           targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
+//         ),),
+//
+//       ],
+//
+//
+//       child: WalletAppInitializer(
+//         child: MaterialApp(
+//           navigatorKey: ToastMessage.toastContextNavigatorKey,
+//           useInheritedMediaQuery: true,
+//
+//           title: 'MyCoinPoll',
+//           debugShowCheckedModeBanner: false,
+//           theme: ThemeData(
+//             colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+//             useMaterial3: true,
+//           ),
+//            home:  const BottomNavBar(),
+//           navigatorObservers: [routeObserver],
+//
+//
+//         ),
+//       ),
+//     );
+//   }
+// }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -75,22 +116,20 @@ class MyApp extends StatelessWidget {
       ],
 
 
-      child: WalletAppInitializer(
-        child: MaterialApp(
-          navigatorKey: ToastMessage.toastContextNavigatorKey,
-          useInheritedMediaQuery: true,
-
-          title: 'MyCoinPoll',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-            useMaterial3: true,
-          ),
-           home:  const BottomNavBar(),
-          navigatorObservers: [routeObserver],
-
-        
+      child: MaterialApp(
+        navigatorKey: ToastMessage.toastContextNavigatorKey,
+        useInheritedMediaQuery: true,
+        title: 'MyCoinPoll',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+          useMaterial3: true,
         ),
+         home:  const BottomNavBar(),
+        navigatorObservers: [routeObserver],
+        builder: (context, child) => WalletAppInitializer(child: child!),
+
+
       ),
     );
   }

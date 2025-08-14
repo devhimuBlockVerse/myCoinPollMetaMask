@@ -16,8 +16,7 @@ class _WalletAppInitializerState extends State<WalletAppInitializer> {
   void initState() {
     super.initState();
 
-    // Delay to ensure Provider is available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_)async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
       walletVM.setupLifecycleObserver();
     });

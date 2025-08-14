@@ -293,13 +293,9 @@ class ApiService {
         await prefs.setString('profileImage', user.image!);
       }
 
+      await prefs.setString('auth_method', 'web3');
       final bottomNavProvider = Provider.of<BottomNavProvider>(context, listen: false);
       bottomNavProvider.setFullName(user.name ?? '');
-
-      print('>> Payload Web3Login statusCode:  ${response.statusCode}');
-      print('>> Web3Login Headers:  ${response.headers}');
-      print('>> Web3Login Response Body:  ${response.body}');
-
 
       return LoginResponse(user: user, token: token);
     } else {

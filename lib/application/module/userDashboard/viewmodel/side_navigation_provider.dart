@@ -172,17 +172,24 @@ class NavigationProvider extends ChangeNotifier {
             yesLabel: 'Yes',
             onYes: () async {
               try {
-
-                /// Only remove token-based login prefs
                 final prefs = await SharedPreferences.getInstance();
-                await prefs.remove('token');
-                await prefs.remove('user');
-                await prefs.remove('unique_id');
-                await prefs.remove('firstName');
-                await prefs.remove('userName');
-                await prefs.remove('emailAddress');
-                await prefs.remove('phoneNumber');
-                await prefs.remove('profileImage');
+                final method = prefs.getString('auth_method');
+
+                if(method == 'password'){
+                  /// Only remove token-based login prefs
+                  await prefs.remove('token');
+                  await prefs.remove('user');
+                  await prefs.remove('unique_id');
+                  await prefs.remove('firstName');
+                  await prefs.remove('userName');
+                  await prefs.remove('emailAddress');
+                  await prefs.remove('phoneNumber');
+                  await prefs.remove('profileImage');
+                  await prefs.remove('ethAddress');
+                  await prefs.remove('auth_method');
+
+                }
+
 
                 final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
                 await userAuth.loadUserFromPrefs();

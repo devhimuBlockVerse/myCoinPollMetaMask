@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../framework/res/colors.dart';
 import '../domain/model/nav_item.dart';
 import '../presentation/models/user_model.dart';
+import '../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../presentation/viewmodel/wallet_view_model.dart';
 
 class SideNavBar extends StatefulWidget {
@@ -99,23 +101,44 @@ class _SideNavBarState extends State<SideNavBar> {
 
 
   Widget _buildHeader(BuildContext context, double drawerWidth,WalletViewModel model) {
-    final double avatarRadius = drawerWidth * 0.15;
+    final double avatarRadius = drawerWidth * 0.30;
     final double verticalPadding = drawerWidth * 0.08;
     final double nameFontSize = drawerWidth * 0.06;
     final double idFontSize = drawerWidth * 0.04;
     final double iconSize = drawerWidth * 0.05;
     final double containerPadding = drawerWidth * 0.025;
+    final profileVM = Provider.of<PersonalViewModel>(context);
+    final pickedImage = profileVM.pickedImage;
+
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: verticalPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircleAvatar(
-            radius: avatarRadius,
-            backgroundImage: const AssetImage('assets/images/ecm.png'),
-            backgroundColor: Colors.white.withOpacity(0.3),
+          Container(
+            height:avatarRadius,
+            width:avatarRadius,
+            decoration: ShapeDecoration(
+              image: DecorationImage(
+                image: pickedImage != null
+                    ? FileImage(pickedImage)
+                    : (profileVM.originalImagePath != null && File(profileVM.originalImagePath!).existsSync())
+                    ? FileImage(File(profileVM.originalImagePath!))
+                    : const NetworkImage("https://mycoinpoll.com/_ipx/q_20&s_50x50/images/dashboard/icon/user.png") as ImageProvider,
+
+                fit: BoxFit.fill,
+              ),
+              shape: OvalBorder(
+                side: BorderSide( color: Colors.transparent),
+              ),
+            ),
           ),
+          // CircleAvatar(
+          //   radius: avatarRadius,
+          //   backgroundImage: const AssetImage('assets/images/ecm.png'),
+          //   backgroundColor: Colors.white.withOpacity(0.3),
+          // ),
           SizedBox(height: drawerWidth * 0.03),
           Text(
             // 'Hi, Ethereum User!',

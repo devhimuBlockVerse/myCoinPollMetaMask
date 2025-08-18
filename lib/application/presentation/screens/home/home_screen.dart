@@ -1123,8 +1123,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<TokenModel> tokens = [];
   bool isLoading = true;
 
-  bool _isNavigating = false;
-   String _referredByAddress = '';
+    String _referredByAddress = '';
   bool _isReferredByLoading = false;
 
 
@@ -1146,6 +1145,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     await  walletVM.ensureModalWithValidContext(context);
 
+
     if(!walletVM.isConnected){
       await walletVM.init(context);
     }
@@ -1156,6 +1156,7 @@ class _HomeScreenState extends State<HomeScreen> {
       walletVM.getCurrentStageInfo(),
       if(walletVM.isConnected)
         walletVM.fetchConnectedWalletData(isReconnecting: true),
+
     ]);
     _updatePayableAmount();
   }

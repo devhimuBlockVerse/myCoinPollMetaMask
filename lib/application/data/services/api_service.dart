@@ -92,8 +92,7 @@ class ApiService {
         throw Exception('Failed to load token details: ${response.reasonPhrase}');
       }
     } catch (e) {
-      // Rethrow the exception to be handled by the UI
-      rethrow;
+       rethrow;
     }
   }
 
@@ -254,6 +253,36 @@ class ApiService {
     }
   }
 
+  Future<String> fetchTokenBalanceHuman(String contractAddress, String walletAddress, {int decimals = 18}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+
+    final url = Uri.parse('${ApiConstants.baseUrl}/token-balance/$contractAddress/$walletAddress');
+    final headers = {
+      'Accept': 'application/json',
+      if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.get(url, headers: headers);
+    print('[TokenBalance] <- body: ${response.body}');
+
+    if (response.statusCode == 401 || response.statusCode == 403) {
+      return '0';
+    }
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch token balance: ${response.statusCode}');
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final raw = BigInt.parse(data['balance'].toString());
+    final divisor = BigInt.from(10).pow(decimals);
+
+    final integer = raw ~/ divisor;
+    final fraction = (raw % divisor).toString().padLeft(decimals, '0').replaceFirst(RegExp(r'0+$'), '');
+    final human = fraction.isEmpty ? integer.toString() : '$integer.$fraction';
+    print('[TokenBalance] -> parsed: { raw: $raw, human: $human }');
+    return human;
+  }
 
   Future<LoginResponse> web3Login( BuildContext context,String message, String address, String signature) async {
      // final prefs = await SharedPreferences.getInstance();
@@ -302,7 +331,6 @@ class ApiService {
        throw Exception('Failed to login with Web3: ${response.body}');
     }
   }
-
 
 
 }

@@ -608,31 +608,110 @@ class _SignInState extends State<SignIn> {
   }
 
   /// Handles the entire Web3 login flow.
+  // Future<void> _handleWeb3Login() async {
+  //   if (_isNavigating) return;
+  //   setState(() => _isNavigating = true);
+  //
+  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //
+  //   try {
+  //     //Ensure wallet is connected
+  //     if (!walletVM.isConnected) {
+  //        await walletVM.connectWallet(context);
+  //
+  //     }
+  //
+  //     // If connection fails or is cancelled, exit the flow
+  //     if (!walletVM.isConnected || walletVM.appKitModal?.session == null) {
+  //       ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+  //       if(mounted) setState(() => _isNavigating = false);
+  //       return;
+  //     }
+  //
+  //     //Generate message and request signature
+  //     final message = _generateSignatureMessage(walletVM.walletAddress);
+  //
+  //     // The message must be hex-encoded for the personal_sign method
+  //     final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+  //
+  //     final signature = await walletVM.appKitModal!.request(
+  //       topic: walletVM.appKitModal!.session!.topic,
+  //       chainId: walletVM.appKitModal!.selectedChain!.chainId,
+  //       request: SessionRequestParams(
+  //         method: 'personal_sign',
+  //         params: [hexMessage, walletVM.walletAddress],
+  //       ),
+  //     );
+  //
+  //     //Verify signature with your backend
+  //     final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
+  //     print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
+  //
+  //     //Save session and navigate
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.setString('token', response.token);
+  //     await prefs.setString('user', jsonEncode(response.user.toJson()));
+  //
+  //     final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+  //     await userAuth.loadUserFromPrefs();
+  //
+  //     ToastMessage.show(message: "Login Successful", type: MessageType.success);
+  //
+  //     Navigator.pushAndRemoveUntil(
+  //       context,
+  //       MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),
+  //           (_) => false,
+  //     );
+  //
+  //   } catch (e) {
+  //     final errorString = e.toString().toLowerCase();
+  //     String subtitle;
+  //
+  //     if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
+  //       subtitle = "You cancelled the signature request in your wallet.";
+  //     } else {
+  //       subtitle = "An unexpected error occurred. Please try again.";
+  //       print("Web3 Login Error: $e");
+  //     }
+  //
+  //     ToastMessage.show(
+  //       message: "Login Failed",
+  //       subtitle: subtitle,
+  //       type: MessageType.error,
+  //       duration: CustomToastLength.LONG,
+  //     );
+  //   } finally {
+  //     if (mounted) setState(() => _isNavigating = false);
+  //   }
+  // }
   Future<void> _handleWeb3Login() async {
     if (_isNavigating) return;
+    if(!mounted) return;
     setState(() => _isNavigating = true);
 
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
     try {
-      //Ensure wallet is connected
+
+      await walletVM.ensureModalWithValidContext(context);
       if (!walletVM.isConnected) {
-        await walletVM.connectWallet(context);
+         await walletVM.connectWallet(context);
+
       }
 
-      // If connection fails or is cancelled, exit the flow
       if (!walletVM.isConnected || walletVM.appKitModal?.session == null) {
+        if(!mounted) return;
         ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+        setState(() => _isNavigating = false);
         return;
       }
 
+
       //Generate message and request signature
       final message = _generateSignatureMessage(walletVM.walletAddress);
-
-      // The message must be hex-encoded for the personal_sign method
       final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
 
-      final signature = await walletVM.appKitModal!.request(
+      final dynamic rawSignatureResponse = await walletVM.appKitModal!.request(
         topic: walletVM.appKitModal!.session!.topic,
         chainId: walletVM.appKitModal!.selectedChain!.chainId,
         request: SessionRequestParams(
@@ -641,20 +720,63 @@ class _SignInState extends State<SignIn> {
         ),
       );
 
+
+      String signatureString;
+      if (rawSignatureResponse is String) {
+        signatureString = rawSignatureResponse;
+      }else if (rawSignatureResponse is Map<String, dynamic>) {
+
+        if (rawSignatureResponse.containsKey('result') && rawSignatureResponse['result'] is String) {
+          signatureString = rawSignatureResponse['result'] as String;
+        } else if (rawSignatureResponse.containsKey('signature') && rawSignatureResponse['signature'] is String) {
+          signatureString = rawSignatureResponse['signature'] as String;
+        } else {
+          throw Exception("Failed to parse signature from wallet response.");
+        }
+      } else {
+        print("Web3 Login Error: Signature response is not a String or Map: $rawSignatureResponse");
+        throw Exception("Invalid signature format received from wallet.");
+      }
+
+      if (signatureString.isEmpty) {
+        throw Exception("Empty signature received.");
+      }
+
+      if (!mounted) return;
+
       //Verify signature with your backend
-      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signature);
+      final response = await ApiService().web3Login(context,message, walletVM.walletAddress, signatureString);
       print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
 
       //Save session and navigate
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', response.token);
       await prefs.setString('user', jsonEncode(response.user.toJson()));
+      await prefs.setString('firstName', response.user.name ?? '');
+      await prefs.setString('userName', response.user.username ?? '');
+      await prefs.setString('emailAddress', response.user.email ?? '');
+      await prefs.setString('phoneNumber', response.user.phone ?? '');
+      await prefs.setString('ethAddress', response.user.ethAddress ?? '');
+      await prefs.setString('unique_id', response.user.uniqueId ?? '');
+      if (response.user.image != null && response.user.image!.isNotEmpty) {
+        await prefs.setString('profileImage', response.user.image!);
+      }
+      await prefs.setString('auth_method', 'web3');
 
+
+      if (!mounted) return;
       final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
       await userAuth.loadUserFromPrefs();
 
+
+      if (!mounted) return;
+      final bottomNavProvider = Provider.of<BottomNavProvider>(context, listen: false);
+      bottomNavProvider.setFullName(response.user.name ?? '');
+
+      if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
 
+      if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const DashboardBottomNavBar()),

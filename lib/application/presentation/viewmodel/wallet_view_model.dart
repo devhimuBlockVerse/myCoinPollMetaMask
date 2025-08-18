@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/crypto.dart';
 import '../../../framework/utils/customToastMessage.dart';
 import '../../../framework/utils/enums/toast_type.dart';
+import '../../data/services/api_service.dart';
 import '../../domain/constants/api_constants.dart';
 import 'dart:typed_data';
 
@@ -41,7 +42,6 @@ bool isUserRejectedError(Object error) {
       msg.contains("transport error") ||
       msg.contains("failed to fetch");
 }
-
 
 // class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 //   void setupLifecycleObserver() {
@@ -1643,7 +1643,37 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   BuildContext? _lastContext;
+
   ///Ensures context is valid and modal is re-initialized if needed
+  // Future<void> ensureModalWithValidContext(BuildContext context) async {
+  //   final hasMaterial = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
+  //
+  //   if (appKitModal == null) {
+  //     _lastContext = context;
+  //     await init(context);
+  //     return;
+  //   }
+  //
+  //   // If the modal was built without Material context, recreate now
+  //   if (!_modalHasMaterialContext && hasMaterial) {
+  //     // Drop the old instance and re-init with proper context
+  //     appKitModal?.onModalConnect.unsubscribeAll();
+  //     appKitModal?.onModalUpdate.unsubscribeAll();
+  //     appKitModal?.onModalDisconnect.unsubscribeAll();
+  //     appKitModal?.onSessionExpireEvent.unsubscribeAll();
+  //     appKitModal?.onSessionUpdateEvent.unsubscribeAll();
+  //     appKitModal = null;
+  //     _isModalEventsSubscribed = false;
+  //     _lastContext = context;
+  //     await init(context);
+  //     return;
+  //   }
+  //
+  //   if(_lastContext != context){
+  //     _lastContext = context;
+  //     appKitModal!.updateContext(context);
+  //   }
+  // }
   Future<void> ensureModalWithValidContext(BuildContext context) async {
     final hasMaterial = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
 
@@ -1653,25 +1683,29 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return;
     }
 
-    // If the modal was built without Material context, recreate now
-    if (!_modalHasMaterialContext && hasMaterial) {
-      // Drop the old instance and re-init with proper context
-      appKitModal?.onModalConnect.unsubscribeAll();
-      appKitModal?.onModalUpdate.unsubscribeAll();
-      appKitModal?.onModalDisconnect.unsubscribeAll();
-      appKitModal?.onSessionExpireEvent.unsubscribeAll();
-      appKitModal?.onSessionUpdateEvent.unsubscribeAll();
-      appKitModal = null;
-      _isModalEventsSubscribed = false;
-      _lastContext = context;
-      await init(context);
+    if (_lastContext != context || !_modalHasMaterialContext || !hasMaterial) {
+      await _recreateModalWithContext(context);
       return;
     }
 
-    if(_lastContext != context){
+    if (_lastContext != context) {
       _lastContext = context;
       appKitModal!.updateContext(context);
+
     }
+
+  }
+  Future<void> _recreateModalWithContext(BuildContext context) async {
+    appKitModal?.onModalConnect.unsubscribeAll();
+    appKitModal?.onModalUpdate.unsubscribeAll();
+    appKitModal?.onModalDisconnect.unsubscribeAll();
+    appKitModal?.onSessionExpireEvent.unsubscribeAll();
+    appKitModal?.onSessionUpdateEvent.unsubscribeAll();
+    appKitModal = null;
+    _isModalEventsSubscribed = false;
+    _modalHasMaterialContext = false;
+    _lastContext = context;
+    await init(context);
   }
 
   ReownAppKitModal? appKitModal;
@@ -1911,27 +1945,75 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
+  // Future<bool> connectWallet(BuildContext context) async {
+  //   _walletConnectedManually = true;
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   try {
+  //     await ensureModalWithValidContext(context);
+  //     await appKitModal?.openModalView();
+  //     return _isConnected;
+  //   } catch (e, stack) {
+  //     if (e is ReownAppKitModalException) {
+  //       print('Wallet connect error: ${e.message}');
+  //     } else {
+  //       print('Unexpected wallet connect error: $e');
+  //     }
+  //     print('Stack trace: $stack');
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+///
   Future<bool> connectWallet(BuildContext context) async {
+    if (_isLoading) return false;
     _walletConnectedManually = true;
     _isLoading = true;
     notifyListeners();
+
     try {
       await ensureModalWithValidContext(context);
-      await appKitModal?.openModalView();
-      return _isConnected;
-    } catch (e, stack) {
-      if (e is ReownAppKitModalException) {
-        print('Wallet connect error: ${e.message}');
-      } else {
-        print('Unexpected wallet connect error: $e');
+
+       try {
+        await appKitModal!.openModalView();
+      } catch (_) {
+        await _recreateModalWithContext(context);
+        await appKitModal!.openModalView();
       }
-      print('Stack trace: $stack');
+
+      // Wait until a session and address are available
+      final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
+      if (!connected) return false;
+
+
+      // Persist and hydrate
+      final prefs = await SharedPreferences.getInstance();
+      final chainId = _getChainIdForRequests();
+      if (chainId != null) await prefs.setString('chainId', chainId);
+
+      await prefs.setBool('isConnected', true);
+      await prefs.setString('walletAddress', _walletAddress);
+
+      final sessionJson = appKitModal!.session?.toJson();
+      if (sessionJson != null) {
+        await prefs.setString('walletSession', jsonEncode(sessionJson));
+      }
+
+      await fetchConnectedWalletData(isReconnecting: true);
+      await getCurrentStageInfo();
+      notifyListeners();
+      return true;
+    } catch (e, stack) {
+      debugPrint('connectWallet error: $e\n$stack');
       return false;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
+
 
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
@@ -1945,7 +2027,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await appKitModal!.disconnect();
       }
 
-      // Remove cached personal_sign for this address (so user reconsents on next connect)
       final prefs = await SharedPreferences.getInstance();
       if (prevAddress.isNotEmpty) {
         await prefs.remove('web3_sig_$prevAddress');
@@ -1954,11 +2035,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       _lastKnowChainId = null;
 
-      // Remove persisted wallet keys and clear in-memory wallet state
       await _removePersistedConnection();
       await _clearWalletAndStageInfo(shouldNotify: false);
-      // Refresh stage info for UI
-      await getCurrentStageInfo();
+       await getCurrentStageInfo();
     } catch (e) {
       print("Error during disconnect: $e");
     } finally {
@@ -1985,21 +2064,59 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
 
+  // Future<void> _hydrateFromExistingSession() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   var session = appKitModal?.session;
+  //
+  //   // wait a bit for SDK to rehydrate after init
+  //   if (session == null) {
+  //     for (int i = 0; i < 15; i++) {
+  //       await Future.delayed(const Duration(milliseconds: 150));
+  //       session = appKitModal?.session;
+  //       if (session != null) break;
+  //     }
+  //   }
+  //
+  //   if (session != null) {
+  //     String? chainId = appKitModal?.selectedChain?.chainId ?? _getChainIdFromSession();
+  //     if (chainId != null) {
+  //       _lastKnowChainId = chainId;
+  //       await prefs.setString('chainId', chainId);
+  //     }
+  //
+  //     final address = _getFirstAddressFromSession();
+  //     if (address != null) {
+  //       _walletAddress = address;
+  //       _isConnected = true;
+  //       await prefs.setBool('isConnected', true);
+  //       await prefs.setString('walletAddress', _walletAddress);
+  //       await prefs.setString('walletSession', jsonEncode(session.toJson()));
+  //       await Future.wait([
+  //         fetchConnectedWalletData(isReconnecting: true),
+  //         getCurrentStageInfo(),
+  //       ]);
+  //       return;
+  //     }
+  //   }
+  //
+  //   await getCurrentStageInfo();
+  // }
   Future<void> _hydrateFromExistingSession() async {
     final prefs = await SharedPreferences.getInstance();
-    var session = appKitModal?.session;
+    var session = appKitModal!.session;
 
     // wait a bit for SDK to rehydrate after init
     if (session == null) {
       for (int i = 0; i < 15; i++) {
         await Future.delayed(const Duration(milliseconds: 150));
-        session = appKitModal?.session;
+        session = appKitModal!.session;
         if (session != null) break;
       }
     }
 
     if (session != null) {
-      String? chainId = appKitModal?.selectedChain?.chainId ?? _getChainIdFromSession();
+      _isConnected = true;
+      String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
       if (chainId != null) {
         _lastKnowChainId = chainId;
         await prefs.setString('chainId', chainId);
@@ -2008,21 +2125,23 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final address = _getFirstAddressFromSession();
       if (address != null) {
         _walletAddress = address;
-        _isConnected = true;
+        // _isConnected = true;
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
         await prefs.setString('walletSession', jsonEncode(session.toJson()));
         await Future.wait([
-          fetchConnectedWalletData(isReconnecting: true),
+          fetchConnectedWalletData(isReconnecting: false),
           getCurrentStageInfo(),
         ]);
         return;
+      }else{
+        _isConnected = false;
+        await _removePersistedConnection();
       }
     }
 
     await getCurrentStageInfo();
   }
-
 
   String? _getFirstAddressFromSession() {
     final s = appKitModal?.session;
@@ -2058,8 +2177,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String? _getChainIdForRequests() {
     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
   }
-
-  Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 30)}) async {
+   Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
     final end = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(end)) {
       if (_isConnected && _walletAddress.isNotEmpty) return true;
@@ -2091,8 +2209,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     await prefs.remove('chainId');
     await prefs.remove('walletSession');
   }
-
-
 
   Future<void> _clearWalletAndStageInfo({bool shouldNotify = true}) async {
     _walletAddress = '';
@@ -2147,8 +2263,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> fetchConnectedWalletData({bool isReconnecting = false}) async {
-    // Crucial: Always check for fundamental modal components before proceeding
-    if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
+     if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
       _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
       return;
     }
@@ -2182,7 +2297,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       await Future.wait([
         getBalance(),
-        getMinimunStake(),
+         getMinimunStake(),
         getMaximumStake(),
       ]);
     } catch (e) {
@@ -2302,6 +2417,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+
   Future<String> getBalance() async {
     try {
       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
@@ -2324,7 +2440,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
         addressToQuery = appKitModal!.session!.getAddress(nameSpace)!;
       } else {
-        addressToQuery = '0x0000000000000000000000000000000000000000'; // Placeholder
+        addressToQuery = '0x0000000000000000000000000000000000000000';
 
       }
 
@@ -2346,6 +2462,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       rethrow;
     }
   }
+
+
 
   Future<String> getTotalSupply() async {
     try {
@@ -3364,6 +3482,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     final factor = BigInt.from(10).pow(decimalPlaces);
     return BigInt.from(amount * factor.toDouble());
   }
+
 }
 
 

@@ -752,8 +752,13 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
                         if (!walletVM.isConnected) {
-                          final ok = await walletVM.connectWallet(context);
-                          if (!ok) return;
+                          // final ok = await walletVM.connectWallet(context);
+                          try{
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.appKitModal?.openModalView();
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            if (!mounted) return;
+                          }catch(e){}
                         }
 
                         try{
@@ -811,23 +816,78 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                     const SizedBox(height: 18),
 
-                    if (walletVM.isConnected)...[
+                    // if (walletVM.isConnected)...[
+                    //   DisconnectButton(
+                    //     label: 'Disconnect',
+                    //     color: const Color(0xffE04043),
+                    //     icon: 'assets/icons/disconnected.svg',
+                    //     onPressed: () async {
+                    //       setState(() {
+                    //         isDisconnecting = true;
+                    //       });
+                    //       try {
+                    //         await walletVM.disconnectWallet(context);
+                    //         Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                    //
+                    //         if (context.mounted) {
+                    //           Navigator.of(context).pushAndRemoveUntil(
+                    //             MaterialPageRoute(
+                    //               builder: (context) => MultiProvider(
+                    //                 providers: [
+                    //                   ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                    //                   ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                    //                   ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                    //                   ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                    //                   ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                    //                 ],
+                    //                 child: const BottomNavBar(),
+                    //               ),
+                    //             ),
+                    //                 (Route<dynamic> route) => false,
+                    //           );
+                    //         }
+                    //       }catch (e) {
+                    //         if (context.mounted) {
+                    //           print('Error disconnecting: $e');
+                    //           ScaffoldMessenger.of(context).showSnackBar(
+                    //             SnackBar(
+                    //               content: Text('Error disconnecting: ${e.toString()}'),
+                    //               backgroundColor: Colors.red,
+                    //             ),
+                    //           );
+                    //         }
+                    //       }finally{
+                    //         if (mounted) {
+                    //           setState(() {
+                    //             isDisconnecting = false;
+                    //           });
+                    //         }
+                    //       }
+                    //     },
+                    //
+                    //   ),
+                    // ],
 
-                      DisconnectButton(
-                        label: 'Disconnect',
-                        color: const Color(0xffE04043),
-                        icon: 'assets/icons/disconnected.svg',
-                        onPressed: () async {
-                          setState(() {
-                            isDisconnecting = true;
-                          });
-                          try {
-                            await walletVM.disconnectWallet(context);
-                            Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                    DisconnectButton(
+                      label: 'Disconnect',
+                      color: const Color(0xffE04043),
+                      icon: 'assets/icons/disconnected.svg',
+                      onPressed: ()async {
+                        setState(() {
+                          isDisconnecting = true;
+                        });
+                        final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+                        try{
+                          await walletVm.disconnectWallet(context);
 
-                            if (context.mounted) {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
+                          walletVm.reset();
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+
+                          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                          if(context.mounted && !walletVm.isConnected){
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
                                   builder: (context) => MultiProvider(
                                     providers: [
                                       ChangeNotifierProvider(create: (context) => WalletViewModel(),),
@@ -837,33 +897,24 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                       ChangeNotifierProvider(create: (_) => NavigationProvider()),
                                     ],
                                     child: const BottomNavBar(),
-                                  ),
-                                ),
-                                    (Route<dynamic> route) => false,
-                              );
-                            }
-                          }catch (e) {
-                            if (context.mounted) {
-                              print('Error disconnecting: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error disconnecting: ${e.toString()}'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          }finally{
-                            if (mounted) {
-                              setState(() {
-                                isDisconnecting = false;
-                              });
-                            }
+                                  )
+                              ),(Route<dynamic> route) => false,
+                            );
                           }
-                        },
 
-                      ),
+                        }catch(e){
+                          debugPrint("Error Wallet Disconnecting : $e");
+                        }finally{
+                          if(mounted){
+                            setState(() {
+                              isDisconnecting = false;
+                            });
+                          }
+                        }
+                      },
 
-                    ],
+                    ),
+
                     const SizedBox(height: 18),
 
                   ],

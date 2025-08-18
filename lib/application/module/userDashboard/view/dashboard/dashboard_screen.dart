@@ -18,7 +18,6 @@ import '../../../../presentation/models/get_purchase_stats.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 
-
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -30,7 +29,6 @@ class DashboardScreen extends StatefulWidget {
 
    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     PurchaseStatsModel? _purchaseStats;
-
 
    String _uniqueId = '';
 
@@ -44,6 +42,7 @@ class DashboardScreen extends StatefulWidget {
        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
        await walletVM.ensureModalWithValidContext(context);
        await walletVM.rehydrate();
+       await walletVM.getBalance();
 
        final prefs = await SharedPreferences.getInstance();
        final uniqueIdFromPrefs = prefs.getString('unique_id');
@@ -80,6 +79,54 @@ class DashboardScreen extends StatefulWidget {
        debugPrint('Error fetching stats: $e');
      }
    }
+
+   /// Implement Later
+   // Future<String> _getDashboardContractAddress() async {
+   //   final prefs = await SharedPreferences.getInstance();
+   //   final cached = prefs.getString('dashboard_contract_address');
+   //   if (cached != null && cached.isNotEmpty && cached.length == 42 && cached.startsWith('0x')) {
+   //     return cached;
+   //   }
+   //   final details = await ApiService().fetchTokenDetails(kDashboardTokenSlug);
+   //   final contract = (details.contractAddress ?? '').trim();
+   //   if (contract.isEmpty || contract.length != 42 || !contract.startsWith('0x')) {
+   //     return '';
+   //   }
+   //
+   //   await prefs.setString('dashboard_contract_address', contract);
+   //   return contract;
+   // }
+   // Future<String> _resolveBalance() async {
+   //   final prefs = await SharedPreferences.getInstance();
+   //   final authMethod = prefs.getString('auth_method');
+   //
+   //   if (authMethod == 'password') {
+   //     final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+   //     final providerAddr = (userAuth.user?.ethAddress ?? '').trim();
+   //     final prefsAddr = (prefs.getString('ethAddress') ?? '').trim();
+   //     final userAddress = (providerAddr.isNotEmpty ? providerAddr : prefsAddr).toLowerCase();
+   //
+   //     if (userAddress.isEmpty || userAddress.length != 42) return '0';
+   //
+   //     final contract = (await _getDashboardContractAddress()).toLowerCase();
+   //     if (contract.isEmpty) return '0';
+   //
+   //     try {
+   //       final human = await ApiService().fetchTokenBalanceHuman(contract, userAddress, decimals: 18);
+   //       return human;
+   //     } catch (_) {
+   //       return '0';
+   //     }
+   //   }
+   //
+   //   // Web3 path (on-chain)
+   //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+   //   try {
+   //     return await walletVM.getBalance();
+   //   } catch (_) {
+   //     return '0';
+   //   }
+   // }
 
 
    @override
@@ -242,9 +289,7 @@ class DashboardScreen extends StatefulWidget {
    Widget _headerSection(GlobalKey<ScaffoldState> scaffoldKey,WalletViewModel model,UserAuthProvider userAuthModel){
      double screenWidth = MediaQuery.of(context).size.width;
      double screenHeight = MediaQuery.of(context).size.height;
-     final isPortrait = screenHeight > screenWidth;
-     final baseSize = isPortrait ? screenWidth : screenHeight;
-     bool canOpenModal = false;
+
      final currentUser = userAuthModel.user;
 
      return Container(
@@ -295,7 +340,9 @@ class DashboardScreen extends StatefulWidget {
                            ),
                          ),
                          Text(
-                           model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser.name}',
+                           // model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser.name}',
+                           (currentUser?.name?.isNotEmpty ?? false) ? currentUser!.name! : 'Hi, Ethereum User!',
+
                            style: TextStyle(
                              fontFamily: 'Poppins',
                              fontWeight: FontWeight.w600,
@@ -321,24 +368,37 @@ class DashboardScreen extends StatefulWidget {
                      Transform.translate(
                        offset: Offset(screenWidth * 0.025, 0),
 
-                       child: WalletAddressComponent(
-                           address:  model.walletConnectedManually || currentUser == null
-                               ? formatAddress(model.walletAddress)
-                               : formatAddress(currentUser!.ethAddress),
-                           onTap: () async {
-                             try {
-                               /// ✅ Ensure modal is rebuilt with context
-                               if (!model.walletConnectedManually) {
-                                 await model.ensureModalWithValidContext(context);
-                                 await model.appKitModal?.openModalView();
-                               }
-
-                             } catch (e) {
-                               print("Error opening wallet modal: $e");
-                             }
+                       // child: WalletAddressComponent(
+                       //     address:  model.walletConnectedManually || currentUser == null
+                       //         ? formatAddress(model.walletAddress)
+                       //         : formatAddress(currentUser!.ethAddress),
+                       //     onTap: () async {
+                       //       try {
+                       //         /// ✅ Ensure modal is rebuilt with context
+                       //         if (!model.walletConnectedManually) {
+                       //           await model.ensureModalWithValidContext(context);
+                       //           await model.appKitModal?.openModalView();
+                       //         }
+                       //
+                       //       } catch (e) {
+                       //         print("Error opening wallet modal: $e");
+                       //       }
+                       //     }
+                       //
+                       //
+                       // ),
+                       child:WalletAddressComponent(
+                         address: (currentUser?.ethAddress?.isNotEmpty ?? false)
+                             ? formatAddress(currentUser!.ethAddress)
+                             : formatAddress(model.walletAddress),
+                         onTap: () async {
+                           try {
+                             await model.ensureModalWithValidContext(context);
+                             await model.appKitModal?.openModalView();
+                           } catch (e) {
+                             print("Error opening wallet modal: $e");
                            }
-
-
+                         },
                        ),
 
                      ),
@@ -361,6 +421,7 @@ class DashboardScreen extends StatefulWidget {
 
      return FutureBuilder<String>(
        future: walletVM.getBalance(),
+       // future: _resolveBalance(),
        builder: (context,snapshot){
          String balanceText = '...';
          if(snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active){
@@ -375,7 +436,7 @@ class DashboardScreen extends StatefulWidget {
            if(snapshot.hasData){
              balanceText = snapshot.data!.toString();
            }else if(snapshot.hasError){
-             balanceText = "Session expired";
+             balanceText = "0";
            }
          }
 
@@ -438,6 +499,7 @@ class DashboardScreen extends StatefulWidget {
                              ),
                              Text(
                                formatBalance(balanceText),
+                               // formatBalance(walletVM.balance.toString()),
                                style: TextStyle(
                                    color: Colors.white,
                                    fontFamily: 'Poppins',

@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
- import 'package:flutter/services.dart';
+import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
@@ -27,25 +26,53 @@ void main() async   {
     DeviceOrientation.portraitDown,
   ]);
 
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-  //   statusBarColor: Colors.transparent,
-  //   systemNavigationBarColor: Colors.transparent,
-  //   statusBarIconBrightness: Brightness.light,
-  //   systemNavigationBarIconBrightness: Brightness.light,
-  //
-  // ));
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Color(0xFFFFFFFF),
-    systemNavigationBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  ));
-  // HttpOverrides.global = MyHttpOverrides();
-
    runApp(const MyApp(),);
 }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
+        ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+        ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+        ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+
+
+        ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
+          targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
+        ),),
+
+      ],
+
+      child: MaterialApp(
+        navigatorKey: ToastMessage.toastContextNavigatorKey,
+        useInheritedMediaQuery: true,
+        title: 'MyCoinPoll',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
+        ),
+        // home:  const BottomNavBar(),
+
+        home: const BottomNavBar(),
+        navigatorObservers: [routeObserver],
+        builder: (context, child) => WalletAppInitializer(child: child!),
+
+
+      ),
+    );
+  }
+}
+
 // class MyHttpOverrides extends HttpOverrides {
 //   @override
 //   HttpClient createHttpClient(SecurityContext? context) {
@@ -95,44 +122,5 @@ void main() async   {
 //     );
 //   }
 // }
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
-        ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-        ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-        ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-        ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
-         ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
-          targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
-        ),),
-
-      ],
-
-
-      child: MaterialApp(
-        navigatorKey: ToastMessage.toastContextNavigatorKey,
-        useInheritedMediaQuery: true,
-        title: 'MyCoinPoll',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-          useMaterial3: true,
-        ),
-         home:  const BottomNavBar(),
-        navigatorObservers: [routeObserver],
-        builder: (context, child) => WalletAppInitializer(child: child!),
-
-
-      ),
-    );
-  }
-}
 
 

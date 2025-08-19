@@ -5,6 +5,7 @@ import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
  import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/settings/feedback_screen.dart';
+import 'application/presentation/screens/splash/splash_view.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
 import 'application/presentation/viewmodel/countdown_provider.dart';
 import 'application/presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
@@ -65,7 +66,8 @@ class MyApp extends StatelessWidget {
         ),
         // home:  const BottomNavBar(),
 
-        home: const BottomNavBar(),
+        // home: const BottomNavBar(),
+        home: const SplashView(),
         navigatorObservers: [routeObserver],
         builder: (context, child) => WalletAppInitializer(child: child!),
 

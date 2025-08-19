@@ -12,6 +12,7 @@ import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
+import 'feedback_screen.dart';
 import 'personal_info/personal_information.dart';
  import 'terms_condition_screen.dart';
 
@@ -476,6 +477,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                        },
                                      ),
 
+                                     SizedBox(height: screenHeight * 0.02),
+
+                                     ProfileOptionContainer(
+                                       labelText: 'Feedback',
+                                       leadingIconPath: 'assets/icons/feedbackImg.svg',
+                                       trailingIconPath: 'assets/icons/rightArrow.svg',
+                                       onTrailingIconTap: () {
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(builder: (context) => const FeedbackScreen()),
+                                         );
+                                       },
+                                     ),
                                      SizedBox(height: screenHeight * 0.02),
 
 

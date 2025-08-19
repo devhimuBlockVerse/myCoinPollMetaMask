@@ -18,8 +18,7 @@ class PurchaseCard extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
 
     final DateFormat formatter = DateFormat('d MMMM yyyy');
-    // String formattedDate = formatter.format(transaction.createdAt);
-    String formattedDate = formatter.format(DateTime.parse(transaction.createdAt));
+     String formattedDate = formatter.format(DateTime.parse(transaction.createdAt));
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: screenHeight * 0.009),
@@ -31,7 +30,7 @@ class PurchaseCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.04), // responsive padding
+          padding: EdgeInsets.all(screenWidth * 0.04),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,7 +87,10 @@ class PurchaseCard extends StatelessWidget {
                   ),
                   SizedBox(width: screenWidth * 0.01),
                   Text(
-                    'Ref: ${transaction.referralUserId}',
+                    // 'Ref: ${transaction.referralUserId}',
+                    transaction.referralUserId != null
+                        ? 'Ref: ${transaction.referralUserId}'
+                        : 'Ref: N/A',
                     style: TextStyle(
                       color: AppColors.textColor,
                       fontSize: getResponsiveFontSize(context, 12),

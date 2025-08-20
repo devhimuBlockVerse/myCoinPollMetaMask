@@ -51,8 +51,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
 
     return SafeArea(
       child: Scaffold(
-        // backgroundColor: const Color(0xFF0E0F1A),
-        backgroundColor: Colors.transparent,
+         backgroundColor: Colors.transparent,
         // body: _pages[currentIndex],
         body: IndexedStack(
           index: currentIndex,

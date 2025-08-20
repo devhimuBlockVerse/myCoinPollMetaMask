@@ -634,10 +634,22 @@ class DashboardScreen extends StatefulWidget {
                  ),
 
                  SizedBox(width: screenWidth * 0.1),
-
+                 //
+                 // Flexible(
+                 //   flex: 1,
+                 //   child: Image.asset('assets/images/transactionLoading.png',
+                 //       fit: BoxFit.contain,
+                 //       filterQuality : FilterQuality.low),
+                 // ),
                  Flexible(
                    flex: 1,
-                   child: Image.asset('assets/images/transactionLoading.png',fit: BoxFit.contain,filterQuality : FilterQuality.low),
+                   child:Center(
+                     child: AnimatedTransactionLoader(
+                       size: baseSize * 0.5,
+                       duration: const Duration(seconds: 3),
+                       isAnimating:true,
+                     ),
+                   ),
                  ),
                ],
              ),
@@ -652,3 +664,103 @@ String formatBalance(String balance) {
   if (balance.length <= 6) return balance;
   return '${balance.substring(0, 8)}...';
 }
+
+ class AnimatedTransactionLoader extends StatefulWidget {
+   final double size;
+   final Duration duration;
+   final bool isAnimating;
+
+   const AnimatedTransactionLoader({
+     super.key,
+     this.size = 80.0,
+     this.duration = const Duration(seconds: 2),
+     this.isAnimating = true,
+   });
+
+   @override
+   State<AnimatedTransactionLoader> createState() => _AnimatedTransactionLoaderState();
+ }
+
+ class _AnimatedTransactionLoaderState extends State<AnimatedTransactionLoader>
+     with SingleTickerProviderStateMixin {
+   late AnimationController _controller;
+   late Animation<double> _animation;
+
+   static const double _towPi = 2 * 3.14159;
+   static const String _assetPath = 'assets/images/transactionLoading.png';
+
+
+
+   @override
+   void initState() {
+     super.initState();
+     _initializeAnimation();
+
+   }
+
+   void _initializeAnimation(){
+     _controller = AnimationController(
+       duration: widget.duration,
+       vsync: this,
+     );
+
+     _animation = Tween<double>(
+       begin: 0.0,
+       end: _towPi,
+     ).animate(CurvedAnimation(
+       parent: _controller,
+       curve: Curves.linear,
+     ));
+
+     if (widget.isAnimating && mounted) {
+       _controller.repeat();
+     }
+   }
+
+   @override
+   void didUpdateWidget(AnimatedTransactionLoader oldWidget) {
+     super.didUpdateWidget(oldWidget);
+
+     if (widget.isAnimating != oldWidget.isAnimating) {
+       if (widget.isAnimating && mounted) {
+         _controller.repeat();
+       } else {
+         _controller.stop();
+       }
+     }
+
+     if(widget.duration != oldWidget.duration){
+       _controller.duration = widget.duration;
+     }
+   }
+
+   @override
+   void dispose() {
+     _controller.dispose();
+     super.dispose();
+   }
+
+   @override
+   Widget build(BuildContext context) {
+     return RepaintBoundary(
+       child: AnimatedBuilder(
+         animation: _animation,
+         builder: (context, child) {
+           return Transform.rotate(
+             angle: _animation.value,
+             child: Image.asset(
+               _assetPath,
+               width: widget.size,
+               height: widget.size,
+               fit: BoxFit.contain,
+               filterQuality: FilterQuality.low,
+               cacheWidth: (widget.size * MediaQuery.of(context).devicePixelRatio).round(),
+               cacheHeight: (widget.size * MediaQuery.of(context).devicePixelRatio).round(),
+
+             ),
+           );
+         },
+       ),
+     );
+   }
+ }

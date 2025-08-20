@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
@@ -17,18 +19,26 @@ import 'application/presentation/viewmodel/wallet_view_model.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
-
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 void main() async   {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-
+  HttpOverrides.global = MyHttpOverrides();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
    runApp(const MyApp(),);
+
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -64,8 +74,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
-        // home:  const BottomNavBar(),
-
         // home: const BottomNavBar(),
         home: const SplashView(),
         navigatorObservers: [routeObserver],
@@ -77,14 +85,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class MyHttpOverrides extends HttpOverrides {
-//   @override
-//   HttpClient createHttpClient(SecurityContext? context) {
-//     return super.createHttpClient(context)
-//       ..badCertificateCallback =
-//           (X509Certificate cert, String host, int port) => true;
-//   }
-// }  +
 // class MyApp extends StatelessWidget {
 //   const MyApp({super.key});
 //

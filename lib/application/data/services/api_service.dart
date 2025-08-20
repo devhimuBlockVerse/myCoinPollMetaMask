@@ -117,13 +117,10 @@ class ApiService {
           : '${ApiConstants.baseUrl}/get-purchase-logs?page=1',
     );
 
-    print('  Request URL: $url');
-    print('  Headers: $headers');
 
     try {
       final response = await http.get(url, headers: headers);
-      print('  Response status PurchaseLogModel: ${response.statusCode}');
-      print('  Response body: ${response.body}');
+
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
@@ -146,8 +143,6 @@ class ApiService {
     final token = prefs.getString('token');
 
     if (token == null || token.isEmpty) {
-
-      print('No token found, returning default referral address.');
       return '0x0000000000000000000000000000000000000000';
     }
 
@@ -157,12 +152,9 @@ class ApiService {
     };
 
     final url = Uri.parse('${ApiConstants.baseUrl}/get-purchase-referral');
-    print('Fetching purchase referral from: $url');
 
     try {
       final response = await http.get(url, headers: headers);
-      print(">> Raw Response Body (Referral): ${response.body}");
-      print(">> Response Status Code (Referral): ${response.statusCode}");
 
       if (response.statusCode == 200) {
 
@@ -172,22 +164,15 @@ class ApiService {
           return responseBody;
         } else if (responseBody.isEmpty || responseBody.toLowerCase() == 'not referred by anyone') {
 
-          print('Referral address is empty or "not referred by anyone".');
-          return 'Not referred by anyone';
+           return 'Not referred by anyone';
         }
         else {
-
-          print('Unexpected response format for referral address: $responseBody');
-
           return 'Not referred by anyone';
         }
       } else {
-        print('Failed to fetch referral data. Status: ${response.statusCode}, Body: ${response.body}');
          throw Exception('Failed to fetch referral data: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      print('Error fetching referral: $e');
-
       rethrow;
     }
   }
@@ -205,7 +190,6 @@ class ApiService {
     final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
 
     final response = await http.get(url, headers: headers);
-    print(">> Raw Response Body: ${response.body}");
     if (response.statusCode == 200) {
       final decoded = json.decode(response.body);
       final List data = decoded['data'] ?? [];
@@ -264,7 +248,6 @@ class ApiService {
     };
 
     final response = await http.get(url, headers: headers);
-    print('[TokenBalance] <- body: ${response.body}');
 
     if (response.statusCode == 401 || response.statusCode == 403) {
       return '0';

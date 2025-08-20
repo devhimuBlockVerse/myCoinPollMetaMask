@@ -112,15 +112,7 @@ class PurchaseCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text(
-                        //   transaction.icoStage,
-                        //   style: TextStyle(
-                        //     color: const Color(0XFF7D8FA9),
-                        //     fontSize: getResponsiveFontSize(context, 12),
-                        //     fontFamily: 'Poppins',
-                        //     fontWeight: FontWeight.w400,
-                        //   ),
-                        // ),
+
                         SizedBox(height: screenHeight * 0.005),
                         Text(
                           transaction.icoStage,

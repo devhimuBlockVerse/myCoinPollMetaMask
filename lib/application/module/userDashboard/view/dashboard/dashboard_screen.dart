@@ -368,25 +368,6 @@ class DashboardScreen extends StatefulWidget {
                      Transform.translate(
                        offset: Offset(screenWidth * 0.025, 0),
 
-                       // child: WalletAddressComponent(
-                       //     address:  model.walletConnectedManually || currentUser == null
-                       //         ? formatAddress(model.walletAddress)
-                       //         : formatAddress(currentUser!.ethAddress),
-                       //     onTap: () async {
-                       //       try {
-                       //         /// ✅ Ensure modal is rebuilt with context
-                       //         if (!model.walletConnectedManually) {
-                       //           await model.ensureModalWithValidContext(context);
-                       //           await model.appKitModal?.openModalView();
-                       //         }
-                       //
-                       //       } catch (e) {
-                       //         print("Error opening wallet modal: $e");
-                       //       }
-                       //     }
-                       //
-                       //
-                       // ),
                        child:WalletAddressComponent(
                          address: (currentUser?.ethAddress?.isNotEmpty ?? false)
                              ? formatAddress(currentUser!.ethAddress)

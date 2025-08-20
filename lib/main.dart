@@ -19,19 +19,19 @@ import 'application/presentation/viewmodel/wallet_view_model.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
+// class MyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..badCertificateCallback =
+//           (X509Certificate cert, String host, int port) => true;
+//   }
+// }
 void main() async   {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  HttpOverrides.global = MyHttpOverrides();
+  // HttpOverrides.global = MyHttpOverrides();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -84,47 +84,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => UserAuthProvider()..loadUserFromPrefs()),
-//         ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-//         ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-//         ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-//         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-//         ChangeNotifierProvider(create: (_) => NavigationProvider()),
-//          ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
-//           targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
-//         ),),
-//
-//       ],
-//
-//
-//       child: WalletAppInitializer(
-//         child: MaterialApp(
-//           navigatorKey: ToastMessage.toastContextNavigatorKey,
-//           useInheritedMediaQuery: true,
-//
-//           title: 'MyCoinPoll',
-//           debugShowCheckedModeBanner: false,
-//           theme: ThemeData(
-//             colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-//             useMaterial3: true,
-//           ),
-//            home:  const BottomNavBar(),
-//           navigatorObservers: [routeObserver],
-//
-//
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 

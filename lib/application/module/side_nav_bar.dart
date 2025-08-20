@@ -134,15 +134,10 @@ class _SideNavBarState extends State<SideNavBar> {
               ),
             ),
           ),
-          // CircleAvatar(
-          //   radius: avatarRadius,
-          //   backgroundImage: const AssetImage('assets/images/ecm.png'),
-          //   backgroundColor: Colors.white.withOpacity(0.3),
-          // ),
+
           SizedBox(height: drawerWidth * 0.03),
           Text(
-            // 'Hi, Ethereum User!',
-            model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
+             model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': currentUser!.name,
             style: TextStyle(
               color: AppColors.profileName,
               fontSize: nameFontSize,

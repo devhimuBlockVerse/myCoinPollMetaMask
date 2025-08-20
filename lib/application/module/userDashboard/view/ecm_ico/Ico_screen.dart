@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -154,8 +153,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
         });
       }
     } catch (e) {
-      print('Error fetching token details: $e');
-      if (mounted) {
+       if (mounted) {
         setState(() {
           _isLoadingToken = false;
         });
@@ -278,7 +276,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
-    // final socialMedia = tokens.first.socialMedia;
+
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -378,7 +376,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                 'assets/icons/xIcon.svg',
                                 'https://x.com/ecmcoin'
 
-                              // socialMedia!.twitter!,
 
                             ),
                             SizedBox(width: baseSize * 0.02),
@@ -386,7 +383,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                                 context,
                                 'assets/icons/teleImage.svg',
                                 'https://t.me/ecmcoin'
-                              // socialMedia!.telegram!,
                             )
                           ],
                         ),
@@ -497,7 +493,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    final bool isPortrait = screenSize.height > screenSize.width;
 
     final authViewModel = Provider.of<UserAuthProvider>(context);
     final walletVM = Provider.of<WalletViewModel>(context);
@@ -716,7 +711,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
 
                       style:  TextStyle(
                         color: Colors.white,
-                        // fontSize: screenWidth * 0.032,
                         fontSize: getResponsiveFontSize(context, 13),
                         fontWeight: FontWeight.w400,
                         fontFamily: 'Poppins',
@@ -815,59 +809,6 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                     ),
 
                     const SizedBox(height: 18),
-
-                    // if (walletVM.isConnected)...[
-                    //   DisconnectButton(
-                    //     label: 'Disconnect',
-                    //     color: const Color(0xffE04043),
-                    //     icon: 'assets/icons/disconnected.svg',
-                    //     onPressed: () async {
-                    //       setState(() {
-                    //         isDisconnecting = true;
-                    //       });
-                    //       try {
-                    //         await walletVM.disconnectWallet(context);
-                    //         Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-                    //
-                    //         if (context.mounted) {
-                    //           Navigator.of(context).pushAndRemoveUntil(
-                    //             MaterialPageRoute(
-                    //               builder: (context) => MultiProvider(
-                    //                 providers: [
-                    //                   ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-                    //                   ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-                    //                   ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-                    //                   ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-                    //                   ChangeNotifierProvider(create: (_) => NavigationProvider()),
-                    //                 ],
-                    //                 child: const BottomNavBar(),
-                    //               ),
-                    //             ),
-                    //                 (Route<dynamic> route) => false,
-                    //           );
-                    //         }
-                    //       }catch (e) {
-                    //         if (context.mounted) {
-                    //           print('Error disconnecting: $e');
-                    //           ScaffoldMessenger.of(context).showSnackBar(
-                    //             SnackBar(
-                    //               content: Text('Error disconnecting: ${e.toString()}'),
-                    //               backgroundColor: Colors.red,
-                    //             ),
-                    //           );
-                    //         }
-                    //       }finally{
-                    //         if (mounted) {
-                    //           setState(() {
-                    //             isDisconnecting = false;
-                    //           });
-                    //         }
-                    //       }
-                    //     },
-                    //
-                    //   ),
-                    // ],
-
                     DisconnectButton(
                       label: 'Disconnect',
                       color: const Color(0xffE04043),

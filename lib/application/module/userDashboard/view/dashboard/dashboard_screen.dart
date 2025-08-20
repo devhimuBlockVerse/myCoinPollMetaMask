@@ -340,7 +340,6 @@ class DashboardScreen extends StatefulWidget {
                            ),
                          ),
                          Text(
-                           // model.walletConnectedManually || currentUser == null ? 'Hi, Ethereum User!': '${currentUser.name}',
                            (currentUser?.name?.isNotEmpty ?? false) ? currentUser!.name! : 'Hi, Ethereum User!',
 
                            style: TextStyle(

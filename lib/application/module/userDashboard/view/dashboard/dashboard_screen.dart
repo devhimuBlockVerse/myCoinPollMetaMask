@@ -634,13 +634,7 @@ class DashboardScreen extends StatefulWidget {
                  ),
 
                  SizedBox(width: screenWidth * 0.1),
-                 //
-                 // Flexible(
-                 //   flex: 1,
-                 //   child: Image.asset('assets/images/transactionLoading.png',
-                 //       fit: BoxFit.contain,
-                 //       filterQuality : FilterQuality.low),
-                 // ),
+
                  Flexible(
                    flex: 1,
                    child:Center(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,7 +21,6 @@ import '../../../../presentation/models/user_model.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
-
 
 class ReferralStatScreen extends StatefulWidget {
   const ReferralStatScreen({super.key});
@@ -116,6 +114,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
     }
   }
 
+
   void _sortData(SortReferralUserListOption option) {
     setState(() {
       _currentSort = option;
@@ -161,6 +160,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
       debugPrint('Error fetching stats: $e');
     }
   }
+
 
 
   Future<List<ReferralUserListModel>> fetchReferralUsers({String? search}) async {
@@ -449,7 +449,6 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                         flex: 2,
                                         child: ResponsiveSearchField(
                                           controller: _searchController,
-                                          // onChanged:  (value) => _onSearchChanged(),
                                           onChanged:  (value) => _applyFiltersAndSort(),
                                           svgAssetPath: 'assets/icons/search.svg',
 
@@ -471,30 +470,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                                                 _sortData(option);
                                               },
                                               itemBuilder: (BuildContext context) => <PopupMenuEntry<SortReferralUserListOption>>[
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.dateDesc,
-                                                  child: Text('Date: Latest First'),
-                                                ),
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.dateAsc,
-                                                  child: Text('Date: Oldest First'),
-                                                ),
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.nameAsc,
-                                                  child: Text('Status: A-Z'),
-                                                ),
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.nameDesc,
-                                                  child: Text('Status: Z-A'),
-                                                ),
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.userIdAsc,
-                                                  child: Text('Amount: Low to High'),
-                                                ),
-                                                const PopupMenuItem<SortReferralUserListOption>(
-                                                  value: SortReferralUserListOption.userIdDesc,
-                                                  child: Text('Amount: High to Low'),
-                                                ),
+
                                                 const PopupMenuItem<SortReferralUserListOption>(
                                                   value: SortReferralUserListOption.statusAsc,
                                                   child: Text('Status: Active First'),

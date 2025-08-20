@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../framework/components/referralStatDetailComponenet.dart';
-
-
+import '../../../../../domain/model/ReferralUserListModel.dart';
 
 class ReferralDetails extends StatelessWidget {
-  const ReferralDetails({super.key});
+  final ReferralUserListModel data;
+
+  const ReferralDetails({super.key,required this.data});
 
 
   @override
@@ -64,7 +65,8 @@ class ReferralDetails extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.02),
                           Text(
-                            'Jane Cooper',
+                            // 'Jane Cooper',
+                            data.name,
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
@@ -75,33 +77,36 @@ class ReferralDetails extends StatelessWidget {
                           ),
                           SizedBox(height: screenHeight * 0.01),
 
-                          const ReferralDetailsComponent(
+                           ReferralDetailsComponent(
                             label: 'Time/Date',
-                            value: '07/10/2024; 09:30 PM',
+                            // value: '07/10/2024; 09:30 PM',
+                            value: data.date
                           ),
-                          const ReferralDetailsComponent(
+                          ReferralDetailsComponent(
                             label: 'User ID',
-                            value: '5320127',
+                            // value: '5320127',
+                            value:data.userId,
                           ),
-                          const ReferralDetailsComponent(
+                           ReferralDetailsComponent(
                             label: 'Status',
                             value: '',
-                            status: 'Active',
+                            // status: 'Active',
+                            status: data.status,
                           ),
 
-                          SizedBox(height: screenHeight * 0.03),
 
-                          const ReferralDetailsComponent(
-                            label: 'Phone',
-                            value: '(704) 555-0127',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
-                          const ReferralDetailsComponent(
-                            label: 'Email',
-                            value: 'deanna.curtis@example.com',
-                            svgIconPath: 'assets/icons/copyImg.svg',
-                          ),
-
+                          // SizedBox(height: screenHeight * 0.03),
+                          //
+                          // ReferralDetailsComponent(
+                          //   label: 'Phone',
+                          //   value: '(704) 555-0127',
+                          //   svgIconPath: 'assets/icons/copyImg.svg',
+                          // ),
+                          //  ReferralDetailsComponent(
+                          //   label: 'Email',
+                          //   value: 'deanna.curtis@example.com',
+                          //   svgIconPath: 'assets/icons/copyImg.svg',
+                          // ),
                         ],
                       ),
                     ),

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,12 +22,8 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
 
-    // Dynamic multipliers
-    final baseSize = isPortrait ? screenWidth : screenHeight;
 
     return Scaffold(
-      // extendBodyBehindAppBar: true,
-      // backgroundColor: Colors.transparent,
       body: SafeArea(
           top: false,
           child: Container(
@@ -83,14 +81,19 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                       SizedBox(height: screenHeight * 0.02),
 
 
-                      Image.asset(
-
-                        'assets/images/metaversworld.png',
-                        width: isPortrait ? screenWidth * 0.8 : screenWidth * 0.5,
-                        height: isPortrait ? screenHeight * 0.38 : screenHeight * 0.5,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.medium,
+                      FloatingImage(
+                        amplitude: 12,
+                        duration: const Duration(seconds: 3),
+                        enableScalePulse: true,
+                        child: Image.asset(
+                          'assets/images/metaversworld.png',
+                          width: isPortrait ? screenWidth * 0.8 : screenWidth * 0.5,
+                          height: isPortrait ? screenHeight * 0.38 : screenHeight * 0.5,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.medium,
+                        ),
                       ),
+
 
                       SizedBox(height: screenHeight * 0.05),
 
@@ -131,8 +134,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                         textStyle:  TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
-                          // fontSize: baseSize * 0.035,
-                          fontSize: getResponsiveFontSize(context, 15),
+                           fontSize: getResponsiveFontSize(context, 15),
                           height: 1.6,
                         ),
                         gradientColors: const [
@@ -159,3 +161,92 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
   }
 
  }
+
+class FloatingImage extends StatefulWidget {
+  final Widget child;
+  final double amplitude;
+  final Duration duration;
+  final bool enableScalePulse;
+  final double scaleMin;
+  final double scaleMax;
+
+  const FloatingImage({super.key,
+    required this.child,
+    this.amplitude = 10.0,
+     this.duration = const Duration(seconds: 4),
+     this.enableScalePulse = true,
+     this.scaleMin = 0.985,
+     this.scaleMax = 1.015,
+  });
+
+  @override
+  State<FloatingImage> createState() => _FloatingImageState();
+}
+
+class _FloatingImageState extends State<FloatingImage>with SingleTickerProviderStateMixin{
+
+  late final AnimationController _controller;
+  late final Animation<double> _t;
+  static const double _twoPi = math.pi * 2;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+        vsync: this,
+      duration: widget.duration
+    )..repeat();
+
+    _t = CurvedAnimation(parent: _controller, curve: Curves.linear);
+  }
+
+  @override
+  void didUpdateWidget(FloatingImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.duration != widget.duration){
+      _controller.duration = widget.duration;
+      if(!_controller.isAnimating) _controller.repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+
+  double _yOffset(double t) => math.sin(t * _twoPi) * widget.amplitude;
+  double _scale(double t){
+    if(!widget.enableScalePulse) return 1.0;
+    final mid = (widget.scaleMin + widget.scaleMax) / 2;
+    final amp = (widget.scaleMax - widget.scaleMin) / 2;
+    return mid + amp * math.sin(t * _twoPi);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+        child: AnimatedBuilder(
+            animation: _t,
+            builder: (_, child){
+              final t = _t.value;
+              return Transform.translate(
+                offset: Offset(0, _yOffset(t)),
+                child: Transform.scale(
+                  scale: _scale(t),
+                  child: child,
+                ),
+              );
+            },
+          child: widget.child,
+        )
+    );
+  }
+
+
+
+}
+
+
+

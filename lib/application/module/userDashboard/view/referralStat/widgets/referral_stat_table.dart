@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
 import '../../../../../domain/model/ReferralUserListModel.dart';
- import 'referral_details.dart';
+ import '../../transactions/widgets/transaction_details.dart';
+import 'referral_details.dart';
 
 Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, double screenWidth, BuildContext context) {
   double screenHeight = MediaQuery.of(context).size.height;
@@ -62,13 +63,13 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
                 DataColumn2(label: buildCenteredText('Name', headingStyle), size: ColumnSize.L),
                 DataColumn2(label: buildCenteredText('User ID', headingStyle), size: ColumnSize.M),
                 DataColumn2(label: buildCenteredText('Status', headingStyle), size: ColumnSize.M),
-                DataColumn2(
-                  label: buildCenteredText('Details', headingStyle),
-                  fixedWidth: screenWidth * (40.0 / designScreenWidth),
-                ),
+                // DataColumn2(
+                //   label: buildCenteredText('Details', headingStyle),
+                //   fixedWidth: screenWidth * (40.0 / designScreenWidth),
+                // ),
               ],
               rows: userLogData.asMap().entries.map((entry) {
-                ReferralUserListModel data = entry.value; // Use UserLogModel
+                ReferralUserListModel data = entry.value;
                 final statusText = data.status;
                 final statusStyle = getReferralUserStatusStyle(statusText);
 
@@ -101,23 +102,24 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
                         ),
                       ),
                     ),
-                    DataCell(
-                      Center(
-                        child: IconButton(
-
-                          icon: Icon(Icons.visibility_outlined, color: const Color(0xFF7EE4C2), size: getResponsiveFontSize(context, 18)),
-
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => const ReferralDetails(),
-                            );
-                            print('View details for User ID: ${data.userId}');
-                          },
-                          tooltip: 'View Details',
-                        ),
-                      ),
-                    ),
+                    // DataCell(
+                    //   Center(
+                    //     child: IconButton(
+                    //
+                    //       icon: Icon(Icons.visibility_outlined, color: const Color(0xFF7EE4C2), size: getResponsiveFontSize(context, 18)),
+                    //
+                    //       onPressed: () {
+                    //         showDialog(
+                    //           context: context,
+                    //           builder: (_) =>  ReferralDetails(data: data,),
+                    //
+                    //         );
+                    //         print('View details for User ID: ${data.userId}');
+                    //       },
+                    //       tooltip: 'View Details',
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 );
               }).toList(),

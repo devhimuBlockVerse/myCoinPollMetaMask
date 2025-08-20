@@ -75,6 +75,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
+    _tokenDetailsFuture = ApiService().fetchTokenDetails('e-commerce-coin');
     fetchTokens();
     ecmController.addListener(_updatePayableAmount);
     WidgetsBinding.instance.addObserver(this);
@@ -116,7 +117,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
         }
       }
       await _fetchReferredByAddress();
-      _tokenDetailsFuture = ApiService().fetchTokenDetails('e-commerce-coin');
+      // _tokenDetailsFuture = ApiService().fetchTokenDetails('e-commerce-coin');
     });
 
   }

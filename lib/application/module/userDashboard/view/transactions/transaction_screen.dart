@@ -442,22 +442,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   _sortData(option);
                                                 },
                                                 itemBuilder: (BuildContext context) => <PopupMenuEntry<SortTransactionHistoryOption>>[
-                                                  const PopupMenuItem<SortTransactionHistoryOption>(
-                                                    value: SortTransactionHistoryOption.dateLatest,
-                                                    child: Text('Date: Latest First'),
-                                                  ),
-                                                  const PopupMenuItem<SortTransactionHistoryOption>(
-                                                    value: SortTransactionHistoryOption.dateOldest,
-                                                    child: Text('Date: Oldest First'),
-                                                  ),
-                                                  const PopupMenuItem<SortTransactionHistoryOption>(
-                                                    value: SortTransactionHistoryOption.statusAsc,
-                                                    child: Text('Status: A-Z'),
-                                                  ),
-                                                  const PopupMenuItem<SortTransactionHistoryOption>(
-                                                    value: SortTransactionHistoryOption.statusDesc,
-                                                    child: Text('Status: Z-A'),
-                                                  ),
+
                                                   const PopupMenuItem<SortTransactionHistoryOption>(
                                                     value: SortTransactionHistoryOption.amountAsc,
                                                     child: Text('Amount: Low to High'),

@@ -31,8 +31,7 @@ class SortDataUseCase {
     try {
       return DateParser.fromReadableFormat(formattedDate);
     } catch (_) {
-      // fallback if parsing fails
-      return DateTime.fromMillisecondsSinceEpoch(0);
+       return DateTime.fromMillisecondsSinceEpoch(0);
     }
   }
 
@@ -46,16 +45,6 @@ class SortTransactionDataUseCase {
     final sorted = List<Map<String, dynamic>>.from(data);
     sorted.sort((a, b) {
       switch (option) {
-        case SortTransactionHistoryOption.dateLatest:
-          return DateParser.fromReadableFormat(b['DateTime']!)
-              .compareTo(DateParser.fromReadableFormat(a['DateTime']!));
-        case SortTransactionHistoryOption.dateOldest:
-          return DateParser.fromReadableFormat(a['DateTime']!)
-              .compareTo(DateParser.fromReadableFormat(b['DateTime']!));
-        case SortTransactionHistoryOption.statusAsc:
-          return (a['Status'] ?? '').compareTo(b['Status'] ?? '');
-        case SortTransactionHistoryOption.statusDesc:
-          return (b['Status'] ?? '').compareTo(a['Status'] ?? '');
         case SortTransactionHistoryOption.amountAsc:
           return (double.tryParse(a['Amount']?.toString() ?? '0') ?? 0)
               .compareTo(double.tryParse(b['Amount']?.toString() ?? '0') ?? 0);
@@ -105,32 +94,18 @@ class SortReferralUseListUseCase {
 
     sorted.sort((a, b) {
       switch (option) {
-        case SortReferralUserListOption.dateAsc:
-           return parser.parse(a.date).compareTo(parser.parse(b.date));
-        case SortReferralUserListOption.dateDesc:
-          return parser.parse(b.date).compareTo(parser.parse(a.date));
-        case SortReferralUserListOption.nameAsc:
-          return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-        case SortReferralUserListOption.nameDesc:
-          return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+
         case SortReferralUserListOption.statusAsc:
 
           if (a.status == 'Active' && b.status == 'Inactive') return -1;
           if (a.status == 'Inactive' && b.status == 'Active') return 1;
           return a.status.compareTo(b.status);
+
         case SortReferralUserListOption.statusDesc:
           if (a.status == 'Inactive' && b.status == 'Active') return -1;
           if (a.status == 'Active' && b.status == 'Inactive') return 1;
           return b.status.compareTo(a.status);
-        case SortReferralUserListOption.slAsc:
-        // Convert SL string to int for numerical sorting
-          return int.parse(a.sl).compareTo(int.parse(b.sl));
-        case SortReferralUserListOption.slDesc:
-          return int.parse(b.sl).compareTo(int.parse(a.sl));
-        case SortReferralUserListOption.userIdAsc:
-          return a.userId.toLowerCase().compareTo(b.userId.toLowerCase());
-        case SortReferralUserListOption.userIdDesc:
-          return b.userId.toLowerCase().compareTo(a.userId.toLowerCase());
+
       }
     });
 

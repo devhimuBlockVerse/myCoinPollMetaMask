@@ -56,12 +56,12 @@ class NavigationProvider extends ChangeNotifier {
 
   ),
 
-  //   NavItem(
-  //     id: 'feed_back',
-  //     title: 'Feedback',
-  //     iconPath: 'assets/icons/feedbackImg.svg',
-  //     screenBuilder: (context) => const FeedbackScreen(),
-  // ),
+    NavItem(
+      id: 'feed_back',
+      title: 'Feedback',
+      iconPath: 'assets/icons/feedbackImg.svg',
+      screenBuilder: (context) => const FeedbackScreen(),
+  ),
 
     NavItem(
       id: 'log_out',

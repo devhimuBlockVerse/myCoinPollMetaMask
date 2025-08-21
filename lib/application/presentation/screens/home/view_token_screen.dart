@@ -466,23 +466,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               }
 
                             }
-                            // child: SizedBox(
-                            //   width: double.infinity,
-                            //
-                            //   child: Column(
-                            //     crossAxisAlignment: CrossAxisAlignment.start,
-                            //     mainAxisAlignment: MainAxisAlignment.start,
-                            //
-                            //     children: [
-                            //
-                            //       Padding(
-                            //         padding: const EdgeInsets.symmetric(horizontal: 16),
-                            //         child: buildRoadmapSection(context, screenHeight),
-                            //       ),
-                            //
-                            //     ],
-                            //   ),
-                            // ),
+
                           ),
 
 

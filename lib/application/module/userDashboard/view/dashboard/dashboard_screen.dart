@@ -96,37 +96,59 @@ class DashboardScreen extends StatefulWidget {
    //   await prefs.setString('dashboard_contract_address', contract);
    //   return contract;
    // }
-   // Future<String> _resolveBalance() async {
-   //   final prefs = await SharedPreferences.getInstance();
-   //   final authMethod = prefs.getString('auth_method');
-   //
-   //   if (authMethod == 'password') {
-   //     final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
-   //     final providerAddr = (userAuth.user?.ethAddress ?? '').trim();
-   //     final prefsAddr = (prefs.getString('ethAddress') ?? '').trim();
-   //     final userAddress = (providerAddr.isNotEmpty ? providerAddr : prefsAddr).toLowerCase();
-   //
-   //     if (userAddress.isEmpty || userAddress.length != 42) return '0';
-   //
-   //     final contract = (await _getDashboardContractAddress()).toLowerCase();
-   //     if (contract.isEmpty) return '0';
-   //
-   //     try {
-   //       final human = await ApiService().fetchTokenBalanceHuman(contract, userAddress, decimals: 18);
-   //       return human;
-   //     } catch (_) {
-   //       return '0';
-   //     }
-   //   }
-   //
-   //   // Web3 path (on-chain)
-   //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-   //   try {
-   //     return await walletVM.getBalance();
-   //   } catch (_) {
-   //     return '0';
-   //   }
-   // }
+   Future<String> _resolveBalance() async {
+
+     try{
+
+       final prefs = await SharedPreferences.getInstance();
+       final authMethod = prefs.getString('auth_method') ?? '';
+       String contract = prefs.getString('dashboard_contract_address') ?? '';
+
+       if(contract.isEmpty){
+         final details = await ApiService().fetchTokenDetails('e-commerce-coin');
+         final contract = (details.contractAddress ?? '').trim();
+         if(contract.isNotEmpty && contract.length == 42 && contract.startsWith('0x')){
+           await prefs.setString('dashboard_contract_address', contract);
+         }else{
+           return '0';
+         }
+       }
+
+
+       if (authMethod == 'password') {
+         final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+
+         final providerAddr = (userAuth.user?.ethAddress ?? '').trim().toLowerCase();
+         final prefsAddr = (prefs.getString('ethAddress') ?? '').trim().toLowerCase();
+         final userAddress = providerAddr.isNotEmpty ? providerAddr : prefsAddr;
+
+         if (userAddress.isEmpty || userAddress.length != 42 || !userAddress.startsWith('0x')) return '0';
+
+         // final contract = (await _getDashboardContractAddress()).toLowerCase();
+         // if (contract.isEmpty) return '0';
+
+         try {
+           final human = await ApiService().fetchTokenBalanceHuman(contract, userAddress, decimals: 18);
+           return human;
+         } catch (_) {
+           return '0';
+         }
+       }
+
+       // Web3 path (on-chain)
+       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+       try {
+         return await walletVM.getBalance();
+       } catch (_) {
+         return '0';
+       }
+
+
+     }catch(e){
+       return '0';
+     }
+
+   }
 
 
    @override
@@ -401,8 +423,8 @@ class DashboardScreen extends StatefulWidget {
      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
      return FutureBuilder<String>(
-       future: walletVM.getBalance(),
-       // future: _resolveBalance(),
+       // future: walletVM.getBalance(),
+       future: _resolveBalance(),
        builder: (context,snapshot){
          String balanceText = '...';
 

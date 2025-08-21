@@ -16,31 +16,89 @@ import 'dart:typed_data';
 
 
 
+// bool isUserRejectedError(Object error) {
+//   final msg = error.toString().toLowerCase();
+//
+//   return msg.contains("user rejected") ||
+//       msg.contains("user denied") ||
+//       msg.contains("user canceled") ||
+//       msg.contains("user cancelled") ||
+//       msg.contains("transaction declined") ||
+//       msg.contains("request rejected") ||
+//       msg.contains("rejected by user") ||
+//       msg.contains("rejected request") ||
+//       msg.contains("action rejected") ||
+//       msg.contains("cancelled") ||
+//       msg.contains("request already pending") ||
+//       msg.contains("modal closed") ||
+//       msg.contains("wallet modal closed") ||
+//       msg.contains("no response from user") ||
+//       msg.contains("user closed") ||
+//       msg.contains("session disconnected") ||
+//       msg.contains("wallet disconnected") ||
+//       msg.contains("unauthorized") ||
+//       (msg.contains("rpc error:") && msg.contains("4001")) ||
+//       msg.contains("transport error") ||
+//       msg.contains("failed to fetch");
+// }
 bool isUserRejectedError(Object error) {
+  if (error == null) return false;
+
   final msg = error.toString().toLowerCase();
 
-  return msg.contains("user rejected") ||
-      msg.contains("user denied") ||
-      msg.contains("user canceled") ||
-      msg.contains("user cancelled") ||
-      msg.contains("transaction declined") ||
-      msg.contains("request rejected") ||
-      msg.contains("rejected by user") ||
-      msg.contains("rejected request") ||
-      msg.contains("action rejected") ||
-      msg.contains("cancelled") ||
-      msg.contains("request already pending") ||
-      msg.contains("modal closed") ||
-      msg.contains("wallet modal closed") ||
-      msg.contains("no response from user") ||
-      msg.contains("user closed") ||
-      msg.contains("session disconnected") ||
-      msg.contains("wallet disconnected") ||
-      msg.contains("unauthorized") ||
-      (msg.contains("rpc error:") && msg.contains("4001")) ||
-      msg.contains("transport error") ||
-      msg.contains("failed to fetch");
+  // Common user rejection / cancellation phrases
+  final userRejectedPatterns = [
+    "user rejected",
+    "user denied",
+    "user canceled",
+    "user cancelled",
+    "transaction declined",
+    "request rejected",
+    "rejected by user",
+    "rejected request",
+    "action rejected",
+    "cancelled",
+    "request already pending",
+    "modal closed",
+    "wallet modal closed",
+    "no response from user",
+    "user closed",
+    "unauthorized",
+    "transport error",
+    "failed to fetch",
+  ];
+
+  // RPC-specific rejection codes
+  final rpcErrorPatterns = [
+    "rpc error:.*4001", // standard Ethereum user rejection
+  ];
+
+  // App/session kill indicators
+  final appKilledPatterns = [
+    "session disconnected",
+    "wallet disconnected",
+    "connection lost",
+    "app terminated",
+    "app closed",
+    "background kill",
+  ];
+
+  // Check if any pattern matches
+  bool matches(List<String> patterns) {
+    for (var pattern in patterns) {
+      if (RegExp(pattern, caseSensitive: false).hasMatch(msg)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return matches(userRejectedPatterns) ||
+      matches(rpcErrorPatterns) ||
+      matches(appKilledPatterns);
 }
+
+
 
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
@@ -324,8 +382,85 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
+  // Future<bool> connectWallet(BuildContext context) async {
+  //   if (_isLoading) return false;
+  //   _walletConnectedManually = true;
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   try {
+  //     await ensureModalWithValidContext(context);
+  //
+  //      try {
+  //       await appKitModal!.openModalView();
+  //     } catch (_) {
+  //       await _recreateModalWithContext(context);
+  //       await appKitModal!.openModalView();
+  //     }
+  //
+  //     // Wait until a session and address are available
+  //     final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
+  //     if (!connected) return false;
+  //
+  //
+  //     // Persist and hydrate
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final chainId = _getChainIdForRequests();
+  //     if (chainId != null) await prefs.setString('chainId', chainId);
+  //
+  //     await prefs.setBool('isConnected', true);
+  //     await prefs.setString('walletAddress', _walletAddress);
+  //
+  //     final sessionJson = appKitModal!.session?.toJson();
+  //     if (sessionJson != null) {
+  //       await prefs.setString('walletSession', jsonEncode(sessionJson));
+  //     }
+  //
+  //     await fetchConnectedWalletData(isReconnecting: true);
+  //     await getCurrentStageInfo();
+  //     notifyListeners();
+  //     return true;
+  //   } catch (e, stack) {
+  //     debugPrint('connectWallet error: $e\n$stack');
+  //
+  //     final isUserRejected = isUserRejectedError(e);
+  //     final isAppKilled = e.toString().toLowerCase().contains("app terminated") ||
+  //         e.toString().toLowerCase().contains("connection lost");
+  //
+  //     String message;
+  //     String subtitle;
+  //     MessageType type;
+  //
+  //     if (isUserRejected) {
+  //       message = "User Rejected";
+  //       subtitle = "You cancelled the connection.";
+  //       type = MessageType.info;
+  //     } else if (isAppKilled) {
+  //       message = "Wallet Connection Interrupted";
+  //       subtitle = "The app was closed or session lost. Please reconnect.";
+  //       type = MessageType.info;
+  //     } else {
+  //       message = "Connection Failed";
+  //       subtitle = "Could not complete the connection request. Please try again.";
+  //       type = MessageType.error;
+  //     }
+  //
+  //
+  //     ToastMessage.show(
+  //       message: message,
+  //       subtitle: subtitle,
+  //       type: type,
+  //       duration: CustomToastLength.LONG,
+  //       gravity: CustomToastGravity.BOTTOM,
+  //     );
+  //
+  //     return false;
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
-///
   Future<bool> connectWallet(BuildContext context) async {
     if (_isLoading) return false;
     _walletConnectedManually = true;
@@ -335,17 +470,59 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     try {
       await ensureModalWithValidContext(context);
 
-       try {
+      try {
         await appKitModal!.openModalView();
-      } catch (_) {
+      } catch (e) {
+        debugPrint("First attempt failed: $e");
         await _recreateModalWithContext(context);
-        await appKitModal!.openModalView();
+
+        try {
+          await appKitModal!.openModalView();
+        } catch (e2) {
+          debugPrint("Second attempt failed: $e2");
+
+          // Detect wallet app killed / modal closed
+          final errorMsg = e2.toString().toLowerCase();
+          if (errorMsg.contains("user rejected") ||
+              errorMsg.contains("user denied") ||
+              errorMsg.contains("user canceled") ||
+              errorMsg.contains("user cancelled") ||
+              errorMsg.contains("modal closed") ||
+              errorMsg.contains("wallet modal closed") ||
+              errorMsg.contains("no response from user")) {
+            ToastMessage.show(
+              message: "User Rejected",
+              subtitle: "You cancelled the connection.",
+              type: MessageType.info,
+              duration: CustomToastLength.LONG,
+              gravity: CustomToastGravity.BOTTOM,
+            );
+            return false;
+          } else {
+            ToastMessage.show(
+              message: "Wallet Connection Interrupted",
+              subtitle: "The wallet app was closed or session lost. Please reconnect.",
+              type: MessageType.info,
+              duration: CustomToastLength.LONG,
+              gravity: CustomToastGravity.BOTTOM,
+            );
+            return false;
+          }
+        }
       }
 
       // Wait until a session and address are available
       final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
-      if (!connected) return false;
-
+      if (!connected) {
+        ToastMessage.show(
+          message: "Wallet Connection Timeout",
+          subtitle: "Could not detect wallet session. Please try again.",
+          type: MessageType.info,
+          duration: CustomToastLength.LONG,
+          gravity: CustomToastGravity.BOTTOM,
+        );
+        return false;
+      }
 
       // Persist and hydrate
       final prefs = await SharedPreferences.getInstance();
@@ -366,6 +543,19 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return true;
     } catch (e, stack) {
       debugPrint('connectWallet error: $e\n$stack');
+
+      final isUserRejected = isUserRejectedError(e);
+
+      ToastMessage.show(
+        message: isUserRejected ? "User Rejected" : "Connection Failed",
+        subtitle: isUserRejected
+            ? "You cancelled the connection."
+            : "Could not complete the connection request. Please try again.",
+        type: isUserRejected ? MessageType.info : MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+
       return false;
     } finally {
       _isLoading = false;
@@ -1076,6 +1266,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         duration: CustomToastLength.LONG,
         gravity: CustomToastGravity.BOTTOM,
       );
+
 
 
       rethrow;

@@ -9,7 +9,7 @@ import '../../../framework/utils/enums/toast_type.dart';
 
 class DownloadService {
   static Future<void> downloadWhitepaperPdf(BuildContext context) async {
-    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper-v2.pdf';
+    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper-v3.pdf';
     const String fileName = 'ECM-Whitepaper-v2.pdf';
 
     try {

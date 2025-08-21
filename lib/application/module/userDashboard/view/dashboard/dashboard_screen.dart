@@ -139,8 +139,8 @@ class DashboardScreen extends StatefulWidget {
      final currentScreenId = navProvider.currentScreenId;
      final navItems = navProvider.drawerNavItems;
 
-     final baseSize = isPortrait ? screenWidth : screenHeight;
-
+     final walletModel = context.watch<WalletViewModel>();
+     final userAuthModel = context.watch<UserAuthProvider>();
 
      return WillPopScope(
        onWillPop: () async {
@@ -211,7 +211,8 @@ class DashboardScreen extends StatefulWidget {
 
 
                              /// User Name Data & Wallet Address
-                             Consumer<UserAuthProvider>(
+
+                              Consumer<UserAuthProvider>(
                                builder: (context, userAuth, child) {
                                  return _headerSection(_scaffoldKey, walletModel, userAuth);
                                },
@@ -404,22 +405,14 @@ class DashboardScreen extends StatefulWidget {
        // future: _resolveBalance(),
        builder: (context,snapshot){
          String balanceText = '...';
-         if(snapshot.connectionState == ConnectionState.waiting || snapshot.connectionState == ConnectionState.active){
-           return const Center(
-             child: CircularProgressIndicator(
-               strokeWidth: 2,
-               color: Colors.white,
-             ),
-           );
 
-         }else if(snapshot.connectionState == ConnectionState.done){
-           if(snapshot.hasData){
-             balanceText = snapshot.data!.toString();
-           }else if(snapshot.hasError){
+         if (snapshot.connectionState == ConnectionState.done) {
+           if (snapshot.hasData) {
+             balanceText = snapshot.data!;
+           } else if (snapshot.hasError) {
              balanceText = "0";
            }
          }
-
          return Container(
              width: screenWidth,
              height: screenHeight * 0.16,
@@ -477,9 +470,17 @@ class DashboardScreen extends StatefulWidget {
 
                                ],
                              ),
-                             Text(
+
+                             snapshot.connectionState == ConnectionState.waiting
+                                 ? const SizedBox(
+                               height: 24,
+                               width: 24,
+                               child: CircularProgressIndicator(
+                                 strokeWidth: 2,
+                                 color: Colors.white,
+                               ),
+                             ) : Text(
                                formatBalance(balanceText),
-                               // formatBalance(walletVM.balance.toString()),
                                style: TextStyle(
                                    color: Colors.white,
                                    fontFamily: 'Poppins',

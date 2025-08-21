@@ -1,5 +1,6 @@
 import '../../../framework/utils/date_parser.dart';
 import '../../../framework/utils/enums/sort_option.dart';
+import '../../presentation/models/get_referral_user.dart';
 import '../../presentation/models/get_staking_history.dart';
 import '../model/PurchaseLogModel.dart';
 import '../model/ReferralUserListModel.dart';

@@ -9,6 +9,7 @@ import '../../domain/model/ReferralUserListModel.dart';
 import '../../presentation/models/eCommerce_model.dart';
 import '../../presentation/models/get_purchase_stats.dart';
 import '../../presentation/models/get_referral_stats.dart';
+import '../../presentation/models/get_referral_user.dart';
 import '../../presentation/models/token_model.dart';
 import '../../presentation/models/user_model.dart';
 import '../../presentation/viewmodel/bottom_nav_provider.dart';
@@ -177,7 +178,28 @@ class ApiService {
     }
   }
 
-   Future<List<ReferralUserListModel>> fetchReferralUsers() async {
+  //  Future<List<ReferralUserListModel>> fetchReferralUsers() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final token = prefs.getString('token');
+  //
+  //   final headers = {
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //     if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+  //   };
+  //
+  //   final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
+  //
+  //   final response = await http.get(url, headers: headers);
+  //   if (response.statusCode == 200) {
+  //     final decoded = json.decode(response.body);
+  //     final List data = decoded['data'] ?? [];
+  //     return data.map((e) => ReferralUserListModel.fromJson(e)).toList();
+  //   } else {
+  //     throw Exception('Failed to fetch referral users: ${response.statusCode}');
+  //   }
+  // }
+   Future<List<ReferralUserListModel>> fetchAllReferralUsers() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -187,16 +209,28 @@ class ApiService {
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
 
-    final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
+    List<ReferralUserListModel> allUsers = [];
+    int page = 1;
+    int lastPage = 1;
+    
+    do{
+      final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=$page');
 
-    final response = await http.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      final decoded = json.decode(response.body);
-      final List data = decoded['data'] ?? [];
-      return data.map((e) => ReferralUserListModel.fromJson(e)).toList();
-    } else {
-      throw Exception('Failed to fetch referral users: ${response.statusCode}');
-    }
+      final response = await http.get(url,headers: headers);
+      if(response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        final List data = decoded['data'] ?? [];
+
+        allUsers.addAll(data.map((e) => ReferralUserListModel.fromJson(e)).toList());
+        lastPage = decoded['last_page'] ?? 1;
+        page++;
+
+      }else{
+        throw Exception('Failed to fetch referral users: ${response.statusCode}');
+      }
+    } while (page <= lastPage);
+
+    return allUsers;
   }
 
   Future<PurchaseStatsModel> fetchPurchaseStats() async {

@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import '../../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../../framework/utils/status_styling_utils.dart';
 import '../../../../../domain/model/ReferralUserListModel.dart';
- import '../../transactions/widgets/transaction_details.dart';
+ import '../../../../../presentation/models/get_referral_user.dart';
+import '../../transactions/widgets/transaction_details.dart';
 import 'referral_details.dart';
 
 Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, double screenWidth, BuildContext context) {
@@ -75,7 +76,7 @@ Widget buildReferralUserListTable(List<ReferralUserListModel> userLogData, doubl
 
                 return DataRow2(
                   cells: [
-                    DataCell(buildCenteredText(data.sl, cellTextStyle)),
+                    // DataCell(buildCenteredText(data.sl, cellTextStyle)),
                     DataCell(buildCenteredText(data.date, cellTextStyle)),
                     DataCell(buildCenteredText(data.name, cellTextStyle)),
                     DataCell(buildCenteredText(data.userId, cellTextStyle)),

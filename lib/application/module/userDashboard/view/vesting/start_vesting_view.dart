@@ -21,6 +21,18 @@ class StartVestingView extends StatefulWidget {
 
 class _StartVestingViewState extends State<StartVestingView> {
 
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      await walletVM.ensureModalWithValidContext(context);
+      await walletVM.rehydrate();
+      await walletVM.getBalance();
+    });
+  }
+
   Future<String> resolveBalance() async {
 
     try{
@@ -145,7 +157,12 @@ class _StartVestingViewState extends State<StartVestingView> {
                         behavior: const ScrollBehavior().copyWith(overscroll: false),
 
                         child: RefreshIndicator(
-                          onRefresh: () async {},
+                          onRefresh: () async {
+                            final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.rehydrate();
+                            await walletVM.getBalance();
+                          },
                           child: SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),
 

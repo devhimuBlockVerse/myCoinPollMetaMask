@@ -1,22 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
-import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
+import '../../../../../framework/utils/dynamicFontSize.dart';
+import '../../../../data/services/api_service.dart';
+import '../../../../presentation/viewmodel/user_auth_provider.dart';
+import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../../side_nav_bar.dart';
-import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
+import '../dashboard/dashboard_screen.dart';
 
-
-class VestingView extends StatefulWidget {
-  const VestingView({super.key});
+class StartVestingView extends StatefulWidget {
+  const StartVestingView({super.key});
 
   @override
-  State<VestingView> createState() => _VestingViewState();
+  State<StartVestingView> createState() => _StartVestingViewState();
 }
 
-class _VestingViewState extends State<VestingView> {
+class _StartVestingViewState extends State<StartVestingView> {
+
+  Future<String> resolveBalance() async {
+
+    try{
+
+      final prefs = await SharedPreferences.getInstance();
+      final authMethod = prefs.getString('auth_method') ?? '';
+      String contract = prefs.getString('dashboard_contract_address') ?? '';
+
+      if(contract.isEmpty){
+        final details = await ApiService().fetchTokenDetails('e-commerce-coin');
+        final contract = (details.contractAddress ?? '').trim();
+        if(contract.isNotEmpty && contract.length == 42 && contract.startsWith('0x')){
+          await prefs.setString('dashboard_contract_address', contract);
+        }else{
+          return '0';
+        }
+      }
+
+
+      if (authMethod == 'password') {
+        final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+
+        final providerAddr = (userAuth.user?.ethAddress ?? '').trim().toLowerCase();
+        final prefsAddr = (prefs.getString('ethAddress') ?? '').trim().toLowerCase();
+        final userAddress = providerAddr.isNotEmpty ? providerAddr : prefsAddr;
+
+        if (userAddress.isEmpty || userAddress.length != 42 || !userAddress.startsWith('0x')) return '0';
+
+        try {
+          final human = await ApiService().fetchTokenBalanceHuman(contract, userAddress, decimals: 18);
+          return human;
+        } catch (_) {
+          return '0';
+        }
+      }
+
+      // Web3 path (on-chain)
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      try {
+        return await walletVM.getBalance();
+      } catch (_) {
+        return '0';
+      }
+
+
+    }catch(e){
+      return '0';
+    }
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -99,11 +155,11 @@ class _VestingViewState extends State<VestingView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
 
-                                buyECMHeader(screenHeight, screenWidth, context),
+                                totalBalance(screenHeight, screenWidth, context),
 
                                 SizedBox(height: screenHeight * 0.02),
 
-                                whyVesting(screenHeight, screenWidth, context)
+                                vestingInfo(screenHeight, screenWidth, context)
 
                               ],
                             ),
@@ -119,58 +175,71 @@ class _VestingViewState extends State<VestingView> {
     );
   }
 
-  Widget buyECMHeader(screenHeight, screenWidth, context){
-    return VestingContainer(
-      width: screenWidth * 0.9,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+  Widget totalBalance(screenHeight, screenWidth, context){
+    String balanceText = '...';
 
-          SizedBox(height: screenHeight * 0.02),
+    return FutureBuilder<String>(
+        future: resolveBalance(),
+        builder: (context,snapshot) {
+          String balanceText = '...';
 
-          Text(
-            'You haven’t purchased \n ECM yet',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(0XFFFFF5ED),
-              fontSize: getResponsiveFontSize(context, 22),
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              balanceText = snapshot.data!;
+            } else if (snapshot.hasError) {
+              balanceText = "0";
+            }
+          }
+          return VestingContainer(
+            width: screenWidth * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                SizedBox(height: screenHeight * 0.02),
+
+                Text(
+                  'Total Balance',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0XFFFFF5ED),
+                    fontSize: getResponsiveFontSize(context, 12),
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.001),
+                ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: const [
+                        Color(0xFF2680EF),
+                        Color(0xFF1CD494),
+                      ],
+                    ).createShader(bounds);
+                  },
+                  child: Text(
+                    'ECM ${_formatBalance(balanceText)}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getResponsiveFontSize(context, 22),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+
+              ],
             ),
-          ),
-
-          SizedBox(height: screenHeight * 0.02),
-
-          BlockButton(
-            height: screenHeight * 0.05,
-            width: screenWidth * 0.8,
-            label: 'BUY ECM NOW',
-            textStyle:  TextStyle(
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-              fontSize: getResponsiveFontSize(context, 14),
-              height: 1.6,
-            ),
-            gradientColors: const [
-              Color(0xFF2680EF),
-              Color(0xFF1CD494)
-            ],
-            onTap: () {
-              Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
-            },
-            iconPath: 'assets/icons/arrowIcon.svg',
-            iconSize : screenHeight * 0.013,
-          ),
-          SizedBox(height: screenHeight * 0.02),
-
-        ],
-      ),
+          );
+        }
     );
 
   }
-
-  Widget whyVesting(screenHeight, screenWidth, context){
+  Widget vestingInfo(screenHeight, screenWidth, context){
     final vestingData = [
       {
         "image": "assets/images/vestingImg1.png",
@@ -206,7 +275,7 @@ class _VestingViewState extends State<VestingView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Why vesting?',
+            'Vesting info',
             style: TextStyle(
               color: Color(0XFFFFF5ED),
               fontSize: getResponsiveFontSize(context, 16),
@@ -216,21 +285,35 @@ class _VestingViewState extends State<VestingView> {
           ),
 
           SizedBox(height: screenHeight * 0.02),
-          
-          ...vestingData.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: VestingItem(
-              imagePath: item['image']!,
-              text: item['text']!,
-              height: screenHeight,
+
+          BlockButton(
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.8,
+            label: 'Start Vesting',
+            textStyle:  TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              fontSize: getResponsiveFontSize(context, 16),
+              height: 1.6,
             ),
-          )),
+            gradientColors: const [
+              Color(0xFF2680EF),
+              Color(0xFF1CD494)
+            ],
+            onTap: () {
+              /// Show Sleep Period UI
+             },
+
+          ),
 
         ],
       ),
     );
   }
 
+
 }
-
-
+String _formatBalance(String balance) {
+  if (balance.length <= 6) return balance;
+  return '${balance.substring(0, 9)}';
+}

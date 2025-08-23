@@ -80,23 +80,9 @@ class DashboardScreen extends StatefulWidget {
      }
    }
 
-   /// Implement Later
-   // Future<String> _getDashboardContractAddress() async {
-   //   final prefs = await SharedPreferences.getInstance();
-   //   final cached = prefs.getString('dashboard_contract_address');
-   //   if (cached != null && cached.isNotEmpty && cached.length == 42 && cached.startsWith('0x')) {
-   //     return cached;
-   //   }
-   //   final details = await ApiService().fetchTokenDetails(kDashboardTokenSlug);
-   //   final contract = (details.contractAddress ?? '').trim();
-   //   if (contract.isEmpty || contract.length != 42 || !contract.startsWith('0x')) {
-   //     return '';
-   //   }
-   //
-   //   await prefs.setString('dashboard_contract_address', contract);
-   //   return contract;
-   // }
-   Future<String> _resolveBalance() async {
+
+
+   Future<String> resolveBalance() async {
 
      try{
 
@@ -413,11 +399,9 @@ class DashboardScreen extends StatefulWidget {
    Widget _EcmWithGraphChart(){
      double screenWidth = MediaQuery.of(context).size.width;
      double screenHeight = MediaQuery.of(context).size.height;
-     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
      return FutureBuilder<String>(
-       // future: walletVM.getBalance(),
-       future: _resolveBalance(),
+        future: resolveBalance(),
        builder: (context,snapshot){
          String balanceText = '...';
 
@@ -650,6 +634,7 @@ class DashboardScreen extends StatefulWidget {
    }
 
  }
+
 String formatBalance(String balance) {
   if (balance.length <= 6) return balance;
   return '${balance.substring(0, 9)}...';

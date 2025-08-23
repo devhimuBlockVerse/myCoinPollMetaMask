@@ -218,12 +218,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    final bool isPortrait = screenHeight > screenWidth;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
-
     final containerWidth = screenWidth;
-    // final containerHeight = screenHeight * 0.12;
-    // final minContainerHeight = screenHeight * 0.15;
 
     final horizontalPadding = containerWidth * 0.03;
     final itemSpacing = screenWidth * 0.02;
@@ -247,16 +242,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
           navItems: navItems,
           onScreenSelected: (id) => navProvider.setScreen(id),
           onLogoutTapped: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Logout Pressed")));
+
           },
         ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
 
         body: SafeArea(
-          top: false,
-          child: Container(
+           child: Container(
               width: screenWidth,
               height: screenHeight,
               decoration: const BoxDecoration(
@@ -268,23 +261,37 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   filterQuality: FilterQuality.low
                 ),
               ),
-              child:
-              Column(
+              child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child:  Text(
-                      'Transactions',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        // fontSize: 20
-                        fontSize: screenWidth * 0.05,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/back_button.svg',
+                          color: Colors.white,
+                          width: screenWidth * 0.04,
+                          height: screenWidth * 0.04,
+                        ),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Transactions',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: screenWidth * 0.05,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.12),
+                    ],
                   ),
 
                   Expanded(
@@ -367,8 +374,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                             Expanded(
                                               child: _buildStatCard(
                                                 title: 'Purchased\nAmount',
-
-                                                // value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
                                                 value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toStringAsFixed(2)
                                                     : '0.00',
 

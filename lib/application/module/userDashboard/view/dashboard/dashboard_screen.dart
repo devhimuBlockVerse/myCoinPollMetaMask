@@ -611,7 +611,7 @@ class DashboardScreen extends StatefulWidget {
                      TransactionStatCard(
                        bgImagePath: 'assets/images/colorPurple.png',
                        title: 'Purchased Amount ',
-                       value: _purchaseStats != null ? _purchaseStats!.totalPurchases.toString() : '0',
+                       value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toStringAsFixed(2) : '0',
 
                      ),
 
@@ -652,7 +652,7 @@ class DashboardScreen extends StatefulWidget {
  }
 String formatBalance(String balance) {
   if (balance.length <= 6) return balance;
-  return '${balance.substring(0, 8)}...';
+  return '${balance.substring(0, 9)}...';
 }
 
  class AnimatedTransactionLoader extends StatefulWidget {

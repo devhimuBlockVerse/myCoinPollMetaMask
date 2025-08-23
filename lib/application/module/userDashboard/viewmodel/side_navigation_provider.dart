@@ -13,6 +13,7 @@ import '../../../presentation/viewmodel/user_auth_provider.dart';
 import '../../../presentation/viewmodel/wallet_view_model.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
+import '../view/transactions/transaction_screen.dart';
 import 'dashboard_nav_provider.dart';
 
 class NavigationProvider extends ChangeNotifier {
@@ -44,6 +45,14 @@ class NavigationProvider extends ChangeNotifier {
       title: 'Purchase Log',
       iconPath: 'assets/icons/purchase_log.svg',
       screenBuilder: (context) => const PurchaseLogScreen(),
+
+    ),
+
+    NavItem(
+      id: 'transaction',
+      title: 'Transactions',
+      iconPath: 'assets/icons/transaction.svg',
+      screenBuilder: (context) => const TransactionScreen(),
 
     ),
 

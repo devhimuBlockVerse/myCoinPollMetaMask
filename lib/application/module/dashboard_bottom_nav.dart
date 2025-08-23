@@ -24,13 +24,13 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ProfileScreen(),
   ];
 
-  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Settings'];
+  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Vesting', 'Settings'];
 
   final List<String> _imgPaths = [
     'assets/icons/dasboard.svg',
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
-    // 'assets/icons/transaction.svg',
+    // 'assets/icons/transaction.svg',Transactions
     'assets/icons/vesting.svg',
     'assets/icons/profileIcon.svg',
   ];

@@ -16,7 +16,6 @@ import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
   import '../../../../../framework/utils/status_styling_utils.dart';
 import '../../../../data/services/api_service.dart';
-import '../../../../domain/model/ReferralUserListModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../../../presentation/models/get_referral_stats.dart';
 import '../../../../presentation/models/get_referral_user.dart';
@@ -692,7 +691,6 @@ class ReferralStatScreen extends StatefulWidget {
 //   }
 //
 // }
-
 class _ReferralStatScreenState extends State<ReferralStatScreen> {
   UserModel? currentUser;
   ReferralStatsModel? _referralStats;
@@ -713,8 +711,6 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
 
   int _currentPage = 1;
   final int _perPage = 20;
-
-
 
 
   @override
@@ -861,8 +857,6 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
           navItems: navItems,
           onScreenSelected: (id) => navProvider.setScreen(id),
           onLogoutTapped: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Logout Pressed")));
           },
         ),
         extendBodyBehindAppBar: true,
@@ -880,8 +874,7 @@ class _ReferralStatScreenState extends State<ReferralStatScreen> {
                   alignment: Alignment.topRight,
                 ),
               ),
-              child:
-              Column(
+              child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,

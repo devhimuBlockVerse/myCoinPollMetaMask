@@ -238,6 +238,7 @@ class _SignInState extends State<SignIn> {
         type: MessageType.error,
         duration: CustomToastLength.LONG,
       );
+
     } finally {
       if (mounted) setState(() => _isNavigating = false);
     }

@@ -30,7 +30,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     'assets/icons/dasboard.svg',
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
-    'assets/icons/transaction.svg',
+    // 'assets/icons/transaction.svg',
+    'assets/icons/vesting.svg',
     'assets/icons/profileIcon.svg',
   ];
 

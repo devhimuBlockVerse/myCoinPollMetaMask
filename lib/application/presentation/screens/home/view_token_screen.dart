@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/models/eCommerce_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
@@ -17,8 +14,6 @@ import '../../../../framework/components/badgeComponent.dart';
 import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
-import '../../../../framework/components/custonButton.dart';
-import '../../../../framework/components/loader.dart';
 import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
@@ -72,7 +67,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
-    ecmController.addListener(_updateEthAmount);
+    ecmController.addListener(_updateEthFromECM);
+    ethController.addListener(_updateECMFromEth);
     _tokenDetailsFuture = ApiService().fetchTokenDetails('e-commerce-coin');
     fetchTokens();
     WidgetsBinding.instance.addObserver(this);
@@ -140,80 +136,38 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     }
   }
 
-  void _updateEthAmount() {
+  void _updateEthFromECM() {
     if (_isUpdating) return;
     _isUpdating = true;
 
+    final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    final ecmAmount = Decimal.tryParse(ecmController.text) ?? Decimal.zero;
-    if (ecmAmount > Decimal.zero && walletVM.ethPrice > 0) {
-      final ethAmount = (ecmAmount * Decimal.parse(walletVM.ethPrice.toString())).toStringAsFixed(6);
-      ethController.text = ethAmount;
-    } else {
-      ethController.text = '';
-    }
-    setState(() {});
+    final ethAmount = ecmAmount * walletVM.ethPrice;
+
+    ethController.text = ethAmount.toStringAsFixed(6);
+
     _isUpdating = false;
   }
+  void _updateECMFromEth() {
+    if (_isUpdating) return;
+    _isUpdating = true;
 
-
-  Future<void> downloadWhitepaperPdf(BuildContext context) async {
-    const String fileUrl = 'https://raw.githubusercontent.com/devhimuBlockVerse/ecm-whitepaper/main/ECM-Whitepaper.pdf';
-    const String fileName = 'ECM-Whitepaper.pdf';
-
-    try {
-      // Request permission
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        ToastMessage.show(
-          message: "Permission Denied",
-          subtitle: "Storage permission is required to download the file.",
-          type: MessageType.info,
-          duration: CustomToastLength.LONG,
-          gravity: CustomToastGravity.BOTTOM,
-        );
-        return;
-      }
-
-      // Save to Download folder directly
-      final directory = Directory('/storage/emulated/0/Download');
-
-      if (!await directory.exists()) {
-        await directory.create(recursive: true);
-      }
-
-
-      final filePath = '${directory!.path}/$fileName';
-
-      // Start downloading
-      final dio = Dio();
-      await dio.download(fileUrl, filePath);
-
-      ToastMessage.show(
-        message: "Download Complete",
-        subtitle: "Saved to: Download/$fileName",
-        type: MessageType.success,
-        duration: CustomToastLength.LONG,
-        gravity: CustomToastGravity.BOTTOM,
-      );
-
-    } catch (e) {
-
-      ToastMessage.show(
-        message: "Download Failed",
-        subtitle: "An error occurred while downloading the file.",
-        type: MessageType.error,
-        duration: CustomToastLength.LONG,
-        gravity: CustomToastGravity.BOTTOM,
-      );
-      print("Download errorL: $e");
+    final ethAmount = double.tryParse(ethController.text) ?? 0.0;
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    if (walletVM.ethPrice > 0) {
+      final ecmAmount = ethAmount / walletVM.ethPrice;
+      ecmController.text = ecmAmount.toStringAsFixed(6);
     }
+    _isUpdating = false;
   }
 
 
   @override
   void dispose() {
      ecmController.dispose();
+     ethController.dispose();
+     ecmController.removeListener(_updateEthFromECM);
+     ethController.removeListener(_updateECMFromEth);
      readingMoreController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -292,8 +246,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
 
                           /// White Paper Section
-                          // _buildTokenCard(),
-                          ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
+                            ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
                           SizedBox(height: screenHeight * 0.04),
 
@@ -309,8 +262,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             description: tokens.first.description
                                 .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
                                 .trim(),
-                            imagePath: 'assets/images/ecmLogo.png',
-                            // imagePath: tokens.first.logo,
+                             imagePath: tokens.first.logo,
                             backgroundImagePath: 'assets/images/bg.png',
                             width: screenWidth ,
                           ),
@@ -320,11 +272,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           SizedBox(height: screenHeight * 0.04),
 
                           InfoCard(
-                            // label1: 'METAFUSION LABS',
                             label1: tokens.first.tokenCompany,
                             label2: 'Founder',
                             description: tokens.first.companyDetails,
-                            imagePath: 'assets/images/metaFutionImg.png',
+                            imagePath: tokens.first.companyLogo,
+
                             width: screenWidth ,
                           ),
 
@@ -771,280 +723,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
   }
 
   /// Buy ECM Section
-  // Widget _buildBuyEcmSection() {
-  //   final Size screenSize = MediaQuery.of(context).size;
-  //
-  //   final double screenWidth = MediaQuery.of(context).size.width;
-  //   final double screenHeight = MediaQuery.of(context).size.height;
-  //   final bool isPortrait = screenSize.height > screenSize.width;
-  //   final double textScale = isPortrait ? screenWidth / 400 : screenHeight / 400;
-  //   final double paddingScale = screenWidth * 0.04;
-  //   final baseSize = isPortrait ? screenWidth : screenHeight;
-  //   return  Padding(
-  //     padding: const EdgeInsets.all(2.0),
-  //     child: Column(
-  //       children: [
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               'Initial Coin Offering',
-  //               style: TextStyle(
-  //                 fontFamily: 'Poppins',
-  //                 fontWeight: FontWeight.w500,
-  //                 // fontSize: baseSize * 0.045,
-  //                 fontSize: getResponsiveFontSize(context, 16),
-  //                 color: Colors.white,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: screenHeight * 0.02),
-  //         Align(
-  //           alignment: Alignment.center,
-  //           child: Container(
-  //             width: screenWidth,
-  //             decoration: BoxDecoration(
-  //               border: Border.all(
-  //                   color: Colors.transparent
-  //               ),
-  //               image:const DecorationImage(
-  //                 image: AssetImage('assets/images/buyEcmContainerImageV.png'),
-  //                 fit: BoxFit.fill,
-  //                 filterQuality: FilterQuality.medium,
-  //               ),
-  //             ),
-  //             child: Consumer<WalletViewModel>(builder: (context, walletVM, child) {
-  //               WidgetsBinding.instance.addPostFrameCallback((_) {
-  //                 _updatePayableAmount();
-  //               });
-  //               return Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   const SizedBox(height: 18),
-  //
-  //                   ECMProgressIndicator(
-  //                     stageIndex: walletVM.stageIndex,
-  //                     currentECM: walletVM.currentECM,
-  //                     maxECM:  walletVM.maxECM,
-  //                   ),
-  //
-  //
-  //                   SizedBox(
-  //                     width: screenWidth * 0.9,
-  //                     child: const Divider(
-  //                       color: Colors.white12,
-  //                       thickness: 1,
-  //                       height: 20,
-  //                     ),
-  //                   ),
-  //                   /// Address Section
-  //                   if (walletVM.isConnected)...[
-  //                     Padding(
-  //                       padding: const EdgeInsets.all(8.0),
-  //                       child: Column(
-  //                         mainAxisSize: MainAxisSize.min,
-  //                         children: [
-  //                           CustomLabeledInputField(
-  //                             labelText: 'Your Address:',
-  //                             hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
-  //                                 ? walletVM.walletAddress
-  //                                 : 'Not connected',
-  //                             controller: readingMoreController,
-  //                             isReadOnly: true,
-  //                           ),
-  //                           SizedBox(height: screenHeight * 0.02),
-  //
-  //                           CustomLabeledInputField(
-  //                             labelText: 'Referred By:',
-  //                             // hintText: '0x0000000000000000000000000000000000000000',
-  //                             hintText: _isReferredByLoading ?'Loading...'
-  //                                 : (_referredByAddress.isNotEmpty ? _referredByAddress : 'Not found'),
-  //
-  //                             controller: referredController,
-  //                             isReadOnly:
-  //                             false, // or false
-  //                           ),
-  //
-  //                         ],
-  //                       ),
-  //                     ),
-  //                     SizedBox(
-  //                       width: screenWidth * 0.9,
-  //                       child: const Divider(
-  //                         color: Colors.white12,
-  //                         thickness: 1,
-  //                         height: 20,
-  //                       ),
-  //                     ),
-  //                   ],
-  //
-  //                   ///Action Buttons
-  //                   Padding(
-  //                     padding: const EdgeInsets.symmetric( horizontal: 18.0 , vertical: 10),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                       children: [
-  //                         //Buy with ETH Button
-  //                         Expanded(
-  //                           child: CustomButton(
-  //                             text: 'Buy with ETH',
-  //                             icon: 'assets/images/eth.png',
-  //                             isActive: isETHActive,
-  //                             onPressed: () {
-  //                               if (isETHActive) return;
-  //                               setState(() {
-  //                                 isETHActive = true;
-  //                                 isUSDTActive = false;
-  //                               });
-  //                               _updatePayableAmount();
-  //                             },
-  //
-  //
-  //
-  //                           ),
-  //                         ),
-  //                         const SizedBox(width: 12),
-  //                         //Buy with USDT Button
-  //                         Expanded(
-  //                           child:
-  //                           CustomButton(
-  //                             text: 'Buy with USDT',
-  //                             icon: 'assets/images/usdt.png',
-  //                             isActive: isUSDTActive,
-  //                             onPressed: () {
-  //                               if (isUSDTActive) return;
-  //                               setState(() {
-  //                                 isUSDTActive = true;
-  //                                 isETHActive = false;
-  //                               });
-  //                               _updatePayableAmount();
-  //                             },
-  //
-  //
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 5),
-  //
-  //                   Text(
-  //                     isETHActive
-  //                         ? "1 ECM = ${_ethPrice.toStringAsFixed(5)} ETH"
-  //                         : "1 ECM = ${_usdtPrice.toStringAsFixed(1)} USDT",
-  //
-  //                     style:  TextStyle(
-  //                       color: Colors.white,
-  //                       // fontSize: screenWidth * 0.032,
-  //                       fontSize: getResponsiveFontSize(context, 13),
-  //                       fontWeight: FontWeight.w400,
-  //                       fontFamily: 'Poppins',
-  //                       height: 1.6,
-  //                     ),
-  //                   ),
-  //
-  //                   const SizedBox(height: 18),
-  //
-  //
-  //                   /// ECm AMount INput Section
-  //                   CustomInputField(
-  //                     hintText: 'ECM',
-  //                     iconAssetPath: 'assets/images/ecm.png',
-  //                     controller: ecmController,
-  //                   ),
-  //                   const SizedBox(height: 12),
-  //                   CustomInputField(
-  //                     hintText: isETHActive ? 'ETH ' : 'USDT ',
-  //                     iconAssetPath: isETHActive ? 'assets/images/eth.png' : 'assets/images/usdt.png',
-  //                     controller: usdtController,
-  //
-  //                   ),
-  //
-  //                   const SizedBox(height: 18),
-  //                   CustomGradientButton(
-  //                     label: 'Buy ECM',
-  //                     width: MediaQuery.of(context).size.width * 0.7,
-  //                     height: MediaQuery.of(context).size.height * 0.05,
-  //                     leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
-  //                     onTap: () async {
-  //
-  //                       if (!walletVM.isConnected) {
-  //
-  //                         try {
-  //                           await walletVM.ensureModalWithValidContext(context);
-  //                           await walletVM.appKitModal?.openModalView();
-  //                         } catch (e) {
-  //                           debugPrint("Failed to open wallet modal: $e");
-  //                           return;
-  //                         }
-  //
-  //                         return;
-  //                       }
-  //
-  //                       try{
-  //                         final inputEth = ecmController.text.trim();
-  //                         final ethDouble = double.tryParse(inputEth);
-  //                         if (ethDouble == null || ethDouble <= 0) {
-  //                           ToastMessage.show(
-  //                             message: "Invalid Amount",
-  //                             subtitle: "Please enter a valid ECM amount.",
-  //                             type: MessageType.info,
-  //                             duration: CustomToastLength.SHORT,
-  //                             gravity: CustomToastGravity.BOTTOM,
-  //                           );
-  //                           return;
-  //                         }
-  //
-  //                         final ecmAmountInWeiETH = BigInt.from(ethDouble * 1e18);
-  //                         final ecmAmountInWeiUSDT = BigInt.from(ethDouble * 1e6);
-  //
-  //
-  //                         final isETH = isETHActive;
-  //                         final amount = isETH ? ecmAmountInWeiETH : ecmAmountInWeiUSDT;
-  //
-  //                         showDialog(
-  //                           context: context,
-  //                           barrierDismissible: false,
-  //                           builder: (_) => const Center(
-  //                             child: CircularProgressIndicator(color: Colors.white),
-  //                           ),
-  //                         );
-  //
-  //                         if (isETH) {
-  //                           // await walletVM.buyECMWithETH(EtherAmount.inWei(amount),context);
-  //                         } else  {
-  //                           final referralAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
-  //                           await walletVM.buyECMWithUSDT(amount,referralAddress,context);
-  //                         }
-  //                         Navigator.pop(context);
-  //                         ecmController.clear();
-  //                       }catch (e) {
-  //                         Navigator.pop(context);
-  //                         debugPrint("Buy ECM failed: $e");
-  //
-  //                       }
-  //                     },
-  //                     gradientColors: const [
-  //                       Color(0xFF2D8EFF),
-  //                       Color(0xFF2EE4A4)
-  //                     ],
-  //                   ),
-  //                   const SizedBox(height: 18),
-  //
-  //
-  //                 ],
-  //               );
-  //             }
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildBuyEcmSection() {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -1091,23 +769,22 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                   children: [
                     const SizedBox(height: 18),
 
-
-
-                    SizedBox(
-                      width: screenWidth * 0.9,
-                      child: const Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                        height: 15,
-                      ),
-                    ),
                     /// Address Section
                     if (walletVM.isConnected)...[
+                      SizedBox(
+                        width: screenWidth * 0.9,
+                        child: const Divider(
+                          color: Colors.white12,
+                          thickness: 1,
+                          height: 15,
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+
                             CustomLabeledInputField(
                               labelText: 'Your Address:',
                               hintText: walletVM.isConnected && walletVM.walletAddress.isNotEmpty
@@ -1141,7 +818,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     ///Action Buttons
                     const SizedBox(height: 5),
                     Text(
-                      // "1 ECM = ${walletVM.ethPrice.toStringAsFixed(6)} ETH",
                       walletVM.ethPrice > 0
                           ? "1 ECM = ${walletVM.ethPrice.toStringAsFixed(6)} ETH"
                           : "Loading...",
@@ -1195,21 +871,15 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             );
                             return;
                           }
-                          if (ecmAmount < 50) {
-                            ToastMessage.show(
-                              message: "Minimum Purchase",
-                              subtitle: "Minimum purchase amount is 50 ECM.",
-                              type: MessageType.info,
-                              duration: CustomToastLength.SHORT,
-                              gravity: CustomToastGravity.BOTTOM,
-                            );
-                            return;
-                          }
-                          final ethAmount = Decimal.parse(ethController.text.trim());
+
+                          final ethPricePerECM = walletVM.ethPrice;
+                          final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
                           final ethAmountInWei = EtherAmount.fromBigInt(
                             EtherUnit.wei,
-                            (ethAmount * Decimal.parse('1e18')).toBigInt(),
+                            (requiredEth * Decimal.parse('1e18')).toBigInt(),
                           );
+
+
                           showDialog(
                             context: context,
                             barrierDismissible: false,
@@ -1217,13 +887,17 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                               child: CircularProgressIndicator(color: Colors.white),
                             ),
                           );
+
+                          final referralInput = referredController.text.trim();
+                          final referralAddress = referralInput.isNotEmpty &&
+                              EthereumAddress.fromHex(referralInput).hex != defaultReferrerAddress
+                              ? EthereumAddress.fromHex(referralInput)
+                              : EthereumAddress.fromHex(defaultReferrerAddress);
+
+
                           final txHash = await walletVM.buyECMWithETH(
                             ethAmount: ethAmountInWei,
-                            referralAddress: _referredByAddress.isNotEmpty &&
-                                EthereumAddress.fromHex(_referredByAddress).hex !=
-                                    defaultReferrerAddress
-                                ? EthereumAddress.fromHex(_referredByAddress)
-                                : EthereumAddress.fromHex(defaultReferrerAddress),
+                            referralAddress: referralAddress,
                             context: context,
                           );
                           Navigator.of(context).pop();
@@ -1248,32 +922,6 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                         Color(0xFF2EE4A4)
                       ],
                     ),
-                    if (walletVM.isConnected && walletVM.lastTransactionHash != null) ...[
-                      const SizedBox(height: 18),
-                      InkWell(
-                        onTap: () {
-                          launchUrl(
-                            Uri.parse('https://sepolia.etherscan.io/tx/${walletVM.lastTransactionHash}'),
-                            mode: LaunchMode.externalApplication,
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white12),
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          child: Text(
-                            'Hash: ${walletVM.lastTransactionHash}',
-                            style: const TextStyle(
-                              color: Color(0xFF2EE4A4),
-                              fontSize: 12,
-                              fontFamily: 'Poppins',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                     const SizedBox(height: 18),
 
 
@@ -1287,6 +935,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
       ),
     );
   }
+
 
 
   /// Strategic Token Section

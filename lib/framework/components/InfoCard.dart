@@ -96,7 +96,10 @@ class InfoCard extends StatelessWidget {
                       height: baseSize * 0.12,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(imagePath),
+                          // image: AssetImage(imagePath),
+                          image: imagePath.startsWith('http')
+                              ? NetworkImage(imagePath)
+                              : AssetImage(imagePath) as ImageProvider,
                           fit: BoxFit.contain,
                           filterQuality: FilterQuality.medium,
 

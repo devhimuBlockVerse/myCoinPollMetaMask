@@ -8,12 +8,42 @@
             },
             {
                 "internalType": "address",
-                "name": "_usdtToken",
+                "name": "_priceFeed",
                 "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_vestingFactory",
+                "type": "address"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_tge",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_cliff",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_end",
+                "type": "uint64"
             }
         ],
         "stateMutability": "nonpayable",
         "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "EnforcedPause",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ExpectedPause",
+        "type": "error"
     },
     {
         "inputs": [
@@ -38,6 +68,67 @@
         "type": "error"
     },
     {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            }
+        ],
+        "name": "SafeERC20FailedOperation",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "minAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "percentage",
+                "type": "uint256"
+            }
+        ],
+        "name": "BonusParametersSet",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "BonusPoolReduced",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "enabled",
+                "type": "bool"
+            }
+        ],
+        "name": "BonusToggled",
+        "type": "event"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -47,9 +138,21 @@
                 "type": "address"
             },
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "vestingWallet",
+                "type": "address"
+            },
+            {
                 "indexed": false,
                 "internalType": "uint256",
                 "name": "bonusAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
                 "type": "uint256"
             }
         ],
@@ -62,11 +165,11 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "newStage",
+                "name": "price",
                 "type": "uint256"
             }
         ],
-        "name": "CurrentStageUpdated",
+        "name": "ECMPriceUsdSet",
         "type": "event"
     },
     {
@@ -79,31 +182,80 @@
                 "type": "address"
             },
             {
+                "indexed": true,
+                "internalType": "address",
+                "name": "referrer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "vestingWallet",
+                "type": "address"
+            },
+            {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "amount",
+                "name": "totalECM",
                 "type": "uint256"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "stage",
+                "name": "paymentAmountETH",
                 "type": "uint256"
             },
             {
                 "indexed": false,
-                "internalType": "enum ECMCoinICO.PaymentType",
-                "name": "paymentType",
-                "type": "uint8"
+                "internalType": "uint256",
+                "name": "ethUsdPriceUsed",
+                "type": "uint256"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "paymentAmount",
+                "name": "ecmPriceUSDUsed",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "baseECM",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bonusECM",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "referralECM",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
                 "type": "uint256"
             }
         ],
         "name": "ECMPurchased",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "target",
+                "type": "uint256"
+            }
+        ],
+        "name": "ECMTargetSet",
         "type": "event"
     },
     {
@@ -124,13 +276,13 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "usdtAmount",
+                "name": "ecmAmount",
                 "type": "uint256"
             },
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "ecmAmount",
+                "name": "timestamp",
                 "type": "uint256"
             }
         ],
@@ -154,12 +306,38 @@
             },
             {
                 "indexed": false,
-                "internalType": "enum ECMCoinICO.PaymentType",
-                "name": "paymentType",
-                "type": "uint8"
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
             }
         ],
         "name": "FundsWithdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "ICOCompleted",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "secondsValue",
+                "type": "uint256"
+            }
+        ],
+        "name": "MaxStalePeriodSet",
         "type": "event"
     },
     {
@@ -198,9 +376,59 @@
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "saleAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "referralAmount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "bonusAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Prefunded",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "ReferralPoolReduced",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "referrer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "referee",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "refVesting",
                 "type": "address"
             },
             {
@@ -212,43 +440,11 @@
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "paymentAmount",
+                "name": "timestamp",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "enum ECMCoinICO.PaymentType",
-                "name": "paymentType",
-                "type": "uint8"
             }
         ],
         "name": "ReferralRewardPaid",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "stageIndex",
-                "type": "uint256"
-            }
-        ],
-        "name": "StageCompleted",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "stageIndex",
-                "type": "uint256"
-            }
-        ],
-        "name": "StageUpdated",
         "type": "event"
     },
     {
@@ -264,6 +460,12 @@
                 "indexed": false,
                 "internalType": "uint256",
                 "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
                 "type": "uint256"
             }
         ],
@@ -297,8 +499,106 @@
         "type": "event"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "vesting",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "oldOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "VestingOwnershipTransferred",
+        "type": "event"
+    },
+    {
         "inputs": [],
-        "name": "bonusPercentage",
+        "name": "ORACLE_DECIMALS",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "REFERRAL_PERCENT",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "baseSold",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "bonusParams",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "isBonusEnabled",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "minBonusAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "bonusPercentage",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "totalBonusDistributed",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "bonusPool",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -325,29 +625,17 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            },
-            {
                 "internalType": "address",
-                "name": "referrer",
+                "name": "newOwner",
                 "type": "address"
             }
         ],
-        "name": "buyECMWithUSDT",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "currentStage",
+        "name": "canReceiveVesting",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "bool",
                 "name": "",
-                "type": "uint256"
+                "type": "bool"
             }
         ],
         "stateMutability": "view",
@@ -355,47 +643,12 @@
     },
     {
         "inputs": [],
-        "name": "currentStageInfo",
+        "name": "cliff",
         "outputs": [
             {
-                "internalType": "uint256",
-                "name": "stageIndex",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "target",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ethPrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "usdtPrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ecmRefBonus",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "paymentRefBonus",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ecmSold",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "isCompleted",
-                "type": "bool"
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
             }
         ],
         "stateMutability": "view",
@@ -423,7 +676,62 @@
     },
     {
         "inputs": [],
-        "name": "minBonusAmount",
+        "name": "end",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "icoParams",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "ecmPriceUSD",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "ecmTarget",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "isCompleted",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "isVestingClone",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "maxStalePeriod",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -432,6 +740,29 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "vesting",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "oldOwner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "onVestingOwnershipTransferred",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -468,10 +799,108 @@
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "saleAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "referralAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "bonusAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "prefundAll",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "priceFeed",
+        "outputs": [
+            {
+                "internalType": "contract AggregatorV3Interface",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "recoverERC20",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "referralPool",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "referralStats",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "totalECMReferralDistributed",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "renounceOwnership",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "saleInventory",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -496,11 +925,37 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "newStage",
+                "name": "_price",
                 "type": "uint256"
             }
         ],
-        "name": "setCurrentStage",
+        "name": "setECMPriceUSD",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_target",
+                "type": "uint256"
+            }
+        ],
+        "name": "setECMTarget",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_maxStalePeriod",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMaxStalePeriod",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -519,49 +974,13 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "stages",
+        "inputs": [],
+        "name": "tge",
         "outputs": [
             {
-                "internalType": "uint256",
-                "name": "target",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ethPrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "usdtPrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ecmRefBonus",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "paymentRefBonus",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "ecmSold",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "isCompleted",
-                "type": "bool"
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
             }
         ],
         "stateMutability": "view",
@@ -569,93 +988,9 @@
     },
     {
         "inputs": [],
-        "name": "totalBonusDistributed",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalECMReferralDistributed",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalETHReferralDistributed",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalEcmSold",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalEcmSoldByETH",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalEcmSoldByUSDT",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalUSDTReferralDistributed",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
+        "name": "toggleBonus",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -694,55 +1029,65 @@
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "stageIndex",
-                "type": "uint256"
-            },
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "vestingCount",
+        "outputs": [
             {
                 "internalType": "uint256",
-                "name": "ethPrice",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "usdtPrice",
+                "name": "",
                 "type": "uint256"
             }
         ],
-        "name": "updateStagePrices",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "vestingFactory",
+        "outputs": [
+            {
+                "internalType": "contract IVestingWalletFactory",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "vestingOf",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "stageIndex",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "target",
+                "name": "amount",
                 "type": "uint256"
             }
         ],
-        "name": "updateStageTarget",
+        "name": "withdrawBonus",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "usdtToken",
-        "outputs": [
-            {
-                "internalType": "contract IERC20",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -779,7 +1124,20 @@
                 "type": "uint256"
             }
         ],
-        "name": "withdrawUSDT",
+        "name": "withdrawReferral",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawSale",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

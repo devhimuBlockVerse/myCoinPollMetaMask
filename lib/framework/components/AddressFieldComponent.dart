@@ -49,6 +49,7 @@ class CustomLabeledInputField extends StatelessWidget {
 
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.022,
+        vertical: screenHeight * 0.009,
        ),
 
        child: IntrinsicHeight(
@@ -65,7 +66,6 @@ class CustomLabeledInputField extends StatelessWidget {
                 labelText,
                 style: TextStyle(
                   color: Colors.white,
-                  // fontSize: fontSize,
                   fontSize: getResponsiveFontSize(context, 14),
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w400,
@@ -115,7 +115,8 @@ class CustomLabeledInputField extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         child: SvgPicture.asset(
                           trailingIconAsset!,
-                          height: fontSize * 1.1,
+                          // height: fontSize * 1.1,
+                          height: getResponsiveFontSize(context,18),
                           fit: BoxFit.contain,
                         ),
                       ),

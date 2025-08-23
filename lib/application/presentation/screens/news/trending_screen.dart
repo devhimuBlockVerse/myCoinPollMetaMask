@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:mycoinpoll_metamask/framework/components/customShareButton.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -41,8 +43,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
           decoration: const BoxDecoration(
             color: Color(0xFF01090B),
             image: DecorationImage(
-              // image: AssetImage('assets/images/gradientBgImage.png'),
-              // fit: BoxFit.contain,
+
               image: AssetImage('assets/images/starGradientBg.png'),
               fit: BoxFit.cover,
               alignment: Alignment.topRight,
@@ -55,8 +56,7 @@ class _TrendingScreenState extends State<TrendingScreen> {
               // SizedBox(height: screenHeight * 0.01),
 
               Row(
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+                 mainAxisAlignment: MainAxisAlignment.center,
                  children: [
                   IconButton(
                     icon: SvgPicture.asset(
@@ -184,16 +184,18 @@ class _TrendingScreenState extends State<TrendingScreen> {
 
                               const SizedBox(height: 20),
 
-
-                              Text(
-                                _stripHtmlTags(description),
-                                style:  TextStyle(
-                                    fontWeight: FontWeight.w400, // Regular
-                                    fontSize: responsiveFontSize(12),
-                                    height: 1.6, // 130% line height
-                                    color: Colors.white
-                                ),
-                              ),
+                              Html(
+                                data: description,
+                                style: {
+                                  "body": Style(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w400,
+                                    letterSpacing: 0.5,
+                                    fontSize: FontSize(responsiveFontSize(12)),
+                                    // lineHeight: LineHeight(1.6),
+                                  ),
+                                },
+                              )
 
                             ],
                           ),
@@ -220,6 +222,8 @@ class _TrendingScreenState extends State<TrendingScreen> {
     final RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
     return htmlText.replaceAll(exp, '');
   }
+
+
 }
 
 

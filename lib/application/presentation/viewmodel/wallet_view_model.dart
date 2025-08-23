@@ -16,32 +16,6 @@ import '../../../framework/utils/enums/toast_type.dart';
 import 'dart:typed_data';
 
 
-
-// bool isUserRejectedError(Object error) {
-//   final msg = error.toString().toLowerCase();
-//
-//   return msg.contains("user rejected") ||
-//       msg.contains("user denied") ||
-//       msg.contains("user canceled") ||
-//       msg.contains("user cancelled") ||
-//       msg.contains("transaction declined") ||
-//       msg.contains("request rejected") ||
-//       msg.contains("rejected by user") ||
-//       msg.contains("rejected request") ||
-//       msg.contains("action rejected") ||
-//       msg.contains("cancelled") ||
-//       msg.contains("request already pending") ||
-//       msg.contains("modal closed") ||
-//       msg.contains("wallet modal closed") ||
-//       msg.contains("no response from user") ||
-//       msg.contains("user closed") ||
-//       msg.contains("session disconnected") ||
-//       msg.contains("wallet disconnected") ||
-//       msg.contains("unauthorized") ||
-//       (msg.contains("rpc error:") && msg.contains("4001")) ||
-//       msg.contains("transport error") ||
-//       msg.contains("failed to fetch");
-// }
 bool isUserRejectedError(Object error) {
   if (error == null) return false;
 
@@ -98,1906 +72,8 @@ bool isUserRejectedError(Object error) {
       matches(rpcErrorPatterns) ||
       matches(appKilledPatterns);
 }
-// const String ECM_PRICE_USD = '1.2';
-const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
+// const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
 
-
-// class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
-//
-//
-//   void setupLifecycleObserver() {
-//     WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
-//   }
-//
-//   BuildContext? _lastContext;
-//
-//   ///Ensures context is valid and modal is re-initialized if needed
-//
-//   Future<void> ensureModalWithValidContext(BuildContext context) async {
-//     final hasMaterial = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
-//
-//     if (appKitModal == null) {
-//       _lastContext = context;
-//       await init(context);
-//       return;
-//     }
-//
-//     if (_lastContext != context || !_modalHasMaterialContext || !hasMaterial) {
-//       await _recreateModalWithContext(context);
-//       return;
-//     }
-//
-//     if (_lastContext != context) {
-//       _lastContext = context;
-//       appKitModal!.updateContext(context);
-//
-//     }
-//
-//   }
-//   Future<void> _recreateModalWithContext(BuildContext context) async {
-//     appKitModal?.onModalConnect.unsubscribeAll();
-//     appKitModal?.onModalUpdate.unsubscribeAll();
-//     appKitModal?.onModalDisconnect.unsubscribeAll();
-//     appKitModal?.onSessionExpireEvent.unsubscribeAll();
-//     appKitModal?.onSessionUpdateEvent.unsubscribeAll();
-//     appKitModal = null;
-//     _isModalEventsSubscribed = false;
-//     _modalHasMaterialContext = false;
-//     _lastContext = context;
-//     await init(context);
-//   }
-//
-//   ReownAppKitModal? appKitModal;
-//   bool _isSessionSettling = false;
-//   String _walletAddress = '';
-//   bool _isLoading = false;
-//   bool _isConnected = false;
-//   String? _balance;
-//   String? _minimumStake;
-//   String? _maximumStake;
-//   double _ethPrice = 0.0;
-//   double _usdtPrice = 0.0;
-//   int _stageIndex = 0;
-//   double _currentECM = 0.0;
-//   double _maxECM = 0.0;
-//   int _ecmRefBonus = 0;
-//   int _paymentRefBonus = 0;
-//   bool _isCompleted = false;
-//   Web3Client? _web3Client;
-//   bool _isModalEventsSubscribed = false;
-//   bool _walletConnectedManually = false;
-//   bool get walletConnectedManually => _walletConnectedManually;
-//   bool _modalHasMaterialContext = false;
-//   String? _lastKnowChainId;
-//
-//
-//
-//   // Getters
-//   double get ethPrice => _ethPrice;
-//   double get usdtPrice => _usdtPrice;
-//   int get stageIndex => _stageIndex;
-//   double get currentECM => _currentECM;
-//   double get maxECM => _maxECM;
-//   int get ecmRefBonus => _ecmRefBonus;
-//   int get paymentRefBonus => _paymentRefBonus;
-//   bool get isCompleted => _isCompleted;
-//   String? get balance => _balance;
-//   String? get minimumStake => _minimumStake;
-//   String? get maximumStake => _maximumStake;
-//   String get walletAddress => _walletAddress;
-//   bool get isConnected => _isConnected;
-//   bool get isLoading => _isLoading;
-//   bool get isSessionSettling => _isSessionSettling;
-//
-//   static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/FPbP1-XUOoRxMpYioocm5i4rdPSJSGKU";
-//   // static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
-//   static const String SALE_CONTRACT_ADDRESS = '0x02f2aA15675aED44A117aC0c55E795Be9908543D';
-//   static const String USDT_CONTRACT_ADDRESS = '0xcfd9ee94fdeae5067da8d874b439ed996077f326';
-//
-//   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x30C8E35377208ebe1b04f78B3008AAc408F00D1d';
-//   static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833';
-//   static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715';
-//
-//   String? _authToken;
-//   String? get authToken => _authToken;
-//
-//   Future<void> setAuthToken(String token) async {
-//     _authToken = token;
-//     notifyListeners();
-//   }
-//
-//
-//   WalletViewModel() {
-//     _web3Client = Web3Client(ALCHEMY_URL, Client());
-//     WidgetsBinding.instance.addObserver(this);
-//   }
-//
-//   @override
-//   void dispose() {
-//     _web3Client?.dispose();
-//     WidgetsBinding.instance.removeObserver(this);
-//     appKitModal?.onModalConnect.unsubscribeAll();
-//     appKitModal?.onModalUpdate.unsubscribeAll();
-//     appKitModal?.onModalDisconnect.unsubscribeAll();
-//     appKitModal?.onSessionExpireEvent.unsubscribeAll();
-//     appKitModal?.onSessionUpdateEvent.unsubscribeAll();
-//     super.dispose();
-//   }
-//
-//   Future<void> init(BuildContext context) async {
-//     if (_isLoading) return;
-//     _isLoading = true;
-//     notifyListeners();
-//
-//     try{
-//       if (appKitModal == null || _lastContext != context) {
-//         _lastContext = context;
-//         appKitModal = ReownAppKitModal(
-//
-//           context: context,
-//           projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
-//           // projectId: '89b2029d61b54d70cd34a04c1816f87b',
-//           metadata: const PairingMetadata(
-//             name: "MyWallet",
-//             description: "Example Description",
-//             url: 'https://mycoinpoll.com/',
-//             icons: ['https://example.com/logo.png'],
-//             redirect: Redirect(
-//               native: 'MyCoin Poll',
-//               universal: 'https://reown.com/exampleapp',
-//               linkMode: true,
-//             ),
-//           ),
-//
-//           logLevel: LogLevel.error,
-//           enableAnalytics: false,
-//           featuresConfig: FeaturesConfig(
-//             email: false,
-//             socials: [
-//               AppKitSocialOption.Google,
-//               AppKitSocialOption.Discord,
-//               AppKitSocialOption.Facebook,
-//               AppKitSocialOption.GitHub,
-//               AppKitSocialOption.X,
-//               AppKitSocialOption.Apple,
-//               AppKitSocialOption.Twitch,
-//               AppKitSocialOption.Farcaster,
-//             ],
-//             showMainWallets: true,
-//           ),
-//         );
-//
-//         await appKitModal!.init();
-//         final hasMaterial = Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
-//         _modalHasMaterialContext = hasMaterial;
-//
-//
-//       }else if (_lastContext != context){
-//         _lastContext = context;
-//         appKitModal!.updateContext(context);
-//       }
-//
-//       if (!_isModalEventsSubscribed) {
-//         final prefs = await SharedPreferences.getInstance();
-//         _subscribeToModalEvents(prefs);
-//         _isModalEventsSubscribed = true;
-//       }
-//       await _hydrateFromExistingSession();
-//     }catch(_){
-//       await getCurrentStageInfo();
-//     }finally{
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//   void _subscribeToModalEvents(SharedPreferences prefs) {
-//     appKitModal!.onModalConnect.unsubscribeAll();
-//     appKitModal!.onModalUpdate.unsubscribeAll();
-//     appKitModal!.onModalDisconnect.unsubscribeAll();
-//     appKitModal!.onSessionExpireEvent.unsubscribeAll();
-//     appKitModal!.onSessionUpdateEvent.unsubscribeAll();
-//
-//
-//     appKitModal!.onModalConnect.subscribe((_) async {
-//       _isConnected = true;
-//
-//       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-//       if (_lastKnowChainId != null) {
-//         await prefs.setString('chainId', _lastKnowChainId!);
-//       }
-//
-//       final address = _getFirstAddressFromSession();
-//       if (address != null) {
-//         _walletAddress = address;
-//         await prefs.setBool('isConnected', true);
-//         await prefs.setString('walletAddress', _walletAddress);
-//         final sessionJson = appKitModal!.session?.toJson();
-//         if (sessionJson != null) {
-//           await prefs.setString('walletSession', jsonEncode(sessionJson));
-//         }
-//       }
-//
-//       await Future.wait([
-//         fetchConnectedWalletData(),
-//         getCurrentStageInfo(),
-//       ]);
-//       notifyListeners();
-//     });
-//
-//     appKitModal!.onModalUpdate.subscribe((_) async {
-//       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-//       if (_lastKnowChainId != null) {
-//         await prefs.setString('chainId', _lastKnowChainId!);
-//       }
-//       final updatedAddress = _getFirstAddressFromSession();
-//       if (updatedAddress != null && updatedAddress != _walletAddress) {
-//         _walletAddress = updatedAddress;
-//         await fetchConnectedWalletData();
-//       }
-//       _isConnected = true;
-//       await getCurrentStageInfo();
-//       notifyListeners();
-//     });
-//
-//
-//     appKitModal!.onModalDisconnect.subscribe((_) async {
-//        final prevAddress = _walletAddress;
-//       if (prevAddress.isNotEmpty) {
-//         await prefs.remove('web3_sig_$prevAddress');
-//         await prefs.remove('web3_msg_$prevAddress');
-//       }
-//
-//       _lastKnowChainId = null;
-//       _isConnected = false;
-//       _walletAddress = '';
-//       await _removePersistedConnection();
-//       await _clearWalletAndStageInfo();
-//       await getCurrentStageInfo();
-//     });
-//
-//     appKitModal!.onSessionExpireEvent.subscribe((_) async {
-//       _lastKnowChainId =null;
-//       _isConnected = false;
-//       _walletAddress = '';
-//       await _removePersistedConnection();
-//       await _clearWalletAndStageInfo();
-//       await getCurrentStageInfo();
-//     });
-//
-//     appKitModal!.onSessionUpdateEvent.subscribe((_) async {
-//       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-//       if (_lastKnowChainId != null) {
-//         await prefs.setString('chainId', _lastKnowChainId!);
-//       }
-//       final addr = _getFirstAddressFromSession();
-//       if (addr != null && addr != _walletAddress) {
-//         _walletAddress = addr;
-//         await fetchConnectedWalletData();
-//       }
-//       _isConnected = true;
-//       await getCurrentStageInfo();
-//       notifyListeners();
-//     });
-//
-//
-//   }
-//
-//   /// Connect the wallet using the ReownAppKitModal UI.
-//   // Future<bool> connectWallet(BuildContext context) async {
-//   //   if (_isLoading) return false;
-//   //   _walletConnectedManually = true;
-//   //   _isLoading = true;
-//   //   notifyListeners();
-//   //
-//   //   try {
-//   //     await ensureModalWithValidContext(context);
-//   //
-//   //      try {
-//   //       await appKitModal!.openModalView();
-//   //     } catch (_) {
-//   //       await _recreateModalWithContext(context);
-//   //       await appKitModal!.openModalView();
-//   //     }
-//   //
-//   //     // Wait until a session and address are available
-//   //     final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
-//   //     if (!connected) return false;
-//   //
-//   //
-//   //     // Persist and hydrate
-//   //     final prefs = await SharedPreferences.getInstance();
-//   //     final chainId = _getChainIdForRequests();
-//   //     if (chainId != null) await prefs.setString('chainId', chainId);
-//   //
-//   //     await prefs.setBool('isConnected', true);
-//   //     await prefs.setString('walletAddress', _walletAddress);
-//   //
-//   //     final sessionJson = appKitModal!.session?.toJson();
-//   //     if (sessionJson != null) {
-//   //       await prefs.setString('walletSession', jsonEncode(sessionJson));
-//   //     }
-//   //
-//   //     await fetchConnectedWalletData(isReconnecting: true);
-//   //     await getCurrentStageInfo();
-//   //     notifyListeners();
-//   //     return true;
-//   //   } catch (e, stack) {
-//   //     debugPrint('connectWallet error: $e\n$stack');
-//   //
-//   //     final isUserRejected = isUserRejectedError(e);
-//   //     final isAppKilled = e.toString().toLowerCase().contains("app terminated") ||
-//   //         e.toString().toLowerCase().contains("connection lost");
-//   //
-//   //     String message;
-//   //     String subtitle;
-//   //     MessageType type;
-//   //
-//   //     if (isUserRejected) {
-//   //       message = "User Rejected";
-//   //       subtitle = "You cancelled the connection.";
-//   //       type = MessageType.info;
-//   //     } else if (isAppKilled) {
-//   //       message = "Wallet Connection Interrupted";
-//   //       subtitle = "The app was closed or session lost. Please reconnect.";
-//   //       type = MessageType.info;
-//   //     } else {
-//   //       message = "Connection Failed";
-//   //       subtitle = "Could not complete the connection request. Please try again.";
-//   //       type = MessageType.error;
-//   //     }
-//   //
-//   //
-//   //     ToastMessage.show(
-//   //       message: message,
-//   //       subtitle: subtitle,
-//   //       type: type,
-//   //       duration: CustomToastLength.LONG,
-//   //       gravity: CustomToastGravity.BOTTOM,
-//   //     );
-//   //
-//   //     return false;
-//   //   } finally {
-//   //     _isLoading = false;
-//   //     notifyListeners();
-//   //   }
-//   // }
-//
-//   Future<bool> connectWallet(BuildContext context) async {
-//     if (_isLoading) return false;
-//     _walletConnectedManually = true;
-//     _isLoading = true;
-//     notifyListeners();
-//
-//     try {
-//       await ensureModalWithValidContext(context);
-//
-//       try {
-//         await appKitModal!.openModalView();
-//       } catch (e) {
-//         debugPrint("First attempt failed: $e");
-//         await _recreateModalWithContext(context);
-//
-//         try {
-//           await appKitModal!.openModalView();
-//         } catch (e2) {
-//           debugPrint("Second attempt failed: $e2");
-//
-//           // Detect wallet app killed / modal closed
-//           final errorMsg = e2.toString().toLowerCase();
-//           if (errorMsg.contains("user rejected") ||
-//               errorMsg.contains("user denied") ||
-//               errorMsg.contains("user canceled") ||
-//               errorMsg.contains("user cancelled") ||
-//               errorMsg.contains("modal closed") ||
-//               errorMsg.contains("wallet modal closed") ||
-//               errorMsg.contains("no response from user")) {
-//             ToastMessage.show(
-//               message: "User Rejected",
-//               subtitle: "You cancelled the connection.",
-//               type: MessageType.info,
-//               duration: CustomToastLength.LONG,
-//               gravity: CustomToastGravity.BOTTOM,
-//             );
-//             return false;
-//           } else {
-//             ToastMessage.show(
-//               message: "Wallet Connection Interrupted",
-//               subtitle: "The wallet app was closed or session lost. Please reconnect.",
-//               type: MessageType.info,
-//               duration: CustomToastLength.LONG,
-//               gravity: CustomToastGravity.BOTTOM,
-//             );
-//             return false;
-//           }
-//         }
-//       }
-//
-//       // Wait until a session and address are available
-//       final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
-//       if (!connected) {
-//         ToastMessage.show(
-//           message: "Wallet Connection Timeout",
-//           subtitle: "Could not detect wallet session. Please try again.",
-//           type: MessageType.info,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//         return false;
-//       }
-//
-//       // Persist and hydrate
-//       final prefs = await SharedPreferences.getInstance();
-//       final chainId = _getChainIdForRequests();
-//       if (chainId != null) await prefs.setString('chainId', chainId);
-//
-//       await prefs.setBool('isConnected', true);
-//       await prefs.setString('walletAddress', _walletAddress);
-//
-//       final sessionJson = appKitModal!.session?.toJson();
-//       if (sessionJson != null) {
-//         await prefs.setString('walletSession', jsonEncode(sessionJson));
-//       }
-//
-//       await fetchConnectedWalletData(isReconnecting: true);
-//       await getCurrentStageInfo();
-//       notifyListeners();
-//       return true;
-//     } catch (e, stack) {
-//       debugPrint('connectWallet error: $e\n$stack');
-//
-//       final isUserRejected = isUserRejectedError(e);
-//
-//       ToastMessage.show(
-//         message: isUserRejected ? "User Rejected" : "Connection Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the connection."
-//             : "Could not complete the connection request. Please try again.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//       return false;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//
-//   /// Disconnect from the wallet and clear stored wallet info.
-//   Future<void> disconnectWallet(BuildContext context) async {
-//     if (appKitModal == null) return;
-//     _isLoading = true;
-//     notifyListeners();
-//     try {
-//       final prevAddress = _walletAddress;
-//
-//       if (_isConnected && appKitModal!.session != null) {
-//         await appKitModal!.disconnect();
-//       }
-//
-//       final prefs = await SharedPreferences.getInstance();
-//       if (prevAddress.isNotEmpty) {
-//         await prefs.remove('web3_sig_$prevAddress');
-//         await prefs.remove('web3_msg_$prevAddress');
-//       }
-//
-//       _lastKnowChainId = null;
-//
-//       await _removePersistedConnection();
-//       await _clearWalletAndStageInfo(shouldNotify: false);
-//        await getCurrentStageInfo();
-//     } catch (e) {
-//       print("Error during disconnect: $e");
-//     } finally {
-//
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//   Future<void> rehydrate() async {
-//     await _hydrateFromExistingSession();
-//   }
-//   ///LifeCycle Functions
-//
-//   Future<void> _handleAppResume() async {
-//     if (appKitModal == null) return;
-//     try {
-//       await _hydrateFromExistingSession();
-//     } catch (e, stack) {
-//       debugPrint("Resume error: $e\n$stack");
-//
-//     } finally {
-//       notifyListeners();
-//     }
-//   }
-//
-//   Future<void> _hydrateFromExistingSession() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     var session = appKitModal!.session;
-//
-//     // wait a bit for SDK to rehydrate after init
-//     if (session == null) {
-//       for (int i = 0; i < 15; i++) {
-//         await Future.delayed(const Duration(milliseconds: 150));
-//         session = appKitModal!.session;
-//         if (session != null) break;
-//       }
-//     }
-//
-//     if (session != null) {
-//       _isConnected = true;
-//       String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
-//       if (chainId != null) {
-//         _lastKnowChainId = chainId;
-//         await prefs.setString('chainId', chainId);
-//       }
-//
-//       final address = _getFirstAddressFromSession();
-//       if (address != null) {
-//         _walletAddress = address;
-//         // _isConnected = true;
-//         await prefs.setBool('isConnected', true);
-//         await prefs.setString('walletAddress', _walletAddress);
-//         await prefs.setString('walletSession', jsonEncode(session.toJson()));
-//         await Future.wait([
-//           fetchConnectedWalletData(isReconnecting: false),
-//           getCurrentStageInfo(),
-//         ]);
-//         return;
-//       }else{
-//         _isConnected = false;
-//         await _removePersistedConnection();
-//       }
-//     }
-//
-//     await getCurrentStageInfo();
-//   }
-//
-//   String? _getFirstAddressFromSession() {
-//     final s = appKitModal?.session;
-//     if (s == null) return null;
-//     try {
-//       final values = s.namespaces?.values;
-//       if (values == null) return null;
-//       for (final ns in values) {
-//         if (ns.accounts.isNotEmpty) {
-//           final parts = ns.accounts.first.split(':'); // eip155:11155111:0x...
-//           if (parts.length >= 3) return parts[2];
-//         }
-//       }
-//     } catch (_) {}
-//     return null;
-//   }
-//   String? _getChainIdFromSession() {
-//     final s = appKitModal?.session;
-//     if (s == null) return null;
-//     try {
-//       final values = s.namespaces?.values;
-//       if (values == null) return null;
-//       for (final ns in values) {
-//         if (ns.accounts.isNotEmpty) {
-//           final parts = ns.accounts.first.split(':'); // eip155:11155111:0x...
-//           if (parts.length >= 2) return '${parts[0]}:${parts[1]}';
-//         }
-//       }
-//     } catch (_) {}
-//     return null;
-//   }
-//
-//   String? _getChainIdForRequests() {
-//     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
-//   }
-//    Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
-//     final end = DateTime.now().add(timeout);
-//     while (DateTime.now().isBefore(end)) {
-//       if (_isConnected && _walletAddress.isNotEmpty) return true;
-//       final s = appKitModal?.session;
-//       if (s != null) {
-//         String? address;
-//         final selected = appKitModal?.selectedChain?.chainId;
-//         if (selected != null) {
-//           final ns = ReownAppKitModalNetworks.getNamespaceForChainId(selected);
-//           address = s.getAddress(ns);
-//         }
-//         address ??= _getFirstAddressFromSession();
-//         if (address != null) {
-//           _walletAddress = address;
-//           _isConnected = true;
-//           notifyListeners();
-//           return true;
-//         }
-//       }
-//       await Future.delayed(const Duration(milliseconds: 200));
-//     }
-//     return false;
-//   }
-//
-//   Future<void> _removePersistedConnection() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.remove('isConnected');
-//     await prefs.remove('walletAddress');
-//     await prefs.remove('chainId');
-//     await prefs.remove('walletSession');
-//   }
-//
-//   Future<void> _clearWalletAndStageInfo({bool shouldNotify = true}) async {
-//     _walletAddress = '';
-//     _isConnected = false;
-//     _balance = null;
-//     _minimumStake = null;
-//     _maximumStake = null;
-//     _ethPrice = 0.0;
-//     _usdtPrice = 0.0;
-//     _stageIndex = 0;
-//     _currentECM = 0.0;
-//     _maxECM = 0.0;
-//     _ecmRefBonus = 0;
-//     _paymentRefBonus = 0;
-//     _isCompleted = false;
-//
-//     print("Wallet state and storage have been reset.");
-//     if (shouldNotify) {
-//       notifyListeners();
-//     }
-//   }
-//
-//   Future<void> reset() async {
-//     _walletAddress = '';
-//     _isConnected = false;
-//     _balance = null;
-//     _minimumStake = null;
-//     _maximumStake = null;
-//     _ethPrice = 0.0;
-//     _usdtPrice = 0.0;
-//     _stageIndex = 0;
-//     _currentECM = 0.0;
-//     _maxECM = 0.0;
-//     _ecmRefBonus = 0;
-//     _paymentRefBonus = 0;
-//     _isCompleted = false;
-//     _walletConnectedManually = false;
-//     _isModalEventsSubscribed = false;
-//     _lastKnowChainId = null;
-//
-//      await _removePersistedConnection();
-//
-//     appKitModal?.onModalConnect.unsubscribeAll();
-//     appKitModal?.onModalUpdate.unsubscribeAll();
-//     appKitModal?.onModalDisconnect.unsubscribeAll();
-//     appKitModal?.onSessionExpireEvent.unsubscribeAll();
-//     appKitModal?.onSessionUpdateEvent.unsubscribeAll();
-//
-//     appKitModal = null;
-//     print("Wallet state and storage have been reset.");
-//     notifyListeners();
-//   }
-//
-//   Future<void> fetchConnectedWalletData({bool isReconnecting = false}) async {
-//      if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
-//       _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
-//       return;
-//     }
-//
-//     if (!_isConnected) {
-//       _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
-//       return;
-//     }
-//
-//     final chainID = _getChainIdForRequests();
-//     if (chainID == null) {
-//       await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
-//       return;
-//     }
-//
-//     final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//
-//     final currentSessionAddress = appKitModal!.session!.getAddress(nameSpace);
-//     if (currentSessionAddress == null || currentSessionAddress.isEmpty) {
-//       await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
-//       return;
-//     }
-//
-//     _walletAddress = currentSessionAddress;
-//
-//     if (!isReconnecting && !_isLoading) {
-//       _isLoading = true;
-//       notifyListeners();
-//     }
-//     try {
-//
-//       await Future.wait([
-//         getBalance(),
-//          getMinimunStake(),
-//         getMaximumStake(),
-//       ]);
-//     } catch (e) {
-//       print('Error fetching connected wallet data: $e');
-//       _clearWalletSpecificInfo(shouldNotify: true);
-//     } finally {
-//       if (!isReconnecting) {
-//         _isLoading = false;
-//         notifyListeners();
-//       }
-//     }
-//   }
-//
-//   Future<Map<String, dynamic>> getCurrentStageInfo() async {
-//     if (!_isLoading) {
-//       _isLoading = true;
-//       notifyListeners();
-//     }
-//
-//     List<dynamic> result;
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
-//       final abiData = jsonDecode(abiString);
-//       final saleContract = DeployedContract(
-//         ContractAbi.fromJson(jsonEncode(abiData), 'ECMCoinICO'),
-//         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
-//       );
-//
-//       // Use the existing _web3Client instance
-//       result = await _web3Client!.call(
-//         contract: saleContract,
-//         function: saleContract.function('currentStageInfo'),
-//         params: [],
-//       );
-//
-//       // Update stage info using the result
-//       _updateStageInfoFromResults(result, _isConnected);
-//
-//       return {
-//         'stageIndex': _stageIndex,
-//         'target': _maxECM,
-//         'ethPrice': _ethPrice,
-//         'usdtPrice': _usdtPrice,
-//         'ecmRefBonus': _ecmRefBonus,
-//         'paymentRefBonus': _paymentRefBonus,
-//         'ecmSold': _currentECM,
-//         'isCompleted': _isCompleted,
-//       };
-//     } catch (e, s) {
-//       print('--- ERROR FETCHING STAGE INFO ---');
-//       print('Exception details: ${e.toString()}');
-//       print('Stack Trace: ${s.toString()}');
-//       _clearStageInfoOnly(shouldNotify: true);
-//       rethrow;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//   // Helper to parse results and update state variables
-//   void _updateStageInfoFromResults(List<dynamic> result, bool isConnected) {
-//     if (result.isEmpty || result.length < 8) {
-//       throw Exception("Unexpected or incomplete response from the contract.");
-//     }
-//
-//     BigInt _safeParseBigInt(dynamic value) {
-//       if (value is BigInt) {
-//         return value;
-//       }
-//       return BigInt.parse(value.toString());
-//     }
-//
-//     _ethPrice = (_safeParseBigInt(result[2]).toDouble() / 1e18);
-//     _usdtPrice = (_safeParseBigInt(result[3]).toDouble() / 1e6);
-//
-//
-//     _stageIndex = _safeParseBigInt(result[0]).toInt();
-//     _maxECM = (_safeParseBigInt(result[1]).toDouble() / 1e18);
-//     _ecmRefBonus = _safeParseBigInt(result[4]).toInt();
-//     _paymentRefBonus = _safeParseBigInt(result[5]).toInt();
-//     _currentECM = (_safeParseBigInt(result[6]).toDouble() / 1e18);
-//     _isCompleted = result[7] as bool;
-//
-//     print("Stage info successfully parsed and updated:");
-//     print('stageIndex: $_stageIndex');
-//     print('target: $_maxECM');
-//     print('ethPrice: $_ethPrice');
-//     print('usdtPrice: $_usdtPrice');
-//     print('ecmRefBonus: $_ecmRefBonus');
-//     print('paymentRefBonus: $_paymentRefBonus');
-//     print('ecmSold: $_currentECM');
-//     print('isCompleted: $_isCompleted');
-//
-//   }
-//
-//   void _clearStageInfoOnly({bool shouldNotify = true}) {
-//     _ethPrice = 0.0;
-//     _usdtPrice = 0.0;
-//     _stageIndex = 0;
-//     _currentECM = 0.0;
-//     _maxECM = 0.0;
-//     _ecmRefBonus = 0;
-//     _paymentRefBonus = 0;
-//     _isCompleted = false;
-//     if (shouldNotify) {
-//       notifyListeners();
-//     }
-//   }
-//
-//   void _clearWalletSpecificInfo({bool shouldNotify = true}) {
-//     _balance = null;
-//     _minimumStake = null;
-//     _maximumStake = null;
-//     if (shouldNotify) {
-//       notifyListeners();
-//     }
-//   }
-//
-//
-//   Future<String> getBalance() async {
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final abiData = jsonDecode(abiString);
-//       final tetherContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-//       );
-//
-//       final tokenDecimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-//
-//       String addressToQuery = '';
-//       final chainID = _getChainIdForRequests();
-//
-//       if (_isConnected && appKitModal != null && appKitModal!.session != null && chainID != null) {
-//         // final chainID = appKitModal!.selectedChain!.chainId;
-//         final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//         addressToQuery = appKitModal!.session!.getAddress(nameSpace)!;
-//       } else {
-//         addressToQuery = '0x0000000000000000000000000000000000000000';
-//
-//       }
-//
-//
-//       final balanceOfResult = await _web3Client!.call(
-//         contract: tetherContract,
-//         function: tetherContract.function('balanceOf'),
-//         params: [EthereumAddress.fromHex(addressToQuery)],
-//       );
-//       final balance = balanceOfResult[0] as BigInt;
-//       final divisor = BigInt.from(10).pow(tokenDecimals);
-//       _balance = (balance / divisor).toString();
-//       print('balanceOf: ${balanceOfResult[0]}');
-//
-//       return '$_balance';
-//     } catch (e) {
-//       _balance = null;
-//       print('Error getting balance: $e');
-//       rethrow;
-//     }
-//   }
-//
-//
-//
-//   Future<String> getTotalSupply() async {
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final abiData = jsonDecode(abiString);
-//       final tetherContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-//       );
-//
-//       final totalSupplyResult = await _web3Client!.call(
-//         contract: tetherContract,
-//         function: tetherContract.function('totalSupply'),
-//         params: [],
-//       );
-//       final decimalsResult = await _web3Client!.call(
-//         contract: tetherContract,
-//         function: tetherContract.function('decimals'),
-//         params: [],
-//       );
-//       final tokenDecimals = (decimalsResult[0] as BigInt).toInt();
-//       final totalSupply = totalSupplyResult[0] as BigInt;
-//       final divisor = BigInt.from(10).pow(tokenDecimals);
-//       final formattedTotalSupply = totalSupply / divisor;
-//       return '$formattedTotalSupply';
-//     } catch (e) {
-//       print('Error getting total supply: $e');
-//       rethrow;
-//     }
-//   }
-//
-//   Future<int> getTokenDecimals({required String contractAddress}) async {
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final abiData = jsonDecode(abiString);
-//       final contract = DeployedContract(
-//         ContractAbi.fromJson(jsonEncode(abiData), 'eCommerce Coin'),
-//         EthereumAddress.fromHex(contractAddress),
-//       );
-//       final decimalsResult = await _web3Client!.call(
-//         contract: contract,
-//         function: contract.function('decimals'),
-//         params: [],
-//       );
-//       return (decimalsResult[0] as BigInt).toInt();
-//     } catch (e) {
-//       print('Error getting token decimals: $e');
-//       rethrow;
-//     }
-//   }
-//
-//   Future<String> getMinimunStake() async {
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
-//       final abiData = jsonDecode(abiString);
-//       final decimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-//       print("Decimals for staking: $decimals");
-//
-//       final stakingContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS),
-//       );
-//
-//       final minimumStakeResult = await _web3Client!.call(
-//         contract: stakingContract,
-//         function: stakingContract.function('minimumStake'),
-//         params: [],
-//       );
-//       final min = (minimumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
-//       _minimumStake = min.toDouble().toStringAsFixed(0);
-//       print("Raw minimumStakeResult: ${minimumStakeResult[0]}");
-//       return _minimumStake!;
-//     } catch (e) {
-//       print('Error getting minimum stake: $e');
-//       _minimumStake = null;
-//       rethrow;
-//     }
-//   }
-//
-//   Future<String> getMaximumStake() async {
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
-//       final abiData = jsonDecode(abiString);
-//       final decimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-//
-//
-//       final stakingContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS),
-//       );
-//
-//       final maximumStakeResult = await _web3Client!.call(
-//         contract: stakingContract,
-//         function: stakingContract.function('maximumStake'),
-//         params: [],
-//       );
-//       final max = (maximumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
-//       _maximumStake = max.toDouble().toStringAsFixed(0);
-//       return _maximumStake!;
-//     } catch (e) {
-//       print('Error getting Maximum stake: $e');
-//       _maximumStake = null;
-//       rethrow;
-//     }
-//   }
-//
-//   Future<String> transferToken(String recipientAddress, double amount) async {
-//     final chainID = _getChainIdForRequests();
-//
-//     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
-//       ToastMessage.show(
-//         message: "Wallet Error",
-//         subtitle: "Wallet not connected or chain not selected.",
-//         type: MessageType.error,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//       throw Exception("Wallet not Connected or selected chain not available.");
-//     }
-//     _isLoading = true;
-//     notifyListeners();
-//     try {
-//       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final abiData = jsonDecode(abiString);
-//       final tetherContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-//       );
-//       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//
-//
-//       final decimalsResult = await appKitModal!.requestReadContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: tetherContract,
-//         functionName: 'decimals',
-//       );
-//       final decimalUnits = (decimalsResult.first as BigInt);
-//       final transferValue = _formatValue(amount, decimals: decimalUnits);
-//
-//       final metaMaskUrl = Uri.parse(
-//         'metamask://dapp/exampleapp',
-//       );
-//       await launchUrl(metaMaskUrl, mode: LaunchMode.externalApplication);
-//
-//       final result = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: tetherContract,
-//         functionName: 'transfer',
-//         transaction: Transaction(
-//             from: EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!)),
-//         parameters: [
-//           EthereumAddress.fromHex(recipientAddress),
-//           transferValue,
-//         ],
-//       );
-//       print('Transfer Result: $result');
-//
-//       ToastMessage.show(
-//         message: "Transaction Sent",
-//         subtitle: "Token transfer initiated successfully!",
-//         type: MessageType.success,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//       await fetchConnectedWalletData();
-//       await getCurrentStageInfo();
-//
-//       return result;
-//     } catch (e) {
-//       print('Error Sending transferToken: $e');
-//
-//       ToastMessage.show(
-//         message: "Transfer Failed",
-//         subtitle: "Something went wrong: ${e.toString()}",
-//         type: MessageType.info,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//       rethrow;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//   Future<String> buyECMWithETH(EtherAmount ethAmount, BuildContext context) async {
-//     final chainID = _getChainIdForRequests();
-//
-//     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
-//       throw Exception("Wallet not Connected or selected chain not available.");
-//     }
-//     _isLoading = true;
-//     notifyListeners();
-//
-//     try {
-//        final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//       final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!);
-//
-//       final ethBalance = await _web3Client!.getBalance(walletAddress);
-//       if(ethBalance.getInWei < ethAmount.getInWei){
-//         ToastMessage.show(
-//           message: "Insufficient ETH Balance",
-//           subtitle: "Your ETH balance is too low for this purchase.",
-//           type: MessageType.error,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//         throw Exception("INSUFFICIENT_ETH_BALANCE");
-//       }
-//
-//       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
-//       final abiData = jsonDecode(abiString);
-//
-//       final saleContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//            'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
-//       );
-//     const referrerAddress = "0x0000000000000000000000000000000000000000";
-//
-//       final result = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: saleContract,
-//         functionName: 'buyECMWithETH',
-//         transaction: Transaction(
-//           from: EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!),
-//           value: ethAmount,
-//         ),
-//         parameters: [EthereumAddress.fromHex(referrerAddress)],
-//       );
-//       print('Transaction Hash: $result');
-//
-//       if (result != null && result.toString().startsWith("0x") && result.toString().length == 66) {
-//         ToastMessage.show(
-//           message: "Purchase Successful",
-//           subtitle: "Your transaction was submitted successfully.",
-//           type: MessageType.success,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//
-//         await fetchConnectedWalletData();
-//         await getCurrentStageInfo();
-//
-//         return result;
-//       } else {
-//         ToastMessage.show(
-//           message: "Transaction Cancelled",
-//           subtitle: "You cancelled the transaction in your wallet.",
-//           type: MessageType.info,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//         throw Exception("User cancelled the transaction.");
-//       }
-//
-//     } catch (e) {
-//       print("Error buying ECM with ETH: $e");
-//       if (e.toString().contains("INSUFFICIENT_ETH_BALANCE")) {
-//          return Future.error(e);
-//       }
-//       final isUserRejected = isUserRejectedError(e);
-//
-//       ToastMessage.show(
-//         message: isUserRejected ? "Transaction Cancelled" : "Transaction Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the transaction."
-//             : "Could not complete the purchase. Please try again.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//
-//
-//       rethrow;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//   Future<String> buyECMWithUSDT(BigInt amount,EthereumAddress referralAddress, BuildContext context) async {
-//     final chainID = _getChainIdForRequests();
-//
-//     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
-//
-//       throw Exception("Wallet not Connected or selected chain not available.");
-//     }
-//     _isLoading = true;
-//     notifyListeners();
-//     try {
-//       // final chainID = appKitModal!.selectedChain!.chainId;
-//       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//       final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!);
-//
-//
-//       final abiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
-//       final abiJson = jsonDecode(abiString);
-//       final abi = abiJson is Map && abiJson.containsKey("abi") ? abiJson["abi"] : abiJson;
-//       final saleContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abi),
-//           'eCommerce Coin',
-//         ),
-//         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
-//       );
-//
-//
-//       final usdtAbiString = await rootBundle.loadString("assets/abi/IERC20ABI.json");
-//       final usdtAbi = jsonDecode(usdtAbiString);
-//       final usdtContract = DeployedContract(
-//         ContractAbi.fromJson(
-//             jsonEncode(usdtAbi),
-//             "IERC20"
-//         ),
-//         EthereumAddress.fromHex(USDT_CONTRACT_ADDRESS),
-//       );
-//       print(">>> USDT contract deployed at: $USDT_CONTRACT_ADDRESS");
-//
-//       final balanceResult = await _web3Client!.call(
-//         contract: usdtContract,
-//         function: usdtContract.function('balanceOf'),
-//         params: [walletAddress],
-//       );
-//       final balance = balanceResult[0] as BigInt;
-//       print('>>> User USDT balance: ${balance.toString()} (raw units)');
-//
-//       if (balance < amount) {
-//         ToastMessage.show(
-//           message: "Insufficient USDT Balance",
-//           subtitle: "Your USDT balance is too low for this purchase.",
-//           type: MessageType.error,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//         throw Exception("INSUFFICIENT_USDT_BALANCE");
-//       }
-//
-//       final allowanceResult = await _web3Client!.call(
-//         contract: usdtContract,
-//         function: usdtContract.function('allowance'),
-//         params: [walletAddress, EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS)],
-//       );
-//       final allowance = allowanceResult[0] as BigInt;
-//
-//       if (allowance < amount) {
-//         ToastMessage.show(
-//           message: "Approving USDT...",
-//           type: MessageType.info,
-//           duration: CustomToastLength.SHORT,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//
-//         /// Step 1: Approve
-//         final approveTxHash = await appKitModal!.requestWriteContract(
-//           topic: appKitModal!.session!.topic,
-//           chainId: chainID,
-//           deployedContract: usdtContract,
-//           functionName: 'approve',
-//           transaction: Transaction(from: walletAddress),
-//           parameters: [EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS), amount],
-//         );
-//         await _waitForTransaction(approveTxHash);
-//         print(">>> USDT approved successfully.");
-//
-//       }
-//
-//       ToastMessage.show(
-//         message: "Processing Purchase...",
-//         type: MessageType.info,
-//         duration: CustomToastLength.SHORT,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//
-//       print(">>> Sending buyECMWithUSDT transaction...");
-//       final result = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: saleContract,
-//         functionName: 'buyECMWithUSDT',
-//         transaction: Transaction(from: walletAddress),
-//         parameters: [amount, referralAddress],
-//       );
-//       await _waitForTransaction(result);
-//       print('>>> Transaction result: $result');
-//
-//       ToastMessage.show(
-//         message: "Purchase Successful",
-//         subtitle: "USDT transaction submitted successfully!",
-//         type: MessageType.success,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//       await fetchConnectedWalletData();
-//       await getCurrentStageInfo();
-//
-//       return result;
-//
-//     } catch (e) {
-//       print(">>> Error occurred during buyECMWithUSDT: $e");
-//
-//       if(e.toString().contains("INSUFFICIENT_USDT_BALANCE")){
-//         return Future.error(e);
-//       }
-//
-//       final isUserRejected = isUserRejectedError(e);
-//
-//       ToastMessage.show(
-//         message: isUserRejected ? "Transaction Cancelled" : "Transaction Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the transaction."
-//             : "Could not complete the purchase. Please try again.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//         gravity: CustomToastGravity.BOTTOM,
-//       );
-//
-//
-//       rethrow;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//
-//     }
-//   }
-//
-//
-//   Future<String?> stakeNow(BuildContext context, double amount, int planIndex, {String referrerAddress = '0x0000000000000000000000000000000000000000'}) async {
-//     final chainID = _getChainIdForRequests();
-//
-//     /// Modal Check
-//     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
-//       ToastMessage.show(
-//         message: "Wallet Error",
-//         subtitle: "Please connect your wallet before staking.",
-//         type: MessageType.error,
-//       );
-//       throw Exception("Wallet not connected or chain not selected.");
-//     }
-//
-//     if (amount <= 0 || planIndex < 0) {
-//       ToastMessage.show(
-//         message: "Invalid Input",
-//         subtitle: "Please enter a valid amount and select a plan",
-//         type: MessageType.info,
-//       );
-//       return null;
-//     }
-//
-//     _isLoading = true;
-//     notifyListeners();
-//
-//     try {
-//       /// Contract data setup
-//       // final chainID = appKitModal!.selectedChain!.chainId;
-//
-//       final tokenAbiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
-//       print(">> ABIs loaded.");
-//
-//       final ecmTokenContract = DeployedContract(
-//           ContractAbi.fromJson(jsonEncode(jsonDecode(tokenAbiString)), 'eCommerce Coin'),
-//           EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS));
-//
-//       final stakingContract = DeployedContract(
-//           ContractAbi.fromJson(jsonEncode(jsonDecode(stakingAbiString)), 'eCommerce Coin'),
-//           EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2));
-//
-//       final stakeFunction = stakingContract.function('stake');
-//       print('>> Staking function: ${stakeFunction.name}');
-//
-//       for (int i = 0; i < stakeFunction.parameters.length; i++) {
-//         final param = stakeFunction.parameters[i];
-//
-//       }
-//
-//       final tokenDecimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-//
-//
-//       final multiplier = Decimal.parse('1e$tokenDecimals');
-//       final stakeAmount = (Decimal.parse(amount.toString()) * multiplier).toBigInt();
-//
-//
-//       /// Approval Transaction
-//       ToastMessage.show(
-//         message: "Step 1 of 2: Approval",
-//         subtitle: "Please approve the token spending in your wallet.",
-//         type: MessageType.info,
-//         duration: CustomToastLength.LONG,
-//       );
-//
-//       print(">> Requesting approval transaction...");
-//       final dynamic approveTxResult = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: ecmTokenContract,
-//         functionName: 'approve',
-//         transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
-//         parameters: [
-//           EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
-//           stakeAmount,
-//         ],
-//       );
-//
-//       String approveTxHash;
-//       if (approveTxResult is String) {
-//         approveTxHash = approveTxResult;
-//       } else if (approveTxResult is Uint8List) {
-//         approveTxHash = bytesToHex(approveTxResult);
-//       } else {
-//         throw Exception("Unexpected type for approve transaction hash: ${approveTxResult.runtimeType}");
-//       }
-//
-//
-//       /// Wait for approval confirmation
-//
-//       final approveReceipt = await _waitForTransaction(approveTxHash);
-//       if (approveReceipt == null) {
-//         throw Exception("Approval transaction failed or timed out.");
-//       }
-//       print(">> Approval confirmed.");
-//
-//       ToastMessage.show(
-//         message: "Approval Successful!",
-//         subtitle: "Now confirming the stake transaction.",
-//         type: MessageType.success,
-//       );
-//
-//       /// Stake Transaction
-//       ToastMessage.show(
-//         message: "Step 2 of 2: Staking",
-//         subtitle: "Please confirm the transaction in your wallet.",
-//         type: MessageType.info,
-//         duration: CustomToastLength.LONG,
-//       );
-//
-//       print('>> Preparing stake transaction...');
-//       print('>>  stakeAmount: $stakeAmount');
-//       print('>>  planIndex: ${BigInt.from(planIndex)}');
-//       print('>>  referrerAddress: $referrerAddress');
-//
-//       final dynamic stakeTxResult = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: stakingContract,
-//         functionName: 'stake',
-//         transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
-//         parameters: [
-//           stakeAmount,
-//           BigInt.from(planIndex),
-//           EthereumAddress.fromHex(referrerAddress),
-//         ],
-//       );
-//
-//       String stakeTxHash;
-//       if (stakeTxResult is String) {
-//         stakeTxHash = stakeTxResult;
-//       } else if (stakeTxResult is Uint8List) {
-//         stakeTxHash = bytesToHex(stakeTxResult);
-//       } else {
-//         throw Exception("Unexpected type for stake transaction hash: ${stakeTxResult.runtimeType}");
-//       }
-//
-//
-//
-//       final stakeReceipt = await _waitForTransaction(stakeTxHash);
-//
-//       if (stakeReceipt == null) {
-//         throw Exception("Stake transaction failed or timed out.");
-//       }
-//       print(">> Stake transaction confirmed.");
-//
-//       /// Post-Transaction & Event Parsing
-//       final stakeEvent = stakingContract.event('Staked');
-//       print(">> Parsing logs for 'Staked' event...");
-//
-//       bool successShown = false;
-//
-//       final stakeEventSignatureHex = bytesToHex(stakeEvent.signature);
-//
-//       for (final log in stakeReceipt.logs) {
-//         try {
-//           if (log.topics != null && log.topics!.isNotEmpty) {
-//             final firstTopic = log.topics!.first;
-//
-//
-//             if (firstTopic == null) {
-//               continue;
-//             }
-//
-//             String firstTopicHex;
-//
-//
-//             if (firstTopic is Uint8List) {
-//               firstTopicHex = bytesToHex(firstTopic as Uint8List);
-//             } else if (firstTopic is List<int>) {
-//               firstTopicHex = bytesToHex(Uint8List.fromList(firstTopic as List<int>));
-//             } else if (firstTopic is String) {
-//
-//               final bytes = hexToBytes(firstTopic);
-//               firstTopicHex = bytesToHex(bytes);
-//             } else {
-//               continue;
-//             }
-//
-//             final stakeEventHex = bytesToHex(stakeEvent.signature);
-//
-//
-//             if (firstTopicHex.toLowerCase() == stakeEventHex.toLowerCase()) {
-//               print(">> Matched 'Staked' event log");
-//
-//               final decodedLog = stakeEvent.decodeResults(log.topics!, log.data!);
-//               final payload = {
-//                 'hash': bytesToHex(stakeReceipt.transactionHash),
-//                 'staker': (decodedLog[0] as EthereumAddress).hex,
-//                 'stakeId': (decodedLog[1] as BigInt).toString(),
-//                 'amount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[2] as BigInt)
-//                     .getValueInUnit(EtherUnit.ether)
-//                     .toString(),
-//                 'planIndex': (decodedLog[3] as BigInt).toString(),
-//                 'endTime': (decodedLog[4] as BigInt).toString(),
-//               };
-//
-//               print(">> Payload prepared for backend: $payload");
-//
-//
-//
-//               final apiUrl = '${ApiConstants.baseUrl}/staking-created';
-//
-//               print(">> Sending POST request to: $apiUrl");
-//
-//
-//               final prefs = await SharedPreferences.getInstance();
-//               final token = prefs.getString('token');
-//
-//               try {
-//
-//                 final response = await http.post(
-//                   Uri.parse(apiUrl),
-//                   headers: {
-//                     'Content-Type': 'application/json',
-//                     'Accept': 'application/json',
-//                     if (token != null) 'Authorization': 'Bearer $token',
-//                   },
-//                   body: jsonEncode(payload),
-//                 );
-//                 print(">> Response status: ${response.statusCode}");
-//                 print(">> Response body: ${response.body}");
-//                 final postToken = prefs.getString('token');
-//                 print(">> Token AFTER response: $postToken");
-//
-//                 if (response.statusCode != 200 && response.statusCode != 201) {
-//                   throw Exception("Failed to sync stake to backend: ${response.statusCode}");
-//                 }
-//               } catch (e) {
-//                 print(">> HTTP POST failed: $e");
-//               }
-//
-//               ToastMessage.show(
-//                 message: "Staking Successful!",
-//                 subtitle: "Your tokens have been staked.",
-//                 type: MessageType.success,
-//                 duration: CustomToastLength.LONG,
-//               );
-//
-//               await fetchConnectedWalletData();
-//               successShown = true;
-//               return bytesToHex(stakeReceipt.transactionHash);
-//             }
-//           } else {
-//             print(">> Skipping log with empty or null topics.");
-//           }
-//         } catch (e) {
-//           print(">> Error decoding log: $e");
-//         }
-//       }
-//
-//       if (!successShown) {
-//         ToastMessage.show(
-//           message: "Staking Success (No Event Found)",
-//           subtitle: "Stake transaction confirmed, but event not parsed.",
-//           type: MessageType.success,
-//         );
-//         await fetchConnectedWalletData();
-//         return bytesToHex(stakeReceipt.transactionHash);
-//       }
-//
-//       return null;
-//     } catch (e) {
-//       debugPrint("Staking failed: $e");
-//
-//       final isUserRejected = isUserRejectedError(e);
-//       ToastMessage.show(
-//         message: isUserRejected ? "Transaction Cancelled" : "Staking Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the transaction in your wallet."
-//             : "An error occurred during staking.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//       );
-//       return null;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//
-//   }
-//
-//
-//   Future<String?> forceUnstake(int stakeId)async{
-//     final chainID = _getChainIdForRequests();
-//
-//     if (!_isConnected || appKitModal?.session == null || chainID == null) {
-//       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
-//       return null;
-//     }
-//     _isLoading = true;
-//     notifyListeners();
-//
-//
-//     try{
-//       // final chainID = appKitModal!.selectedChain!.chainId;
-//
-//       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
-//       final stakingContract = DeployedContract(
-//         ContractAbi.fromJson(stakingAbiString, 'eCommerce Coin'),
-//         EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
-//       );
-//
-//       /// Call forceUnstake function on contract
-//       final txResult = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: stakingContract,
-//         functionName: 'forceUnstake',
-//         transaction: Transaction(
-//           from: EthereumAddress.fromHex(_walletAddress),
-//         ),
-//         parameters: [BigInt.from(stakeId)],
-//
-//       );
-//
-//       final txHash = txResult is String ? txResult : bytesToHex(txResult);
-//       final receipt = await _waitForTransaction(txHash);
-//       if(receipt == null) throw Exception("Transaction failed or time out");
-//
-//       /// Parse logs for Unstaked and ReferralCommissionPaid events
-//       final unstakedEvent = stakingContract.event('Unstaked');
-//       final referralEvent = stakingContract.event('ReferralCommissionPaid');
-//
-//
-//       for (final log in receipt.logs){
-//         try{
-//           if(log.topics == null || log.data == null) continue;
-//           final topics = log.topics!;
-//           final data = log.data!;
-//
-//           if(topics.isEmpty) continue;
-//
-//           /// Check Event Signature match
-//           final topic0 = topics[0];
-//           late final String topic0Hex;
-//
-//           if (topic0 is Uint8List) {
-//             topic0Hex = bytesToHex(topic0 as Uint8List);
-//           } else if (topic0 is List<int>) {
-//             topic0Hex = bytesToHex(Uint8List.fromList(topic0 as List<int>));
-//           } else if (topic0 is String) {
-//             final decoded = hexToBytes(topic0);
-//             topic0Hex = bytesToHex(decoded);
-//           } else {
-//             continue;
-//           }
-//
-//
-//           final unstakedSig  = bytesToHex(unstakedEvent.signature);
-//           final referralSig = bytesToHex(referralEvent.signature);
-//
-//           if(topic0Hex.toLowerCase() == unstakedSig.toLowerCase()){
-//             final decoded = unstakedEvent.decodeResults(topics, data);
-//             await unStakeCreate(txHash, decoded);
-//           }else if (topic0Hex.toLowerCase() == referralSig.toLowerCase()) {
-//             final decoded = referralEvent.decodeResults(topics, data);
-//             await unStakeReferral(txHash, decoded);
-//           }
-//         }catch(e){
-//           print("Error decoding log: $e");
-//         }
-//       }
-//
-//
-//       await fetchConnectedWalletData();
-//       await getBalance();
-//       ToastMessage.show(message: "Force unstake successful!", type: MessageType.success);
-//       return txHash;
-//     }catch(e){
-//       final isUserRejected = isUserRejectedError(e);
-//       ToastMessage.show(
-//         message: isUserRejected ? "Transaction Cancelled" : "Force Unstake Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the transaction in your wallet."
-//             : "An error occurred during force unstake.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//       );
-//
-//       return null;
-//     }finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//
-//   }
-//
-//   Future<String?> unstake(int stakeId) async {
-//     final chainID = _getChainIdForRequests();
-//
-//     if (!_isConnected || appKitModal?.session == null || chainID == null) {
-//       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
-//       return null;
-//     }
-//
-//     _isLoading = true;
-//     notifyListeners();
-//
-//     try {
-//       // final chainID = appKitModal!.selectedChain!.chainId;
-//
-//       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
-//       final stakingContract = DeployedContract(
-//         ContractAbi.fromJson(stakingAbiString, 'eCommerce Coin'),
-//         EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
-//       );
-//
-//       final txResult = await appKitModal!.requestWriteContract(
-//         topic: appKitModal!.session!.topic,
-//         chainId: chainID,
-//         deployedContract: stakingContract,
-//         functionName: 'unstake',
-//         transaction: Transaction(
-//           from: EthereumAddress.fromHex(_walletAddress),
-//         ),
-//         parameters: [BigInt.from(stakeId)],
-//       );
-//
-//       final txHash = txResult is String ? txResult : bytesToHex(txResult);
-//       final receipt = await _waitForTransaction(txHash);
-//       if (receipt == null) throw Exception("Transaction failed or timed out");
-//
-//       final unstakedEvent = stakingContract.event('Unstaked');
-//       final referralEvent = stakingContract.event('ReferralCommissionPaid');
-//
-//       for (final log in receipt.logs) {
-//         try {
-//           if (log.topics == null || log.data == null) continue;
-//           final topics = log.topics!;
-//           final data = log.data!;
-//
-//           if (topics.isEmpty) continue;
-//
-//           final topic0 = topics[0];
-//           late final String topic0Hex;
-//
-//           if (topic0 is Uint8List) {
-//             topic0Hex = bytesToHex(topic0 as List<int>);
-//           } else if (topic0 is List<int>) {
-//             topic0Hex = bytesToHex(Uint8List.fromList(topic0 as List<int>));
-//           } else if (topic0 is String) {
-//             final decoded = hexToBytes(topic0);
-//             topic0Hex = bytesToHex(decoded);
-//           } else {
-//             continue;
-//           }
-//
-//           final unstakedSig = bytesToHex(unstakedEvent.signature);
-//           final referralSig = bytesToHex(referralEvent.signature);
-//
-//           if (topic0Hex.toLowerCase() == unstakedSig.toLowerCase()) {
-//             final decoded = unstakedEvent.decodeResults(topics, data);
-//             await unStakeCreate(txHash, decoded);
-//           } else if (topic0Hex.toLowerCase() == referralSig.toLowerCase()) {
-//             final decoded = referralEvent.decodeResults(topics, data);
-//             await unStakeReferral(txHash, decoded);
-//           }
-//         } catch (e) {
-//           print("Error decoding log: $e");
-//         }
-//       }
-//
-//       await fetchConnectedWalletData();
-//       await getBalance();
-//
-//       ToastMessage.show(message: "Unstake successful!", type: MessageType.success);
-//       return txHash;
-//     } catch (e) {
-//       final isUserRejected = isUserRejectedError(e);
-//       ToastMessage.show(
-//         message: isUserRejected ? "Transaction Cancelled" : "Unstake Failed",
-//         subtitle: isUserRejected
-//             ? "You cancelled the transaction in your wallet."
-//             : "An error occurred during unstaking.",
-//         type: isUserRejected ? MessageType.info : MessageType.error,
-//         duration: CustomToastLength.LONG,
-//       );
-//       return null;
-//     } finally {
-//       _isLoading = false;
-//       notifyListeners();
-//     }
-//   }
-//
-//
-//   Future<void> unStakeCreate(String hash, List<dynamic> decodedLog) async {
-//     final payload = {
-//       'unstake_hash': hash,
-//       'stakeId': (decodedLog[1] as BigInt).toString(),
-//       'amount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[2] as BigInt).getValueInUnit(EtherUnit.ether).toString(),
-//       'rewardAmount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[3] as BigInt).getValueInUnit(EtherUnit.ether).toString(),
-//       'unstakeType': decodedLog[4],
-//     };
-//
-//     final prefs = await SharedPreferences.getInstance();
-//     final token = prefs.getString('token');
-//
-//     final response = await http.post(
-//       Uri.parse('${ApiConstants.baseUrl}/unstake-created'),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/json',
-//         if (token != null) 'Authorization': 'Bearer $token',
-//       },
-//       body: jsonEncode(payload),
-//     );
-//     if (response.statusCode != 200 && response.statusCode != 201) {
-//       throw Exception('Failed to sync unstake create');
-//     }
-//   }
-//
-//   Future<void> unStakeReferral(String hash, List<dynamic> decodedLog) async {
-//     final payload = {
-//       'hash': hash,
-//       'referral': decodedLog[0].toString(),
-//       'staker': decodedLog[1].toString(),
-//       'stakeId': (decodedLog[2] as BigInt).toString(),
-//       'amount': EtherAmount.fromUnitAndValue(EtherUnit.wei, decodedLog[3] as BigInt).getValueInUnit(EtherUnit.ether).toString(),
-//     };
-//
-//
-//     final prefs = await SharedPreferences.getInstance();
-//     final token = prefs.getString('token');
-//
-//     final response = await http.post(
-//       Uri.parse('${ApiConstants.baseUrl}/unstake-referral-reward'),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/json',
-//         if (token != null) 'Authorization': 'Bearer $token',
-//       },
-//       body: jsonEncode(payload),
-//     );
-//     if (response.statusCode != 200 && response.statusCode != 201) {
-//       throw Exception('Failed to sync unstake referral');
-//     }
-//   }
-//
-//   ///Helper Function to wait transaction to be mined.
-//   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
-//     const pollInterval = Duration(seconds: 3);
-//     const timeout = Duration(minutes: 3);
-//     final expiry = DateTime.now().add(timeout);
-//
-//     while (DateTime.now().isBefore(expiry)){
-//       try{
-//         final receipt = await _web3Client!.getTransactionReceipt(txHash);
-//         if(receipt != null){
-//           if (receipt.status == true){
-//             print("Transaction successful: $txHash");
-//             return receipt;
-//           }else{
-//             print("Transaction reverted by EVM: $txHash");
-//             throw Exception("Transaction failed. Please check the block explorer for details.");
-//           }
-//         }
-//       }catch(e){
-//         debugPrint("_waitForTransaction :$e");
-//       }
-//       await Future.delayed(pollInterval);
-//     }
-//     throw Exception("Transaction timed out. Could not confirm transaction status.");
-//   }
-//
-//   /// Mock function to format decimal value to token unit (BigInt)
-//   BigInt _formatValue(double amount, {required BigInt decimals}) {
-//     final decimalPlaces = decimals.toInt(); // e.g., 6 for USDT, 18 for ETH
-//     final factor = BigInt.from(10).pow(decimalPlaces);
-//     return BigInt.from(amount * factor.toDouble());
-//   }
-//
-// }
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
@@ -2028,7 +104,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String? _authToken;
 
 
-
   // Getters
   bool get walletConnectedManually => _walletConnectedManually;
   String? get lastTransactionHash => _lastTransactionHash;
@@ -2043,19 +118,24 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isSessionSettling => _isSessionSettling;
   String? get authToken => _authToken;
 
-  // static const String ALCHEMY_URL = "https://eth-sepolia.g.alchemy.com/v2/FPbP1-XUOoRxMpYioocm5i4rdPSJSGKU";
-  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
+   static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
 
-  static const String SALE_CONTRACT_ADDRESS = '0x02f2aA15675aED44A117aC0c55E795Be9908543D';
-  static const String USDT_CONTRACT_ADDRESS = '0xcfd9ee94fdeae5067da8d874b439ed996077f326';
+   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506';
+
+   static const String USDT_CONTRACT_ADDRESS = '0xcfd9ee94fdeae5067da8d874b439ed996077f326';
 
   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x30C8E35377208ebe1b04f78B3008AAc408F00D1d';
-  static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833';
-  static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715';
+
+  static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
+
+  static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
 
   static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306';
-  // static const String ECM_PRICE_USD = "1.0";
-  static const double ECM_PRICE_USD = 1.0;
+
+  static const double ECM_PRICE_USD = 1.2;
+
+  static const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
+
 
   Future<void> setAuthToken(String token) async {
     _authToken = token;
@@ -2064,7 +144,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   WalletViewModel() {
-    // _web3Client = Web3Client(ALCHEMY_URL, Client());
     _web3Client = Web3Client(ALCHEMY_URL_V2, Client());
     WidgetsBinding.instance.addObserver(this);
   }
@@ -2141,7 +220,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
       await _hydrateFromExistingSession();
     }catch(_){
-      // await getCurrentStageInfo();
       await fetchLatestETHPrice();
     }finally{
       _isLoading = false;
@@ -2230,7 +308,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await fetchConnectedWalletData();
       }
       _isConnected = true;
-      // await getCurrentStageInfo();
       await fetchLatestETHPrice();
       notifyListeners();
     });
@@ -2248,7 +325,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _walletAddress = '';
       await _removePersistedConnection();
       await _clearWalletAndStageInfo();
-      // await getCurrentStageInfo();
       await fetchLatestETHPrice();
     });
 
@@ -2258,7 +334,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _walletAddress = '';
       await _removePersistedConnection();
       await _clearWalletAndStageInfo();
-      // await getCurrentStageInfo();
       await fetchLatestETHPrice();
     });
 
@@ -2273,7 +348,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await fetchConnectedWalletData();
       }
       _isConnected = true;
-      // await getCurrentStageInfo();
       await fetchLatestETHPrice();
       notifyListeners();
     });
@@ -2282,85 +356,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   /// Connect the wallet using the ReownAppKitModal UI.
-  // Future<bool> connectWallet(BuildContext context) async {
-  //   if (_isLoading) return false;
-  //   _walletConnectedManually = true;
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     await ensureModalWithValidContext(context);
-  //
-  //      try {
-  //       await appKitModal!.openModalView();
-  //     } catch (_) {
-  //       await _recreateModalWithContext(context);
-  //       await appKitModal!.openModalView();
-  //     }
-  //
-  //     // Wait until a session and address are available
-  //     final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
-  //     if (!connected) return false;
-  //
-  //
-  //     // Persist and hydrate
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final chainId = _getChainIdForRequests();
-  //     if (chainId != null) await prefs.setString('chainId', chainId);
-  //
-  //     await prefs.setBool('isConnected', true);
-  //     await prefs.setString('walletAddress', _walletAddress);
-  //
-  //     final sessionJson = appKitModal!.session?.toJson();
-  //     if (sessionJson != null) {
-  //       await prefs.setString('walletSession', jsonEncode(sessionJson));
-  //     }
-  //
-  //     await fetchConnectedWalletData(isReconnecting: true);
-  //     await getCurrentStageInfo();
-  //     notifyListeners();
-  //     return true;
-  //   } catch (e, stack) {
-  //     debugPrint('connectWallet error: $e\n$stack');
-  //
-  //     final isUserRejected = isUserRejectedError(e);
-  //     final isAppKilled = e.toString().toLowerCase().contains("app terminated") ||
-  //         e.toString().toLowerCase().contains("connection lost");
-  //
-  //     String message;
-  //     String subtitle;
-  //     MessageType type;
-  //
-  //     if (isUserRejected) {
-  //       message = "User Rejected";
-  //       subtitle = "You cancelled the connection.";
-  //       type = MessageType.info;
-  //     } else if (isAppKilled) {
-  //       message = "Wallet Connection Interrupted";
-  //       subtitle = "The app was closed or session lost. Please reconnect.";
-  //       type = MessageType.info;
-  //     } else {
-  //       message = "Connection Failed";
-  //       subtitle = "Could not complete the connection request. Please try again.";
-  //       type = MessageType.error;
-  //     }
-  //
-  //
-  //     ToastMessage.show(
-  //       message: message,
-  //       subtitle: subtitle,
-  //       type: type,
-  //       duration: CustomToastLength.LONG,
-  //       gravity: CustomToastGravity.BOTTOM,
-  //     );
-  //
-  //     return false;
-  //   } finally {
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
-
   Future<bool> connectWallet(BuildContext context) async {
     if (_isLoading) return false;
     _walletConnectedManually = true;
@@ -2379,7 +374,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         try {
           await appKitModal!.openModalView();
         } catch (e2) {
-          debugPrint("Second attempt failed: $e2");
 
           // Detect wallet app killed / modal closed
           final errorMsg = e2.toString().toLowerCase();
@@ -2401,7 +395,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           } else {
             ToastMessage.show(
               message: "Wallet Connection Interrupted",
-              subtitle: "The wallet app was closed or session lost. Please reconnect.",
+              subtitle: "The wallet app was closed or session lost. Please connect.",
               type: MessageType.info,
               duration: CustomToastLength.LONG,
               gravity: CustomToastGravity.BOTTOM,
@@ -2438,7 +432,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       await fetchConnectedWalletData(isReconnecting: true);
-      // await getCurrentStageInfo();
 
       notifyListeners();
       return true;
@@ -2487,7 +480,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       await _removePersistedConnection();
       await _clearWalletAndStageInfo(shouldNotify: false);
-       // await getCurrentStageInfo();
        await fetchLatestETHPrice();
     } catch (e) {
       print("Error during disconnect: $e");
@@ -2538,13 +530,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final address = _getFirstAddressFromSession();
       if (address != null) {
         _walletAddress = address;
-        // _isConnected = true;
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
         await prefs.setString('walletSession', jsonEncode(session.toJson()));
         await Future.wait([
           fetchConnectedWalletData(isReconnecting: false),
-          // getCurrentStageInfo(),
           fetchLatestETHPrice(),
         ]);
         return;
@@ -2554,7 +544,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
     }
 
-    // await getCurrentStageInfo();
     await fetchLatestETHPrice();
   }
 
@@ -2632,13 +621,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _minimumStake = null;
     _maximumStake = null;
     _ethPrice = 0.0;
-    // _usdtPrice = 0.0;
-    // _stageIndex = 0;
-    // _currentECM = 0.0;
-    // _maxECM = 0.0;
-    // _ecmRefBonus = 0;
-    // _paymentRefBonus = 0;
-    // _isCompleted = false;
+
+
 
     print("Wallet state and storage have been reset.");
     if (shouldNotify) {
@@ -2653,13 +637,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _minimumStake = null;
     _maximumStake = null;
     _ethPrice = 0.0;
-    // _usdtPrice = 0.0;
-    // _stageIndex = 0;
-    // _currentECM = 0.0;
-    // _maxECM = 0.0;
-    // _ecmRefBonus = 0;
-    // _paymentRefBonus = 0;
-    // _isCompleted = false;
+
     _walletConnectedManually = false;
     _isModalEventsSubscribed = false;
     _lastKnowChainId = null;
@@ -2726,59 +704,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
-    const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
-    final prefs = await SharedPreferences.getInstance();
-    final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
-    final cachedPrice = prefs.getString('ethPriceUSD');
-
-    if (!forceLoad && cachedPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
-      _ethPrice = double.parse(cachedPrice);
-      notifyListeners();
-      return cachedPrice;
-    }
-    try {
-      final abiString = await rootBundle.loadString("assets/abi/AggregatorABI.json");
-      final abiData = jsonDecode(abiString);
-      const aggregatorAddress = AGGREGATO_RADDRESS;
-      final contract = DeployedContract(
-        ContractAbi.fromJson(
-            jsonEncode(abiData),
-            'EACAggregatorProxy'
-        ),
-        EthereumAddress.fromHex(aggregatorAddress),
-      );
-      final result = await _web3Client!.call(
-        contract: contract,
-        function: contract.function('latestAnswer'),
-        // function: contract.function('latestRoundData'),
-        params: [],
-      );
-      print('##### fetchLatestETHPrice ####');
-      print('Test result: $result');
-
-      final rawPrice = result[0] as BigInt;
-      print('RAW_PRICE : $rawPrice');
-
-      // final price = (ECM_PRICE_USD/(rawPrice / BigInt.from(10).pow(8)).toString());
-      final ethUsdPrice = rawPrice.toDouble() / 1e8;
-      final ethPerEcm = ECM_PRICE_USD / ethUsdPrice; // Use double directly
-      //      final ethPerEcm = ecmPriceUsd / Decimal.fromDouble(ethUsdPrice);
-      final price = ethPerEcm.toStringAsFixed(8);
-
-      print('RAW_PRICE 8 Decimal: $price');
-
-      await prefs.setString('ethPriceUSD', price);
-      await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
-      _ethPrice = double.parse(price);
-      notifyListeners();
-      return price;
-    } catch (e) {
-      print('Error fetching ETH price: $e');
-      if (cachedPrice != null) return cachedPrice;
-      throw Exception('Failed to fetch ETH price');
-    }
-  }
 
 
   void _clearWalletSpecificInfo({bool shouldNotify = true}) {
@@ -3039,12 +964,65 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
+    const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
+    final prefs = await SharedPreferences.getInstance();
+    final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
+    final cachedPrice = prefs.getString('ethPriceUSD');
+
+    if (!forceLoad && cachedPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
+      _ethPrice = double.parse(cachedPrice);
+      notifyListeners();
+      return cachedPrice;
+    }
+    try {
+      final abiString = await rootBundle.loadString("assets/abi/AggregatorABI.json");
+      final abiData = jsonDecode(abiString);
+      const aggregatorAddress = AGGREGATO_RADDRESS;
+      final contract = DeployedContract(
+        ContractAbi.fromJson(
+            jsonEncode(abiData),
+            'EACAggregatorProxy'
+        ),
+        EthereumAddress.fromHex(aggregatorAddress),
+      );
+      final result = await _web3Client!.call(
+        contract: contract,
+        function: contract.function('latestAnswer'),
+         params: [],
+      );
+      print('##### fetchLatestETHPrice ####');
+      print('Test result: $result');
+
+      final rawPrice = result[0] as BigInt;
+      print('RAW_PRICE : $rawPrice');
+
+
+      final ethUsdPrice = rawPrice.toDouble() / 1e8;
+      final ethPerEcm = ECM_PRICE_USD / ethUsdPrice;
+       final price = ethPerEcm.toStringAsFixed(8);
+
+      print('RAW_PRICE 8 Decimal: $price');
+
+      await prefs.setString('ethPriceUSD', price);
+      await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
+      _ethPrice = double.parse(price);
+      notifyListeners();
+      return price;
+    } catch (e) {
+      print('Error fetching ETH price: $e');
+      if (cachedPrice != null) return cachedPrice;
+      throw Exception('Failed to fetch ETH price');
+    }
+  }
+
   Future<String?> buyECMWithETH({
     required EtherAmount ethAmount,
     required EthereumAddress referralAddress,
     required BuildContext context
   }) async {
     final chainID = _getChainIdForRequests();
+    print("buyECMWithETH Chaid Id ${chainID}");
 
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
       throw Exception("Wallet not Connected or selected chain not available.");
@@ -3056,6 +1034,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
        final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
       final walletAddress = EthereumAddress.fromHex(appKitModal!.session!.getAddress(nameSpace)!);
       final ethBalance = await _web3Client!.getBalance(walletAddress);
+
+
+      print("ethBalance : ${ethBalance}");
+      print("walletAddress : ${walletAddress}");
 
       if(ethBalance.getInWei < ethAmount.getInWei){
         ToastMessage.show(
@@ -3072,7 +1054,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final abiData = jsonDecode(abiString);
       final saleContract = DeployedContract(
         ContractAbi.fromJson(jsonEncode(abiData),
-           // 'eCommerce Coin',
            'ECMCoinICO'),
         EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
       );
@@ -3090,20 +1071,45 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         parameters: [referralAddress],
       );
       print('Transaction Hash: $result');
+      print("ethAmount.getInWei ${ethAmount.getInWei}");
+
+      print("Result : ethAmount ${ethAmount}");
+      print("Result : walletAddress ${walletAddress}");
 
 
       // wait for the transaction  confirmation
-       final receipt = await _web3Client!.getTransactionReceipt(result);
+      //  final receipt = await _web3Client!.getTransactionReceipt(result);
+
+       //Poll until TX is confirmed
+       TransactionReceipt? receipt;
+       for (var i = 0; i < 20; i++) {
+         receipt = await _web3Client!.getTransactionReceipt(result);
+         if (receipt != null) break;
+         await Future.delayed(const Duration(seconds: 3));
+       }
+
        if(receipt == null){
          throw Exception("Failed to get transaction receipt.");
        }
        _lastTransactionHash = result;
+       if (receipt.status != true) {
+         ToastMessage.show(
+           message: "Purchase Failed",
+           subtitle: "Minimum 50 ECM tokens per purchase required.",
+           type: MessageType.error,
+           duration: CustomToastLength.LONG,
+           gravity: CustomToastGravity.BOTTOM,
+         );
+         return null;
+       }
 
        // Parse transaction logs
-      final payload = await _parseTransactionLogs(receipt, saleContract);
+      final payload = await _parseTransactionLogs(receipt, saleContract ,walletAddress);
 
       // Send Payload to API
        await _sendPurchaseDataToApi(payload);
+
+
        ToastMessage.show(
          message: "Purchase Successful",
          subtitle: "ECM purchase completed successfully. Transaction hash: $result",
@@ -3141,67 +1147,80 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+
   Future<Map<String, dynamic>> _parseTransactionLogs(
       TransactionReceipt receipt,
-      DeployedContract contract) async {
+      DeployedContract contract,
+      EthereumAddress walletAddress,
+      ) async {
     final payload = {
-      'hash': receipt.transactionHash,
-      'buyer': '',
+      'hash': '0x${bytesToHex(receipt.transactionHash, include0x: false)}',
+      'buyer': walletAddress.hex,
       'referrer': '',
       'vestingWallet': '',
-      'amount': '',
-      'paymentAmountETH': '',
-      'ethUsdPriceUsed': '',
-      'ecmPriceUSDUsed': '',
-      'baseECM': '',
-      'bonusECM': '',
-      'referralECM': '',
-      'timestamp': 0,
+      'amount': 0.0,
+      'paymentAmountETH': 0.0,
+      'ethUsdPriceUsed': 0.0,
+      'ecmPriceUSDUsed': 0.0,
+      'baseECM': 0.0,
+      'bonusECM': 0.0,
+      'referralECM': 0.0,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
       'referralAddress': '',
       'referee': '',
       'refVesting': '',
-      'referralAmount': '',
+      'referralAmount': 0.0,
     };
 
     final saleAddrLc = SALE_CONTRACT_ADDRESS.toLowerCase();
+    final ecmPurchasedEvent = contract.event('ECMPurchased');
+    final referralRewardEvent = contract.event('ReferralRewardPaid');
 
-    final ecmPurchasedEvent = contract.abi.events.firstWhere((event) => event.name == 'ECMPurchased');
-    final referralRewardPaidEvent = contract.abi.events.firstWhere((event) => event.name == 'ReferralRewardPaid');
-
-    final ecmPurchasedTopic = ecmPurchasedEvent.signature;
-    final referralRewardTopic = referralRewardPaidEvent.signature;
     for (final log in receipt.logs) {
-      if ((log.address?.hex.toLowerCase() ?? '') != saleAddrLc) continue;
-      try {
-        if (log.topics!.isNotEmpty && log.topics![0] == ecmPurchasedTopic) {
 
-          final decoded = ecmPurchasedEvent.decodeResults(log.topics!, log.data!);
-          payload['buyer'] = decoded[0].toString(); // address
-          payload['referrer'] = decoded[1].toString(); // address
-          payload['vestingWallet'] = decoded[2].toString(); // address
-          payload['amount'] = (decoded[3] as BigInt).toDouble() / 1e18; // uint256
-          payload['paymentAmountETH'] = (decoded[4] as BigInt).toDouble() / 1e18; // uint256
-          payload['ethUsdPriceUsed'] = (decoded[5] as BigInt).toDouble() / 1e8; // uint256
-          payload['ecmPriceUSDUsed'] = (decoded[6] as BigInt).toDouble() / 1e18; // uint256
-          payload['baseECM'] = (decoded[7] as BigInt).toDouble() / 1e18; // uint256
-          payload['bonusECM'] = (decoded[8] as BigInt).toDouble() / 1e18; // uint256
-          payload['referralECM'] = (decoded[9] as BigInt).toDouble() / 1e18; // uint256
-          payload['timestamp'] = (decoded[10] as BigInt).toInt(); // uint256
-        } else if (log.topics!.isNotEmpty && log.topics![0] == referralRewardTopic) {
-          // Decode ReferrerRewardPaid event
-          final decoded = referralRewardPaidEvent.decodeResults(log.topics!, log.data!);
-          payload['referralAddress'] = decoded[0].toString(); // address
-          payload['referee'] = decoded[1].toString();
-          payload['refVesting'] = decoded[2].toString(); // address
-          payload['referralAmount'] = (decoded[3] as BigInt).toDouble() / 1e18; // uint256
+       if ((log.address?.hex.toLowerCase() ?? '') != saleAddrLc) continue;
+      try {
+        final logSignature = log.topics![0];
+        final eventSignature = bytesToHex(ecmPurchasedEvent.signature, include0x: true);
+
+        if (logSignature == eventSignature) {
+           final decoded = ecmPurchasedEvent.decodeResults(log.topics!, log.data!);
+
+          print("✅ ECMPurchased decoded event: $decoded");
+
+          // Map values into payload
+          payload['buyer'] = decoded[0].toString();
+          payload['referrer'] = decoded[1].toString();
+          payload['vestingWallet'] = decoded[2].toString();
+          payload['amount'] = (decoded[3] as BigInt).toDouble() / 1e18;
+          payload['paymentAmountETH'] = (decoded[4] as BigInt).toDouble() / 1e18;
+          payload['ethUsdPriceUsed'] = (decoded[5] as BigInt).toDouble() / 1e8;
+          payload['ecmPriceUSDUsed'] = (decoded[6] as BigInt).toDouble() / 1e18;
+          payload['baseECM'] = (decoded[7] as BigInt).toDouble() / 1e18;
+          payload['bonusECM'] = (decoded[8] as BigInt).toDouble() / 1e18;
+          payload['referralECM'] = (decoded[9] as BigInt).toDouble() / 1e18;
         }
       } catch (e) {
-        print('Error decoding log: $e');
+        print('Error decoding ECMPurchased log: $e');
       }
+
+      try {
+        final logSignature = log.topics![0];
+        final referralSignature = bytesToHex(referralRewardEvent.signature, include0x: true);
+
+        if (logSignature == referralSignature) {
+          final decodedReferral = referralRewardEvent.decodeResults(log.topics!, log.data!);
+          print("✅ ReferralRewardPaid decoded: $decodedReferral");
+
+          payload['referralAddress'] = decodedReferral[0].toString();
+          payload['referee'] = decodedReferral[1].toString();
+          payload['refVesting'] = decodedReferral[2].toString();
+          payload['referralAmount'] = (decodedReferral[3] as BigInt).toDouble() / 1e18;
+        }
+      } catch (_) {}
     }
 
     return payload;
-
   }
 
   Future<void> _sendPurchaseDataToApi(Map<String, dynamic> payload) async {
@@ -3212,14 +1231,20 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       'Content-Type': 'application/json',
       if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
     };
+
+    const payloadApi = API_ENDPOINT;
+
     final response = await http.post(
-      Uri.parse('$API_ENDPOINT/purchase-ecm-completed'),
+      Uri.parse('$payloadApi/purchase-ecm-completed'),
       headers: headers,
       body: jsonEncode(payload),
     );
+    print("API Response: ${response.statusCode} ${response.body}");
 
-    if(response.statusCode != 200){
-      throw Exception('Failed to send purchase data to API: ${response.statusCode}');
+    if(response.statusCode != 201){
+      throw Exception('Failed to send purchase data to API: ${response.statusCode}- ${response.body}');
+    }else{
+      debugPrint("✅ Purchase data sent successfully: ${response.body}");
     }
 
   }
@@ -3251,7 +1276,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     try {
       /// Contract data setup
-      // final chainID = appKitModal!.selectedChain!.chainId;
 
       final tokenAbiString = await rootBundle.loadString("assets/abi/MyContract.json");
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
@@ -3623,7 +1647,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     notifyListeners();
 
     try {
-      // final chainID = appKitModal!.selectedChain!.chainId;
 
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final stakingContract = DeployedContract(

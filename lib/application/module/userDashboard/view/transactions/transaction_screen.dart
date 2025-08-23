@@ -368,7 +368,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                               child: _buildStatCard(
                                                 title: 'Purchased\nAmount',
 
-                                                value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
+                                                // value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toString() : '0',
+                                                value: _purchaseStats != null ? _purchaseStats!.totalPurchaseAmount.toStringAsFixed(2)
+                                                    : '0.00',
 
                                                 gradient: const LinearGradient(
                                                   begin: Alignment(0.99, 0.14),

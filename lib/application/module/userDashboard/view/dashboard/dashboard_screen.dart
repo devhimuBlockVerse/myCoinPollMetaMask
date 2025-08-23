@@ -124,9 +124,6 @@ class DashboardScreen extends StatefulWidget {
 
          if (userAddress.isEmpty || userAddress.length != 42 || !userAddress.startsWith('0x')) return '0';
 
-         // final contract = (await _getDashboardContractAddress()).toLowerCase();
-         // if (contract.isEmpty) return '0';
-
          try {
            final human = await ApiService().fetchTokenBalanceHuman(contract, userAddress, decimals: 18);
            return human;
@@ -155,14 +152,10 @@ class DashboardScreen extends StatefulWidget {
    Widget build(BuildContext context) {
      double screenWidth = MediaQuery.of(context).size.width;
      double screenHeight = MediaQuery.of(context).size.height;
-     final isPortrait = screenHeight > screenWidth;
 
      final navProvider = Provider.of<NavigationProvider>(context);
      final currentScreenId = navProvider.currentScreenId;
      final navItems = navProvider.drawerNavItems;
-
-     final walletModel = context.watch<WalletViewModel>();
-     final userAuthModel = context.watch<UserAuthProvider>();
 
      return WillPopScope(
        onWillPop: () async {
@@ -204,8 +197,8 @@ class DashboardScreen extends StatefulWidget {
                ),
                child: RefreshIndicator(
                  onRefresh: () async {
-                   // Reload prefs data
-                   // await _loadUserFromPrefs();
+
+
 
                    final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
                    await userAuth.loadUserFromPrefs();

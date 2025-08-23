@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
  import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
  import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +13,6 @@ import '../../../framework/utils/customToastMessage.dart';
 import '../../../framework/utils/enums/toast_type.dart';
  import '../../domain/constants/api_constants.dart';
 import 'dart:typed_data';
-
 
 bool isUserRejectedError(Object error) {
   if (error == null) return false;
@@ -76,14 +74,12 @@ bool isUserRejectedError(Object error) {
 
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
-
   void setupLifecycleObserver() {
     WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
   }
 
 
   ///Ensures context is valid and modal is re-initialized if needed
-
   ReownAppKitModal? appKitModal;
   bool _isSessionSettling = false;
   String _walletAddress = '';

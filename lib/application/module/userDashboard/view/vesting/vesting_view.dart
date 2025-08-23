@@ -1,0 +1,286 @@
+import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../../framework/components/BlockButton.dart';
+import '../../../../../framework/components/VestingContainer.dart';
+import '../../../side_nav_bar.dart';
+import '../../viewmodel/dashboard_nav_provider.dart';
+import '../../viewmodel/side_navigation_provider.dart';
+
+
+class VestingView extends StatefulWidget {
+  const VestingView({super.key});
+
+  @override
+  State<VestingView> createState() => _VestingViewState();
+}
+
+class _VestingViewState extends State<VestingView> {
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
+
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+
+    return  Scaffold(
+        key: _scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+
+        body: SafeArea(
+          top: false,
+          child: Container(
+              width: screenWidth,
+              height: screenHeight,
+              decoration: const BoxDecoration(
+                color: Color(0xFF01090B),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/starGradientBg.png'),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topRight,
+                    filterQuality : FilterQuality.low
+                ),
+              ),
+              child:
+              Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.02),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child:  Text(
+                      'ECM Vesting',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        // fontSize: 20
+                        fontSize: screenWidth * 0.05,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.01,
+                        vertical: screenHeight * 0.02,
+                      ),
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+
+                        child: RefreshIndicator(
+                          onRefresh: () async {},
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+
+
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+
+                                buyECMHeader(screenHeight, screenWidth, context),
+
+                                SizedBox(height: screenHeight * 0.02),
+
+                                whyVesting(screenHeight, screenWidth, context)
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
+        )
+    );
+  }
+
+  Widget buyECMHeader(screenHeight, screenWidth, context){
+    return VestingContainer(
+      width: screenWidth * 0.9,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+
+          SizedBox(height: screenHeight * 0.02),
+
+          Text(
+            'You haven’t purchased \n ECM yet',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0XFFFFF5ED),
+              fontSize: getResponsiveFontSize(context, 22),
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+
+          BlockButton(
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.8,
+            label: 'BUY ECM NOW',
+            textStyle:  TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              fontSize: getResponsiveFontSize(context, 14),
+              height: 1.6,
+            ),
+            gradientColors: const [
+              Color(0xFF2680EF),
+              Color(0xFF1CD494)
+            ],
+            onTap: () {
+              Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
+            },
+            iconPath: 'assets/icons/arrowIcon.svg',
+            iconSize : screenHeight * 0.013,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+        ],
+      ),
+    );
+
+  }
+
+  Widget whyVesting(screenHeight, screenWidth, context){
+    final vestingData = [
+      {
+        "image": "assets/images/vestingImg1.png",
+        "text": "Ensures a healthy token economy and reduces market dumps."
+      },
+      {
+        "image": "assets/images/moneyVesting.png",
+        "text": "Builds investor trust and shows project commitment"
+      },
+      {
+        "image": "assets/images/vestingImg2.png",
+        "text": "Offers bonus rewards or reduced transaction fees."
+      },
+      {
+        "image": "assets/images/vestingImg3.png",
+        "text": "Prevents oversupply and maintains token value."
+      },
+      {
+        "image": "assets/images/vestingImg5.png",
+        "text": "Encourages long-term investors and ecosystem strength."
+      },
+      {
+        "image": "assets/images/moneyVesting.png",
+        "text": "Provides priority in launches, airdrops, or governance."
+      },
+    ];
+
+    return VestingContainer(
+      width: screenWidth * 0.9,
+      borderColor: const Color(0XFF2C2E41),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Why vesting?',
+            style: TextStyle(
+              color: Color(0XFFFFF5ED),
+              fontSize: getResponsiveFontSize(context, 16),
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+          
+          ...vestingData.map((item) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: VestingItem(
+              imagePath: item['image']!,
+              text: item['text']!,
+              height: screenHeight,
+            ),
+          )),
+
+        ],
+      ),
+    );
+  }
+
+}
+
+class VestingItem extends StatelessWidget {
+  final String imagePath;
+  final String text;
+  final double height;
+
+  const VestingItem({
+    super.key,
+    required this.imagePath,
+    required this.text,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return VestingContainer(
+      borderColor: const Color(0XFF2C2E41),
+      backgroundColor: const Color(0XFF101A29),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: height * 0.01,
+      ),
+      borderRadius: BorderRadius.circular(2.0),
+      child: Row(
+        children: [
+          Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+            height: height * 0.04,
+          ),
+          const SizedBox(width: 12),
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: height * 0.001),
+              width: 1, height: 30, color: Colors.white24),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style:  TextStyle(
+                color: Colors.white,
+                fontSize: getResponsiveFontSize(context, 12),
+                fontWeight: FontWeight.w400,
+                fontFamily: 'Poppins',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

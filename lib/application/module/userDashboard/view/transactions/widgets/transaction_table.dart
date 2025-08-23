@@ -44,7 +44,7 @@ import 'transaction_details.dart';
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            height: screenHeight * 0.8,
+            height: screenHeight * 0.9,
             width: constraints.maxWidth * 1.8,
             child: DataTable2(
 
@@ -153,8 +153,7 @@ import 'transaction_details.dart';
                             showDialog(
                               context: context,
                               builder: (_) => TransactionDetailsDialog(data: data,),
-                              // builder: (_) => const TransactionDetails(),
-                            );
+                             );
                             // Handle view details action
                             print('View details for ${data['TxnHash']}');
                           },

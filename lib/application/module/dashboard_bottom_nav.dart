@@ -5,6 +5,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/dashbo
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/ecm_ico/Ico_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/staking/staking_screen.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transactions/transaction_screen.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_view.dart';
  import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:provider/provider.dart';
 import '../presentation/screens/settings/settings_screen.dart';
@@ -20,7 +21,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const DashboardScreen(),
     const ECMIcoScreen(),
     const StakingScreen(),
-    const TransactionScreen(),
+    const VestingView(),
     const ProfileScreen(),
   ];
 
@@ -30,7 +31,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     'assets/icons/dasboard.svg',
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
-    // 'assets/icons/transaction.svg',Transactions
     'assets/icons/vesting.svg',
     'assets/icons/profileIcon.svg',
   ];

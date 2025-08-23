@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:mycoinpoll_metamask/framework/components/customShareButton.dart';
 import 'package:share_plus/share_plus.dart';
 

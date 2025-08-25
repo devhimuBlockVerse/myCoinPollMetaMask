@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
  import 'package:provider/provider.dart';
@@ -6,6 +8,8 @@ import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
+import '../../../../../framework/components/VestingSummaryRow.dart';
+import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
@@ -428,7 +432,7 @@ class SleepPeriodScreen extends StatefulWidget {
 
 class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   String balanceText = '...';
-  late DateTime contractStartDate;
+  late DateTime vestingEventStartDate;
 
    final Duration vestingPeriodDuration = const Duration(seconds: 10); // e.g., 4 months cliff
   final Duration totalVestingPeriodFromActualStart = const Duration(days: 547); // e.g., 18 months total
@@ -436,21 +440,101 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   late DateTime vestingStartDate;
   late DateTime fullVestedDate;
 
+  bool isVestingPeriodDurationOver = false; // global vesting start
+  bool isCliffPeriodOver = false; //  per-user cliff period flag
 
-
+  late DateTime cliffEndTime;
 
 
   @override
   void initState() {
     super.initState();
-    contractStartDate = DateTime.now();
 
-    // Calculate Cliff End Date (which is also when vesting *actually* starts)
-     vestingStartDate = contractStartDate.add(vestingPeriodDuration);
+
+    vestingEventStartDate = DateTime.now();
+
+    // Calculate vesting *actually* starts
+     vestingStartDate = vestingEventStartDate.add(vestingPeriodDuration);
 
     // Calculate Full Vested Date
     // Total vesting duration is calculated FROM the vestingStartDate (vestingActualStartDate)
      fullVestedDate = vestingStartDate.add(totalVestingPeriodFromActualStart);
+
+    // Start timers
+    _startGlobalVestingTimer();
+    _startUserCliffTimer();
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      await walletVM.ensureModalWithValidContext(context);
+      await walletVM.rehydrate();
+      await walletVM.getBalance();
+    });
+  }
+  //
+  // void _startGlobalVestingTimer() {
+  //   if (DateTime.now().isAfter(vestingStartDate)) {
+  //     isVestingPeriodDurationOver = true;
+  //   } else {
+  //     Timer.periodic(const Duration(seconds: 1), (timer) {
+  //       if (DateTime.now().isAfter(vestingStartDate)) {
+  //         if (mounted) setState(() => isVestingPeriodDurationOver = true);
+  //         timer.cancel();
+  //       }
+  //     });
+  //   }
+  // }
+  //
+  //
+  // void _startUserCliffTimer() {
+  //   final userCliffDuration = Duration(seconds: 10); // per-user cliff
+  //   final userCliffEndDate = vestingEventStartDate.add(userCliffDuration);
+  //
+  //   if (DateTime.now().isAfter(userCliffEndDate)) {
+  //     isCliffPeriodOver = true;
+  //   } else {
+  //     Timer.periodic(const Duration(seconds: 10), (timer) {
+  //       if (DateTime.now().isAfter(userCliffEndDate)) {
+  //         if (mounted) setState(() => isCliffPeriodOver = true);
+  //         timer.cancel();
+  //       }
+  //     });
+  //   }
+  // }
+
+  void _startGlobalVestingTimer() {
+    if (DateTime.now().isAfter(vestingStartDate)) {
+      // Vesting period already over
+      setState(() => isVestingPeriodDurationOver = true);
+      _startUserCliffTimer(); // Start cliff immediately
+    } else {
+      Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (DateTime.now().isAfter(vestingStartDate)) {
+          if (mounted) setState(() => isVestingPeriodDurationOver = true);
+          timer.cancel();
+          _startUserCliffTimer(); // Start cliff after vesting ends
+        }
+      });
+    }
+  }
+
+  void _startUserCliffTimer() {
+    // Only start if cliff not already over
+    if (isCliffPeriodOver) return;
+
+    final userCliffDuration = Duration(seconds: 10); // per-user cliff
+    cliffEndTime = DateTime.now().add(userCliffDuration);
+    // final userCliffEndDate = cliffStartTime.add(userCliffDuration);
+
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (DateTime.now().isAfter(cliffEndTime)) {
+        if (mounted) setState(() => isCliffPeriodOver = true);
+        timer.cancel();
+      } else {
+        if (mounted) setState(() {}); // triggers UI update for CountdownTimer
+      }
+    });
   }
 
   Future<String> resolveBalance() async {
@@ -601,86 +685,80 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
                                 SizedBox(height: screenHeight * 0.02),
 
-                                /// Cliff Timer and Vesting Text
-                                VestingContainer(
-                                  width: screenWidth * 0.9,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(height: screenHeight * 0.02),
 
-                                      ChangeNotifierProvider(
-                                        create: (_) {
-                                          return CountdownTimerProvider(
-                                             targetDateTime: targetForVestingPeriodCountDown,
-                                          );
-                                        },
-                                        child: Builder(
-                                          builder: (context) {
-                                            final timerProvider = Provider.of<CountdownTimerProvider>(context);
-                                            final dateFormat = DateFormat('d MMMM yyyy');
+                                /// Vesting Event Timer and Vesting Text
+                                if(!isVestingPeriodDurationOver) ...[
 
-                                            // Display the date when vesting *actually* begins (i.e., cliff ends)
-                                            final formattedVestingActualStartDate = dateFormat.format(vestingStartDate);
+                                  VestingContainer(
+                                    width: screenWidth * 0.9,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(height: screenHeight * 0.02),
 
-                                            print('Cliff Timer - targetDateTime (cliff end): ${timerProvider.targetDateTime}');
-                                             print('Text widget - months remaining: ${timerProvider.months}');
-
-
-                                            if (timerProvider.remaining.isNegative &&
-                                                timerProvider.targetDateTime != null &&
-                                                timerProvider.targetDateTime!.isBefore(DateTime.now())) {
-                                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                if (mounted) {
-                                                  // Option 1: Navigate to a different screen
-                                                  // Navigator.pushReplacement(
-                                                  //   context,
-                                                  //   MaterialPageRoute(builder: (_) => const VestingMainScreen()),
-                                                  // );
-
-                                                  // Option 2: Change state within this screen
-                                                  // setState(() { _isCliffPeriodOver = true; });
-                                                  // Then use _isCliffPeriodOver to change the UI below
-                                                  print("Cliff period is over!");
-                                                }
-                                              });
-                                            }
-                                            return Column(
-                                              children: [
-                                                Text(
-                                                   'Vesting Period Begin on \n$formattedVestingActualStartDate',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(0xFFFFF5ED),
-                                                    fontSize: getResponsiveFontSize(context, 22),
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                SizedBox(height: screenHeight * 0.02),
-                                                CountdownTimer(
-                                                  scaleWidth: scaleWidth,
-                                                  scaleHeight: scaleHeight,
-                                                  scaleText: scaleText,
-                                                  showMonths: true,
-                                                ),
-                                              ],
+                                        ChangeNotifierProvider(
+                                          create: (_) {
+                                            return CountdownTimerProvider(
+                                              targetDateTime: targetForVestingPeriodCountDown,
                                             );
                                           },
+                                          child: Builder(
+                                            builder: (context) {
+                                              final timerProvider = Provider.of<CountdownTimerProvider>(context);
+                                              final dateFormat = DateFormat('d MMMM yyyy');
+
+                                              // Display the date when vesting *actually* begins (i.e., cliff ends)
+                                              final formattedVestingActualStartDate = dateFormat.format(vestingStartDate);
+
+                                              print('Cliff Timer - targetDateTime (cliff end): ${timerProvider.targetDateTime}');
+                                              print('Text widget - months remaining: ${timerProvider.months}');
+
+
+                                              if (!isVestingPeriodDurationOver && timerProvider.remaining.isNegative) {
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  if (mounted) {
+                                                    setState(() => isVestingPeriodDurationOver = true);
+                                                    print("Cliff period is over! Switching UI");
+                                                  }
+                                                });
+                                              }
+
+                                              return Column(
+                                                children: [
+                                                  Text(
+                                                    'Vesting Period Begin on \n$formattedVestingActualStartDate',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: const Color(0xFFFFF5ED),
+                                                      fontSize: getResponsiveFontSize(context, 22),
+                                                      fontFamily: 'Poppins',
+                                                      fontWeight: FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: screenHeight * 0.02),
+                                                  CountdownTimer(
+                                                    scaleWidth: scaleWidth,
+                                                    scaleHeight: scaleHeight,
+                                                    scaleText: scaleText,
+                                                    showMonths: true,
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
 
-                                      SizedBox(height: screenHeight * 0.03),
+                                        SizedBox(height: screenHeight * 0.03),
 
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
 
-                                SizedBox(height: screenHeight * 0.02),
+                                  SizedBox(height: screenHeight * 0.02),
 
-                                /// Vesting Wallet Address
-                                CustomLabeledInputField(
-                                  containerWidth: screenWidth * 0.9,
+                                  /// Vesting Wallet Address
+                                  CustomLabeledInputField(
+                                    containerWidth: screenWidth * 0.9,
                                     labelText: 'Vesting Wallet:',
                                     hintText: "0xE4763679E40basdasd1c4e7d117429",
                                     isReadOnly: true,
@@ -700,14 +778,46 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                                     },
                                   ),
 
-                                SizedBox(height: screenHeight * 0.02),
-                                 vestingDetails(
-                                    screenHeight, screenWidth, context,
-                                    actualStartDate: vestingStartDate,
-                                    actualFullVestDate: fullVestedDate
-                                ),
-                                SizedBox(height: screenHeight * 0.9),
+                                  SizedBox(height: screenHeight * 0.02),
+                                  vestingDetails(
+                                      screenHeight, screenWidth, context,
+                                      actualStartDate: vestingStartDate,
+                                      actualFullVestDate: fullVestedDate
+                                  ),
+                                  // SizedBox(height: screenHeight * 0.9),
+                                ],
 
+                                if (isVestingPeriodDurationOver) ...[
+                                  cliffTimerAndClaimSection(screenHeight, screenWidth, context),
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  CustomLabeledInputField(
+                                    containerWidth: screenWidth * 0.9,
+                                    labelText: 'Vesting Wallet:',
+                                    hintText: "0xE4763679E40basdasd1c4e7d117429",
+                                    isReadOnly: true,
+                                    trailingIconAsset: 'assets/icons/copyImg.svg',
+                                    onTrailingIconTap: () {
+                                      final vestingAddress = "0xE4763679E40b...1c4e7d117429";
+                                      if(vestingAddress.isNotEmpty){
+                                        Clipboard.setData(ClipboardData(text:vestingAddress));
+                                        ToastMessage.show(
+                                          message: "Vesting Wallet Address copied!",
+                                          subtitle: vestingAddress,
+                                          type: MessageType.success,
+                                          duration: CustomToastLength.SHORT,
+                                          gravity: CustomToastGravity.BOTTOM,
+                                        );
+                                      }
+                                    },
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  vestingSummary(screenHeight,screenWidth,context)
+                               ],
+
+                                SizedBox(height: screenHeight * 0.02),
 
 
 
@@ -727,8 +837,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
   Widget vestingDetails(double screenHeight, double screenWidth, BuildContext context,
       {required DateTime actualStartDate, required DateTime actualFullVestDate}) {
-
-
     return FutureBuilder<String>(
         future: resolveBalance(),
         builder: (context,snapshot) {
@@ -763,8 +871,8 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                 ShaderMask(
                   blendMode: BlendMode.srcIn,
                   shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: const [
+                    return const LinearGradient(
+                      colors:  [
                         Color(0xFF2680EF),
                         Color(0xFF1CD494),
                       ],
@@ -815,7 +923,8 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                        ),
 
                      ],
-                                    );
+
+                   );
                   }
                 ),
 
@@ -830,6 +939,12 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
 
   Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context){
+    const baseWidth = 335.0;
+    const baseHeight = 1600.0;
+    double scaleWidth(double size) => size * screenWidth / baseWidth;
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
+
     return FutureBuilder<String>(
         future: resolveBalance(),
         builder: (context,snapshot) {
@@ -881,7 +996,102 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: screenHeight * 0.03),
+                SizedBox(height: screenHeight * 0.02),
+
+
+                /// Timer for cliff period
+                if(!isCliffPeriodOver ) ...[
+                  Text(
+                    'Once the cliff period ends, you can claim your ECM',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0XFFFFFFFF),
+                      fontSize: getResponsiveFontSize(context, 12),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  ChangeNotifierProvider(
+                    create: (_) {
+                      return CountdownTimerProvider(
+                        targetDateTime: cliffEndTime,
+
+                      );
+                    },
+                    child: Builder(
+                      builder: (context) {
+
+                        return CountdownTimer(
+                          scaleWidth: scaleWidth,
+                          scaleHeight: scaleHeight,
+                          scaleText: scaleText,
+                          gradientColors: [
+                            Color(0xFF2680EF).withAlpha(60),
+                            Color(0xFF1CD494).withAlpha(60)
+                          ],
+
+                          showMonths: true,
+                        );
+                      }
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                ],
+
+                if(isCliffPeriodOver)...[
+                  /// When the cliff period ends, you can claim your ECM
+                  Padding(
+                    padding:  EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: VestingDetailInfoRow(
+                            iconPath: 'assets/icons/checkIcon.svg',
+                            title: 'Claimed',
+                            value: 'ECM 125.848',
+                            iconSize: screenHeight *0.025,
+
+                          ),
+                        ),
+                        SizedBox(width: screenWidth * 0.03),
+                        Flexible(
+                          child: VestingDetailInfoRow(
+                            iconPath: 'assets/icons/claimedIcon.svg',
+                            title: 'Available claim',
+                            value: 'ECM 52.152',
+                            iconSize: screenHeight *0.032,
+
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                  BlockButton(
+                      height: screenHeight * 0.05,
+                      width: screenWidth * 0.8,
+                      label:"CLAIM",
+                      textStyle:  TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        fontSize: getResponsiveFontSize(context, 16),
+                        height: 1.6,
+                      ),
+                      gradientColors: const [
+                        Color(0xFF2680EF),
+                        Color(0xFF1CD494)
+                      ],
+                      onTap: (){}
+
+                  ),
+                ],
+
+
+
 
 
               ],
@@ -893,6 +1103,68 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
 
 
+
+  Widget vestingSummary(double screenHeight, double screenWidth, BuildContext context){
+
+    return VestingContainer(
+      width: screenWidth * 0.9,
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          Text(
+            'Vesting Summary',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0XFFFFFFFF),
+              fontSize: getResponsiveFontSize(context, 16),
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.03),
+
+          const VestingSummaryRow(
+            label: 'Vesting Start Date',
+            value: '20 January, 2026',
+           ),
+
+          SizedBox(height: screenHeight * 0.01),
+
+          const VestingSummaryRow(
+            label: 'Vesting Period',
+            value: '12 Months. 3 months cliff',
+          ),
+
+
+          SizedBox(height: screenHeight * 0.01),
+
+          const VestingSummaryRow(
+            label: 'Cliff Info',
+            value: '25% unlock at 3 months',
+          ),
+
+
+          SizedBox(height: screenHeight * 0.01),
+
+          const VestingSummaryRow(
+            label: 'Full Vested Date',
+            value: '20 July, 2027',
+          ),
+
+          ECMProgressIndicator(
+            stageIndex: 1,
+            currentECM: 125.848,
+            maxECM: 250.0,
+          )
+
+        ],
+      ),
+    );
+  }
+
 }
 
 
@@ -901,6 +1173,7 @@ String _formatBalance(String balance) {
   if (balance.length <= 6) return balance;
   return '${balance.substring(0, 9)}';
 }
+
 
 
 

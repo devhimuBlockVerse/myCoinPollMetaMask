@@ -15,6 +15,7 @@ class BlockButton extends StatelessWidget {
   final double? iconSize;
   final double iconRotation;
   final TextStyle? textStyle;
+  final BoxBorder ? border;
 
   const BlockButton({
     super.key,
@@ -25,6 +26,7 @@ class BlockButton extends StatelessWidget {
     required this.gradientColors,
     this.iconPath,
     this.iconSize,
+    this.border,
     this.iconRotation = 0.0, this.textStyle, this.leadingIconPath,
   });
 
@@ -55,6 +57,8 @@ class BlockButton extends StatelessWidget {
             colors: gradientColors,
           ),
           borderRadius: BorderRadius.circular(9),
+          border: border
+          //
 
         ),
         child: Center(

@@ -38,29 +38,29 @@ class ECMProgressIndicator extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// ECM Info Text
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Text(
-                  'Stage $stageIndex: ${currentECM.toStringAsFixed(4)} ECM',
-                  overflow: TextOverflow.ellipsis,
-                  style: infoStyle,
-                ),
-              ),
-              SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  'Max: ${maxECM.toStringAsFixed(1)} ECM',
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
-                  style: infoStyle,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: size.height * 0.01),
+          // /// ECM Info Text
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Flexible(
+          //       child: Text(
+          //         'Stage $stageIndex: ${currentECM.toStringAsFixed(4)} ECM',
+          //         overflow: TextOverflow.ellipsis,
+          //         style: infoStyle,
+          //       ),
+          //     ),
+          //     SizedBox(width: 8),
+          //     Flexible(
+          //       child: Text(
+          //         'Max: ${maxECM.toStringAsFixed(1)} ECM',
+          //         overflow: TextOverflow.ellipsis,
+          //         textAlign: TextAlign.end,
+          //         style: infoStyle,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(height: size.height * 0.01),
 
           /// Progress Bar
           Stack(

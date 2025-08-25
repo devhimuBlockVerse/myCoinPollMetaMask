@@ -10,6 +10,7 @@ class CountdownTimer extends StatelessWidget {
   final double Function(double) scaleHeight;
   final double Function(double) scaleText;
   final bool showMonths;
+  final List<Color>? gradientColors;
 
   const CountdownTimer({
     super.key,
@@ -17,6 +18,7 @@ class CountdownTimer extends StatelessWidget {
     required this.scaleHeight,
     required this.scaleText,
     this.showMonths = false,
+    this.gradientColors,
   });
 
   String _format(int n) => n.toString().padLeft(2, '0');
@@ -34,6 +36,11 @@ class CountdownTimer extends StatelessWidget {
     final minutes = _format(remaining.inMinutes.remainder(60));
     final seconds = _format(remaining.inSeconds.remainder(60));
 
+    final List<Color> defaultGradient = [
+      const Color(0xFF2F384D),
+      const Color(0xFF0A0F11).withOpacity(0.5)
+    ];
+    final effectiveGradientColors = gradientColors ?? defaultGradient;
     Widget timeUnit(String value, String label) => Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -41,7 +48,7 @@ class CountdownTimer extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: scaleWidth(1)),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF2F384D), Color(0xFF0A0F11).withOpacity(0.5)],
+               colors: effectiveGradientColors,
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -98,7 +105,8 @@ class CountdownTimer extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF2F384D), Color(0xFF0A0F11).withOpacity(0.5)],
+              // colors: [Color(0xFF2F384D), Color(0xFF0A0F11).withOpacity(0.5)],
+              colors: effectiveGradientColors,
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

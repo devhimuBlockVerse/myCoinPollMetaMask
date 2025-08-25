@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../framework/components/BlockButton.dart';
+import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../data/services/api_service.dart';
@@ -20,6 +21,7 @@ class StartVestingView extends StatefulWidget {
 }
 
 class _StartVestingViewState extends State<StartVestingView> {
+  String balanceText = '...';
 
 
   @override
@@ -162,23 +164,31 @@ class _StartVestingViewState extends State<StartVestingView> {
                             await walletVM.ensureModalWithValidContext(context);
                             await walletVM.rehydrate();
                             await walletVM.getBalance();
+                            if (mounted) {
+                              setState(() {});
+                            }
                           },
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
+                          child: ScrollConfiguration(
+                            behavior: const ScrollBehavior().copyWith(overscroll: false),
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
 
 
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
 
-                                totalBalance(screenHeight, screenWidth, context),
+                                  totalBalance(screenHeight, screenWidth, context),
 
-                                SizedBox(height: screenHeight * 0.02),
+                                  SizedBox(height: screenHeight * 0.02),
 
-                                vestingInfo(screenHeight, screenWidth, context)
+                                  vestingInfo(screenHeight, screenWidth, context),
 
-                              ],
+                                  SizedBox(height: screenHeight * 0.09),
+
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -193,12 +203,10 @@ class _StartVestingViewState extends State<StartVestingView> {
   }
 
   Widget totalBalance(screenHeight, screenWidth, context){
-    String balanceText = '...';
 
     return FutureBuilder<String>(
         future: resolveBalance(),
         builder: (context,snapshot) {
-          String balanceText = '...';
 
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
@@ -257,32 +265,7 @@ class _StartVestingViewState extends State<StartVestingView> {
 
   }
   Widget vestingInfo(screenHeight, screenWidth, context){
-    final vestingData = [
-      {
-        "image": "assets/images/vestingImg1.png",
-        "text": "Ensures a healthy token economy and reduces market dumps."
-      },
-      {
-        "image": "assets/images/moneyVesting.png",
-        "text": "Builds investor trust and shows project commitment"
-      },
-      {
-        "image": "assets/images/vestingImg2.png",
-        "text": "Offers bonus rewards or reduced transaction fees."
-      },
-      {
-        "image": "assets/images/vestingImg3.png",
-        "text": "Prevents oversupply and maintains token value."
-      },
-      {
-        "image": "assets/images/vestingImg5.png",
-        "text": "Encourages long-term investors and ecosystem strength."
-      },
-      {
-        "image": "assets/images/moneyVesting.png",
-        "text": "Provides priority in launches, airdrops, or governance."
-      },
-    ];
+
 
     return VestingContainer(
       width: screenWidth * 0.9,
@@ -291,17 +274,89 @@ class _StartVestingViewState extends State<StartVestingView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Vesting info',
-            style: TextStyle(
-              color: Color(0XFFFFF5ED),
-              fontSize: getResponsiveFontSize(context, 16),
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w500,
-            ),
+          Center(
+            child: Text(
+              'Vesting info',
+              style: TextStyle(
+                color: Color(0XFFFFF5ED),
+                fontSize: getResponsiveFontSize(context, 16),
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w500,
+              ),
+             ),
           ),
 
-          SizedBox(height: screenHeight * 0.02),
+          SizedBox(height: screenHeight * 0.04),
+          Text(
+            'ECM Amount',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: getResponsiveFontSize(context, 14),
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.01),
+          ListingField(
+            controller: TextEditingController(),
+            labelText: '${_formatBalance(balanceText)} ECM',
+            height: screenHeight * 0.05,
+            width: screenWidth* 0.88,
+            expandable: false,
+            readOnly: true,
+            keyboard: TextInputType.name,
+          ), ///
+
+          SizedBox(height: screenHeight * 0.03),
+
+
+
+          Text(
+            'Vesting Period',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: getResponsiveFontSize(context, 14),
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.01),
+          ListingField(
+            controller: TextEditingController(),
+            labelText: '3 months cliff',
+            height: screenHeight * 0.05,
+            width: screenWidth* 0.88,
+            expandable: false,
+            readOnly: true,
+            keyboard: TextInputType.name,
+          ),
+
+          SizedBox(height: screenHeight * 0.03),
+
+          Text(
+            'Vesting Start',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w500,
+              fontSize: getResponsiveFontSize(context, 14),
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.01),
+          ListingField(
+            controller: TextEditingController(),
+            labelText: '20 January , 2026',
+            height: screenHeight * 0.05,
+            width: screenWidth* 0.88,
+            expandable: false,
+            readOnly: true,
+            keyboard: TextInputType.name,
+          ),
+          SizedBox(height: screenHeight * 0.04),
+
 
           BlockButton(
             height: screenHeight * 0.05,
@@ -330,6 +385,8 @@ class _StartVestingViewState extends State<StartVestingView> {
 
 
 }
+
+
 String _formatBalance(String balance) {
   if (balance.length <= 6) return balance;
   return '${balance.substring(0, 9)}';

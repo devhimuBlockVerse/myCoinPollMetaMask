@@ -77,7 +77,6 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
          home: const SplashView(),
-         // home: const SleepPeriodScreen(),
         navigatorObservers: [routeObserver],
         builder: (context, child) => WalletAppInitializer(child: child!),
 

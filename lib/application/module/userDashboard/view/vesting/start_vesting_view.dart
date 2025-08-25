@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
+ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
+import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
@@ -810,7 +810,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                          child: VestingDetailInfoRow(
                            iconPath: 'assets/icons/vestingFullDate.svg',
                            title: 'Full Vested Date',
-                           // value: '20 July, 2027',
                            value: formattedEnd,
                          ),
                        ),
@@ -883,65 +882,3 @@ String _formatBalance(String balance) {
 
 
 
-class VestingDetailInfoRow extends StatelessWidget {
-  final String iconPath;
-  final String title;
-  final String value;
-  final double? iconSize;
-
-  const VestingDetailInfoRow({
-    super.key,
-    required this.iconPath,
-    required this.title,
-    required this.value,
-    this.iconSize,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        SvgPicture.asset(
-          iconPath,
-          fit: BoxFit.contain,
-          height: iconSize ?? screenHeight * 0.03,
-        ),
-         SizedBox(width: screenWidth * 0.02),
-         Expanded(
-           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Color(0xFF7D8FA9),
-                  fontSize: getResponsiveFontSize(context, 12),
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w400,
-
-                ),
-
-              ),
-              SizedBox(height: screenHeight * 0.005),
-              Text(
-                value,
-                style:  TextStyle(
-                  color: Color(0xFFFFF5ED),
-                  fontSize: getResponsiveFontSize(context, 13),
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
-                ),
-
-              ),
-            ],
-                     ),
-         ),
-      ],
-    );
-  }
-}

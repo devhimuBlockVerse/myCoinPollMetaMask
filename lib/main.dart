@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
- import 'application/presentation/screens/bottom_nav_bar.dart';
+ import 'application/module/userDashboard/viewmodel/vesting_status_provider.dart';
+import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/settings/feedback_screen.dart';
 import 'application/presentation/screens/splash/splash_view.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
@@ -55,11 +56,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => FeedbackViewModel()),
-
+        ChangeNotifierProvider(create: (_) => VestingStatusProvider()),
 
         ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
-          targetDateTime: DateTime.now().add(const Duration(days: 2, hours: 23, minutes: 5, seconds: 56)),
-        ),),
+          targetDateTime: DateTime.now(),
+         ),),
 
       ],
 
@@ -74,8 +75,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
-        // home: const BottomNavBar(),
-        home: const SplashView(),
+         home: const SplashView(),
         navigatorObservers: [routeObserver],
         builder: (context, child) => WalletAppInitializer(child: child!),
 

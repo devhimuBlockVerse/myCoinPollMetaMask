@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../data/services/api_service.dart';
+import '../../../../presentation/countdown_timer_helper.dart';
+import '../../../../presentation/viewmodel/countdown_provider.dart';
 import '../../../../presentation/viewmodel/user_auth_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
-import '../dashboard/dashboard_screen.dart';
-
+import '../../viewmodel/vesting_status_provider.dart';
+import 'package:intl/intl.dart';
 class StartVestingView extends StatefulWidget {
   const StartVestingView({super.key});
 
@@ -22,6 +23,8 @@ class StartVestingView extends StatefulWidget {
 
 class _StartVestingViewState extends State<StartVestingView> {
   String balanceText = '...';
+  bool _isStartingVesting = false;
+
 
 
   @override
@@ -32,7 +35,10 @@ class _StartVestingViewState extends State<StartVestingView> {
       await walletVM.ensureModalWithValidContext(context);
       await walletVM.rehydrate();
       await walletVM.getBalance();
-    });
+
+      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      await vestingProvider.loadFromBackend();
+     });
   }
 
   Future<String> resolveBalance() async {
@@ -95,9 +101,24 @@ class _StartVestingViewState extends State<StartVestingView> {
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
-
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+    final vestingStatus = Provider.of<VestingStatusProvider>(context);
+
+    if (vestingStatus.isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (vestingStatus.hasSleepPeriodEnded) {
+      return const VestingMainScreen();
+    }
+
+    if (vestingStatus.hasUserStartedVestingSleepPeriod) {
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: const SleepPeriodScreen(),
+      );
+    }
 
 
     return  Scaffold(
@@ -168,27 +189,24 @@ class _StartVestingViewState extends State<StartVestingView> {
                               setState(() {});
                             }
                           },
-                          child: ScrollConfiguration(
-                            behavior: const ScrollBehavior().copyWith(overscroll: false),
-                            child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
 
 
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
 
-                                  totalBalance(screenHeight, screenWidth, context),
+                                totalBalance(screenHeight, screenWidth, context),
 
-                                  SizedBox(height: screenHeight * 0.02),
+                                SizedBox(height: screenHeight * 0.02),
 
-                                  vestingInfo(screenHeight, screenWidth, context),
+                                vestingInfo(screenHeight, screenWidth, context),
 
-                                  SizedBox(height: screenHeight * 0.09),
+                                SizedBox(height: screenHeight * 0.09),
 
-                                ],
-                              ),
+                              ],
                             ),
                           ),
                         ),
@@ -361,7 +379,7 @@ class _StartVestingViewState extends State<StartVestingView> {
           BlockButton(
             height: screenHeight * 0.05,
             width: screenWidth * 0.8,
-            label: 'Start Vesting',
+            label: _isStartingVesting ? "Starting.." : "Start Vesting",
             textStyle:  TextStyle(
               fontWeight: FontWeight.w700,
               color: Colors.white,
@@ -372,9 +390,19 @@ class _StartVestingViewState extends State<StartVestingView> {
               Color(0xFF2680EF),
               Color(0xFF1CD494)
             ],
-            onTap: () {
-              /// Show Sleep Period UI
-             },
+            onTap: _isStartingVesting ? null : () async{
+              setState(() => _isStartingVesting = true);
+
+              final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+              final success  = await vestingProvider.startVestingSleepPeriod();
+
+              if(success && mounted){
+                setState(() {});
+              }
+              if(mounted){
+                setState(() => _isStartingVesting = false);
+              }
+            },
 
           ),
 
@@ -385,6 +413,245 @@ class _StartVestingViewState extends State<StartVestingView> {
 
 
 }
+
+
+
+class SleepPeriodScreen extends StatefulWidget {
+
+  const SleepPeriodScreen({super.key,});
+
+  @override
+  State<SleepPeriodScreen> createState() => _SleepPeriodScreenState();
+}
+
+class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final currentScreenId = navProvider.currentScreenId;
+    final navItems = navProvider.drawerNavItems;
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    const baseWidth = 375.0;
+    const baseHeight = 812.0;
+    double scaleWidth(double size) => size * screenWidth / baseWidth;
+    double scaleHeight(double size) => size * screenHeight / baseHeight;
+    double scaleText(double size) => size * screenWidth / baseWidth;
+
+
+
+    return  Scaffold(
+        key: _scaffoldKey,
+        drawerEnableOpenDragGesture: true,
+        drawerEdgeDragWidth: 80,
+        drawer: SideNavBar(
+          currentScreenId: currentScreenId,
+          navItems: navItems,
+          onScreenSelected: (id) => navProvider.setScreen(id),
+          onLogoutTapped: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Logout Pressed")));
+          },
+        ),
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+
+        body: SafeArea(
+          top: false,
+          child: Container(
+              width: screenWidth,
+              height: screenHeight,
+              decoration: const BoxDecoration(
+                color: Color(0xFF01090B),
+                image: DecorationImage(
+                    image: AssetImage('assets/images/starGradientBg.png'),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topRight,
+                    filterQuality : FilterQuality.low
+                ),
+              ),
+              child:
+              Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.02),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child:  Text(
+                      'ECM Vesting',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: screenWidth * 0.05,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.01,
+                        vertical: screenHeight * 0.02,
+                      ),
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                            await walletVM.ensureModalWithValidContext(context);
+                            await walletVM.rehydrate();
+                            await walletVM.getBalance();
+                            if (mounted) {
+                              setState(() {});
+                            }
+                          },
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+
+
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+
+
+                                SizedBox(height: screenHeight * 0.02),
+
+                                VestingContainer(
+                                  width: screenWidth * 0.9,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(height: screenHeight * 0.02),
+
+                                      /// Cliff Timer and Vesting Text
+                                      ChangeNotifierProvider(
+                                        create: (_) {
+
+                                          final dummyVestingStartDate = DateTime.now();
+                                          final targetDateTime = dummyVestingStartDate.add(const Duration(days: 120));
+                                          return CountdownTimerProvider(
+                                            targetDateTime: targetDateTime,
+                                          );
+                                        },
+                                        child: Builder(
+                                          builder: (context) {
+                                            final timerProvider = Provider.of<CountdownTimerProvider>(context);
+                                            final vestingStartDate = timerProvider.targetDateTime;
+                                            final dateFormat = DateFormat('d MMMM yyyy');
+                                            final formattedStartDate = dateFormat.format(vestingStartDate);
+
+                                            print('Text widget - targetDateTime: ${timerProvider.targetDateTime}');
+                                            print('Text widget - vestingStartDate: $vestingStartDate');
+                                            print('Text widget - months remaining: ${timerProvider.months}');
+
+
+                                             if (timerProvider.remaining.isNegative) {
+                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(builder: (_) => const VestingMainScreen()),
+                                                );
+                                              });
+                                            }
+                                            return Column(
+                                              children: [
+                                                Text(
+                                                  'Vesting Period Begin on \n$formattedStartDate',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: const Color(0xFFFFF5ED),
+                                                    fontSize: getResponsiveFontSize(context, 22),
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(height: screenHeight * 0.02),
+                                                CountdownTimer(
+                                                  scaleWidth: scaleWidth,
+                                                  scaleHeight: scaleHeight,
+                                                  scaleText: scaleText,
+                                                  showMonths: true,
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                      SizedBox(height: screenHeight * 0.03),
+
+                                    ],
+                                  ),
+                                ),
+
+                                SizedBox(height: screenHeight * 0.09),
+
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
+        )
+    );
+  }
+
+
+}
+
+
+
+
+
+class VestingMainScreen extends StatefulWidget {
+  const VestingMainScreen({super.key});
+
+  @override
+  State<VestingMainScreen> createState() => _VestingMainScreenState();
+}
+
+class _VestingMainScreenState extends State<VestingMainScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text('Vesting Main', style: TextStyle(color: Colors.white)),
+      ),
+      backgroundColor: const Color(0xFF01090B),
+      body: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'This is the Vesting Main screen after Sleep Time is Over',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
 String _formatBalance(String balance) {

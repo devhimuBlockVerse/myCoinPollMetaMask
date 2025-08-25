@@ -9,12 +9,14 @@ class CountdownTimer extends StatelessWidget {
   final double Function(double) scaleWidth;
   final double Function(double) scaleHeight;
   final double Function(double) scaleText;
+  final bool showMonths;
 
   const CountdownTimer({
     super.key,
     required this.scaleWidth,
     required this.scaleHeight,
     required this.scaleText,
+    this.showMonths = false,
   });
 
   String _format(int n) => n.toString().padLeft(2, '0');
@@ -24,7 +26,10 @@ class CountdownTimer extends StatelessWidget {
     final timer = context.watch<CountdownTimerProvider>();
     final remaining = timer.remaining;
 
-    final days = _format(remaining.inDays);
+    final months = showMonths ? _format(timer.months) : null;
+    final days = _format(showMonths ? timer.daysAfterMonths : remaining.inDays);
+
+    // final days = _format(remaining.inDays);
     final hours = _format(remaining.inHours.remainder(24));
     final minutes = _format(remaining.inMinutes.remainder(60));
     final seconds = _format(remaining.inSeconds.remainder(60));
@@ -104,6 +109,10 @@ class CountdownTimer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              if (showMonths) ...[
+                timeUnit(months!, 'Months'),
+                dotSeparator(),
+              ],
               timeUnit(days, 'Days'),
               dotSeparator(),
               timeUnit(hours, 'Hours'),

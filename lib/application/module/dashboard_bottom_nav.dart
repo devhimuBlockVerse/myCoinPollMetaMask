@@ -8,6 +8,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/transa
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/start_vesting_view.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_view.dart';
  import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/vesting_status_provider.dart';
 import 'package:provider/provider.dart';
 import '../presentation/screens/settings/settings_screen.dart';
 
@@ -23,7 +24,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ECMIcoScreen(),
     const StakingScreen(),
     // const VestingView(),
-    const StartVestingView(),
+    // const StartVestingView(),
+    const SleepPeriodScreen(),
     const ProfileScreen(),
   ];
 
@@ -38,6 +40,15 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
   ];
 
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Refresh vesting status when first navigating to dashboard
+      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      vestingProvider.loadFromBackend();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +111,10 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                   return InkWell(
                     onTap: () {
                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
+
+                      if (index == 3) {
+                        Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
+                      }
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

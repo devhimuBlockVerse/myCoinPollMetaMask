@@ -13,6 +13,7 @@ import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
  import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
+import '../../../module/userDashboard/viewmodel/vesting_status_provider.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
@@ -101,6 +102,11 @@ class _SignInState extends State<SignIn> {
       final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
       await userAuth.loadUserFromPrefs();
       Provider.of<BottomNavProvider>(context, listen: false).setFullName(response.user.name);
+
+
+     /// New added For Vesting
+      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      await vestingProvider.loadFromBackend();
 
       Navigator.pushReplacement(
         context,
@@ -213,6 +219,10 @@ class _SignInState extends State<SignIn> {
 
       if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
+
+      if (!mounted) return;
+      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      await vestingProvider.loadFromBackend();
 
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

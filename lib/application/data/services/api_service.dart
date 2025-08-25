@@ -178,27 +178,6 @@ class ApiService {
     }
   }
 
-  //  Future<List<ReferralUserListModel>> fetchReferralUsers() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final token = prefs.getString('token');
-  //
-  //   final headers = {
-  //     'Accept': 'application/json',
-  //     'Content-Type': 'application/json',
-  //     if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
-  //   };
-  //
-  //   final url = Uri.parse('${ApiConstants.baseUrl}/get-referral-users?page=1');
-  //
-  //   final response = await http.get(url, headers: headers);
-  //   if (response.statusCode == 200) {
-  //     final decoded = json.decode(response.body);
-  //     final List data = decoded['data'] ?? [];
-  //     return data.map((e) => ReferralUserListModel.fromJson(e)).toList();
-  //   } else {
-  //     throw Exception('Failed to fetch referral users: ${response.statusCode}');
-  //   }
-  // }
    Future<List<ReferralUserListModel>> fetchAllReferralUsers() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -300,6 +279,24 @@ class ApiService {
     print('[TokenBalance] -> parsed: { raw: $raw, human: $human }');
     return human;
   }
+
+
+  Future<Map<String, dynamic>> fetchUserVestingStatus(String userId) async {
+    // Mock for testing
+    await Future.delayed(const Duration(milliseconds: 500));
+    return {
+      'hasStartedSleepPeriod': false,
+      'hasSleepPeriodEnded': false,
+    };
+  }
+
+  Future<void> updateUserVestingStatus(String userId, Map<String, dynamic> status) async {
+    // Mock for testing
+    await Future.delayed(const Duration(milliseconds: 500));
+    print("Mock: Updated vesting status for user $userId: $status");
+  }
+
+
 
   Future<LoginResponse> web3Login( BuildContext context,String message, String address, String signature) async {
      // final prefs = await SharedPreferences.getInstance();

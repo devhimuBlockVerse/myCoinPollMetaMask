@@ -6,7 +6,11 @@ class CountdownTimerProvider extends ChangeNotifier {
   late DateTime targetDateTime;
   Timer? _timer;
 
+  int get months => remaining.inDays ~/ 30;
+  int get daysAfterMonths => remaining.inDays % 30;
+
   CountdownTimerProvider({required this.targetDateTime}) {
+
     _startCountdown();
   }
 

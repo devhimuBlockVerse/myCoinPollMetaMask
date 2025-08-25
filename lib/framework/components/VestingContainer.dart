@@ -38,7 +38,7 @@ class VestingContainer extends StatelessWidget {
       decoration: ShapeDecoration(
         color: effectiveBackgroundColor,
         shape: RoundedRectangleBorder(
-          side: BorderSide(width: 0.50, color: effectiveBorderColor),
+          side: BorderSide(width: 0.80, color: effectiveBorderColor),
           borderRadius: effectiveBorderRadius,
         ),
       ),

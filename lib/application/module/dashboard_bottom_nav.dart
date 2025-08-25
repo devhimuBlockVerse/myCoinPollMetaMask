@@ -24,8 +24,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const ECMIcoScreen(),
     const StakingScreen(),
     // const VestingView(),
-    // const StartVestingView(),
-    const SleepPeriodScreen(),
+    const StartVestingView(),
+    // const SleepPeriodScreen(),
     const ProfileScreen(),
   ];
 

@@ -11,6 +11,7 @@ class CustomLabeledInputField extends StatelessWidget {
   final String? trailingIconAsset;
   final VoidCallback? onTrailingIconTap;
   final bool expands;
+  final double? containerWidth;
 
   const CustomLabeledInputField({
     super.key,
@@ -21,6 +22,7 @@ class CustomLabeledInputField extends StatelessWidget {
     this.trailingIconAsset,
     this.onTrailingIconTap,
     this.expands = false,
+    this.containerWidth,
   });
 
   @override
@@ -40,8 +42,8 @@ class CustomLabeledInputField extends StatelessWidget {
     }
 
     return Container(
-      width: double.infinity,
-       decoration: BoxDecoration(
+      width: containerWidth ?? double.infinity,
+      decoration: BoxDecoration(
       color: Colors.white12,
         borderRadius: BorderRadius.circular(screenWidth * 0.02),
 

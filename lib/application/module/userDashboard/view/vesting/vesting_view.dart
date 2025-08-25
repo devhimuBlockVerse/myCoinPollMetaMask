@@ -16,6 +16,7 @@ class VestingView extends StatefulWidget {
   State<VestingView> createState() => _VestingViewState();
 }
 
+
 class _VestingViewState extends State<VestingView> {
   @override
   Widget build(BuildContext context) {

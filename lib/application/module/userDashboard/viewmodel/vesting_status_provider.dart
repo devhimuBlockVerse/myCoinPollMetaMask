@@ -9,8 +9,7 @@ class VestingStatusProvider with ChangeNotifier {
   bool _hasUserStartedVestingSleepPeriod = false;
   bool get hasUserStartedVestingSleepPeriod => _hasUserStartedVestingSleepPeriod;
 
-  bool _hasSleepPeriodEnded = false;
-  bool get hasSleepPeriodEnded => _hasSleepPeriodEnded;
+
 
 
   bool _isLoading = true;
@@ -30,8 +29,7 @@ class VestingStatusProvider with ChangeNotifier {
 
       final prefs = await SharedPreferences.getInstance();
       _hasUserStartedVestingSleepPeriod = prefs.getBool('hasStartedVestingSleepPeriod') ?? false;
-      _hasSleepPeriodEnded = prefs.getBool('hasSleepPeriodEnded') ?? false;
-      notifyListeners();
+       notifyListeners();
       // --- Replace with actual API call ---
       // Example: Assume ApiService has a method to get this status
       // final apiService = ApiService();
@@ -63,13 +61,13 @@ class VestingStatusProvider with ChangeNotifier {
 
       final status = await apiService.fetchUserVestingStatus(userId);
       _hasUserStartedVestingSleepPeriod = status['hasStartedSleepPeriod'] ?? false;
-      _hasSleepPeriodEnded = status['hasSleepPeriodEnded'] ?? false;
 
       // Update local prefs
       await prefs.setBool('hasStartedVestingSleepPeriod', _hasUserStartedVestingSleepPeriod);
-      await prefs.setBool('hasSleepPeriodEnded', _hasSleepPeriodEnded);
 
-      print("Loaded vesting status from backend: started=$_hasUserStartedVestingSleepPeriod, ended=$_hasSleepPeriodEnded");
+      print("Loaded vesting status from backend: started=$_hasUserStartedVestingSleepPeriod, "
+
+      );
       notifyListeners();
     } catch (e) {
       print("Error loading from backend: $e");
@@ -113,9 +111,8 @@ class VestingStatusProvider with ChangeNotifier {
   }
 
   Future<void> endSleepPeriod() async {
-    if (!_hasUserStartedVestingSleepPeriod || _hasSleepPeriodEnded) return;
+    if (!_hasUserStartedVestingSleepPeriod) return;
 
-    _hasSleepPeriodEnded = true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasSleepPeriodEnded', true);
     notifyListeners();
@@ -131,7 +128,6 @@ class VestingStatusProvider with ChangeNotifier {
       }
     } catch (e) {
       print("Error ending sleep period: $e");
-      _hasSleepPeriodEnded = false;
       await prefs.setBool('hasSleepPeriodEnded', false);
       notifyListeners();
     }
@@ -140,7 +136,6 @@ class VestingStatusProvider with ChangeNotifier {
   // Optional: if you need to reset it (e.g., on logout)
   void resetVestingStatus() {
     _hasUserStartedVestingSleepPeriod = false;
-    _hasSleepPeriodEnded = false;
     notifyListeners();
     SharedPreferences.getInstance().then((prefs) {
       prefs.setBool('hasStartedVestingSleepPeriod', false);

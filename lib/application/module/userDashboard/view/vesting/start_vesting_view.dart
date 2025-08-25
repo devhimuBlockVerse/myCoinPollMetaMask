@@ -115,10 +115,6 @@ class _StartVestingViewState extends State<StartVestingView> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (vestingStatus.hasSleepPeriodEnded) {
-      return const VestingMainScreen();
-    }
-
     if (vestingStatus.hasUserStartedVestingSleepPeriod) {
       return WillPopScope(
         onWillPop: () async => false,
@@ -434,11 +430,14 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   String balanceText = '...';
   late DateTime contractStartDate;
 
-   final Duration cliffPeriodDuration = const Duration(days: 150); // e.g., 4 months cliff
+   final Duration vestingPeriodDuration = const Duration(seconds: 10); // e.g., 4 months cliff
   final Duration totalVestingPeriodFromActualStart = const Duration(days: 547); // e.g., 18 months total
 
-  late DateTime cliffEndDate;
+  late DateTime vestingStartDate;
   late DateTime fullVestedDate;
+
+
+
 
 
   @override
@@ -447,11 +446,11 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     contractStartDate = DateTime.now();
 
     // Calculate Cliff End Date (which is also when vesting *actually* starts)
-     cliffEndDate = contractStartDate.add(cliffPeriodDuration);
+     vestingStartDate = contractStartDate.add(vestingPeriodDuration);
 
     // Calculate Full Vested Date
-    // Total vesting duration is calculated FROM the cliffEndDate (vestingActualStartDate)
-     fullVestedDate = cliffEndDate.add(totalVestingPeriodFromActualStart);
+    // Total vesting duration is calculated FROM the vestingStartDate (vestingActualStartDate)
+     fullVestedDate = vestingStartDate.add(totalVestingPeriodFromActualStart);
   }
 
   Future<String> resolveBalance() async {
@@ -505,8 +504,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -523,7 +520,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
 
-    final DateTime targetForCliffCountdown = cliffEndDate;
+    final DateTime targetForVestingPeriodCountDown = vestingStartDate;
 
      return  Scaffold(
         key: _scaffoldKey,
@@ -615,7 +612,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                                       ChangeNotifierProvider(
                                         create: (_) {
                                           return CountdownTimerProvider(
-                                             targetDateTime: targetForCliffCountdown,
+                                             targetDateTime: targetForVestingPeriodCountDown,
                                           );
                                         },
                                         child: Builder(
@@ -624,7 +621,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                                             final dateFormat = DateFormat('d MMMM yyyy');
 
                                             // Display the date when vesting *actually* begins (i.e., cliff ends)
-                                            final formattedVestingActualStartDate = dateFormat.format(cliffEndDate);
+                                            final formattedVestingActualStartDate = dateFormat.format(vestingStartDate);
 
                                             print('Cliff Timer - targetDateTime (cliff end): ${timerProvider.targetDateTime}');
                                              print('Text widget - months remaining: ${timerProvider.months}');
@@ -706,10 +703,13 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                                 SizedBox(height: screenHeight * 0.02),
                                  vestingDetails(
                                     screenHeight, screenWidth, context,
-                                    actualStartDate: cliffEndDate,
+                                    actualStartDate: vestingStartDate,
                                     actualFullVestDate: fullVestedDate
                                 ),
                                 SizedBox(height: screenHeight * 0.9),
+
+
+
 
                               ],
                             ),
@@ -829,48 +829,70 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
 
 
+  Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context){
+    return FutureBuilder<String>(
+        future: resolveBalance(),
+        builder: (context,snapshot) {
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              balanceText = snapshot.data!;
+            } else if (snapshot.hasError) {
+              balanceText = "0";
+            }
+          }
+          return VestingContainer(
+            width: screenWidth * 0.9,
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                Text(
+                  'Total Vesting ECM',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0XFFFFFFFF),
+                    fontSize: getResponsiveFontSize(context, 12),
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.001),
+
+                ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (Rect bounds) {
+                    return LinearGradient(
+                      colors: const [
+                        Color(0xFF2680EF),
+                        Color(0xFF1CD494),
+                      ],
+                    ).createShader(bounds);
+                  },
+                  child: Text(
+                    'ECM ${_formatBalance(balanceText)}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getResponsiveFontSize(context, 22),
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.03),
 
 
-
-}
-
-
-
-
-
-class VestingMainScreen extends StatefulWidget {
-  const VestingMainScreen({super.key});
-
-  @override
-  State<VestingMainScreen> createState() => _VestingMainScreenState();
-}
-
-class _VestingMainScreenState extends State<VestingMainScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text('Vesting Main', style: TextStyle(color: Colors.white)),
-      ),
-      backgroundColor: const Color(0xFF01090B),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'This is the Vesting Main screen after Sleep Time is Over',
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              ],
             ),
-            const SizedBox(height: 20),
-
-          ],
-        ),
-      ),
+          );
+        }
     );
   }
+
+
+
 }
 
 

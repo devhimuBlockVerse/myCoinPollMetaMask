@@ -14,6 +14,8 @@ import '../../../framework/utils/enums/toast_type.dart';
  import '../../domain/constants/api_constants.dart';
 import 'dart:typed_data';
 
+import '../../module/userDashboard/view/vesting/helper/vesting_info.dart';
+
 bool isUserRejectedError(Object error) {
   if (error == null) return false;
 
@@ -143,6 +145,22 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _web3Client = Web3Client(ALCHEMY_URL_V2, Client());
     WidgetsBinding.instance.addObserver(this);
   }
+
+  String? _vestingAddress;
+  String? _vestingStatus; // 'locked' | 'process' | null
+
+  final VestingInfo vestInfo = VestingInfo(
+    start: 0,
+    cliff: 0,
+    duration: 0,
+    end: 0,
+    released: 0.0,
+    claimable: 0.0,
+  );
+
+// Getters for the new properties
+  String? get vestingAddress => _vestingAddress;
+  String? get vestingStatus => _vestingStatus;
 
   @override
   void dispose() {
@@ -453,7 +471,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
     if (appKitModal == null) return;
@@ -485,6 +502,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
+
   Future<void> rehydrate() async {
     await _hydrateFromExistingSession();
   }
@@ -502,9 +520,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  /// NEw Changes
   Future<void> _hydrateFromExistingSession() async {
     final prefs = await SharedPreferences.getInstance();
-    var session = appKitModal!.session;
+    // var session = appKitModal!.session;
+    var session = appKitModal?.session;
 
     // wait a bit for SDK to rehydrate after init
     if (session == null) {
@@ -523,7 +543,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         await prefs.setString('chainId', chainId);
       }
 
+
       final address = _getFirstAddressFromSession();
+
       if (address != null) {
         _walletAddress = address;
         await prefs.setBool('isConnected', true);
@@ -558,6 +580,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } catch (_) {}
     return null;
   }
+
   String? _getChainIdFromSession() {
     final s = appKitModal?.session;
     if (s == null) return null;
@@ -577,7 +600,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String? _getChainIdForRequests() {
     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
   }
-   Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
+
+  Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
     final end = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(end)) {
       if (_isConnected && _walletAddress.isNotEmpty) return true;
@@ -688,6 +712,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         getBalance(),
          getMinimunStake(),
         getMaximumStake(),
+        getVestingInformation()
       ]);
     } catch (e) {
       print('Error fetching connected wallet data: $e');
@@ -699,8 +724,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
     }
   }
-
-
 
   void _clearWalletSpecificInfo({bool shouldNotify = true}) {
     _balance = null;
@@ -1727,7 +1750,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-
   Future<void> unStakeCreate(String hash, List<dynamic> decodedLog) async {
     final payload = {
       'unstake_hash': hash,
@@ -1781,6 +1803,230 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  Future<void> getVestingInformation() async {
+    if (!_isConnected || _walletAddress.isEmpty) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final chainId = _getChainIdForRequests();
+      if (chainId == null) throw Exception('Chain ID is not available.');
+
+      final saleContractAbiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
+      final saleContractAbiData = jsonDecode(saleContractAbiString);
+      final saleContract = DeployedContract(
+        ContractAbi.fromJson(jsonEncode(saleContractAbiData), 'ECMCoinICO'),
+        EthereumAddress.fromHex(SALE_CONTRACT_ADDRESS),
+      );
+
+      final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+      final walletAddressHex = appKitModal!.session!.getAddress(nameSpace);
+      if (walletAddressHex == null) throw Exception('Wallet address is null.');
+
+      final userWalletAddress = EthereumAddress.fromHex(walletAddressHex);
+
+      // vestingOf function on the Sale Contract
+      final vestingOfResult = await _web3Client!.call(
+        contract: saleContract,
+        function: saleContract.function('vestingOf'),
+        params: [userWalletAddress],
+      );
+
+      final vestingContractAddress = vestingOfResult[0] as EthereumAddress;
+      final zeroAddress = EthereumAddress.fromHex('0x0000000000000000000000000000000000000000');
+
+      if (vestingContractAddress == zeroAddress) {
+        // No vesting contract for user
+        _vestingAddress = null;
+        _vestingStatus = null;
+      } else {
+        _vestingAddress = vestingContractAddress.hex;
+        await _resolveVestedStart(vestingContractAddress);
+      }
+    } catch (e, stack) {
+      print('Error getting vesting information: $e --- $stack');
+      _vestingAddress = null;
+      _vestingStatus = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+  Future<void> _resolveVestedStart(EthereumAddress vestingContractAddress) async {
+    try {
+      print("fetching vestingContract Address : ${vestingContractAddress.hex}");
+
+      if (_web3Client == null) {
+         _vestingAddress = null;
+        notifyListeners();
+        return;
+      }
+
+      final vestingAbiString = await rootBundle.loadString("assets/abi/VestingABI.json");
+      final vestingAbiData = jsonDecode(vestingAbiString);
+
+      final vestedContract = DeployedContract(
+        ContractAbi.fromJson(jsonEncode(vestingAbiData), 'LinearVestingWallet'),
+        vestingContractAddress,
+      );
+
+      final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+      print("1. Calling 'start' function...");
+      final startResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('start'), params: []);
+      print("   Raw start: ${startResult[0]}");
+
+      print("2. Calling 'cliff' function...");
+      final cliffResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('cliff'), params: []);
+      print("   Raw cliff: ${cliffResult[0]}");
+
+      print("3. Calling 'duration' function...");
+      final durationResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('duration'), params: []);
+      print("   Raw duration: ${durationResult[0]}");
+
+      // print("4. Calling 'released' function...");
+      // final releasedResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('released'), params:[]);
+      // print("   Raw released: ${releasedResult}");
+
+      // print("5. Calling 'vestedAmount' function with now = $now...");
+      // final claimableResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('vestedAmount'), params: [BigInt.from(now)]);
+      // print("   Raw vestedAmount (claimable): ${claimableResult[0]}");
+
+      // FIX: Find the 'released' function that takes no parameters
+      final releasedFunction = vestedContract.findFunctionsByName('released').firstWhere(
+            (func) => func.parameters.isEmpty,
+      );
+      print("4. Calling 'released' function...");
+      final releasedResult = await _web3Client!.call(contract: vestedContract, function: releasedFunction, params: []);
+      print("   Raw released: ${releasedResult[0]}");
+
+      // FIX: Find the 'vestedAmount' function that takes one parameter (timestamp)
+      final vestedAmountFunction = vestedContract.findFunctionsByName('vestedAmount').firstWhere(
+            (func) => func.parameters.length == 1,
+      );
+      print("5. Calling 'vestedAmount' function with now = $now...");
+      final claimableResult = await _web3Client!.call(contract: vestedContract, function: vestedAmountFunction, params: [BigInt.from(now)]);
+      print("   Raw vestedAmount (claimable): ${claimableResult[0]}");
+
+
+
+
+      // final start = (startResult as BigInt).toInt();
+      // final cliff = (cliffResult as BigInt).toInt();
+      // final duration = (durationResult as BigInt).toInt();
+      // final released = (releasedResult[0] as BigInt);
+      // final claimable = (claimableResult[0] as BigInt);
+      final start = (startResult[0] as BigInt).toInt();
+      final cliff = (cliffResult[0] as BigInt).toInt();
+      final duration = (durationResult[0] as BigInt).toInt();
+      final released = (releasedResult[0] as BigInt);
+      final claimable = (claimableResult[0] as BigInt);
+
+
+      print("start: $start");
+      print("cliff: $cliff");
+      print("duration: $duration");
+      print("released: $released");
+      print("claimable: $claimable");
+
+      vestInfo.start = start;
+      vestInfo.cliff = cliff;
+      vestInfo.duration = duration;
+      vestInfo.released = released .toDouble();
+      vestInfo.claimable = claimable.toDouble();
+      vestInfo.end = start + duration;
+      _vestingStatus = start > now ? 'locked' : 'process';
+
+      notifyListeners();
+
+    } catch (e, stackTrace) {
+      // This catch block will now give you a much more specific error
+       print("Stack Trace: $stackTrace");
+      _vestingStatus = null;
+      notifyListeners();
+    }
+  }
+
+
+
+  // Future<void> _resolveVestedStart(EthereumAddress vestingContractAddress) async {
+  //   try {
+  //     if(_web3Client == null){
+  //       print('Error : _web3Client is null');
+  //       _vestingAddress = null ;
+  //       notifyListeners();
+  //       return;
+  //     }
+  //
+  //
+  //     final vestingAbiString = await rootBundle.loadString("assets/abi/VestingABI.json");
+  //     final vestingAbiData = jsonDecode(vestingAbiString);
+  //
+  //     final vestedContract = DeployedContract(
+  //       ContractAbi.fromJson(jsonEncode(vestingAbiData), 'LinearVestingWallet'),
+  //       vestingContractAddress,
+  //     );
+  //
+  //     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  //
+  //     final results = await Future.wait([
+  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('start'), params: []),
+  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('cliff'), params: []),
+  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('duration'), params: []),
+  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('released'), params: []),
+  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('vestedAmount'), params: [BigInt.from(now)]),
+  //     ]);
+  //     // Check each result individually before assigning
+  //     final startResult = results[0];
+  //     final cliffResult = results[1];
+  //     final durationResult = results[2];
+  //     final releasedResult = results[3];
+  //     final claimableResult = results[4];
+  //     // Print raw BigInt values for debugging
+  //     print('Raw start: ${startResult[0]}');
+  //     print('Raw cliff: ${cliffResult[0]}');
+  //     print('Raw duration: ${durationResult[0]}');
+  //     print('Raw released: ${releasedResult[0]}');
+  //     print('Raw vestedAmount (claimable): ${claimableResult[0]}');
+  //
+  //
+  //
+  //     final start = (results[0][0] as BigInt).toInt();
+  //     final cliff = (results[1][0] as BigInt).toInt();
+  //     final duration = (results[2][0] as BigInt).toInt();
+  //     final released = (results[3][0] as BigInt);
+  //     final claimable = (results[4][0] as BigInt);
+  //
+  //     final decimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
+  //     final divisor = BigInt.from(10).pow(decimals);
+  //
+  //     vestInfo.start = start;
+  //     vestInfo.cliff = cliff;
+  //     vestInfo.duration = duration;
+  //     vestInfo.released = (released / divisor).toDouble();
+  //     vestInfo.claimable = (claimable / divisor).toDouble();
+  //     vestInfo.end = start + duration;
+  //
+  //     _vestingStatus = start > now ? 'locked' : 'process';
+  //
+  //     print('Vesting contract address: ${vestingContractAddress.hex}');
+  //     print('Vesting Status: $_vestingStatus');
+  //     print('Vesting Start: ${DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000)}');
+  //     print('Vesting Cliff: ${vestInfo.cliff} seconds');
+  //     print('Vesting Duration: ${vestInfo.duration} seconds');
+  //     print('Vesting End: ${DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000)}');
+  //     print('Released amount: ${vestInfo.released}');
+  //     print('Claimable amount: ${vestInfo.claimable}');
+  //
+  //     notifyListeners();
+  //
+  //   } catch (e) {
+  //     print('Error resolving vested start: $e');
+  //     _vestingStatus = null;
+  //     notifyListeners();
+  //   }
+  // }
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
     const pollInterval = Duration(seconds: 3);

@@ -11,6 +11,7 @@ import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vestin
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/vesting_status_provider.dart';
 import 'package:provider/provider.dart';
 import '../presentation/screens/settings/settings_screen.dart';
+import '../presentation/viewmodel/wallet_view_model.dart';
 
 class DashboardBottomNavBar extends StatefulWidget {
   const DashboardBottomNavBar({super.key});
@@ -23,8 +24,10 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const DashboardScreen(),
     const ECMIcoScreen(),
     const StakingScreen(),
+    const VestingWrapper(),
+
     // const VestingView(),
-    const StartVestingView(),
+    // const StartVestingView(),
     // const SleepPeriodScreen(),
     const ProfileScreen(),
   ];
@@ -44,7 +47,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Refresh vesting status when first navigating to dashboard
       final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
       vestingProvider.loadFromBackend();
     });
@@ -62,7 +64,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     double scaleHeight(double size) => size * screenHeight / 812;
 
     final currentIndex = Provider.of<DashboardNavProvider>(context).currentIndex;
-
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
          backgroundColor: Colors.transparent,
@@ -109,10 +111,44 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                 children: List.generate(_labels.length, (index) {
                   final isSelected = currentIndex == index;
                   return InkWell(
-                    onTap: () {
+                    // onTap: ()async {
+                    //   Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
+                    //   if (index == 3) {
+                    //     Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
+                    //
+                    //     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                    //     final walletAddress = walletVM.walletAddress ;
+                    //     await walletVM.getVestingInformation();
+                    //
+                    //     if(walletAddress == null || walletAddress.isEmpty){
+                    //       debugPrint("No wallet connected. Opening wallet connect modal...");
+                    //       walletVM.ensureModalWithValidContext(context);
+                    //       walletVM.appKitModal?.openModalView();
+                    //
+                    //     }
+                    //     debugPrint("User Wallet Address: $walletAddress");
+                    //   }
+                    //
+                    // },
+
+                     onTap: () async {
+                      // Change the page index first
                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
 
                       if (index == 3) {
+
+                         if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
+                           debugPrint("No wallet connected. Opening wallet connect modal...");
+                           walletVM.ensureModalWithValidContext(context);
+                           await walletVM.appKitModal?.openModalView();
+                        } else {
+                           debugPrint("User Wallet Address: ${walletVM.walletAddress}");
+                           debugPrint("✅ Tapped Vesting tab. Calling getVestingInformation now...");
+
+                           await walletVM.getVestingInformation();
+                        }
+
+                        // This call can be made after the main logic
                         Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
                       }
                     },

@@ -34,13 +34,15 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool _isNavigating = false;
 
-  String _generateSignatureMessage(String address) {
+  String _generateSignatureMessage(String? address) {
+    final walletAddr = address ?? "Unknown Wallet";
+
     return [
       "Welcome to MyCoinPoll!",
       "",
       "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
       "",
-      "Wallet: $address",
+      "Wallet: $walletAddr",
       "",
       "Thank you for being a part of our community!"
     ].join("\n");
@@ -220,7 +222,6 @@ class _SignInState extends State<SignIn> {
       if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
 
-      if (!mounted) return;
       final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
       await vestingProvider.loadFromBackend();
 

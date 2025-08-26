@@ -11,6 +11,7 @@ import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
 import '../../../../../framework/components/buy_Ecm.dart';
+import '../../../../../framework/components/claimHistoryCard.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
@@ -111,12 +112,11 @@ class _StartVestingViewState extends State<StartVestingView> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     final navProvider = Provider.of<NavigationProvider>(context);
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
     final vestingStatus = Provider.of<VestingStatusProvider>(context);
 
     if (vestingStatus.isLoading) {
@@ -208,7 +208,7 @@ class _StartVestingViewState extends State<StartVestingView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
 
-                                totalBalance(screenHeight, screenWidth, context),
+                                totalBalance(screenHeight, screenWidth, context,walletVM),
 
                                 SizedBox(height: screenHeight * 0.02),
 
@@ -230,7 +230,7 @@ class _StartVestingViewState extends State<StartVestingView> {
     );
   }
 
-  Widget totalBalance(screenHeight, screenWidth, context){
+  Widget totalBalance(screenHeight, screenWidth, context ,WalletViewModel walletVm){
 
     return FutureBuilder<String>(
         future: resolveBalance(),
@@ -275,6 +275,8 @@ class _StartVestingViewState extends State<StartVestingView> {
                   },
                   child: Text(
                     'ECM ${_formatBalance(balanceText)}',
+                     // "${walletVm.walletAddress.substring(0, 6)}...${walletVm.walletAddress.substring(walletVm.walletAddress.length - 4)}",
+
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: getResponsiveFontSize(context, 22),
@@ -426,6 +428,7 @@ class _StartVestingViewState extends State<StartVestingView> {
 
 
 
+
 class SleepPeriodScreen extends StatefulWidget {
 
   const SleepPeriodScreen({super.key,});
@@ -444,10 +447,15 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   late DateTime vestingStartDate;
   late DateTime fullVestedDate;
 
-  bool isVestingPeriodDurationOver = false; // global vesting start
-  bool isCliffPeriodOver = false; //  per-user cliff period flag
+  bool isVestingPeriodDurationOver = false;
+  bool isCliffPeriodOver = false;
 
   late DateTime cliffEndTime;
+
+  List<Claim> _claimHistory = []; // keep track of claims
+  List<Claim> _filteredClaimHistory = []; // filtered list for search
+  TextEditingController _searchController = TextEditingController();
+  bool _isSearchOpen = false;
 
 
   @override
@@ -468,6 +476,16 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     _startGlobalVestingTimer();
     _startUserCliffTimer();
 
+    // preload mock claim history
+    fetchClaimHistory().then((claims) {
+      if (mounted) {
+        setState(() {
+          _claimHistory = claims;
+          _filteredClaimHistory = claims;
+        });
+      }
+    });
+    _searchController.addListener(_onSearchChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -510,6 +528,23 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
       }
     });
   }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase().trim();
+
+    setState(() {
+      _filteredClaimHistory = _claimHistory.where((claim) {
+        final amount = claim.amount.replaceAll('ECM ', '').toLowerCase();
+        final dateTime = claim.dateTime.toLowerCase();
+        final wallet = claim.walletAddress.toLowerCase();
+
+        return amount.contains(query) ||
+            dateTime.contains(query) ||
+            wallet.contains(query);
+      }).toList();
+    });
+  }
+
 
   Future<String> resolveBalance() async {
 
@@ -566,11 +601,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
      return [
-      Claim(
-        amount: "ECM 258.665",
-        dateTime: "06 Nov 2025 21:30:48",
-        walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
-      ),
+
       Claim(
         amount: "ECM 120.200",
         dateTime: "15 Nov 2025 11:10:20",
@@ -581,16 +612,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
         walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
       ),
       Claim(
-        amount: "ECM 120.200",
-        dateTime: "15 Nov 2025 11:10:20",
-        walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
-      ),     Claim(
-        amount: "ECM 258.665",
-        dateTime: "06 Nov 2025 21:30:48",
-        walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
-      ),
-      Claim(
-        amount: "ECM 120.200",
+        amount: "ECM 100.200",
         dateTime: "15 Nov 2025 11:10:20",
         walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
       ),
@@ -1099,7 +1121,23 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                         Color(0xFF2680EF),
                         Color(0xFF1CD494)
                       ],
-                      onTap: (){}
+                      onTap: (){
+                        final newClaim = Claim(
+                          amount: "ECM 50.000", // dynamically fetch actual claimable amount
+                          dateTime: DateFormat("dd MMM yyyy HH:mm:ss").format(DateTime.now()),
+                          walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d", // replace with real user wallet
+                        );
+
+                        setState(() {
+                          _claimHistory.insert(0, newClaim); // add at top
+                          _onSearchChanged();
+                        });
+
+                        ToastMessage.show(
+                          message: "Claim successful!",
+                          type: MessageType.success,
+                        );
+                      }
 
                   ),
                 ],
@@ -1194,6 +1232,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
+          // Title + Search Field
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -1207,11 +1246,56 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SvgPicture.asset(
-                'assets/icons/search.svg',
-                fit: BoxFit.contain,
-                height: screenHeight * 0.034,
+
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: _isSearchOpen ? screenWidth * 0.5 : screenHeight * 0.034,
+                child: _isSearchOpen
+                    ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                  decoration: InputDecoration(
+                    hintText: "Search...",
+                    hintStyle: const TextStyle(color: Colors.white54),
+                    filled: true,
+                    fillColor: Colors.white12,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.008,
+                      horizontal: screenWidth * 0.02,
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isSearchOpen = false;
+                          _searchController.clear();
+                          _onSearchChanged();
+                        });
+                      },
+                      child: const Icon(Icons.close, color: Colors.white, size: 20),
+                    ),
+                  ),
+                  onChanged: (value) => _onSearchChanged(),
+                )
+                    : GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isSearchOpen = true;
+                    });
+                  },
+                  child: SvgPicture.asset(
+                    'assets/icons/search.svg',
+                    fit: BoxFit.contain,
+                    height: screenHeight * 0.034,
+                  ),
+                ),
               )
+
+
             ],
           ),
           SizedBox(
@@ -1226,66 +1310,53 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
           SizedBox(height: screenHeight * 0.02),
 
           /// Fetch Claim History
+
           Expanded(
-            child: FutureBuilder<List<Claim>>(
-              future: fetchClaimHistory(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: Colors.white),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: Text(
-                      "Error loading claim history",
-                      style: TextStyle(color: Colors.redAccent),
+            child: _filteredClaimHistory.isEmpty
+                ?  Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Opacity(
+                    opacity: 0.5,
+                    child: Image.asset(
+                      'assets/images/noDataFoundImg.png',
+                      fit: BoxFit.contain,
+                      height: screenHeight * 0.2,
                     ),
-                  );
-                }
-
-                final claims = snapshot.data ?? [];
-
-                if (claims.isEmpty) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      child: Text(
-                        "No claim history found",
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 14,
-                          fontFamily: "Poppins",
-                        ),
-                      ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                  Text(
+                    "No Data Founds",
+                    style: TextStyle(
+                      color: Color(0XFF7D8FA9),
+                      fontSize: getResponsiveFontSize(context, 12) ,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.w400,
                     ),
-                  );
-                }
-
-                /// Render list of claims
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: claims.length,
-                  separatorBuilder: (_, __) => SizedBox(height: screenHeight * 0.01),
-                  itemBuilder: (context, index) {
-                    final claim = claims[index];
-                    return ClaimHistoryCard(
-                      amount: claim.amount,
-                      dateTime: claim.dateTime,
-                      walletAddress: claim.walletAddress,
-                      buttonLabel: "Explore",
-                      onButtonTap: () {
-                        print("Explore tapped for ${claim.walletAddress}");
-                      },
-                    );
+                  ),
+                ],
+              ),
+            )
+                : ListView.separated(
+              physics: const BouncingScrollPhysics(),
+              itemCount: _filteredClaimHistory.length,
+              separatorBuilder: (_, __) => SizedBox(height: screenHeight * 0.01),
+              itemBuilder: (context, index) {
+                final claim = _filteredClaimHistory[index];
+                return ClaimHistoryCard(
+                  amount: claim.amount,
+                  dateTime: claim.dateTime,
+                  walletAddress: claim.walletAddress,
+                  buttonLabel: "Explore",
+                  onButtonTap: () {
+                    debugPrint("Explore tapped for ${claim.walletAddress}");
                   },
                 );
               },
             ),
           ),
-
         ],
       )
     );

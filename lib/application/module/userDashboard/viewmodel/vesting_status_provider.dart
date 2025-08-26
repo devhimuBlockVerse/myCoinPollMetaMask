@@ -6,6 +6,9 @@ import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../data/services/api_service.dart';
 
 class VestingStatusProvider with ChangeNotifier {
+
+
+
   bool _hasUserStartedVestingSleepPeriod = false;
   bool get hasUserStartedVestingSleepPeriod => _hasUserStartedVestingSleepPeriod;
 
@@ -14,6 +17,7 @@ class VestingStatusProvider with ChangeNotifier {
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
+
 
 
   // Load state when provider is created
@@ -30,18 +34,7 @@ class VestingStatusProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       _hasUserStartedVestingSleepPeriod = prefs.getBool('hasStartedVestingSleepPeriod') ?? false;
        notifyListeners();
-      // --- Replace with actual API call ---
-      // Example: Assume ApiService has a method to get this status
-      // final apiService = ApiService();
-      // final userId = await getUserId(); // Helper to get current user's ID
-      // if (userId != null) {
-      //   _hasUserStartedVestingSleepPeriod = await apiService.fetchUserVestingStatus(userId);
-      // } else {
-      //   _hasUserStartedVestingSleepPeriod = false; // Default if no user or error
-      // }
-      // --- End of API call example ---
 
-      // Sync with backend
       await loadFromBackend();
 
     } catch (e) {

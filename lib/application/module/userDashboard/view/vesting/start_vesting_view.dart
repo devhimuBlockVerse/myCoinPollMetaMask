@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
  import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
@@ -9,6 +10,7 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
+import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
@@ -23,6 +25,8 @@ import '../../../side_nav_bar.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../viewmodel/vesting_status_provider.dart';
 import 'package:intl/intl.dart';
+
+import 'helper/claim.dart';
 
 class StartVestingView extends StatefulWidget {
   const StartVestingView({super.key});
@@ -472,36 +476,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
       await walletVM.getBalance();
     });
   }
-  //
-  // void _startGlobalVestingTimer() {
-  //   if (DateTime.now().isAfter(vestingStartDate)) {
-  //     isVestingPeriodDurationOver = true;
-  //   } else {
-  //     Timer.periodic(const Duration(seconds: 1), (timer) {
-  //       if (DateTime.now().isAfter(vestingStartDate)) {
-  //         if (mounted) setState(() => isVestingPeriodDurationOver = true);
-  //         timer.cancel();
-  //       }
-  //     });
-  //   }
-  // }
-  //
-  //
-  // void _startUserCliffTimer() {
-  //   final userCliffDuration = Duration(seconds: 10); // per-user cliff
-  //   final userCliffEndDate = vestingEventStartDate.add(userCliffDuration);
-  //
-  //   if (DateTime.now().isAfter(userCliffEndDate)) {
-  //     isCliffPeriodOver = true;
-  //   } else {
-  //     Timer.periodic(const Duration(seconds: 10), (timer) {
-  //       if (DateTime.now().isAfter(userCliffEndDate)) {
-  //         if (mounted) setState(() => isCliffPeriodOver = true);
-  //         timer.cancel();
-  //       }
-  //     });
-  //   }
-  // }
 
   void _startGlobalVestingTimer() {
     if (DateTime.now().isAfter(vestingStartDate)) {
@@ -513,7 +487,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
         if (DateTime.now().isAfter(vestingStartDate)) {
           if (mounted) setState(() => isVestingPeriodDurationOver = true);
           timer.cancel();
-          _startUserCliffTimer(); // Start cliff after vesting ends
+          _startUserCliffTimer();
         }
       });
     }
@@ -587,6 +561,42 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     }
 
   }
+
+  Future<List<Claim>> fetchClaimHistory() async {
+    await Future.delayed(const Duration(seconds: 1));
+
+     return [
+      Claim(
+        amount: "ECM 258.665",
+        dateTime: "06 Nov 2025 21:30:48",
+        walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
+      ),
+      Claim(
+        amount: "ECM 120.200",
+        dateTime: "15 Nov 2025 11:10:20",
+        walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
+      ),     Claim(
+        amount: "ECM 258.665",
+        dateTime: "06 Nov 2025 21:30:48",
+        walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
+      ),
+      Claim(
+        amount: "ECM 120.200",
+        dateTime: "15 Nov 2025 11:10:20",
+        walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
+      ),     Claim(
+        amount: "ECM 258.665",
+        dateTime: "06 Nov 2025 21:30:48",
+        walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
+      ),
+      Claim(
+        amount: "ECM 120.200",
+        dateTime: "15 Nov 2025 11:10:20",
+        walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
+      ),
+    ];
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -814,7 +824,11 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
                                   SizedBox(height: screenHeight * 0.02),
 
-                                  vestingSummary(screenHeight,screenWidth,context)
+                                  vestingSummary(screenHeight,screenWidth,context),
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  claimHistory(screenHeight,screenWidth,context)
                                ],
 
                                 SizedBox(height: screenHeight * 0.02),
@@ -1102,8 +1116,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   }
 
 
-
-
   Widget vestingSummary(double screenHeight, double screenWidth, BuildContext context){
 
     return VestingContainer(
@@ -1112,6 +1124,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
 
           Text(
@@ -1154,14 +1167,127 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
             value: '20 July, 2027',
           ),
 
-          ECMProgressIndicator(
-            stageIndex: 1,
-            currentECM: 125.848,
-            maxECM: 250.0,
-          )
+          SizedBox(height: screenHeight * 0.02),
+
+        ECMProgressIndicator(
+              vestingStartDate: DateTime(2025, 1, 20),
+              fullVestedDate: DateTime(2026, 7, 20),
+            ),
+
+
+
+
 
         ],
       ),
+    );
+  }
+
+
+  Widget claimHistory(double screenHeight, double screenWidth, BuildContext context){
+    return VestingContainer(
+      width: screenWidth * 0.9,
+        height: screenHeight * 0.5,
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
+        child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Claim History',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0XFFFFFFFF),
+                  fontSize: getResponsiveFontSize(context, 16),
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SvgPicture.asset(
+                'assets/icons/search.svg',
+                fit: BoxFit.contain,
+                height: screenHeight * 0.034,
+              )
+            ],
+          ),
+          SizedBox(
+            width: screenWidth * 0.9,
+            child: const Divider(
+              color: Colors.white12,
+              thickness: 1,
+              height: 15,
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+
+          /// Fetch Claim History
+          Expanded(
+            child: FutureBuilder<List<Claim>>(
+              future: fetchClaimHistory(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text(
+                      "Error loading claim history",
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                  );
+                }
+
+                final claims = snapshot.data ?? [];
+
+                if (claims.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        "No claim history found",
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 14,
+                          fontFamily: "Poppins",
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                /// Render list of claims
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: claims.length,
+                  separatorBuilder: (_, __) => SizedBox(height: screenHeight * 0.01),
+                  itemBuilder: (context, index) {
+                    final claim = claims[index];
+                    return ClaimHistoryCard(
+                      amount: claim.amount,
+                      dateTime: claim.dateTime,
+                      walletAddress: claim.walletAddress,
+                      buttonLabel: "Explore",
+                      onButtonTap: () {
+                        print("Explore tapped for ${claim.walletAddress}");
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+
+        ],
+      )
     );
   }
 

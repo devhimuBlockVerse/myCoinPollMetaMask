@@ -71,7 +71,7 @@ class _BlockButtonV2State extends State<BlockButtonV2> {
 
      final horizontalPadding = buttonWidth * 0.02;
     final verticalPadding = buttonHeight * 0.25;
-    final imageSize = buttonHeight * 0.5;
+    final imageSize = buttonHeight * 0.3;
 
     return GestureDetector(
       onTapDown: _handleTapDown,

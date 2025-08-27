@@ -13,7 +13,6 @@ import '../../../../framework/utils/customToastMessage.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
  import '../../../data/services/api_service.dart';
 import '../../../module/dashboard_bottom_nav.dart';
-import '../../../module/userDashboard/viewmodel/vesting_status_provider.dart';
 import '../../viewmodel/bottom_nav_provider.dart';
 import '../../viewmodel/user_auth_provider.dart';
 import '../../viewmodel/wallet_view_model.dart';
@@ -34,19 +33,31 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool _isNavigating = false;
 
-  String _generateSignatureMessage(String? address) {
-    final walletAddr = address ?? "Unknown Wallet";
+  // String _generateSignatureMessage(String address) {
+  //   return [
+  //     "Welcome to MyCoinPoll!",
+  //     "",
+  //     "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
+  //     "",
+  //     "Wallet: $address",
+  //     "",
+  //     "Thank you for being a part of our community!"
+  //   ].join("\n");
+  // }
 
+  String _generateSignatureMessage(String? address) {
+    final safeAddress = address ?? 'Unknown Wallet';
     return [
       "Welcome to MyCoinPoll!",
       "",
       "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
       "",
-      "Wallet: $walletAddr",
+      "Wallet: $safeAddress",
       "",
       "Thank you for being a part of our community!"
     ].join("\n");
   }
+
 
   @override
   void initState() {
@@ -105,11 +116,6 @@ class _SignInState extends State<SignIn> {
       await userAuth.loadUserFromPrefs();
       Provider.of<BottomNavProvider>(context, listen: false).setFullName(response.user.name);
 
-
-     /// New added For Vesting
-     //  final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-     //  await vestingProvider.loadFromBackend();
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
@@ -152,17 +158,34 @@ class _SignInState extends State<SignIn> {
         return;
       }
 
+      if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
+        if (!mounted) return;
+        ToastMessage.show(
+          message: "Wallet not ready",
+          subtitle: "Could not fetch your wallet address. Please reconnect.",
+          type: MessageType.error,
+        );
+        setState(() => _isNavigating = false);
+        return;
+      }
 
       //Generate message and request signature
+      // final message = _generateSignatureMessage(walletVM.walletAddress!);
+      // final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
       final message = _generateSignatureMessage(walletVM.walletAddress);
+      if (message.isEmpty) {
+        throw Exception("Failed to generate signature message.");
+      }
       final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+
+
 
       final dynamic rawSignatureResponse = await walletVM.appKitModal!.request(
         topic: walletVM.appKitModal!.session!.topic,
         chainId: walletVM.appKitModal!.selectedChain!.chainId,
         request: SessionRequestParams(
           method: 'personal_sign',
-          params: [hexMessage, walletVM.walletAddress],
+          params: [hexMessage, walletVM.walletAddress!],
         ),
       );
 
@@ -221,9 +244,6 @@ class _SignInState extends State<SignIn> {
 
       if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
-
-      // final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-      // await vestingProvider.loadFromBackend();
 
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

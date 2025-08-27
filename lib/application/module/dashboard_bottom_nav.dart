@@ -24,11 +24,9 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const DashboardScreen(),
     const ECMIcoScreen(),
     const StakingScreen(),
-    const VestingWrapper(),
+    // const VestingWrapper(),
+    const TransactionScreen(),
 
-    // const VestingView(),
-    // const StartVestingView(),
-    // const SleepPeriodScreen(),
     const ProfileScreen(),
   ];
 
@@ -47,8 +45,10 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-      vestingProvider.loadFromBackend();
+      // final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      // vestingProvider.loadFromBackend();
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      walletVM.getVestingInformation();
     });
   }
 
@@ -111,32 +111,10 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                 children: List.generate(_labels.length, (index) {
                   final isSelected = currentIndex == index;
                   return InkWell(
-                    // onTap: ()async {
-                    //   Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
-                    //   if (index == 3) {
-                    //     Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
-                    //
-                    //     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                    //     final walletAddress = walletVM.walletAddress ;
-                    //     await walletVM.getVestingInformation();
-                    //
-                    //     if(walletAddress == null || walletAddress.isEmpty){
-                    //       debugPrint("No wallet connected. Opening wallet connect modal...");
-                    //       walletVM.ensureModalWithValidContext(context);
-                    //       walletVM.appKitModal?.openModalView();
-                    //
-                    //     }
-                    //     debugPrint("User Wallet Address: $walletAddress");
-                    //   }
-                    //
-                    // },
-
                      onTap: () async {
-                      // Change the page index first
-                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
+                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
 
                       if (index == 3) {
-
                          if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
                            debugPrint("No wallet connected. Opening wallet connect modal...");
                            walletVM.ensureModalWithValidContext(context);
@@ -145,11 +123,11 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                            debugPrint("User Wallet Address: ${walletVM.walletAddress}");
                            debugPrint("✅ Tapped Vesting tab. Calling getVestingInformation now...");
 
-                           await walletVM.getVestingInformation();
+                           // await walletVM.getVestingInformation();
                         }
 
                         // This call can be made after the main logic
-                        Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
+                        // Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
                       }
                     },
                     child: Column(

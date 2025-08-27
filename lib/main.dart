@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PersonalViewModel()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => FeedbackViewModel()),
-        ChangeNotifierProvider(create: (_) => VestingStatusProvider()),
+        // ChangeNotifierProvider(create: (_) => VestingStatusProvider()),
 
         ChangeNotifierProvider( create: (_) => CountdownTimerProvider(
           targetDateTime: DateTime.now(),

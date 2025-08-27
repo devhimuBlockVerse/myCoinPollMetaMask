@@ -107,8 +107,8 @@ class _SignInState extends State<SignIn> {
 
 
      /// New added For Vesting
-      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-      await vestingProvider.loadFromBackend();
+     //  final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+     //  await vestingProvider.loadFromBackend();
 
       Navigator.pushReplacement(
         context,
@@ -222,8 +222,8 @@ class _SignInState extends State<SignIn> {
       if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
 
-      final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-      await vestingProvider.loadFromBackend();
+      // final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
+      // await vestingProvider.loadFromBackend();
 
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

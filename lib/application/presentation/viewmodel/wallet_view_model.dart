@@ -1853,6 +1853,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
+
   Future<void> _resolveVestedStart(EthereumAddress vestingContractAddress) async {
     try {
       print("fetching vestingContract Address : ${vestingContractAddress.hex}");
@@ -1873,7 +1874,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-      print("1. Calling 'start' function...");
+
       final startResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('start'), params: []);
       print("   Raw start: ${startResult[0]}");
 
@@ -1885,38 +1886,17 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final durationResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('duration'), params: []);
       print("   Raw duration: ${durationResult[0]}");
 
-      // print("4. Calling 'released' function...");
-      // final releasedResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('released'), params:[]);
-      // print("   Raw released: ${releasedResult}");
-
-      // print("5. Calling 'vestedAmount' function with now = $now...");
-      // final claimableResult = await _web3Client!.call(contract: vestedContract, function: vestedContract.function('vestedAmount'), params: [BigInt.from(now)]);
-      // print("   Raw vestedAmount (claimable): ${claimableResult[0]}");
-
-      // FIX: Find the 'released' function that takes no parameters
-      final releasedFunction = vestedContract.findFunctionsByName('released').firstWhere(
-            (func) => func.parameters.isEmpty,
-      );
-      print("4. Calling 'released' function...");
+      //'released' function that takes no parameters
+      final releasedFunction = vestedContract.findFunctionsByName('released').firstWhere((func) => func.parameters.isEmpty);
       final releasedResult = await _web3Client!.call(contract: vestedContract, function: releasedFunction, params: []);
       print("   Raw released: ${releasedResult[0]}");
 
-      // FIX: Find the 'vestedAmount' function that takes one parameter (timestamp)
-      final vestedAmountFunction = vestedContract.findFunctionsByName('vestedAmount').firstWhere(
-            (func) => func.parameters.length == 1,
-      );
-      print("5. Calling 'vestedAmount' function with now = $now...");
+      //'vestedAmount' function that takes one parameter (timestamp)
+      final vestedAmountFunction = vestedContract.findFunctionsByName('vestedAmount').firstWhere((func) => func.parameters.length == 1,);
       final claimableResult = await _web3Client!.call(contract: vestedContract, function: vestedAmountFunction, params: [BigInt.from(now)]);
-      print("   Raw vestedAmount (claimable): ${claimableResult[0]}");
+      print("Raw vestedAmount (claimable): ${claimableResult[0]}");
 
 
-
-
-      // final start = (startResult as BigInt).toInt();
-      // final cliff = (cliffResult as BigInt).toInt();
-      // final duration = (durationResult as BigInt).toInt();
-      // final released = (releasedResult[0] as BigInt);
-      // final claimable = (claimableResult[0] as BigInt);
       final start = (startResult[0] as BigInt).toInt();
       final cliff = (cliffResult[0] as BigInt).toInt();
       final duration = (durationResult[0] as BigInt).toInt();
@@ -1941,92 +1921,12 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
 
     } catch (e, stackTrace) {
-      // This catch block will now give you a much more specific error
-       print("Stack Trace: $stackTrace");
+        print("Stack Trace: $stackTrace");
       _vestingStatus = null;
       notifyListeners();
     }
   }
 
-
-
-  // Future<void> _resolveVestedStart(EthereumAddress vestingContractAddress) async {
-  //   try {
-  //     if(_web3Client == null){
-  //       print('Error : _web3Client is null');
-  //       _vestingAddress = null ;
-  //       notifyListeners();
-  //       return;
-  //     }
-  //
-  //
-  //     final vestingAbiString = await rootBundle.loadString("assets/abi/VestingABI.json");
-  //     final vestingAbiData = jsonDecode(vestingAbiString);
-  //
-  //     final vestedContract = DeployedContract(
-  //       ContractAbi.fromJson(jsonEncode(vestingAbiData), 'LinearVestingWallet'),
-  //       vestingContractAddress,
-  //     );
-  //
-  //     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  //
-  //     final results = await Future.wait([
-  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('start'), params: []),
-  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('cliff'), params: []),
-  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('duration'), params: []),
-  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('released'), params: []),
-  //       _web3Client!.call(contract: vestedContract, function: vestedContract.function('vestedAmount'), params: [BigInt.from(now)]),
-  //     ]);
-  //     // Check each result individually before assigning
-  //     final startResult = results[0];
-  //     final cliffResult = results[1];
-  //     final durationResult = results[2];
-  //     final releasedResult = results[3];
-  //     final claimableResult = results[4];
-  //     // Print raw BigInt values for debugging
-  //     print('Raw start: ${startResult[0]}');
-  //     print('Raw cliff: ${cliffResult[0]}');
-  //     print('Raw duration: ${durationResult[0]}');
-  //     print('Raw released: ${releasedResult[0]}');
-  //     print('Raw vestedAmount (claimable): ${claimableResult[0]}');
-  //
-  //
-  //
-  //     final start = (results[0][0] as BigInt).toInt();
-  //     final cliff = (results[1][0] as BigInt).toInt();
-  //     final duration = (results[2][0] as BigInt).toInt();
-  //     final released = (results[3][0] as BigInt);
-  //     final claimable = (results[4][0] as BigInt);
-  //
-  //     final decimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-  //     final divisor = BigInt.from(10).pow(decimals);
-  //
-  //     vestInfo.start = start;
-  //     vestInfo.cliff = cliff;
-  //     vestInfo.duration = duration;
-  //     vestInfo.released = (released / divisor).toDouble();
-  //     vestInfo.claimable = (claimable / divisor).toDouble();
-  //     vestInfo.end = start + duration;
-  //
-  //     _vestingStatus = start > now ? 'locked' : 'process';
-  //
-  //     print('Vesting contract address: ${vestingContractAddress.hex}');
-  //     print('Vesting Status: $_vestingStatus');
-  //     print('Vesting Start: ${DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000)}');
-  //     print('Vesting Cliff: ${vestInfo.cliff} seconds');
-  //     print('Vesting Duration: ${vestInfo.duration} seconds');
-  //     print('Vesting End: ${DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000)}');
-  //     print('Released amount: ${vestInfo.released}');
-  //     print('Claimable amount: ${vestInfo.claimable}');
-  //
-  //     notifyListeners();
-  //
-  //   } catch (e) {
-  //     print('Error resolving vested start: $e');
-  //     _vestingStatus = null;
-  //     notifyListeners();
-  //   }
-  // }
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
     const pollInterval = Duration(seconds: 3);

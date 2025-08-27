@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../presentation/screens/settings/settings_screen.dart';
 import '../presentation/viewmodel/wallet_view_model.dart';
 
+
 class DashboardBottomNavBar extends StatefulWidget {
   const DashboardBottomNavBar({super.key});
 
@@ -24,34 +25,21 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const DashboardScreen(),
     const ECMIcoScreen(),
     const StakingScreen(),
-    // const VestingWrapper(),
     const TransactionScreen(),
-
     const ProfileScreen(),
   ];
 
-  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Vesting', 'Settings'];
+  final List<String> _labels = ['Dashboard', 'ECM ICO', 'Staking', 'Transactions', 'Settings'];
 
   final List<String> _imgPaths = [
     'assets/icons/dasboard.svg',
-
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
-    'assets/icons/vesting.svg',
+    'assets/icons/transaction.svg',
     'assets/icons/profileIcon.svg',
   ];
 
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // final vestingProvider = Provider.of<VestingStatusProvider>(context, listen: false);
-      // vestingProvider.loadFromBackend();
-      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-      walletVM.getVestingInformation();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +53,11 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     double scaleHeight(double size) => size * screenHeight / 812;
 
     final currentIndex = Provider.of<DashboardNavProvider>(context).currentIndex;
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
     return SafeArea(
       child: Scaffold(
-         backgroundColor: Colors.transparent,
+        // backgroundColor: const Color(0xFF0E0F1A),
+        backgroundColor: Colors.transparent,
         // body: _pages[currentIndex],
         body: IndexedStack(
           index: currentIndex,
@@ -112,24 +101,8 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                 children: List.generate(_labels.length, (index) {
                   final isSelected = currentIndex == index;
                   return InkWell(
-                     onTap: () async {
-                       Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
-
-                      if (index == 3) {
-                         if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
-                           debugPrint("No wallet connected. Opening wallet connect modal...");
-                           walletVM.ensureModalWithValidContext(context);
-                           await walletVM.appKitModal?.openModalView();
-                        } else {
-                           debugPrint("User Wallet Address: ${walletVM.walletAddress}");
-                           debugPrint("✅ Tapped Vesting tab. Calling getVestingInformation now...");
-
-                           // await walletVM.getVestingInformation();
-                        }
-
-                        // This call can be made after the main logic
-                        // Provider.of<VestingStatusProvider>(context, listen: false).loadFromBackend();
-                      }
+                    onTap: () {
+                      Provider.of<DashboardNavProvider>(context, listen: false).setIndex(index);
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -164,4 +137,3 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     );
   }
 }
-

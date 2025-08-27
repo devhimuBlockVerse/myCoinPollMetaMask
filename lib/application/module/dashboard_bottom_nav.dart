@@ -34,6 +34,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
 
   final List<String> _imgPaths = [
     'assets/icons/dasboard.svg',
+
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
     'assets/icons/vesting.svg',

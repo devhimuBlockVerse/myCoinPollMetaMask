@@ -65,7 +65,7 @@ const TransactionDetailsDialog({super.key, required this.data});
                           SizedBox(height: screenHeight * 0.02),
                           Text(
                             // '\$ 100000.00',
-                            '\$ ${data['Amount'] ?? '0.00'}',
+                            'ECM ${data['Amount'] ?? '0.00'}',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,

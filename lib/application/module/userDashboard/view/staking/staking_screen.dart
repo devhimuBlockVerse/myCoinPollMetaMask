@@ -335,129 +335,129 @@ class _StakingScreenState extends State<StakingScreen> {
                                 _stakingDetails(),
                                 SizedBox(height: screenHeight * 0.04),
 
-                                Consumer<WalletViewModel>(
-                                  builder: (context, walletVM, child) {
-                                    return  Center(
-                                      child: BlockButton(
-                                        height: baseSize * 0.12,
-                                        width: screenWidth * 0.7,
-                                        label: walletVM.isLoading ? "Processing..." : "Stake Now",
-                                        textStyle: TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          fontSize: baseSize * 0.048,
-                                        ),
-                                        gradientColors: const [
-                                          Color(0xFF2680EF),
-                                          Color(0xFF1CD494),
-                                        ],
-                                        leadingIconPath: 'assets/icons/arrowIcon.svg',
-                                        iconSize: screenHeight * 0.013,
-                                        onTap: walletVM.isLoading
-                                            ? null
-                                            : () async {
+                                // Consumer<WalletViewModel>(
+                                //   builder: (context, walletVM, child) {
+                                //     return  Center(
+                                //       child: BlockButton(
+                                //         height: baseSize * 0.12,
+                                //         width: screenWidth * 0.7,
+                                //         label: walletVM.isLoading ? "Processing..." : "Stake Now",
+                                //         textStyle: TextStyle(
+                                //           fontWeight: FontWeight.w700,
+                                //           color: Colors.white,
+                                //           fontSize: baseSize * 0.048,
+                                //         ),
+                                //         gradientColors: const [
+                                //           Color(0xFF2680EF),
+                                //           Color(0xFF1CD494),
+                                //         ],
+                                //         leadingIconPath: 'assets/icons/arrowIcon.svg',
+                                //         iconSize: screenHeight * 0.013,
+                                //         onTap: walletVM.isLoading
+                                //             ? null
+                                //             : () async {
+                                //
+                                //
+                                //           // Validation and Selected Plan
+                                //           double amount = double.tryParse(ecmAmountController.text) ?? 0.0;
+                                //           int? durationDays = _selectedDuration != null
+                                //               ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), ''))
+                                //               : null;
+                                //
+                                //           if (amount <= 0 || durationDays == null) {
+                                //             ToastMessage.show(
+                                //               message: "Invalid Input",
+                                //               subtitle: "Please enter a valid amount and select a duration.",
+                                //               type: MessageType.info,
+                                //             );
+                                //             return;
+                                //           }
+                                //
+                                //           final selectedPlan = stakingPlans.firstWhere(
+                                //                 (plan) => plan.duration == durationDays,
+                                //             orElse: () => StakingPlanModel(
+                                //               id: -1,
+                                //               duration: -1,
+                                //               rewardPercentage: 0,
+                                //               name: '',
+                                //               isActive: 0,
+                                //               currentPoll: 0.0,
+                                //               maxPoll: 0.0,
+                                //               createdAt: DateTime.now(),
+                                //               updatedAt: DateTime.now(),
+                                //             ),
+                                //           );
+                                //           print("🔍 Selected Plan: ${selectedPlan.name}, ID: ${selectedPlan.id}");
+                                //
+                                //           if (selectedPlan.id == -1) {
+                                //             ToastMessage.show(
+                                //               message: "Staking Plan Error",
+                                //               subtitle: "Selected duration does not match any available staking plan.",
+                                //               type: MessageType.error,
+                                //             );
+                                //             return;
+                                //           }
+                                //           showDialog(
+                                //             context: context,
+                                //             barrierDismissible: false,
+                                //             builder: (BuildContext context) {
+                                //               return const Center(
+                                //                 child: CircularProgressIndicator(color: Colors.white),
+                                //               );
+                                //             },
+                                //           );
+                                //
+                                //           try {
+                                //             final planIndex = stakingPlans.indexWhere((plan) => plan.id == selectedPlan.id);
+                                //             if (planIndex == -1) {
+                                //               print("==== Plan ID not found in list.");
+                                //               return;
+                                //             }
+                                //
+                                //             final txHash = await walletVM.stakeNow(
+                                //                 context,
+                                //                 amount,
+                                //                 planIndex
+                                //
+                                //             );
+                                //             Navigator.of(context).pop();
+                                //
+                                //
+                                //             if (txHash != null) {
+                                //
+                                //               ToastMessage.show(
+                                //                 message: "Staking Successful!",
+                                //                 subtitle: "Transaction: ${txHash.substring(0, 10)}...",
+                                //                 type: MessageType.success,
+                                //               );
+                                //
+                                //               // Refresh staking history after successful stake
+                                //               await fetchStakingHistory();
+                                //               await walletVM.getBalance();
+                                //
+                                //               // Clear inputs after successful stake
+                                //               ecmAmountController.clear();
+                                //               setState(() {
+                                //                 _selectedDuration = 'Select Duration';
+                                //                 _currentSelectedPercentage = '';
+                                //                 calculateRewards(); // Reset any UI rewards display
+                                //               });
+                                //             }
+                                //           } catch (e) {
+                                //             Navigator.of(context).pop();
+                                //             ToastMessage.show(
+                                //               message: "Staking Failed",
+                                //               subtitle: e.toString(),
+                                //               type: MessageType.error,
+                                //             );
+                                //           }
+                                //         },
+                                //       ),
+                                //     );
+                                //   },
+                                // ),
 
-
-                                          // Validation and Selected Plan
-                                          double amount = double.tryParse(ecmAmountController.text) ?? 0.0;
-                                          int? durationDays = _selectedDuration != null
-                                              ? int.tryParse(_selectedDuration!.replaceAll(RegExp(r'\D'), ''))
-                                              : null;
-
-                                          if (amount <= 0 || durationDays == null) {
-                                            ToastMessage.show(
-                                              message: "Invalid Input",
-                                              subtitle: "Please enter a valid amount and select a duration.",
-                                              type: MessageType.info,
-                                            );
-                                            return;
-                                          }
-
-                                          final selectedPlan = stakingPlans.firstWhere(
-                                                (plan) => plan.duration == durationDays,
-                                            orElse: () => StakingPlanModel(
-                                              id: -1,
-                                              duration: -1,
-                                              rewardPercentage: 0,
-                                              name: '',
-                                              isActive: 0,
-                                              currentPoll: 0.0,
-                                              maxPoll: 0.0,
-                                              createdAt: DateTime.now(),
-                                              updatedAt: DateTime.now(),
-                                            ),
-                                          );
-                                          print("🔍 Selected Plan: ${selectedPlan.name}, ID: ${selectedPlan.id}");
-
-                                          if (selectedPlan.id == -1) {
-                                            ToastMessage.show(
-                                              message: "Staking Plan Error",
-                                              subtitle: "Selected duration does not match any available staking plan.",
-                                              type: MessageType.error,
-                                            );
-                                            return;
-                                          }
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (BuildContext context) {
-                                              return const Center(
-                                                child: CircularProgressIndicator(color: Colors.white),
-                                              );
-                                            },
-                                          );
-
-                                          try {
-                                            final planIndex = stakingPlans.indexWhere((plan) => plan.id == selectedPlan.id);
-                                            if (planIndex == -1) {
-                                              print("==== Plan ID not found in list.");
-                                              return;
-                                            }
-
-                                            final txHash = await walletVM.stakeNow(
-                                                context,
-                                                amount,
-                                                planIndex
-
-                                            );
-                                            Navigator.of(context).pop();
-
-
-                                            if (txHash != null) {
-
-                                              ToastMessage.show(
-                                                message: "Staking Successful!",
-                                                subtitle: "Transaction: ${txHash.substring(0, 10)}...",
-                                                type: MessageType.success,
-                                              );
-
-                                              // Refresh staking history after successful stake
-                                              await fetchStakingHistory();
-                                              await walletVM.getBalance();
-
-                                              // Clear inputs after successful stake
-                                              ecmAmountController.clear();
-                                              setState(() {
-                                                _selectedDuration = 'Select Duration';
-                                                _currentSelectedPercentage = '';
-                                                calculateRewards(); // Reset any UI rewards display
-                                              });
-                                            }
-                                          } catch (e) {
-                                            Navigator.of(context).pop();
-                                            ToastMessage.show(
-                                              message: "Staking Failed",
-                                              subtitle: e.toString(),
-                                              type: MessageType.error,
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-
-                                SizedBox(height: screenHeight * 0.02),
+                                // SizedBox(height: screenHeight * 0.02),
 
                                 Center(
                                   child: BlockButtonV2(

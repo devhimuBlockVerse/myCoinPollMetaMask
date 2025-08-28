@@ -15,6 +15,7 @@ import '../../../../framework/components/buy_Ecm.dart';
 import '../../../../framework/components/buy_ecm_button.dart';
 import '../../../../framework/components/customInputField.dart';
 import '../../../../framework/utils/customToastMessage.dart';
+import '../../../../framework/utils/decimalFormat.dart';
 import '../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../../framework/widgets/roadMapHelper.dart';
@@ -838,6 +839,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       hintText: 'ECM',
                       iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
+                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),],
+                      inputFormatters: [DecimalTextInputFormatter(),],
+
                     ),
 
                     const SizedBox(height: 12),
@@ -845,6 +849,9 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       hintText:'ETH ',
                       iconAssetPath:'assets/images/eth.png',
                       controller: ethController,
+                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),],
+                      inputFormatters: [DecimalTextInputFormatter(),],
+
                     ),
 
                     const SizedBox(height: 18),

@@ -296,8 +296,6 @@ class ApiService {
     print("Mock: Updated vesting status for user $userId: $status");
   }
 
-
-
   Future<LoginResponse> web3Login( BuildContext context,String message, String address, String signature) async {
      // final prefs = await SharedPreferences.getInstance();
     // final refId = prefs.getString('referralId');
@@ -345,7 +343,6 @@ class ApiService {
        throw Exception('Failed to login with Web3: ${response.body}');
     }
   }
-
 
 }
 

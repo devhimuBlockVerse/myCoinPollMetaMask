@@ -1,13 +1,10 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
+import 'package:mycoinpoll_metamask/permission_handler_widget.dart';
 import 'package:provider/provider.dart';
- import 'application/module/userDashboard/view/vesting/start_vesting_view.dart';
-import 'application/module/userDashboard/viewmodel/vesting_status_provider.dart';
-import 'application/presentation/screens/bottom_nav_bar.dart';
 import 'application/presentation/screens/settings/feedback_screen.dart';
 import 'application/presentation/screens/splash/splash_view.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
@@ -76,8 +73,9 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
-         home: const SplashView(),
-         // home: const SleepPeriodScreen(),
+         // home: const SplashView(),
+         // home: const DashboardBottomNavBar(),
+        home: const PermissionHandlerWidget(child: SplashView()),
         navigatorObservers: [routeObserver],
         builder: (context, child) => WalletAppInitializer(child: child!),
 

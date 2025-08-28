@@ -12,6 +12,7 @@ import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/customInputField.dart';
  import '../../../../../framework/components/disconnectButton.dart';
  import '../../../../../framework/utils/customToastMessage.dart';
+import '../../../../../framework/utils/decimalFormat.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../data/services/api_service.dart';
@@ -595,6 +596,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       hintText: 'ECM',
                       iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
+                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),]
+                      inputFormatters: [DecimalTextInputFormatter(),],
+
                     ),
 
                     const SizedBox(height: 12),
@@ -602,6 +606,9 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                       hintText:'ETH ',
                       iconAssetPath:'assets/images/eth.png',
                       controller: ethController,
+                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),],
+                      inputFormatters: [DecimalTextInputFormatter(),],
+
                     ),
 
                     const SizedBox(height: 18),
@@ -624,7 +631,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                               subtitle: "Please enter a valid ECM amount.",
                               type: MessageType.info,
                               duration: CustomToastLength.SHORT,
-                              gravity: CustomToastGravity.BOTTOM,
+                              gravity: CustomToastGravity.TOP,
                             );
                             return;
                           }

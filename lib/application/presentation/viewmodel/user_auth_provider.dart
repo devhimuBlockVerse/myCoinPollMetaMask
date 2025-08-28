@@ -40,22 +40,23 @@ class UserAuthProvider with ChangeNotifier {
     if (token != null && userJson != null) {
       _token = token;
       _user = UserModel.fromJson(jsonDecode(userJson));
-       notifyListeners();
+        notifyListeners();
     } else {
       _token = null;
       _user = null;
-      notifyListeners();
+       notifyListeners();
     }
   }
 
-  Future<void> setUserAndToken(UserModel user, String token) async {
+  Future<void> setUserAndToken(UserModel user, String token, {String? authMethod}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('user', jsonEncode(user.toJson()));
     await prefs.setString('token', token);
 
+
     _user = user;
     _token = token;
-    notifyListeners();
+     notifyListeners();
   }
 
 

@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  buffer:
+    dependency: transitive
+    description:
+      name: buffer
+      sha256: "389da2ec2c16283c8787e0adaede82b1842102f8c8aae2f49003a766c5c6b3d1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.3"
   cached_network_image:
     dependency: transitive
     description:
@@ -281,6 +289,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
+  eth_sig_util:
+    dependency: transitive
+    description:
+      name: eth_sig_util
+      sha256: "20fdc5ce3864e70e5ade1c1cd03cce4ef01018db00adab107303f9055d26b01a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
   event:
     dependency: transitive
     description:
@@ -494,6 +518,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.29"
+  flutter_secure_storage:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage
+      sha256: "9cad52d75ebc511adfae3d447d5d13da15a55a92c9410e50f67335b6d21d16ea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.4"
+  flutter_secure_storage_linux:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_linux
+      sha256: be76c1d24a97d0b98f8b54bce6b481a380a6590df992d0098f868ad54dc8f688
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.3"
+  flutter_secure_storage_macos:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_macos
+      sha256: "6c0a2795a2d1de26ae202a0d78527d163f4acbb11cde4c75c670f3a0fc064247"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.3"
+  flutter_secure_storage_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_platform_interface
+      sha256: cf91ad32ce5adef6fba4d736a542baca9daf3beac4db2d04be350b87f69ac4a8
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
+  flutter_secure_storage_web:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_web
+      sha256: f4ebff989b4f07b2656fb16b47852c0aab9fed9b4ec1c70103368337bc1886a9
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
+  flutter_secure_storage_windows:
+    dependency: transitive
+    description:
+      name: flutter_secure_storage_windows
+      sha256: b20b07cb5ed4ed74fc567b78a72936203f587eba460af1df11281c9326cd3709
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.2"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -516,10 +588,10 @@ packages:
     dependency: transitive
     description:
       name: freezed_annotation
-      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      sha256: "7294967ff0a6d98638e7acb774aac3af2550777accd8149c90af5b014e6d44d8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "3.1.0"
   get_it:
     dependency: transitive
     description:
@@ -1044,34 +1116,42 @@ packages:
     dependency: "direct main"
     description:
       name: reown_appkit
-      sha256: "12acb728e37f49c6b9a9de7d816ebcf9b30254275cc742c991d2b46fd1fbfbac"
+      sha256: "3072716ea55580e6ec0d6f02a4d494ef931721ee5bece9c306254c7c46d8becf"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.6"
+    version: "1.6.0"
   reown_core:
     dependency: transitive
     description:
       name: reown_core
-      sha256: "3fe69935afc39fa9bf3ba6721dfde5396d1880c61803feadc217bed1859e2184"
+      sha256: "7b21c9916c811c828206432711f0b01094ed49a23f5867bf240fbdbdce0702bd"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "1.3.0"
   reown_sign:
     dependency: transitive
     description:
       name: reown_sign
-      sha256: "9401c7c74f29b35b65b47113bbb95e653276a122dc685f1aa07c3150a8dad6fd"
+      sha256: "306d893e25616f3bfa42794a53372c799edd4f172d5fd5abb3cb764ad7059f87"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.7"
+    version: "1.3.0"
   reown_walletkit:
     dependency: "direct main"
     description:
       name: reown_walletkit
-      sha256: d5173b0712b757cfd02b452a0e080abd52526646e602cc0fce9038f420c3d790
+      sha256: dd1ea9cd521cc9d4307c89148d57274f2136eecda5cb9c245556300e71a587d3
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.3"
+    version: "1.3.0"
+  reown_yttrium:
+    dependency: transitive
+    description:
+      name: reown_yttrium
+      sha256: "55824385b0821d64bd8b31bd7a66d6de086d5ef73e03c7f09846c2f0c28077ea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   rxdart:
     dependency: transitive
     description:
@@ -1566,5 +1646,5 @@ packages:
     source: hosted
     version: "9.1.1"
 sdks:
-  dart: ">=3.7.0 <4.0.0"
+  dart: ">=3.8.0 <4.0.0"
   flutter: ">=3.29.0"

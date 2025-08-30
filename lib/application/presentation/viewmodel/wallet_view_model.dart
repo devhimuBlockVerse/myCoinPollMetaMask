@@ -72,14 +72,12 @@ bool isUserRejectedError(Object error) {
       matches(rpcErrorPatterns) ||
       matches(appKilledPatterns);
 }
-// const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
 
 // class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 //
 //   void setupLifecycleObserver() {
 //     WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
 //   }
-//
 //
 //   ///Ensures context is valid and modal is re-initialized if needed
 //   ReownAppKitModal? appKitModal;
@@ -116,7 +114,16 @@ bool isUserRejectedError(Object error) {
 //   bool get isSessionSettling => _isSessionSettling;
 //   String? get authToken => _authToken;
 //
-//    static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
+//
+//   Timer? _vestingTimer;
+//
+//   String? _userWalletBalance;
+//   String? _vestingContractBalance;
+//
+//   String? get userWalletBalance => _userWalletBalance;
+//   String? get vestingContractBalance => _vestingContractBalance;
+//
+//   static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
 //
 //    static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506';
 //
@@ -161,6 +168,7 @@ bool isUserRejectedError(Object error) {
 //
 //   @override
 //   void dispose() {
+//     _vestingTimer?.cancel();
 //     _web3Client?.dispose();
 //     WidgetsBinding.instance.removeObserver(this);
 //     appKitModal?.onModalConnect.unsubscribeAll();
@@ -228,6 +236,7 @@ bool isUserRejectedError(Object error) {
 //         _subscribeToModalEvents(prefs);
 //         _isModalEventsSubscribed = true;
 //       }
+//
 //       await _hydrateFromExistingSession();
 //     }catch(_){
 //       await fetchLatestETHPrice();
@@ -271,7 +280,6 @@ bool isUserRejectedError(Object error) {
 //     _lastContext = context;
 //     await init(context);
 //   }
-//
 //   void _subscribeToModalEvents(SharedPreferences prefs) {
 //     appKitModal!.onModalConnect.unsubscribeAll();
 //     appKitModal!.onModalUpdate.unsubscribeAll();
@@ -319,6 +327,10 @@ bool isUserRejectedError(Object error) {
 //       }
 //       _isConnected = true;
 //       await fetchLatestETHPrice();
+//       final sessionJson = appKitModal!.session?.toJson();
+//       if (sessionJson != null) {
+//         await prefs.setString('walletSession', jsonEncode(sessionJson));
+//       }
 //       notifyListeners();
 //     });
 //
@@ -359,6 +371,10 @@ bool isUserRejectedError(Object error) {
 //       }
 //       _isConnected = true;
 //       await fetchLatestETHPrice();
+//       final sessionJson = appKitModal!.session?.toJson();
+//       if (sessionJson != null) {
+//         await prefs.setString('walletSession', jsonEncode(sessionJson));
+//       }
 //       notifyListeners();
 //     });
 //
@@ -471,6 +487,7 @@ bool isUserRejectedError(Object error) {
 //   Future<void> disconnectWallet(BuildContext context) async {
 //     if (appKitModal == null) return;
 //     _isLoading = true;
+//     _vestingTimer?.cancel();
 //     notifyListeners();
 //     try {
 //       final prevAddress = _walletAddress;
@@ -499,22 +516,23 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
+//   // Future<void> rehydrate() async {
+//   //   await _hydrateFromExistingSession();
+//   // }
+//
 //   Future<void> rehydrate() async {
-//     await _hydrateFromExistingSession();
+//     if (_isLoading || _isSessionSettling) return;
+//     _isLoading = true;
+//     notifyListeners();
+//     try {
+//       await _hydrateFromExistingSession();
+//     } finally {
+//       _isLoading = false;
+//       notifyListeners();
+//     }
 //   }
 //   ///LifeCycle Functions
 //
-//   // Future<void> _handleAppResume() async {
-//   //   if (appKitModal == null) return;
-//   //   try {
-//   //     await _hydrateFromExistingSession();
-//   //   } catch (e, stack) {
-//   //     debugPrint("Resume error: $e\n$stack");
-//   //
-//   //   } finally {
-//   //     notifyListeners();
-//   //   }
-//   // }
 //   Future<void> _handleAppResume() async {
 //     // Always check if the WalletViewModel is initialized before proceeding.
 //     if (appKitModal == null) {
@@ -542,48 +560,97 @@ bool isUserRejectedError(Object error) {
 //   }
 //
 //   /// NEw Changes
+//   // Future<void> _hydrateFromExistingSession() async {
+//   //   final prefs = await SharedPreferences.getInstance();
+//   //   // var session = appKitModal!.session;
+//   //   var session = appKitModal?.session;
+//   //
+//   //   // wait a bit for SDK to rehydrate after init
+//   //   if (session == null) {
+//   //     for (int i = 0; i < 15; i++) {
+//   //       await Future.delayed(const Duration(milliseconds: 150));
+//   //       session = appKitModal!.session;
+//   //       if (session != null) break;
+//   //     }
+//   //   }
+//   //
+//   //   if (session != null) {
+//   //     _isConnected = true;
+//   //     String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
+//   //     if (chainId != null) {
+//   //       _lastKnowChainId = chainId;
+//   //       await prefs.setString('chainId', chainId);
+//   //     }
+//   //
+//   //
+//   //     final address = _getFirstAddressFromSession();
+//   //
+//   //     if (address != null) {
+//   //       _walletAddress = address;
+//   //       await prefs.setBool('isConnected', true);
+//   //       await prefs.setString('walletAddress', _walletAddress);
+//   //       await prefs.setString('walletSession', jsonEncode(session.toJson()));
+//   //       await Future.wait([
+//   //         fetchConnectedWalletData(isReconnecting: false),
+//   //         fetchLatestETHPrice(),
+//   //       ]);
+//   //       return;
+//   //     }else{
+//   //       _isConnected = false;
+//   //       await _removePersistedConnection();
+//   //     }
+//   //   }
+//   //
+//   //   await fetchLatestETHPrice();
+//   // }
+//
+//   /// V2
 //   Future<void> _hydrateFromExistingSession() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     // var session = appKitModal!.session;
-//     var session = appKitModal?.session;
-//
-//     // wait a bit for SDK to rehydrate after init
-//     if (session == null) {
-//       for (int i = 0; i < 15; i++) {
-//         await Future.delayed(const Duration(milliseconds: 150));
-//         session = appKitModal!.session;
-//         if (session != null) break;
-//       }
-//     }
-//
-//     if (session != null) {
-//       _isConnected = true;
-//       String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
-//       if (chainId != null) {
-//         _lastKnowChainId = chainId;
-//         await prefs.setString('chainId', chainId);
-//       }
+//     try {
+//       final prefs = await SharedPreferences.getInstance();
+//       final isConnectedFromPrefs = prefs.getBool('isConnected') ?? false;
 //
 //
-//       final address = _getFirstAddressFromSession();
+//       if (isConnectedFromPrefs) {
+//         await appKitModal!.init();
 //
-//       if (address != null) {
-//         _walletAddress = address;
-//         await prefs.setBool('isConnected', true);
-//         await prefs.setString('walletAddress', _walletAddress);
-//         await prefs.setString('walletSession', jsonEncode(session.toJson()));
-//         await Future.wait([
-//           fetchConnectedWalletData(isReconnecting: false),
-//           fetchLatestETHPrice(),
-//         ]);
-//         return;
-//       }else{
-//         _isConnected = false;
+//         if (appKitModal!.session != null) {
+//           _isConnected = true;
+//
+//           final address = _getFirstAddressFromSession();
+//           if (address != null) {
+//             _walletAddress = address;
+//           } else {
+//
+//             print('No address found in the restored session.');
+//             _isConnected = false;
+//             _walletAddress = '';
+//             await _removePersistedConnection();
+//             notifyListeners();
+//             return;
+//           }
+//
+//           _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
+//           print('Wallet session successfully restored from prefs.');
+//
+//           await fetchConnectedWalletData(isReconnecting: true);
+//
+//
+//         } else {
+//           print('Failed to restore session. Clearing saved connection status.');
+//           await _removePersistedConnection();
+//         }
+//       } else {
+//         print('No wallet session found in storage.');
 //         await _removePersistedConnection();
 //       }
+//     } catch (e) {
+//       print('Error during session hydration: $e');
+//       await _removePersistedConnection();
+//     } finally {
+//       _isSessionSettling = false;
+//       notifyListeners();
 //     }
-//
-//     await fetchLatestETHPrice();
 //   }
 //
 //   String? _getFirstAddressFromSession() {
@@ -735,6 +802,9 @@ bool isUserRejectedError(Object error) {
 //         getMaximumStake(),
 //         getVestingInformation()
 //       ]);
+//
+//       _startVestingTimer();
+//
 //     } catch (e) {
 //       print('Error fetching connected wallet data: $e');
 //       _clearWalletSpecificInfo(shouldNotify: true);
@@ -779,126 +849,7 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
-//   // Future<String> getBalance() async {
-//   //
-//   //
-//   //   try {
-//   //     final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//   //     final abiData = jsonDecode(abiString);
-//   //
-//   //     final tetherContract = DeployedContract(
-//   //       ContractAbi.fromJson(
-//   //         jsonEncode(abiData),
-//   //         'eCommerce Coin',
-//   //       ),
-//   //       EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-//   //     );
-//   //
-//   //     final tokenDecimals = await getTokenDecimals(contractAddress: ECM_TOKEN_CONTRACT_ADDRESS);
-//   //     String addressToQuery = '';
-//   //     final chainID = _getChainIdForRequests();
-//   //
-//   //
-//   //     if (_isConnected && appKitModal != null && appKitModal!.session != null && chainID != null) {
-//   //        final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
-//   //       addressToQuery = appKitModal!.session!.getAddress(nameSpace)!;
-//   //     } else {
-//   //       addressToQuery = '0x0000000000000000000000000000000000000000';
-//   //
-//   //     }
-//   //     print("Querying balanceOf for vesting address: $_vestingAddress on token: $ECM_TOKEN_CONTRACT_ADDRESS");
-//   //
-//   //     final balanceOfResult = await _web3Client!.call(
-//   //       contract: tetherContract,
-//   //       function: tetherContract.function('balanceOf'),
-//   //       params: [EthereumAddress.fromHex(addressToQuery)],
-//   //     );
-//   //     final balance = balanceOfResult[0] as BigInt;
-//   //     final divisor = BigInt.from(10).pow(tokenDecimals);
-//   //     _balance = (balance / divisor).toString();
-//   //     print('balanceOf: ${balanceOfResult[0]}');
-//   //
-//   //     return '$_balance';
-//   //   } catch (e) {
-//   //     _balance = null;
-//   //     print('Error getting balance: $e');
-//   //     rethrow;
-//   //   }
-//   // }
 //
-//   Future<String> getBalance() async {
-//      if (_web3Client == null) {
-//       print("Web3Client not initialized for getBalance.");
-//       _balance = null; // Or "0" depending on desired default/error display
-//       notifyListeners();
-//       throw Exception("Web3Client not initialized.");
-//     }
-//
-//     if (_vestingAddress == null || _vestingAddress!.isEmpty) {
-//       print("Vesting address is not available. Cannot fetch balance for vesting contract.");
-//       _balance = "0";
-//       notifyListeners();
-//        return "0";
-//     }
-//
-//     try {
-//        final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-//       final abiData = jsonDecode(abiString);
-//
-//       final ecmTokenContract = DeployedContract(
-//         ContractAbi.fromJson(
-//           jsonEncode(abiData),
-//           'ECommerceCoin',
-//         ),
-//         EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-//       );
-//
-//        final decimalsResult = await _web3Client!.call(
-//         contract: ecmTokenContract,
-//         function: ecmTokenContract.function('decimals'),
-//         params: [],
-//       );
-//       final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
-//
-//        print("Querying balanceOf for vesting address: $_vestingAddress on token: $ECM_TOKEN_CONTRACT_ADDRESS");
-//       final balanceOfResult = await _web3Client!.call(
-//         contract: ecmTokenContract,
-//         function: ecmTokenContract.function('balanceOf'),
-//          params: [EthereumAddress.fromHex(_vestingAddress!)],
-//       );
-//
-//       final rawBalanceBigInt = balanceOfResult[0] as BigInt;
-//       print('Raw token balance for vesting address $_vestingAddress: $rawBalanceBigInt');
-//
-//
-//       if (tokenDecimals == 18) {
-//         _balance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
-//             .getValueInUnit(EtherUnit.ether)
-//             .toString();
-//       } else {
-//
-//         final divisor = BigInt.from(10).pow(tokenDecimals);
-//         final wholePart = rawBalanceBigInt ~/ divisor;
-//         final fractionalPart = rawBalanceBigInt % divisor;
-//         _balance = "$wholePart.${fractionalPart.toString().padLeft(tokenDecimals, '0')}";
-//
-//         _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
-//             .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
-//       }
-//
-//
-//       print('Formatted token balance for vesting address $_vestingAddress: $_balance');
-//       notifyListeners();
-//       return _balance ?? "0";
-//
-//     } catch (e, stack) {
-//       _balance = null;
-//       print('Error getting balance for vesting address: $e');
-//       print(stack);
-//       notifyListeners();
-//       rethrow;
-//     }
-//   }
 //   Future<String> getTotalSupply() async {
 //     try {
 //       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
@@ -1134,6 +1085,79 @@ bool isUserRejectedError(Object error) {
 //       print('Error fetching ETH price: $e');
 //       if (cachedPrice != null) return cachedPrice;
 //       throw Exception('Failed to fetch ETH price');
+//     }
+//   }
+//
+//   Future<String> getBalance() async {
+//     if (_web3Client == null) {
+//       print("Web3Client not initialized for getBalance.");
+//       _balance = null; // Or "0" depending on desired default/error display
+//       notifyListeners();
+//       throw Exception("Web3Client not initialized.");
+//     }
+//
+//     if (_vestingAddress == null || _vestingAddress!.isEmpty) {
+//       print("Vesting address is not available. Cannot fetch balance for vesting contract.");
+//       _balance = "0";
+//       notifyListeners();
+//       return "0";
+//     }
+//
+//     try {
+//       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
+//       final abiData = jsonDecode(abiString);
+//
+//       final ecmTokenContract = DeployedContract(
+//         ContractAbi.fromJson(
+//           jsonEncode(abiData),
+//           'ECommerceCoin',
+//         ),
+//         EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
+//       );
+//
+//       final decimalsResult = await _web3Client!.call(
+//         contract: ecmTokenContract,
+//         function: ecmTokenContract.function('decimals'),
+//         params: [],
+//       );
+//       final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
+//
+//       print("Querying balanceOf for vesting address: $_vestingAddress on token: $ECM_TOKEN_CONTRACT_ADDRESS");
+//       final balanceOfResult = await _web3Client!.call(
+//         contract: ecmTokenContract,
+//         function: ecmTokenContract.function('balanceOf'),
+//         params: [EthereumAddress.fromHex(_vestingAddress!)],
+//       );
+//
+//       final rawBalanceBigInt = balanceOfResult[0] as BigInt;
+//       print('Raw token balance for vesting address $_vestingAddress: $rawBalanceBigInt');
+//
+//
+//       if (tokenDecimals == 18) {
+//         _balance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
+//             .getValueInUnit(EtherUnit.ether)
+//             .toString();
+//       } else {
+//
+//         final divisor = BigInt.from(10).pow(tokenDecimals);
+//         final wholePart = rawBalanceBigInt ~/ divisor;
+//         final fractionalPart = rawBalanceBigInt % divisor;
+//         _balance = "$wholePart.${fractionalPart.toString().padLeft(tokenDecimals, '0')}";
+//         _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
+//             .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
+//       }
+//
+//
+//       print('Formatted token balance for vesting address $_vestingAddress: $_balance');
+//       notifyListeners();
+//       return _balance ?? "0";
+//
+//     } catch (e, stack) {
+//       _balance = null;
+//       print('Error getting balance for vesting address: $e');
+//       print(stack);
+//       notifyListeners();
+//       rethrow;
 //     }
 //   }
 //
@@ -1404,8 +1428,8 @@ bool isUserRejectedError(Object error) {
 //
 //       final ecmTokenContract = DeployedContract(
 //           ContractAbi.fromJson(jsonEncode(jsonDecode(tokenAbiString)),
-//               // 'eCommerce Coin'
-//               'ECommerceCoin'
+//               'eCommerce Coin'
+//               // 'ECommerceCoin'
 //           ),
 //           EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS));
 //
@@ -1909,6 +1933,7 @@ bool isUserRejectedError(Object error) {
 //   }
 //
 //   Future<void> getVestingInformation() async {
+//
 //     if (!_isConnected || _walletAddress.isEmpty) return;
 //
 //     // _isLoading = true;
@@ -2030,6 +2055,186 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
+//   Future<void>claimECM(BuildContext context)async{
+//     if (_isLoading || !_isConnected || _vestingAddress == null) return;
+//
+//     _isLoading = true;
+//     notifyListeners();
+//
+//     try{
+//       // 1. Get the ABI and create a DeployedContract instance
+//       final abiString = await rootBundle.loadString("assets/abi/VestingABI.json");
+//       final abiData = jsonDecode(abiString);
+//       final vestingContract = DeployedContract(
+//         ContractAbi.fromJson(jsonEncode(abiData), 'LinearVestingWallet'),
+//         EthereumAddress.fromHex(_vestingAddress!),
+//       );
+//
+//       // 2. Get the current chain and wallet address
+//       final chainId = _getChainIdForRequests();
+//       if (chainId == null) {
+//         throw Exception("Selected chain not available.");
+//       }
+//       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+//       final walletAddress = appKitModal!.session!.getAddress(nameSpace);
+//       if (walletAddress == null) {
+//         throw Exception("Wallet address not found.");
+//       }
+//
+//       // 3. Request the transaction via the AppKitModal
+//       print('Attempting to claim ECM from vesting contract...');
+//       final txResult = await appKitModal!.requestWriteContract(
+//         topic: appKitModal!.session!.topic,
+//         chainId: chainId,
+//         deployedContract: vestingContract,
+//         functionName: 'claim',
+//         transaction: Transaction(from: EthereumAddress.fromHex(walletAddress)),
+//         parameters: [],
+//       );
+//
+//       print('Transaction Hash: $txResult');
+//
+//       ToastMessage.show(
+//         message: "Claim Successful",
+//         subtitle: "Your ECM tokens have been claimed.",
+//         type: MessageType.success,
+//         duration: CustomToastLength.LONG,
+//         gravity: CustomToastGravity.BOTTOM,
+//       );
+//
+//       // 4. Automatically refresh vesting data after a successful claim
+//       await refreshVesting();
+//     }catch(e){
+//       print('Error during claimECM: $e');
+//       final errorMessage = e.toString().contains("User rejected")
+//           ? "Transaction rejected by user."
+//           : "Claim failed. Please try again.";
+//
+//       ToastMessage.show(
+//         message: "Claim Failed",
+//         subtitle: errorMessage,
+//         type: MessageType.error,
+//         duration: CustomToastLength.LONG,
+//         gravity: CustomToastGravity.BOTTOM,
+//       );
+//     } finally {
+//       _isLoading = false;
+//       notifyListeners();
+//     }
+//   }
+//
+//   // Get the latest vesting data.
+//   Future<void> refreshVesting() async {
+//     if (_isLoading || _vestingAddress == null) return;
+//     _isLoading = true;
+//     notifyListeners();
+//
+//     try{
+//       // 1. Get the ABI and create a DeployedContract instance
+//       final abiString = await rootBundle.loadString("assets/abi/VestingABI.json");
+//       final abiData = jsonDecode(abiString);
+//       final vestingContract = DeployedContract(
+//         ContractAbi.fromJson(jsonEncode(abiData), 'LinearVestingWallet'),
+//         EthereumAddress.fromHex(_vestingAddress!),
+//       );
+//
+//       // 2. Read the `released()` value from the contract
+//       final releasedResult = await _web3Client!.call(
+//         contract: vestingContract,
+//         function: vestingContract.function('released'),
+//         params: [],
+//       );
+//
+//       // final claimableResult = await _web3Client!.call(
+//       //     contract: vestingContract,
+//       //     function: vestingContract.function('vestedAmount'),
+//       //     params: []
+//       // );
+//
+//       // Convert the BigInt to a double and format to 6 decimal places,
+//       final releasedWei = releasedResult[0] as BigInt;
+//       // final claimableWei = claimableResult[0] as BigInt;
+//
+//       final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
+//       // final claimableEther = EtherAmount.fromBigInt(EtherUnit.wei, claimableWei).getValueInUnit(EtherUnit.ether);
+//
+//       final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
+//       // final claimableAmountFormatted = claimableEther.toStringAsFixed(6);
+//
+//       // Update Vesting Info Model to reflect new data
+//       vestInfo.released = releasedEther;
+//       // vestInfo.claimable = claimableEther;
+//
+//       ToastMessage.show(
+//         message: "Vesting Refreshed",
+//         subtitle: "Latest vesting data has been updated.",
+//         type: MessageType.success,
+//         duration: CustomToastLength.SHORT,
+//         gravity: CustomToastGravity.BOTTOM,
+//       );
+//       print("Vesting refreshed successfully , Released :$releasedAmountFormatted ");
+//
+//
+//     }catch(e){
+//       print('Error refreshing vesting: $e');
+//       final errorMessage = e.toString().contains('no contract')
+//           ? 'Vesting contract not found or invalid address.'
+//           : e.toString();
+//
+//       ToastMessage.show(
+//         message: "Refresh Failed",
+//         subtitle: "Could not fetch latest vesting data. $errorMessage",
+//         type: MessageType.error,
+//         duration: CustomToastLength.LONG,
+//         gravity: CustomToastGravity.BOTTOM,
+//       );
+//
+//     } finally {
+//       _isLoading = false;
+//       notifyListeners();
+//     }
+//
+//   }
+//
+//   // Getter to calculate the total amount of ECM vested so far
+//   double get vestedAmount {
+//     if (vestInfo.start == 0 || vestInfo.end == 0 || balance == null) return 0.0;
+//
+//     final nowSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+//     final start = vestInfo.start;
+//     final end = vestInfo.end;
+//     final duration = vestInfo.duration;
+//
+//     final totalVestingECM = double.tryParse(balance!) ?? 0.0;
+//
+//     if (nowSec <= start!) {
+//       return 0.0;
+//     }
+//     if (nowSec >= end!) {
+//       return totalVestingECM;
+//     }
+//
+//     final elapsed = nowSec - start;
+//     final calculatedAmount = (totalVestingECM * elapsed) / duration!;
+//     return double.parse(calculatedAmount.toStringAsFixed(6));
+//   }
+//
+//   // Getter to calculate the amount of ECM available for claim
+//   double get availableClaimableAmount {
+//     final vested = vestedAmount;
+//     final released = vestInfo.released;
+//     final available = vested - released!;
+//     return available > 0 ? available : 0.0;
+//   }
+//
+//
+//   void _startVestingTimer() {
+//     _vestingTimer?.cancel();
+//     _vestingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+//
+//       notifyListeners();
+//     });
+//   }
 //   ///Helper Function to wait transaction to be mined.
 //   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
 //     const pollInterval = Duration(seconds: 3);
@@ -2070,7 +2275,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
   }
 
-
   ///Ensures context is valid and modal is re-initialized if needed
   ReownAppKitModal? appKitModal;
   bool _isSessionSettling = false;
@@ -2109,7 +2313,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   Timer? _vestingTimer;
 
+  String? _userWalletBalance;
+  String? _vestingContractBalance;
 
+  String? get userWalletBalance => _userWalletBalance;
+  String? get vestingContractBalance => _vestingContractBalance;
 
   static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
 
@@ -2224,6 +2432,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _subscribeToModalEvents(prefs);
         _isModalEventsSubscribed = true;
       }
+
       await _hydrateFromExistingSession();
     }catch(_){
       await fetchLatestETHPrice();
@@ -2836,79 +3045,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  Future<String> getBalance() async {
-     if (_web3Client == null) {
-      print("Web3Client not initialized for getBalance.");
-      _balance = null; // Or "0" depending on desired default/error display
-      notifyListeners();
-      throw Exception("Web3Client not initialized.");
-    }
-
-    if (_vestingAddress == null || _vestingAddress!.isEmpty) {
-      print("Vesting address is not available. Cannot fetch balance for vesting contract.");
-      _balance = "0";
-      notifyListeners();
-       return "0";
-    }
-
-    try {
-       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-      final abiData = jsonDecode(abiString);
-
-      final ecmTokenContract = DeployedContract(
-        ContractAbi.fromJson(
-          jsonEncode(abiData),
-          'ECommerceCoin',
-        ),
-        EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-      );
-
-       final decimalsResult = await _web3Client!.call(
-        contract: ecmTokenContract,
-        function: ecmTokenContract.function('decimals'),
-        params: [],
-      );
-      final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
-
-       print("Querying balanceOf for vesting address: $_vestingAddress on token: $ECM_TOKEN_CONTRACT_ADDRESS");
-      final balanceOfResult = await _web3Client!.call(
-        contract: ecmTokenContract,
-        function: ecmTokenContract.function('balanceOf'),
-         params: [EthereumAddress.fromHex(_vestingAddress!)],
-      );
-
-      final rawBalanceBigInt = balanceOfResult[0] as BigInt;
-      print('Raw token balance for vesting address $_vestingAddress: $rawBalanceBigInt');
-
-
-      if (tokenDecimals == 18) {
-        _balance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
-            .getValueInUnit(EtherUnit.ether)
-            .toString();
-      } else {
-
-        final divisor = BigInt.from(10).pow(tokenDecimals);
-        final wholePart = rawBalanceBigInt ~/ divisor;
-        final fractionalPart = rawBalanceBigInt % divisor;
-        _balance = "$wholePart.${fractionalPart.toString().padLeft(tokenDecimals, '0')}";
-
-        _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
-            .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
-      }
-
-
-      print('Formatted token balance for vesting address $_vestingAddress: $_balance');
-      notifyListeners();
-      return _balance ?? "0";
-
-    } catch (e, stack) {
-      _balance = null;
-      print('Error getting balance for vesting address: $e');
-      print(stack);
-      notifyListeners();
-      rethrow;
-    }
-  }
 
   Future<String> getTotalSupply() async {
     try {
@@ -3145,6 +3281,100 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Error fetching ETH price: $e');
       if (cachedPrice != null) return cachedPrice;
       throw Exception('Failed to fetch ETH price');
+    }
+  }
+
+  Future<String> getBalance({String? forAddress}) async {
+    final String? addressToQuery = forAddress ?? _walletAddress;
+
+    if (_web3Client == null) {
+      print("Web3Client not initialized for getBalance.");
+      throw Exception("Web3Client not initialized.");
+    }
+
+    if (addressToQuery == null || addressToQuery.isEmpty) {
+      print("No valid address provided to getBalance. User wallet: $_walletAddress, Optional param: $forAddress");
+      if (forAddress == null) {
+        _balance = "0";
+        notifyListeners();
+      }
+      return "0";
+    }
+
+    try {
+      print(">>>> Fetching balanceOf for address: $addressToQuery");
+      final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
+      final abiData = jsonDecode(abiString);
+
+      final ecmTokenContract = DeployedContract(
+        ContractAbi.fromJson(
+          jsonEncode(abiData),
+          'ECommerceCoin',
+        ),
+        EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
+      );
+
+      final decimalsResult = await _web3Client!.call(
+        contract: ecmTokenContract,
+        function: ecmTokenContract.function('decimals'),
+        params: [],
+      );
+      final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
+      print(" Token decimals: $tokenDecimals");
+       final balanceOfResult = await _web3Client!.call(
+        contract: ecmTokenContract,
+        function: ecmTokenContract.function('balanceOf'),
+        params: [EthereumAddress.fromHex(addressToQuery!)],
+      );
+
+      final rawBalanceBigInt = balanceOfResult[0] as BigInt;
+      print('>>> Raw token balance for $addressToQuery: $rawBalanceBigInt');
+
+
+      if (tokenDecimals == 18) {
+        _balance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
+            .getValueInUnit(EtherUnit.ether)
+            .toString();
+      } else {
+
+        final divisor = BigInt.from(10).pow(tokenDecimals);
+        final wholePart = rawBalanceBigInt ~/ divisor;
+        final fractionalPart = rawBalanceBigInt % divisor;
+        _balance = "$wholePart.${fractionalPart.toString().padLeft(tokenDecimals, '0')}";
+        _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
+            .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
+      }
+      //
+      // final formattedBalance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
+      //     .getValueInUnit(EtherUnit.ether)
+      //     .toString();
+      //
+      // print('Formatted token balance for address $addressToQuery: $formattedBalance');
+      //
+      // if (forAddress == null) {
+      //   _balance = formattedBalance;
+      //   notifyListeners();
+      // }
+      //
+      // return formattedBalance;
+      print("✅ Final formatted balanceOf for $addressToQuery: $_balance");
+
+      notifyListeners();
+      return _balance ?? "0";
+
+    } catch (e, stack) {
+      _balance = null;
+      print('Error getting balance for vesting address: $e');
+      print(stack);
+      notifyListeners();
+      rethrow;
+      // print('Error getting balance for address $addressToQuery: $e');
+      // print(stack);
+      //  if (forAddress == null) {
+      //   _balance = null;
+      //   notifyListeners();
+      // }
+      // rethrow;
     }
   }
 

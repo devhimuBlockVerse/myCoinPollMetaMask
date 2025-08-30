@@ -37,9 +37,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-#  reown_appkit: ^1.4.6
   reown_appkit: ^1.6.0
-#  reown_walletkit: ^1.1.3
   reown_walletkit: ^1.3.0
   provider:
   web3dart: ^2.6.1
@@ -48,7 +46,7 @@ dependencies:
   shared_preferences:
   url_launcher: ^6.2.5
   path_provider: ^2.1.2
-  permission_handler: ^11.2.0
+  device_info_plus: ^10.1.0
   flutter_svg: ^2.0.7
   xml: ^6.1.0
   share_plus:
@@ -61,6 +59,10 @@ dependencies:
   open_file: ^3.2.1
   decimal: ^2.3.3
   dio: ^5.4.0
+  android_intent_plus: ^4.0.3
+
+  permission_handler: ^11.3.0
+
 
 
 

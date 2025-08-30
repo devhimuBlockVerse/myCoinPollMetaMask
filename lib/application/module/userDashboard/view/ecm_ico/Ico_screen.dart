@@ -136,6 +136,14 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     _isUpdating = true;
 
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
+    if (ecmAmount == null || ecmAmount == 0.0) {
+      ethController.clear();
+      _isUpdating = false;
+      return;
+    }
+
+
+
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     final ethAmount = ecmAmount * walletVM.ethPrice;
 
@@ -148,6 +156,11 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     _isUpdating = true;
 
     final ethAmount = double.tryParse(ethController.text) ?? 0.0;
+    if (ethAmount == null || ethAmount == 0.0) {
+      ecmController.clear();
+      _isUpdating = false;
+      return;
+    }
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     if (walletVM.ethPrice > 0) {
       final ecmAmount = ethAmount / walletVM.ethPrice;
@@ -155,6 +168,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     }
     _isUpdating = false;
   }
+
   @override
   void dispose() {
     ecmController.dispose();
@@ -621,6 +635,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
                         if (!walletVM.isConnected) {
                           final ok = await walletVM.connectWallet(context);
+                          await walletVM.ensureModalWithValidContext(context);
                           if (!ok) return;
                         }
                         try {

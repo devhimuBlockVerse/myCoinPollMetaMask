@@ -15,7 +15,8 @@ class FeedbackViewModel extends ChangeNotifier {
   bool _sending = false;
 
   static const String webhookUrl =
-      'https://webhook.site/96adf430-109c-442c-9905-56ec064c29ca';
+      // 'https://webhook.site/96adf430-109c-442c-9905-56ec064c29ca';
+      'https://webhook.site/408b6f19-873f-4c9f-bf00-14533168ef06';
 
   File? get image => _image;
   bool get sending => _sending;

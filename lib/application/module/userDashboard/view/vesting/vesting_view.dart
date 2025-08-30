@@ -370,8 +370,9 @@ class SleepPeriodScreen extends StatefulWidget {
   
   
       WidgetsBinding.instance.addPostFrameCallback((_)async{
-        _fetchVestingDataAndStartTimers();
-  
+        // _fetchVestingDataAndStartTimers();
+        _setupScreen();
+
         fetchClaimHistory().then((claims) {
           if (mounted) {
             setState(() {
@@ -383,7 +384,25 @@ class SleepPeriodScreen extends StatefulWidget {
   
       });
     }
-  
+
+    // NEW METHOD to organize setup
+    void _setupScreen() async {
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+      // Fetch the balance of the vesting contract and update local state
+      if (walletVM.vestingAddress != null) {
+        final vestingBalance = await walletVM.getBalance(forAddress: walletVM.vestingAddress!);
+        if (mounted) {
+          setState(() {
+            balanceText = vestingBalance;
+          });
+        }
+      }
+
+      //  Initialize timers as before
+      _fetchVestingDataAndStartTimers();
+    }
+
   
     void _fetchVestingDataAndStartTimers() async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -779,6 +798,7 @@ class SleepPeriodScreen extends StatefulWidget {
   
              } else if (walletVM.balance != null) {
                balanceText = walletVM.balance!;
+
              } else {
                balanceText = "0";
              }

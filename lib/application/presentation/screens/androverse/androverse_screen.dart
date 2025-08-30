@@ -95,21 +95,7 @@ class _AndroVerseScreenState extends State<AndroVerseScreen> {
                       ),
 
 
-                      SizedBox(height: screenHeight * 0.05),
 
-                      Text(
-                        'This page isn\'t available right now..',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.italic,
-
-                          fontSize: getResponsiveFontSize(context, 14),
-                          height: 1.6,
-                          color: const Color(0xFFFFF5ED),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
                       SizedBox(height: screenHeight * 0.015),
 
                       Text(

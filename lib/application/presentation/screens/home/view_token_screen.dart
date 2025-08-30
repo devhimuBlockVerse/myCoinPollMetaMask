@@ -875,14 +875,15 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                        final ecmAmount = double.tryParse(ecmController.text.trim());
+
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
-                          if (!ok) return;
+                           if (ok) return;
                         }
                         try {
-                          final ecmAmount = double.tryParse(ecmController.text.trim());
-                          if (ecmAmount == null || ecmAmount <= 0) {
+                          if (walletVM.isConnected || ecmAmount == null || ecmAmount <= 0) {
                             ToastMessage.show(
                               message: "Invalid Amount",
                               subtitle: "Please enter a valid ECM amount.",

@@ -169,21 +169,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isUserBalanceLoading => _isUserBalanceLoading;
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
-  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test
-  // static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
+  // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
+  static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
 
-   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
-   // static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
+   // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
+   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
 
-   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
-   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
+   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
+   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
 
   static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
 
   static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
 
-  static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
-  // static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
+  // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
+  static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
   static const double ECM_PRICE_USD = 1.2;
 
@@ -629,6 +629,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       //   );
       //   return false;
       // }
+      final connected = await _waitForConnection(timeout: const Duration(seconds: 1));
+      if (!connected) {
+        return false;
+      }
 
       // Persist connection data
       await _persistConnectionData();
@@ -1299,7 +1303,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await prefs.setString('ethPriceUSD', price);
       await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
       _ethPrice = double.parse(price);
-      notifyListeners();
+       notifyListeners();
       return price;
     } catch (e) {
       print('Error fetching ETH price: $e');
@@ -1556,8 +1560,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print("Result : walletAddress ${walletAddress}");
 
 
-      // wait for the transaction  confirmation
-      //  final receipt = await _web3Client!.getTransactionReceipt(result);
+
 
        //Poll until TX is confirmed
        TransactionReceipt? receipt;

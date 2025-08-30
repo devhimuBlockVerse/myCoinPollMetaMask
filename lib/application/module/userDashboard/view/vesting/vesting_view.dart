@@ -2475,7 +2475,9 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      await walletVM.connectWallet(context);
+
+                      // await walletVM.connectWallet(context);
+                      await walletVM.appKitModal!.openModalView();
                     },
                     child: const Text("Connect Wallet"),
                   ),
@@ -2828,9 +2830,9 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   void _initializeTimers(VestingInfo vestInfo) {
     if (!mounted) return;
 
-    // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
+    vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
-    vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
+    // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
     cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000);
 

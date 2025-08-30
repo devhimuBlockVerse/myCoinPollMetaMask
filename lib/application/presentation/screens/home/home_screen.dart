@@ -834,7 +834,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
-                          if (!ok) return;
+                          if (ok) return;
                         }
                         final ecmAmount = double.tryParse(ecmController.text.trim());
                         if (ecmAmount == null || ecmAmount <= 0) {

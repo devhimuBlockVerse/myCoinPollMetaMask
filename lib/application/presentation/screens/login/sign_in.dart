@@ -730,18 +730,6 @@ class _SignInState extends State<SignIn> {
       }
 
       final walletAddress = walletVM.walletAddress;
-
-      if (walletAddress.isEmpty) {
-        if (!mounted) return;
-        ToastMessage.show(
-          message: "Address Error",
-          subtitle: "Could not fetch your wallet address. Please reconnect.",
-          type: MessageType.error,
-        );
-        setState(() => _isNavigating = false);
-        return;
-      }
-
       // Validate chain ID
       final chainId = walletVM.getChainIdForRequests();
       if (chainId == null) {

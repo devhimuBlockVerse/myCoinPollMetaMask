@@ -42,6 +42,8 @@ class _NewsScreenState extends State<NewsScreen> {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
+      print('Raw API Data: ${jsonData.firstWhere((item) => item.containsKey("id"), orElse: () => null)}');
+
       return jsonData.map((e) => NewsModel.fromJson(e)).toList();
     } else {
       throw Exception('Failed to fetch news');
@@ -191,7 +193,8 @@ class _NewsScreenState extends State<NewsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Trending',
+            // 'Trending',
+            'Featured News',
             style: TextStyle(
               fontFamily: 'Poppins',
               fontWeight: FontWeight.w500,
@@ -237,6 +240,8 @@ class _NewsScreenState extends State<NewsScreen> {
                               headline: news.title,
 
                               onTap: (){
+                                print('Debugging: News ID is ${news.id}'); // --- ADD THIS LINE ---
+
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -247,6 +252,7 @@ class _NewsScreenState extends State<NewsScreen> {
                                         'date': news.createdAt,
                                         'title': news.title,
                                         'description': news.description,
+                                        'id': news.id.toString(),
                                       },
                                     ),
                                   ),
@@ -364,11 +370,13 @@ class _NewsScreenState extends State<NewsScreen> {
                     MaterialPageRoute(
                       builder: (_) => TrendingScreen(
                         blogData: {
+
                           'imageUrl': blog.image,
                           'source': 'Mycoinpoll',
                           'date': blog.createdAt,
                           'title': blog.title,
                           'description': blog.description,
+                          'id': blog.id.toString(),
                         },
                       ),
                     ),

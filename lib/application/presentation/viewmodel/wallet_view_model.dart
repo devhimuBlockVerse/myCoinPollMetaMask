@@ -73,6 +73,7 @@ bool isUserRejectedError(Object error) {
       matches(appKilledPatterns);
 }
 
+
 // class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 //
 //   void setupLifecycleObserver() {
@@ -432,17 +433,16 @@ bool isUserRejectedError(Object error) {
 //       }
 //
 //       // Wait until a session and address are available
-//       final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
-//       if (!connected) {
-//         ToastMessage.show(
-//           message: "Wallet Connection Timeout",
-//           subtitle: "Could not detect wallet session. Please try again.",
-//           type: MessageType.info,
-//           duration: CustomToastLength.LONG,
-//           gravity: CustomToastGravity.BOTTOM,
-//         );
-//         return false;
-//       }
+//       // final connected = await _waitForConnection(timeout: const Duration(seconds: 2));
+//       // if (!connected) {
+//       //   ToastMessage.show(
+//       //     message: "Connection Timeout",
+//       //     type: MessageType.info,
+//       //     duration: CustomToastLength.LONG,
+//       //     gravity: CustomToastGravity.BOTTOM,
+//       //   );
+//       //   return false;
+//       // }
 //
 //       // Persist and hydrate
 //       final prefs = await SharedPreferences.getInstance();
@@ -516,9 +516,6 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
-//   // Future<void> rehydrate() async {
-//   //   await _hydrateFromExistingSession();
-//   // }
 //
 //   Future<void> rehydrate() async {
 //     if (_isLoading || _isSessionSettling) return;
@@ -559,52 +556,6 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
-//   /// NEw Changes
-//   // Future<void> _hydrateFromExistingSession() async {
-//   //   final prefs = await SharedPreferences.getInstance();
-//   //   // var session = appKitModal!.session;
-//   //   var session = appKitModal?.session;
-//   //
-//   //   // wait a bit for SDK to rehydrate after init
-//   //   if (session == null) {
-//   //     for (int i = 0; i < 15; i++) {
-//   //       await Future.delayed(const Duration(milliseconds: 150));
-//   //       session = appKitModal!.session;
-//   //       if (session != null) break;
-//   //     }
-//   //   }
-//   //
-//   //   if (session != null) {
-//   //     _isConnected = true;
-//   //     String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
-//   //     if (chainId != null) {
-//   //       _lastKnowChainId = chainId;
-//   //       await prefs.setString('chainId', chainId);
-//   //     }
-//   //
-//   //
-//   //     final address = _getFirstAddressFromSession();
-//   //
-//   //     if (address != null) {
-//   //       _walletAddress = address;
-//   //       await prefs.setBool('isConnected', true);
-//   //       await prefs.setString('walletAddress', _walletAddress);
-//   //       await prefs.setString('walletSession', jsonEncode(session.toJson()));
-//   //       await Future.wait([
-//   //         fetchConnectedWalletData(isReconnecting: false),
-//   //         fetchLatestETHPrice(),
-//   //       ]);
-//   //       return;
-//   //     }else{
-//   //       _isConnected = false;
-//   //       await _removePersistedConnection();
-//   //     }
-//   //   }
-//   //
-//   //   await fetchLatestETHPrice();
-//   // }
-//
-//   /// V2
 //   Future<void> _hydrateFromExistingSession() async {
 //     try {
 //       final prefs = await SharedPreferences.getInstance();
@@ -689,30 +640,6 @@ bool isUserRejectedError(Object error) {
 //     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
 //   }
 //
-//   Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
-//     final end = DateTime.now().add(timeout);
-//     while (DateTime.now().isBefore(end)) {
-//       if (_isConnected && _walletAddress.isNotEmpty) return true;
-//       final s = appKitModal?.session;
-//       if (s != null) {
-//         String? address;
-//         final selected = appKitModal?.selectedChain?.chainId;
-//         if (selected != null) {
-//           final ns = ReownAppKitModalNetworks.getNamespaceForChainId(selected);
-//           address = s.getAddress(ns);
-//         }
-//         address ??= _getFirstAddressFromSession();
-//         if (address != null) {
-//           _walletAddress = address;
-//           _isConnected = true;
-//           notifyListeners();
-//           return true;
-//         }
-//       }
-//       await Future.delayed(const Duration(milliseconds: 200));
-//     }
-//     return false;
-//   }
 //
 //   Future<void> _removePersistedConnection() async {
 //     final prefs = await SharedPreferences.getInstance();
@@ -849,7 +776,6 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
-//
 //   Future<String> getTotalSupply() async {
 //     try {
 //       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
@@ -883,7 +809,6 @@ bool isUserRejectedError(Object error) {
 //       rethrow;
 //     }
 //   }
-//
 //
 //   Future<String> getMinimunStake() async {
 //     try {
@@ -1088,22 +1013,25 @@ bool isUserRejectedError(Object error) {
 //     }
 //   }
 //
-//   Future<String> getBalance() async {
+//   Future<String> getBalance({String? forAddress}) async {
+//     final String? addressToQuery = forAddress ?? _walletAddress;
+//
 //     if (_web3Client == null) {
 //       print("Web3Client not initialized for getBalance.");
-//       _balance = null; // Or "0" depending on desired default/error display
-//       notifyListeners();
 //       throw Exception("Web3Client not initialized.");
 //     }
 //
-//     if (_vestingAddress == null || _vestingAddress!.isEmpty) {
-//       print("Vesting address is not available. Cannot fetch balance for vesting contract.");
-//       _balance = "0";
-//       notifyListeners();
+//     if (addressToQuery == null || addressToQuery.isEmpty) {
+//       print("No valid address provided to getBalance. User wallet: $_walletAddress, Optional param: $forAddress");
+//       if (forAddress == null) {
+//         _balance = "0";
+//         notifyListeners();
+//       }
 //       return "0";
 //     }
 //
 //     try {
+//       print(">>>> Fetching balanceOf for address: $addressToQuery");
 //       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
 //       final abiData = jsonDecode(abiString);
 //
@@ -1121,16 +1049,15 @@ bool isUserRejectedError(Object error) {
 //         params: [],
 //       );
 //       final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
-//
-//       print("Querying balanceOf for vesting address: $_vestingAddress on token: $ECM_TOKEN_CONTRACT_ADDRESS");
-//       final balanceOfResult = await _web3Client!.call(
+//       print(" Token decimals: $tokenDecimals");
+//        final balanceOfResult = await _web3Client!.call(
 //         contract: ecmTokenContract,
 //         function: ecmTokenContract.function('balanceOf'),
-//         params: [EthereumAddress.fromHex(_vestingAddress!)],
+//         params: [EthereumAddress.fromHex(addressToQuery!)],
 //       );
 //
 //       final rawBalanceBigInt = balanceOfResult[0] as BigInt;
-//       print('Raw token balance for vesting address $_vestingAddress: $rawBalanceBigInt');
+//       print('>>> Raw token balance for $addressToQuery: $rawBalanceBigInt');
 //
 //
 //       if (tokenDecimals == 18) {
@@ -1146,9 +1073,21 @@ bool isUserRejectedError(Object error) {
 //         _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
 //             .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
 //       }
+//       //
+//       // final formattedBalance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
+//       //     .getValueInUnit(EtherUnit.ether)
+//       //     .toString();
+//       //
+//       // print('Formatted token balance for address $addressToQuery: $formattedBalance');
+//       //
+//       // if (forAddress == null) {
+//       //   _balance = formattedBalance;
+//       //   notifyListeners();
+//       // }
+//       //
+//       // return formattedBalance;
+//       print("✅ Final formatted balanceOf for $addressToQuery: $_balance");
 //
-//
-//       print('Formatted token balance for vesting address $_vestingAddress: $_balance');
 //       notifyListeners();
 //       return _balance ?? "0";
 //
@@ -1158,6 +1097,13 @@ bool isUserRejectedError(Object error) {
 //       print(stack);
 //       notifyListeners();
 //       rethrow;
+//       // print('Error getting balance for address $addressToQuery: $e');
+//       // print(stack);
+//       //  if (forAddress == null) {
+//       //   _balance = null;
+//       //   notifyListeners();
+//       // }
+//       // rethrow;
 //     }
 //   }
 //
@@ -2260,6 +2206,30 @@ bool isUserRejectedError(Object error) {
 //     }
 //     throw Exception("Transaction timed out. Could not confirm transaction status.");
 //   }
+//   Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
+//     final end = DateTime.now().add(timeout);
+//     while (DateTime.now().isBefore(end)) {
+//       if (_isConnected && _walletAddress.isNotEmpty) return true;
+//       final s = appKitModal?.session;
+//       if (s != null) {
+//         String? address;
+//         final selected = appKitModal?.selectedChain?.chainId;
+//         if (selected != null) {
+//           final ns = ReownAppKitModalNetworks.getNamespaceForChainId(selected);
+//           address = s.getAddress(ns);
+//         }
+//         address ??= _getFirstAddressFromSession();
+//         if (address != null) {
+//           _walletAddress = address;
+//           _isConnected = true;
+//           notifyListeners();
+//           return true;
+//         }
+//       }
+//       await Future.delayed(const Duration(milliseconds: 200));
+//     }
+//     return false;
+//   }
 //
 //   /// Mock function to format decimal value to token unit (BigInt)
 //   BigInt _formatValue(double amount, {required BigInt decimals}) {
@@ -2271,9 +2241,32 @@ bool isUserRejectedError(Object error) {
 // }
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
+
   void setupLifecycleObserver() {
-    WidgetsBinding.instance.addObserver(_LifecycleHandler(onResume: _handleAppResume));
+    WidgetsBinding.instance.addObserver(_LifecycleHandler(
+        onDetached: _handleAppDetached, onPause: _handleAppPause,
+        onResume: _handleAppResume)
+    );
   }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   super.didChangeAppLifecycleState(state);
+  //
+  //   switch (state) {
+  //     case AppLifecycleState.resumed:
+  //       _handleAppResume();
+  //       break;
+  //     case AppLifecycleState.paused:
+  //       _handleAppPause();
+  //       break;
+  //     case AppLifecycleState.detached:
+  //       _handleAppDetached();
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // }
 
   ///Ensures context is valid and modal is re-initialized if needed
   ReownAppKitModal? appKitModal;
@@ -2312,12 +2305,35 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   Timer? _vestingTimer;
-
   String? _userWalletBalance;
   String? _vestingContractBalance;
+  bool _isUserBalanceLoading = false;
+  bool _isVestingBalanceLoading = false;
+
+
+  bool _isReconnecting = false;
+  Timer? _sessionHealthTimer;
+  Timer? _reconnectionTimer;
+  int _reconnectionAttempts = 0;
+  static const int MAX_RECONNECTION_ATTEMPTS = 3;
+  static const Duration SESSION_HEALTH_CHECK_INTERVAL = Duration(seconds: 30);
+  static const Duration RECONNECTION_DELAY = Duration(seconds: 3);
+
+
+
+  // Enhanced session validation
+  bool get isSessionValid {
+    return appKitModal?.session != null &&
+        _isConnected &&
+        _walletAddress.isNotEmpty &&
+        _lastKnowChainId != null;
+  }
+
 
   String? get userWalletBalance => _userWalletBalance;
   String? get vestingContractBalance => _vestingContractBalance;
+  bool get isUserBalanceLoading => _isUserBalanceLoading;
+  bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
   static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
 
@@ -2365,8 +2381,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   @override
   void dispose() {
     _vestingTimer?.cancel();
-    _web3Client?.dispose();
+    _sessionHealthTimer?.cancel();
+    _reconnectionTimer?.cancel();
+     _web3Client?.dispose();
     WidgetsBinding.instance.removeObserver(this);
+
     appKitModal?.onModalConnect.unsubscribeAll();
     appKitModal?.onModalUpdate.unsubscribeAll();
     appKitModal?.onModalDisconnect.unsubscribeAll();
@@ -2476,6 +2495,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _lastContext = context;
     await init(context);
   }
+
   void _subscribeToModalEvents(SharedPreferences prefs) {
     appKitModal!.onModalConnect.unsubscribeAll();
     appKitModal!.onModalUpdate.unsubscribeAll();
@@ -2485,7 +2505,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
     appKitModal!.onModalConnect.subscribe((_) async {
+      debugPrint("Modal connected event triggered");
       _isConnected = true;
+      _reconnectionAttempts = 0;
 
       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
       if (_lastKnowChainId != null) {
@@ -2497,6 +2519,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _walletAddress = address;
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
+        await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
+
         final sessionJson = appKitModal!.session?.toJson();
         if (sessionJson != null) {
           await prefs.setString('walletSession', jsonEncode(sessionJson));
@@ -2508,131 +2532,255 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         fetchLatestETHPrice(),
       ]);
 
+      // Start health monitoring
+      _startSessionHealthMonitoring();
+
       notifyListeners();
     });
 
+
     appKitModal!.onModalUpdate.subscribe((_) async {
+      debugPrint("Modal update event triggered");
       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
       if (_lastKnowChainId != null) {
         await prefs.setString('chainId', _lastKnowChainId!);
       }
+
       final updatedAddress = _getFirstAddressFromSession();
       if (updatedAddress != null && updatedAddress != _walletAddress) {
         _walletAddress = updatedAddress;
+        await prefs.setString('walletAddress', _walletAddress);
         await fetchConnectedWalletData();
       }
+
       _isConnected = true;
       await fetchLatestETHPrice();
+
       final sessionJson = appKitModal!.session?.toJson();
       if (sessionJson != null) {
         await prefs.setString('walletSession', jsonEncode(sessionJson));
       }
+
       notifyListeners();
     });
 
 
     appKitModal!.onModalDisconnect.subscribe((_) async {
-       final prevAddress = _walletAddress;
-      if (prevAddress.isNotEmpty) {
-        await prefs.remove('web3_sig_$prevAddress');
-        await prefs.remove('web3_msg_$prevAddress');
-      }
-
-      _lastKnowChainId = null;
-      _isConnected = false;
-      _walletAddress = '';
-      await _removePersistedConnection();
-      await _clearWalletAndStageInfo();
-      await fetchLatestETHPrice();
+      debugPrint("Modal disconnect event triggered");
+      await _handleDisconnect(prefs);
     });
 
     appKitModal!.onSessionExpireEvent.subscribe((_) async {
-      _lastKnowChainId =null;
-      _isConnected = false;
-      _walletAddress = '';
-      await _removePersistedConnection();
-      await _clearWalletAndStageInfo();
-      await fetchLatestETHPrice();
+      debugPrint("Session expire event triggered");
+      await _handleDisconnect(prefs);
     });
 
     appKitModal!.onSessionUpdateEvent.subscribe((_) async {
+      debugPrint("Session update event triggered");
       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
       if (_lastKnowChainId != null) {
         await prefs.setString('chainId', _lastKnowChainId!);
       }
+
       final addr = _getFirstAddressFromSession();
       if (addr != null && addr != _walletAddress) {
         _walletAddress = addr;
+        await prefs.setString('walletAddress', _walletAddress);
         await fetchConnectedWalletData();
       }
+
       _isConnected = true;
       await fetchLatestETHPrice();
+
       final sessionJson = appKitModal!.session?.toJson();
       if (sessionJson != null) {
         await prefs.setString('walletSession', jsonEncode(sessionJson));
       }
+
       notifyListeners();
     });
 
 
   }
 
+
+  // Add session health monitoring
+  void _startSessionHealthMonitoring() {
+    _sessionHealthTimer?.cancel();
+    _sessionHealthTimer = Timer.periodic(SESSION_HEALTH_CHECK_INTERVAL, (timer) {
+      _checkSessionHealth();
+    });
+  }
+
+  void _stopSessionHealthMonitoring() {
+    _sessionHealthTimer?.cancel();
+    _sessionHealthTimer = null;
+  }
+
+  Future<void> _checkSessionHealth() async {
+    if (!_isConnected || appKitModal?.session == null) return;
+
+    try {
+      // Verify session is still active by checking if we can get the address
+      final address = _getFirstAddressFromSession();
+      if (address == null || address.isEmpty) {
+        debugPrint("Session health check failed: No address found");
+        await _handleSessionLoss();
+        return;
+      }
+
+      // Verify chain ID is still valid
+      final currentChainId = getChainIdForRequests();
+      if (currentChainId == null) {
+        debugPrint("Session health check failed: No chain ID found");
+        await _handleSessionLoss();
+        return;
+      }
+
+      // Update wallet address if it changed
+      if (address != _walletAddress) {
+        debugPrint("Wallet address changed, updating...");
+        _walletAddress = address;
+        await fetchConnectedWalletData(isReconnecting: true);
+      }
+
+      debugPrint("Session health check passed");
+    } catch (e) {
+      debugPrint("Session health check error: $e");
+      await _handleSessionLoss();
+    }
+  }
+
+  Future<void> _handleSessionLoss() async {
+    if (_isReconnecting) return;
+
+    debugPrint("Handling session loss...");
+    _isReconnecting = true;
+    _isConnected = false;
+    notifyListeners();
+
+    // Try to reconnect automatically
+    if (_reconnectionAttempts < MAX_RECONNECTION_ATTEMPTS) {
+      _reconnectionAttempts++;
+      debugPrint("Attempting reconnection #$_reconnectionAttempts");
+
+      _reconnectionTimer?.cancel();
+      _reconnectionTimer = Timer(RECONNECTION_DELAY, () async {
+        await _attemptReconnection();
+      });
+    } else {
+      debugPrint("Max reconnection attempts reached");
+      await _clearSessionAndNotify();
+    }
+  }
+
+  Future<void> _attemptReconnection() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedSession = prefs.getString('walletSession');
+
+      if (savedSession != null && appKitModal != null) {
+        // Try to restore the session
+        await appKitModal!.init();
+
+        if (appKitModal!.session != null) {
+          _isConnected = true;
+          _reconnectionAttempts = 0;
+          _isReconnecting = false;
+
+          final address = _getFirstAddressFromSession();
+          if (address != null) {
+            _walletAddress = address;
+          }
+
+          await fetchConnectedWalletData(isReconnecting: true);
+          debugPrint("Reconnection successful");
+          notifyListeners();
+          return;
+        }
+      }
+
+      // If session restoration failed, clear everything
+      await _clearSessionAndNotify();
+    } catch (e) {
+      debugPrint("Reconnection attempt failed: $e");
+      await _clearSessionAndNotify();
+    }
+  }
+
+  Future<void> _clearSessionAndNotify() async {
+    _isReconnecting = false;
+    _reconnectionAttempts = 0;
+    await _clearWalletAndStageInfo();
+    await _removePersistedConnection();
+
+    ToastMessage.show(
+      message: "Wallet Disconnected",
+      subtitle: "Please reconnect your wallet to continue.",
+      type: MessageType.info,
+      duration: CustomToastLength.LONG,
+      gravity: CustomToastGravity.BOTTOM,
+    );
+  }
+
+  Future<void> _handleDisconnect(SharedPreferences prefs) async {
+    final prevAddress = _walletAddress;
+    if (prevAddress.isNotEmpty) {
+      await prefs.remove('web3_sig_$prevAddress');
+      await prefs.remove('web3_msg_$prevAddress');
+    }
+
+    _lastKnowChainId = null;
+    _isConnected = false;
+    _walletAddress = '';
+
+    _stopSessionHealthMonitoring();
+    _reconnectionTimer?.cancel();
+
+    await _removePersistedConnection();
+    await _clearWalletAndStageInfo();
+    await fetchLatestETHPrice();
+
+    notifyListeners();
+  }
+
   /// Connect the wallet using the ReownAppKitModal UI.
   Future<bool> connectWallet(BuildContext context) async {
-    if (_isLoading) return false;
+    if (_isLoading || _isReconnecting) return false;
+
     _walletConnectedManually = true;
     _isLoading = true;
+    _reconnectionAttempts = 0;
     notifyListeners();
 
     try {
       await ensureModalWithValidContext(context);
 
+      // Check if already connected
+      if (_isConnected && appKitModal?.session != null) {
+        debugPrint("Already connected, skipping connection");
+        return true;
+      }
+
       try {
         await appKitModal!.openModalView();
       } catch (e) {
-        debugPrint("First attempt failed: $e");
+        debugPrint("First connection attempt failed: $e");
         await _recreateModalWithContext(context);
 
         try {
           await appKitModal!.openModalView();
         } catch (e2) {
-
-          // Detect wallet app killed / modal closed
-          final errorMsg = e2.toString().toLowerCase();
-          if (errorMsg.contains("user rejected") ||
-              errorMsg.contains("user denied") ||
-              errorMsg.contains("user canceled") ||
-              errorMsg.contains("user cancelled") ||
-              errorMsg.contains("modal closed") ||
-              errorMsg.contains("wallet modal closed") ||
-              errorMsg.contains("no response from user")) {
-            ToastMessage.show(
-              message: "User Rejected",
-              subtitle: "You cancelled the connection.",
-              type: MessageType.info,
-              duration: CustomToastLength.LONG,
-              gravity: CustomToastGravity.BOTTOM,
-            );
-            return false;
-          } else {
-            ToastMessage.show(
-              message: "Wallet Connection Interrupted",
-              subtitle: "The wallet app was closed or session lost. Please connect.",
-              type: MessageType.info,
-              duration: CustomToastLength.LONG,
-              gravity: CustomToastGravity.BOTTOM,
-            );
-            return false;
-          }
+          return _handleConnectionError(e2);
         }
       }
 
-      // Wait until a session and address are available
-      final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
+      // Wait for connection with longer timeout
+      final connected = await _waitForConnection(timeout: const Duration(seconds: 1));
       if (!connected) {
         ToastMessage.show(
-          message: "Wallet Connection Timeout",
-          subtitle: "Could not detect wallet session. Please try again.",
+          message: "Connection Timeout",
+          subtitle: "Please try connecting again.",
           type: MessageType.info,
           duration: CustomToastLength.LONG,
           gravity: CustomToastGravity.BOTTOM,
@@ -2640,45 +2788,75 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         return false;
       }
 
-      // Persist and hydrate
-      final prefs = await SharedPreferences.getInstance();
-      final chainId = _getChainIdForRequests();
-      if (chainId != null) await prefs.setString('chainId', chainId);
+      // Persist connection data
+      await _persistConnectionData();
 
-      await prefs.setBool('isConnected', true);
-      await prefs.setString('walletAddress', _walletAddress);
-
-      final sessionJson = appKitModal!.session?.toJson();
-      if (sessionJson != null) {
-        await prefs.setString('walletSession', jsonEncode(sessionJson));
-      }
+      // Start health monitoring
+      _startSessionHealthMonitoring();
 
       await fetchConnectedWalletData(isReconnecting: true);
-
       notifyListeners();
+
+
+
       return true;
     } catch (e, stack) {
       debugPrint('connectWallet error: $e\n$stack');
-
-      final isUserRejected = isUserRejectedError(e);
-
-      ToastMessage.show(
-        message: isUserRejected ? "User Rejected" : "Connection Failed",
-        subtitle: isUserRejected
-            ? "You cancelled the connection."
-            : "Could not complete the connection request. Please try again.",
-        type: isUserRejected ? MessageType.info : MessageType.error,
-        duration: CustomToastLength.LONG,
-        gravity: CustomToastGravity.BOTTOM,
-      );
-
-      return false;
+      return _handleConnectionError(e);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
+  Future<void> _persistConnectionData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final chainId = getChainIdForRequests();
 
+    if (chainId != null) {
+      await prefs.setString('chainId', chainId);
+    }
+
+    await prefs.setBool('isConnected', true);
+    await prefs.setString('walletAddress', _walletAddress);
+
+    final sessionJson = appKitModal!.session?.toJson();
+    if (sessionJson != null) {
+      await prefs.setString('walletSession', jsonEncode(sessionJson));
+    }
+
+    // Save connection timestamp
+    await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
+  }
+
+  bool _handleConnectionError(dynamic error) {
+    final errorMsg = error.toString().toLowerCase();
+
+    if (errorMsg.contains("user rejected") ||
+        errorMsg.contains("user denied") ||
+        errorMsg.contains("user canceled") ||
+        errorMsg.contains("user cancelled") ||
+        errorMsg.contains("modal closed") ||
+        errorMsg.contains("wallet modal closed") ||
+        errorMsg.contains("no response from user")) {
+      ToastMessage.show(
+        message: "Connection Cancelled",
+        subtitle: "You cancelled the wallet connection.",
+        type: MessageType.info,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+      return false;
+    } else {
+      ToastMessage.show(
+        message: "Connection Failed",
+        subtitle: "Please try connecting again.",
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+        gravity: CustomToastGravity.BOTTOM,
+      );
+      return false;
+    }
+  }
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
     if (appKitModal == null) return;
@@ -2712,9 +2890,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  // Future<void> rehydrate() async {
-  //   await _hydrateFromExistingSession();
-  // }
 
   Future<void> rehydrate() async {
     if (_isLoading || _isSessionSettling) return;
@@ -2730,12 +2905,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   ///LifeCycle Functions
 
   Future<void> _handleAppResume() async {
-    // Always check if the WalletViewModel is initialized before proceeding.
+    debugPrint("App resumed - checking wallet connection...");
+
     if (appKitModal == null) {
-      debugPrint("App resumed but appKitModal is null. Initializing...");
+      debugPrint("AppKitModal is null, initializing...");
       if (_lastContext != null) {
         await init(_lastContext!);
       }
+      return;
     }
 
     try {
@@ -2743,106 +2920,102 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final isConnected = prefs.getBool('isConnected') ?? false;
 
       if (isConnected) {
-        debugPrint("App resumed. A wallet session was previously active. Rehydrating...");
-         await _hydrateFromExistingSession();
+        debugPrint("Previous connection found, rehydrating...");
+        await _hydrateFromExistingSession();
+
+        // Start health monitoring if connected
+        if (_isConnected) {
+          _startSessionHealthMonitoring();
+        }
       } else {
-        debugPrint("App resumed. No active wallet session to rehydrate.");
+        debugPrint("No previous connection found");
       }
     } catch (e, stack) {
-      debugPrint("Resume error: $e\n$stack");
+      debugPrint("App resume error: $e\n$stack");
     } finally {
       notifyListeners();
     }
   }
 
-  /// NEw Changes
-  // Future<void> _hydrateFromExistingSession() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   // var session = appKitModal!.session;
-  //   var session = appKitModal?.session;
-  //
-  //   // wait a bit for SDK to rehydrate after init
-  //   if (session == null) {
-  //     for (int i = 0; i < 15; i++) {
-  //       await Future.delayed(const Duration(milliseconds: 150));
-  //       session = appKitModal!.session;
-  //       if (session != null) break;
-  //     }
-  //   }
-  //
-  //   if (session != null) {
-  //     _isConnected = true;
-  //     String? chainId = appKitModal!.selectedChain!.chainId ?? _getChainIdFromSession();
-  //     if (chainId != null) {
-  //       _lastKnowChainId = chainId;
-  //       await prefs.setString('chainId', chainId);
-  //     }
-  //
-  //
-  //     final address = _getFirstAddressFromSession();
-  //
-  //     if (address != null) {
-  //       _walletAddress = address;
-  //       await prefs.setBool('isConnected', true);
-  //       await prefs.setString('walletAddress', _walletAddress);
-  //       await prefs.setString('walletSession', jsonEncode(session.toJson()));
-  //       await Future.wait([
-  //         fetchConnectedWalletData(isReconnecting: false),
-  //         fetchLatestETHPrice(),
-  //       ]);
-  //       return;
-  //     }else{
-  //       _isConnected = false;
-  //       await _removePersistedConnection();
-  //     }
-  //   }
-  //
-  //   await fetchLatestETHPrice();
-  // }
 
-  /// V2
+  Future<void> _handleAppPause() async {
+    debugPrint("App paused - saving session state...");
+    _stopSessionHealthMonitoring();
+
+    // Save current session state
+    if (_isConnected && appKitModal?.session != null) {
+      final prefs = await SharedPreferences.getInstance();
+      final sessionJson = appKitModal!.session!.toJson();
+      await prefs.setString('walletSession', jsonEncode(sessionJson));
+      await prefs.setBool('isConnected', true);
+      await prefs.setString('walletAddress', _walletAddress);
+      if (_lastKnowChainId != null) {
+        await prefs.setString('chainId', _lastKnowChainId!);
+      }
+
+    }
+  }
+
+  Future<void> _handleAppDetached() async {
+    debugPrint("App detached - cleaning up...");
+    _stopSessionHealthMonitoring();
+    _reconnectionTimer?.cancel();
+  }
+
   Future<void> _hydrateFromExistingSession() async {
+    if (_isSessionSettling) return;
+    _isSessionSettling = true;
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final isConnectedFromPrefs = prefs.getBool('isConnected') ?? false;
 
-
-      if (isConnectedFromPrefs) {
-        await appKitModal!.init();
-
-        if (appKitModal!.session != null) {
-          _isConnected = true;
-
-          final address = _getFirstAddressFromSession();
-          if (address != null) {
-            _walletAddress = address;
-          } else {
-
-            print('No address found in the restored session.');
-            _isConnected = false;
-            _walletAddress = '';
-            await _removePersistedConnection();
-            notifyListeners();
-            return;
-          }
-
-          _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-          print('Wallet session successfully restored from prefs.');
-
-          await fetchConnectedWalletData(isReconnecting: true);
-
-
-        } else {
-          print('Failed to restore session. Clearing saved connection status.');
-          await _removePersistedConnection();
-        }
-      } else {
-        print('No wallet session found in storage.');
+      if (!isConnectedFromPrefs) {
+        debugPrint("No saved connection found");
         await _removePersistedConnection();
+        return;
+      }
+
+      // Check if session is recent (within last 24 hours)
+      final lastConnectionTime = prefs.getInt('lastConnectionTime') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final sessionAge = now - lastConnectionTime;
+      final maxSessionAge = 24 * 60 * 60 * 1000; // 24 hours
+
+      if (sessionAge > maxSessionAge) {
+        debugPrint("Session too old, clearing...");
+        await _removePersistedConnection();
+        return;
+      }
+
+      await appKitModal!.init();
+
+      if (appKitModal!.session != null) {
+        _isConnected = true;
+
+        final address = _getFirstAddressFromSession();
+        if (address != null) {
+          _walletAddress = address;
+        } else {
+          debugPrint('No address found in the restored session.');
+          await _handleSessionLoss();
+          return;
+        }
+
+        _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
+        debugPrint('Wallet session successfully restored from prefs.');
+
+        await fetchConnectedWalletData(isReconnecting: true);
+
+        // Start health monitoring
+        _startSessionHealthMonitoring();
+      } else {
+        debugPrint('Failed to restore session. Clearing saved connection status.');
+        await _handleSessionLoss();
       }
     } catch (e) {
-      print('Error during session hydration: $e');
-      await _removePersistedConnection();
+      debugPrint('Error during session hydration: $e');
+      await _handleSessionLoss();
     } finally {
       _isSessionSettling = false;
       notifyListeners();
@@ -2881,34 +3054,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     return null;
   }
 
-  String? _getChainIdForRequests() {
+  String? getChainIdForRequests() {
     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
   }
 
-  Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
-    final end = DateTime.now().add(timeout);
-    while (DateTime.now().isBefore(end)) {
-      if (_isConnected && _walletAddress.isNotEmpty) return true;
-      final s = appKitModal?.session;
-      if (s != null) {
-        String? address;
-        final selected = appKitModal?.selectedChain?.chainId;
-        if (selected != null) {
-          final ns = ReownAppKitModalNetworks.getNamespaceForChainId(selected);
-          address = s.getAddress(ns);
-        }
-        address ??= _getFirstAddressFromSession();
-        if (address != null) {
-          _walletAddress = address;
-          _isConnected = true;
-          notifyListeners();
-          return true;
-        }
-      }
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-    return false;
-  }
 
   Future<void> _removePersistedConnection() async {
     final prefs = await SharedPreferences.getInstance();
@@ -2970,7 +3119,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return;
     }
 
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
     if (chainID == null) {
       await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
       return;
@@ -3045,7 +3194,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-
   Future<String> getTotalSupply() async {
     try {
       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
@@ -3079,7 +3227,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       rethrow;
     }
   }
-
 
   Future<String> getMinimunStake() async {
     try {
@@ -3145,7 +3292,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<String> transferToken(String recipientAddress, double amount) async {
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
 
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
       ToastMessage.show(
@@ -3284,6 +3431,49 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  Future<String> getUserWalletBalance() async {
+    if (_isUserBalanceLoading) return _userWalletBalance ?? '0';
+
+    _isUserBalanceLoading = true;
+    notifyListeners();
+
+    try {
+      final balance = await getBalance(forAddress: _walletAddress);
+      _userWalletBalance = balance;
+      return balance;
+    } catch (e) {
+      debugPrint('Error getting user wallet balance: $e');
+      _userWalletBalance = '0';
+      return '0';
+    } finally {
+      _isUserBalanceLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<String> getVestingContractBalance() async {
+    if (_isVestingBalanceLoading) return _vestingContractBalance ?? '0';
+    if (_vestingAddress == null || _vestingAddress!.isEmpty) {
+      _vestingContractBalance = '0';
+      return '0';
+    }
+
+    _isVestingBalanceLoading = true;
+    notifyListeners();
+
+    try {
+      final balance = await getBalance(forAddress: _vestingAddress!);
+      _vestingContractBalance = balance;
+      return balance;
+    } catch (e) {
+      debugPrint('Error getting vesting contract balance: $e');
+      _vestingContractBalance = '0';
+      return '0';
+    } finally {
+      _isVestingBalanceLoading = false;
+      notifyListeners();
+    }
+  }
   Future<String> getBalance({String? forAddress}) async {
     final String? addressToQuery = forAddress ?? _walletAddress;
 
@@ -3383,7 +3573,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     required EthereumAddress referralAddress,
     required BuildContext context
   }) async {
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
     print("buyECMWithETH Chaid Id ${chainID}");
 
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
@@ -3612,7 +3802,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<String?> stakeNow(BuildContext context, double amount, int planIndex, {String referrerAddress = '0x0000000000000000000000000000000000000000'}) async {
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
 
     /// Modal Check
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
@@ -3896,7 +4086,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   Future<String?> forceUnstake(int stakeId)async{
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
 
     if (!_isConnected || appKitModal?.session == null || chainID == null) {
       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
@@ -4001,7 +4191,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<String?> unstake(int stakeId) async {
-    final chainID = _getChainIdForRequests();
+    final chainID = getChainIdForRequests();
 
     if (!_isConnected || appKitModal?.session == null || chainID == null) {
       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
@@ -4157,7 +4347,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     notifyListeners();
 
     try {
-      final chainId = _getChainIdForRequests();
+      final chainId = getChainIdForRequests();
       if (chainId == null) throw Exception('Chain ID is not available.');
 
       final saleContractAbiString = await rootBundle.loadString("assets/abi/SaleContractABI.json");
@@ -4288,7 +4478,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
 
       // 2. Get the current chain and wallet address
-      final chainId = _getChainIdForRequests();
+      final chainId = getChainIdForRequests();
       if (chainId == null) {
         throw Exception("Selected chain not available.");
       }
@@ -4477,6 +4667,30 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
     throw Exception("Transaction timed out. Could not confirm transaction status.");
   }
+  Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
+    final end = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(end)) {
+      if (_isConnected && _walletAddress.isNotEmpty) return true;
+      final s = appKitModal?.session;
+      if (s != null) {
+        String? address;
+        final selected = appKitModal?.selectedChain?.chainId;
+        if (selected != null) {
+          final ns = ReownAppKitModalNetworks.getNamespaceForChainId(selected);
+          address = s.getAddress(ns);
+        }
+        address ??= _getFirstAddressFromSession();
+        if (address != null) {
+          _walletAddress = address;
+          _isConnected = true;
+          notifyListeners();
+          return true;
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
+    return false;
+  }
 
   /// Mock function to format decimal value to token unit (BigInt)
   BigInt _formatValue(double amount, {required BigInt decimals}) {
@@ -4490,13 +4704,36 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 class _LifecycleHandler extends WidgetsBindingObserver {
   final Future<void> Function() onResume;
+  final Future<void> Function() onPause;
+  final Future<void> Function() onDetached;
 
-  _LifecycleHandler({required this.onResume});
+  _LifecycleHandler({required this.onPause,required this.onDetached, required this.onResume});
+  //
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   if (state == AppLifecycleState.resumed) {
+  //     onResume();
+  //   }
+  // }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      onResume();
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        onResume();
+        break;
+      case AppLifecycleState.paused:
+
+        onPause();
+        break;
+      case AppLifecycleState.detached:
+
+        onDetached();
+        break;
+      default:
+        break;
     }
   }
 }
@@ -4511,10 +4748,10 @@ extension AppKitModalContextFix on ReownAppKitModal {
   }
 }
 
-extension ReownAppKitModalHelper on ReownAppKitModal {
-  Future<void> showModalViewWithContext(BuildContext context) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await openModalView();
-    });
-  }
-}
+// extension ReownAppKitModalHelper on ReownAppKitModal {
+//   Future<void> showModalViewWithContext(BuildContext context) async {
+//     WidgetsBinding.instance.addPostFrameCallback((_) async {
+//       await openModalView();
+//     });
+//   }
+// }

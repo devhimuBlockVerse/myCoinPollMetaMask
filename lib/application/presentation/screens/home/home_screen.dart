@@ -424,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Stack(
                         children: [
 
-                          ClipRRect(
+                          isLoading ? Center(child: CircularProgressIndicator(),): ClipRRect(
                             child: Image.network(
                               token.featureImage,
                               width: screenWidth * 0.4,
@@ -825,7 +825,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 18),
                     CustomGradientButton(
-                      label: walletVM.isLoading ? 'Processing':'Buy ECM',
+                      label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
@@ -836,18 +836,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           final ok = await walletVM.connectWallet(context);
                           if (!ok) return;
                         }
+                        final ecmAmount = double.tryParse(ecmController.text.trim());
+                        if (ecmAmount == null || ecmAmount <= 0) {
+                          ToastMessage.show(
+                            message: "Invalid Amount",
+                            subtitle: "Please enter a valid ECM amount.",
+                            type: MessageType.info,
+                            duration: CustomToastLength.SHORT,
+                            gravity: CustomToastGravity.BOTTOM,
+                          );
+                          return;
+                        }
                         try {
-                          final ecmAmount = double.tryParse(ecmController.text.trim());
-                          if (ecmAmount == null || ecmAmount <= 0) {
-                            ToastMessage.show(
-                              message: "Invalid Amount",
-                              subtitle: "Please enter a valid ECM amount.",
-                              type: MessageType.info,
-                              duration: CustomToastLength.SHORT,
-                              gravity: CustomToastGravity.BOTTOM,
-                            );
-                            return;
-                          }
 
                           final ethPricePerECM = walletVM.ethPrice;
                           final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
@@ -866,6 +866,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
 
                           final referralInput = referredController.text.trim();
+
                           final referralAddress = referralInput.isNotEmpty &&
                               EthereumAddress.fromHex(referralInput).hex != defaultReferrerAddress
                               ? EthereumAddress.fromHex(referralInput)

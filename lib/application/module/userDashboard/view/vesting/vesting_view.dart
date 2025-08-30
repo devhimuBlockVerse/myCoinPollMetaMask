@@ -34,6 +34,78 @@ class VestingWrapper extends StatefulWidget {
   State<VestingWrapper> createState() => _VestingWrapperState();
 }
 
+// class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAliveClientMixin {
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+//
+//     walletVM.addListener(_onWalletAddressChanged);
+//
+//     _fetchVestingDataIfConnected();
+//   }
+//
+//   void _onWalletAddressChanged() {
+//     _fetchVestingDataIfConnected();
+//   }
+//
+//   void _fetchVestingDataIfConnected() {
+//     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+//     if (walletVM.vestingAddress != null && walletVM.vestInfo.start == 0) {
+//       walletVM.getVestingInformation();
+//     }
+//   }
+//
+//   @override
+//   void dispose() {
+//     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+//     walletVM.removeListener(_onWalletAddressChanged);
+//     super.dispose();
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     super.build(context);
+//     return Consumer<WalletViewModel>(
+//       builder: (context, walletVM, child) {
+//
+//         debugPrint('VestingWrapper Consumer REBUILDING. isLoading: ${walletVM.isLoading}, vestingAddress: ${walletVM.vestingAddress}');
+//          debugPrint('walletAddress: ${walletVM.walletAddress}');
+//          debugPrint('vestingAddress: ${walletVM.vestingAddress}');
+//
+//         if (walletVM.isLoading) {
+//           return const Scaffold(
+//             body: Center(child: CircularProgressIndicator()),
+//           );
+//         }
+//
+//         if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
+//           return const Scaffold(
+//             body: Center(
+//               child: Text(
+//                 "Please connect your wallet to view vesting details.",
+//                 textAlign: TextAlign.center,
+//                 style: TextStyle(color: Colors.white70),
+//               ),
+//             ),
+//           );
+//         }
+//
+//
+//         if(walletVM.vestingAddress != null && walletVM.vestingAddress!.isNotEmpty){
+//           return  SleepPeriodScreen();
+//         }
+//
+//         return  VestingView();
+//
+//       },
+//     );
+//   }
+//
+//   @override
+//   bool get wantKeepAlive => true;
+//
+// }
 class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAliveClientMixin {
 
   @override
@@ -43,7 +115,10 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
 
     walletVM.addListener(_onWalletAddressChanged);
 
-    _fetchVestingDataIfConnected();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchVestingDataIfConnected();
+    });
+
   }
 
   void _onWalletAddressChanged() {
@@ -52,10 +127,16 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
 
   void _fetchVestingDataIfConnected() {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
     if (walletVM.vestingAddress != null && walletVM.vestInfo.start == 0) {
       walletVM.getVestingInformation();
+      walletVM.getBalance(forAddress: walletVM.vestingAddress);
     }
+
+
   }
+
+
 
   @override
   void dispose() {
@@ -72,7 +153,7 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
         debugPrint('VestingWrapper Consumer REBUILDING. isLoading: ${walletVM.isLoading}, vestingAddress: ${walletVM.vestingAddress}');
          debugPrint('walletAddress: ${walletVM.walletAddress}');
          debugPrint('vestingAddress: ${walletVM.vestingAddress}');
-
+        debugPrint('Vesting balance: ${walletVM.balance}');
         if (walletVM.isLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -362,7 +443,7 @@ class SleepPeriodScreen extends StatefulWidget {
     List<Claim> _filteredClaimHistory = []; // filtered list for search
     TextEditingController _searchController = TextEditingController();
     bool _isSearchOpen = false;
-  
+
     @override
     void initState() {
       super.initState();
@@ -371,7 +452,7 @@ class SleepPeriodScreen extends StatefulWidget {
   
       WidgetsBinding.instance.addPostFrameCallback((_)async{
         // _fetchVestingDataAndStartTimers();
-        _setupScreen();
+       _setupScreen();
 
         fetchClaimHistory().then((claims) {
           if (mounted) {
@@ -424,7 +505,6 @@ class SleepPeriodScreen extends StatefulWidget {
         walletVM.removeListener(_onVestingDataUpdated);
       }
     }
-  
   
     void _initializeTimers(VestingInfo vestInfo) {
       if (!mounted) return;
@@ -794,15 +874,16 @@ class SleepPeriodScreen extends StatefulWidget {
     Widget vestingDetails(double screenHeight, double screenWidth, BuildContext context) {
        return Consumer<WalletViewModel>(
            builder: (context,walletVM, child) {
+
              if (walletVM.isLoading && walletVM.balance == null) {
-  
              } else if (walletVM.balance != null) {
                balanceText = walletVM.balance!;
 
              } else {
                balanceText = "0";
              }
-             debugPrint("Dashboard _EcmWithGraphChart Consumer: walletVM.balance = ${walletVM.balance}, displayBalanceText = $balanceText");
+
+             debugPrint(" vestingDetails Consumer: walletVM.balance = ${walletVM.balance}, displayBalanceText = $balanceText");
   
             return VestingContainer(
               width: screenWidth * 0.9,

@@ -23,13 +23,14 @@ class _TrendingScreenState extends State<TrendingScreen> {
 
 
     final containerWidth = screenWidth;
-    final imageHeight = containerWidth * 0.48;
+    final imageHeight = containerWidth * 0.58;
 
     double responsiveFontSize(double baseSize) => screenWidth * (baseSize / 375);
 
     final String title = widget.blogData['title'] ?? '';
     final String description = widget.blogData['description'] ?? '';
     final String imageUrl = widget.blogData['imageUrl'] ?? '';
+    final String id = widget.blogData['id'] ?? '';
 
 
     return  Scaffold(
@@ -134,31 +135,41 @@ class _TrendingScreenState extends State<TrendingScreen> {
                                     ),
                                   ),
 
+
                                   CustomShareButton(
                                     iconPath: 'assets/icons/shareIcon.svg',
                                     color: Colors.white,
-                                    onPressed: () {
-                                      final cleanDescription = _stripHtmlTags(description).trim();
-                                      final shortDescription = cleanDescription.length > 100
-                                          ? '${cleanDescription.substring(0, 100)}...'
-                                          : cleanDescription;
+                                    onPressed: () async {
+                                      final String? postId = widget.blogData['id'];
 
-                                      final String shareMessage = '''
-                                      📢 *Trending Now on CoinPoll!*
-                                      📰 *${title.trim()}*
-                                      $shortDescription
-                                      ${imageUrl.isNotEmpty ? '📷 View Image: $imageUrl\n' : ''}🔗 Read More: https://coinpoll.app/posts?id=${widget.blogData['id']}
-                                      🚀 Stay updated with the crypto world!
-                                       ''';
+                                      // Check if the ID is valid and not an empty string
+                                      if (postId != null && postId.isNotEmpty) {
+                                        final String articleUrl = 'https://coinpoll.app/posts?id=$postId';
+                                        final String shareMessage = '''Check out this trending news on CoinPoll! 📰${title.trim()}🔗 Read more here: $articleUrl''';
 
-                                      Share.share(
-                                        shareMessage,
-                                        subject: "Check this out on CoinPoll!",
-                                      );
+                                        await Share.share(
+                                          shareMessage,
+                                          subject: "Trending News from CoinPoll",
+                                        );
+                                      } else {
+                                        // Handle the case where the ID is missing
+                                        print('Warning: Article ID is missing, sharing a generic link.');
+                                        final String genericShareMessage = '''
+Check out CoinPoll for the latest news on blockchain and crypto! 📰
+https://mycoinpoll.com/news
+''';
+
+                                        await Share.share(
+                                          genericShareMessage,
+                                          subject: "Trending News from CoinPoll",
+                                        );
+                                      }
                                     },
                                     width: screenWidth * 0.07,
                                     height: screenWidth * 0.07,
                                   ),
+
+
 
 
                                 ],
@@ -181,19 +192,23 @@ class _TrendingScreenState extends State<TrendingScreen> {
                                   ),
                                 ),
 
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 25),
 
                               Html(
                                 data: description,
+
                                 style: {
                                   "body": Style(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w400,
                                     letterSpacing: 0.5,
                                     fontSize: FontSize(responsiveFontSize(12)),
-                                    // lineHeight: LineHeight(1.6),
+                                    // lineHeight: LineHeight(1.5),
                                   ),
+
                                 },
+
+
                               )
 
                             ],

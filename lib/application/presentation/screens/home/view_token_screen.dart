@@ -869,7 +869,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
                     const SizedBox(height: 18),
                     CustomGradientButton(
-                      label: walletVM.isLoading ? 'Processing':'Buy ECM',
+                      label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,
                       height: MediaQuery.of(context).size.height * 0.05,
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',

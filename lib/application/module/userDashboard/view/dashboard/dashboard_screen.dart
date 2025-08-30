@@ -140,6 +140,7 @@ class DashboardScreen extends StatefulWidget {
 
 
      }catch(e){
+       debugPrint("resolveBalance error: $e");
        return '0';
      }
 

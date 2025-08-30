@@ -646,7 +646,7 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
                               subtitle: "Please enter a valid ECM amount.",
                               type: MessageType.info,
                               duration: CustomToastLength.SHORT,
-                              gravity: CustomToastGravity.TOP,
+                              gravity: CustomToastGravity.BOTTOM,
                             );
                             return;
                           }

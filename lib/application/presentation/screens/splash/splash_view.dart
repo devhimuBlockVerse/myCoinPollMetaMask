@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:mycoinpoll_metamask/application/presentation/screens/bottom_nav_bar.dart';
 
+import '../../../../version-service.dart';
+
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
@@ -24,6 +26,11 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      VersionService.checkVersion(context);
+    });
+
 
     _fadeController = AnimationController(
       vsync: this,

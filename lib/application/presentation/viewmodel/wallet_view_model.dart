@@ -169,21 +169,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isUserBalanceLoading => _isUserBalanceLoading;
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
-  // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
-  static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
+  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test
+  // static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
 
-   // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506';
-   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
+   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
+   // static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
 
-   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0';
-   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
+   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
+   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
 
   static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
 
   static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
 
-  // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306';
-  static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
+  static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
+  // static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
   static const double ECM_PRICE_USD = 1.2;
 
@@ -344,97 +344,100 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
     appKitModal!.onModalConnect.subscribe((_) async {
-      debugPrint("Modal connected event triggered");
-      _isConnected = true;
-      _reconnectionAttempts = 0;
 
-      _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-      if (_lastKnowChainId != null) {
-        await prefs.setString('chainId', _lastKnowChainId!);
-      }
-
-      final address = _getFirstAddressFromSession();
-      if (address != null) {
-        _walletAddress = address;
-        await prefs.setBool('isConnected', true);
-        await prefs.setString('walletAddress', _walletAddress);
-        await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
-
-        final sessionJson = appKitModal!.session?.toJson();
-        if (sessionJson != null) {
-          await prefs.setString('walletSession', jsonEncode(sessionJson));
-        }
-      }
-
-      await Future.wait([
-        fetchConnectedWalletData(),
-        fetchLatestETHPrice(),
-      ]);
-
-      // Start health monitoring
-      _startSessionHealthMonitoring();
+      // debugPrint("Modal connected event triggered");
+      // _isConnected = true;
+      // _reconnectionAttempts = 0;
+      //
+      // _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
+      // if (_lastKnowChainId != null) {
+      //   await prefs.setString('chainId', _lastKnowChainId!);
+      // }
+      //
+      // final address = _getFirstAddressFromSession();
+      // if (address != null) {
+      //   _walletAddress = address;
+      //   await prefs.setBool('isConnected', true);
+      //   await prefs.setString('walletAddress', _walletAddress);
+      //   await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
+      //
+      //   final sessionJson = appKitModal!.session?.toJson();
+      //   if (sessionJson != null) {
+      //     await prefs.setString('walletSession', jsonEncode(sessionJson));
+      //   }
+      // }
+      //
+      // await Future.wait([
+      //   fetchConnectedWalletData(),
+      //   fetchLatestETHPrice(),
+      // ]);
+      //
+      // // Start health monitoring
+      // _startSessionHealthMonitoring();
 
       notifyListeners();
     });
 
 
     appKitModal!.onModalUpdate.subscribe((_) async {
-      debugPrint("Modal update event triggered");
-      _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-      if (_lastKnowChainId != null) {
-        await prefs.setString('chainId', _lastKnowChainId!);
-      }
-
-      final updatedAddress = _getFirstAddressFromSession();
-      if (updatedAddress != null && updatedAddress != _walletAddress) {
-        _walletAddress = updatedAddress;
-        await prefs.setString('walletAddress', _walletAddress);
-        await fetchConnectedWalletData();
-      }
-
-      _isConnected = true;
-      await fetchLatestETHPrice();
-
-      final sessionJson = appKitModal!.session?.toJson();
-      if (sessionJson != null) {
-        await prefs.setString('walletSession', jsonEncode(sessionJson));
-      }
+      // debugPrint("Modal update event triggered");
+      // _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
+      // if (_lastKnowChainId != null) {
+      //   await prefs.setString('chainId', _lastKnowChainId!);
+      // }
+      //
+      // final updatedAddress = _getFirstAddressFromSession();
+      // if (updatedAddress != null && updatedAddress != _walletAddress) {
+      //   _walletAddress = updatedAddress;
+      //   await prefs.setString('walletAddress', _walletAddress);
+      //   await fetchConnectedWalletData();
+      // }
+      //
+      // _isConnected = true;
+      // await fetchLatestETHPrice();
+      //
+      // final sessionJson = appKitModal!.session?.toJson();
+      // if (sessionJson != null) {
+      //   await prefs.setString('walletSession', jsonEncode(sessionJson));
+      // }
 
       notifyListeners();
     });
 
 
     appKitModal!.onModalDisconnect.subscribe((_) async {
-      debugPrint("Modal disconnect event triggered");
-      await _handleDisconnect(prefs);
+      // debugPrint("Modal disconnect event triggered");
+      // await _handleDisconnect(prefs);
+      notifyListeners();
     });
 
     appKitModal!.onSessionExpireEvent.subscribe((_) async {
-      debugPrint("Session expire event triggered");
-      await _handleDisconnect(prefs);
+      // debugPrint("Session expire event triggered");
+      // await _handleDisconnect(prefs);
+      notifyListeners();
     });
 
     appKitModal!.onSessionUpdateEvent.subscribe((_) async {
-      debugPrint("Session update event triggered");
-      _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
-      if (_lastKnowChainId != null) {
-        await prefs.setString('chainId', _lastKnowChainId!);
-      }
-
-      final addr = _getFirstAddressFromSession();
-      if (addr != null && addr != _walletAddress) {
-        _walletAddress = addr;
-        await prefs.setString('walletAddress', _walletAddress);
-        await fetchConnectedWalletData();
-      }
-
-      _isConnected = true;
-      await fetchLatestETHPrice();
-
-      final sessionJson = appKitModal!.session?.toJson();
-      if (sessionJson != null) {
-        await prefs.setString('walletSession', jsonEncode(sessionJson));
-      }
+      // debugPrint("Session update event triggered");
+      // _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
+      // if (_lastKnowChainId != null) {
+      //   await prefs.setString('chainId', _lastKnowChainId!);
+      // }
+      //
+      // final addr = _getFirstAddressFromSession();
+      // if (addr != null && addr != _walletAddress) {
+      //   _walletAddress = addr;
+      //   await prefs.setString('walletAddress', _walletAddress);
+      //   await fetchConnectedWalletData();
+      // }
+      //
+      // _isConnected = true;
+      // await fetchLatestETHPrice();
+      //
+      // final sessionJson = appKitModal!.session?.toJson();
+      // if (sessionJson != null) {
+      //   await prefs.setString('walletSession', jsonEncode(sessionJson));
+      // }
 
       notifyListeners();
     });
@@ -615,17 +618,17 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       // Wait for connection with longer timeout
-      final connected = await _waitForConnection(timeout: const Duration(seconds: 1));
-      if (!connected) {
-        ToastMessage.show(
-          message: "Connection Timeout",
-          subtitle: "Please try connecting again.",
-          type: MessageType.info,
-          duration: CustomToastLength.LONG,
-          gravity: CustomToastGravity.BOTTOM,
-        );
-        return false;
-      }
+      // final connected = await _waitForConnection(timeout: const Duration(seconds: 1));
+      // if (!connected) {
+      //   ToastMessage.show(
+      //     message: "Connection Timeout",
+      //     subtitle: "Please try connecting again.",
+      //     type: MessageType.info,
+      //     duration: CustomToastLength.LONG,
+      //     gravity: CustomToastGravity.BOTTOM,
+      //   );
+      //   return false;
+      // }
 
       // Persist connection data
       await _persistConnectionData();
@@ -991,7 +994,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         getVestingInformation()
       ]);
 
-      _startVestingTimer();
+      // _startVestingTimer();
 
     } catch (e) {
       print('Error fetching connected wallet data: $e');
@@ -1067,6 +1070,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return 18;
     }
   }
+
   Future<String> getTotalSupply() async {
     try {
       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
@@ -1400,6 +1404,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   // }
   Future<String> getBalance({String? forAddress}) async {
     final String? addressToQuery = forAddress ?? _walletAddress;
+    
+    print(">>>GetBalance : ${addressToQuery}");
 
     if (_web3Client == null) {
       debugPrint("Web3Client not initialized for getBalance.");
@@ -1462,6 +1468,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       debugPrint("✅ Final formatted balanceOf for $addressToQuery: $formattedBalance");
+
 
       // Update the appropriate balance variable
       if (forAddress == null) {
@@ -2278,7 +2285,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
 
       final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-      final walletAddressHex = appKitModal!.session!.getAddress(nameSpace);
+      final walletAddressHex = appKitModal?.session?.getAddress(nameSpace);
       if (walletAddressHex == null) throw Exception('Wallet address is null.');
 
       final userWalletAddress = EthereumAddress.fromHex(walletAddressHex);
@@ -2555,13 +2562,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
 
-  void _startVestingTimer() {
-    _vestingTimer?.cancel();
-    _vestingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-
-      notifyListeners();
-    });
-  }
+  // void _startVestingTimer() {
+  //   _vestingTimer?.cancel();
+  //   _vestingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  //
+  //     notifyListeners();
+  //   });
+  // }
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
     const pollInterval = Duration(seconds: 3);

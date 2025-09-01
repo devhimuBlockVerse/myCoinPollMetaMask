@@ -3017,21 +3017,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> ensureModalWithValidContext(BuildContext context) async {
-    // // Don't recreate modal unnecessarily
-    // if (appKitModal == null) {
-    //   _lastContext = context;
-    //   await init(context);
-    //   return;
-    // }
-    //
-    // // Only update context if it's actually different
-    // if (_lastContext != context) {
-    //   _lastContext = context;
-    //
-    //   // Don't try to update context - just let the modal work with new context
-    //   // The modal will work with the new context automatically
-    //   debugPrint("Context changed, but modal should work with new context");
-    // }
+
     ///
     // final needsReinit = appKitModal == null || !_modalHasMaterialContext || !_hasMaterial(context);
     //

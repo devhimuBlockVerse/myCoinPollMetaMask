@@ -2476,8 +2476,8 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
                   ElevatedButton(
                     onPressed: () async {
 
-                      // await walletVM.connectWallet(context);
                       await walletVM.appKitModal!.openModalView();
+                      // await walletVM.openModalSafely(context);
                     },
                     child: const Text("Connect Wallet"),
                   ),

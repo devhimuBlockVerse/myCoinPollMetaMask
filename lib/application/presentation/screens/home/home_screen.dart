@@ -824,6 +824,82 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     const SizedBox(height: 18),
+                    // CustomGradientButton(
+                    //   label: 'Buy ECM',
+                    //   width: MediaQuery.of(context).size.width * 0.7,
+                    //   height: MediaQuery.of(context).size.height * 0.05,
+                    //   leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
+                    //   onTap: () async {
+                    //     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                    //     if (!walletVM.isConnected) {
+                    //       await walletVM.ensureModalWithValidContext(context);
+                    //       final ok = await walletVM.connectWallet(context);
+                    //       if (ok) return;
+                    //     }
+                    //     final ecmAmount = double.tryParse(ecmController.text.trim());
+                    //     if (ecmAmount == null || ecmAmount <= 0) {
+                    //       ToastMessage.show(
+                    //         message: "Invalid Amount",
+                    //         subtitle: "Please enter a valid ECM amount.",
+                    //         type: MessageType.info,
+                    //         duration: CustomToastLength.SHORT,
+                    //         gravity: CustomToastGravity.BOTTOM,
+                    //       );
+                    //       return;
+                    //     }
+                    //     try {
+                    //
+                    //       final ethPricePerECM = walletVM.ethPrice;
+                    //       final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
+                    //       final ethAmountInWei = EtherAmount.fromBigInt(
+                    //         EtherUnit.wei,
+                    //         (requiredEth * Decimal.parse('1e18')).toBigInt(),
+                    //       );
+                    //
+                    //
+                    //       showDialog(
+                    //         context: context,
+                    //         barrierDismissible: false,
+                    //         builder: (_) => const Center(
+                    //           child: CircularProgressIndicator(color: Colors.white),
+                    //         ),
+                    //       );
+                    //
+                    //       final referralInput = referredController.text.trim();
+                    //
+                    //       final referralAddress = referralInput.isNotEmpty &&
+                    //           EthereumAddress.fromHex(referralInput).hex != defaultReferrerAddress
+                    //           ? EthereumAddress.fromHex(referralInput)
+                    //           : EthereumAddress.fromHex(defaultReferrerAddress);
+                    //
+                    //
+                    //       final txHash = await walletVM.buyECMWithETH(
+                    //         ethAmount: ethAmountInWei,
+                    //         referralAddress: referralAddress,
+                    //         context: context,
+                    //       );
+                    //       Navigator.of(context).pop();
+                    //       ecmController.clear();
+                    //       ethController.clear();
+                    //       if (txHash != null) {
+                    //         ToastMessage.show(
+                    //           message: "Purchase Successful",
+                    //           subtitle: "Transaction hash: $txHash",
+                    //           type: MessageType.success,
+                    //           duration: CustomToastLength.LONG,
+                    //           gravity: CustomToastGravity.BOTTOM,
+                    //         );
+                    //       }
+                    //     } catch (e) {
+                    //       Navigator.of(context).pop();
+                    //
+                    //     }
+                    //   },
+                    //   gradientColors: const [
+                    //     Color(0xFF2D8EFF),
+                    //     Color(0xFF2EE4A4)
+                    //   ],
+                    // ),
                     CustomGradientButton(
                       label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,
@@ -831,6 +907,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+                        await walletVM.fetchLatestETHPrice(forceLoad: true);
+
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
@@ -849,12 +927,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                         try {
 
+
                           final ethPricePerECM = walletVM.ethPrice;
                           final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
                           final ethAmountInWei = EtherAmount.fromBigInt(
                             EtherUnit.wei,
                             (requiredEth * Decimal.parse('1e18')).toBigInt(),
                           );
+
 
 
                           showDialog(

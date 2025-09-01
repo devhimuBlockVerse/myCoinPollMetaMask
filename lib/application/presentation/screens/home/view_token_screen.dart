@@ -875,24 +875,26 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                        final ecmAmount = double.tryParse(ecmController.text.trim());
+                        await walletVM.fetchLatestETHPrice(forceLoad: true);
 
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
-                           if (ok) return;
+                          if (ok) return;
+                        }
+                        final ecmAmount = double.tryParse(ecmController.text.trim());
+                        if (ecmAmount == null || ecmAmount <= 0) {
+                          ToastMessage.show(
+                            message: "Invalid Amount",
+                            subtitle: "Please enter a valid ECM amount.",
+                            type: MessageType.info,
+                            duration: CustomToastLength.SHORT,
+                            gravity: CustomToastGravity.BOTTOM,
+                          );
+                          return;
                         }
                         try {
-                          if (walletVM.isConnected || ecmAmount == null || ecmAmount <= 0) {
-                            ToastMessage.show(
-                              message: "Invalid Amount",
-                              subtitle: "Please enter a valid ECM amount.",
-                              type: MessageType.info,
-                              duration: CustomToastLength.SHORT,
-                              gravity: CustomToastGravity.BOTTOM,
-                            );
-                            return;
-                          }
+
 
                           final ethPricePerECM = walletVM.ethPrice;
                           final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
@@ -900,6 +902,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                             EtherUnit.wei,
                             (requiredEth * Decimal.parse('1e18')).toBigInt(),
                           );
+
 
 
                           showDialog(
@@ -911,6 +914,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                           );
 
                           final referralInput = referredController.text.trim();
+
                           final referralAddress = referralInput.isNotEmpty &&
                               EthereumAddress.fromHex(referralInput).hex != defaultReferrerAddress
                               ? EthereumAddress.fromHex(referralInput)

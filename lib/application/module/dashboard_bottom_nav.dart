@@ -108,6 +108,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                              await walletVM.rehydrate();
 
                              await walletVM.appKitModal?.openModalView();
+                             // await walletVM.openModalSafely(context);
                             }
 
 

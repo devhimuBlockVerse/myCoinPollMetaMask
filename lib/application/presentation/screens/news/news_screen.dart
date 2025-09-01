@@ -240,20 +240,11 @@ class _NewsScreenState extends State<NewsScreen> {
                               headline: news.title,
 
                               onTap: (){
-                                print('Debugging: News ID is ${news.id}'); // --- ADD THIS LINE ---
-
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => TrendingScreen(
-                                      blogData: {
-                                        'imageUrl': news.image,
-                                        'source': 'Mycoinpoll',
-                                        'date': news.createdAt,
-                                        'title': news.title,
-                                        'description': news.description,
-                                        'id': news.id.toString(),
-                                      },
+                                      newsModel: news,
                                     ),
                                   ),
                                 );
@@ -369,15 +360,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => TrendingScreen(
-                        blogData: {
-
-                          'imageUrl': blog.image,
-                          'source': 'Mycoinpoll',
-                          'date': blog.createdAt,
-                          'title': blog.title,
-                          'description': blog.description,
-                          'id': blog.id.toString(),
-                        },
+                        newsModel: blog,
                       ),
                     ),
                   );

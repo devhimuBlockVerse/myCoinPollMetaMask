@@ -231,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ScrollConfiguration(
               behavior: const ScrollBehavior().copyWith(overscroll: false),
               child: SingleChildScrollView(
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 physics: const BouncingScrollPhysics(),
 
                 child: Padding(

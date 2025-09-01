@@ -154,21 +154,23 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isUserBalanceLoading => _isUserBalanceLoading;
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
-  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
+  // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
   // static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
+  static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/M_dLuGWM1Vxt0s1Mq3Dz9";
 
-   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
-   // static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
+   // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
+   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
 
-   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
-   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
+   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
+   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
 
-  static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
+  // static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
+  // static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
 
-  static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
+  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake
 
-  static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
-  // static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
+  // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
+  static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
   static const double ECM_PRICE_USD = 1.2;
   static const int ECM_DECIMALS = 18;
@@ -231,7 +233,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         appKitModal = ReownAppKitModal(
 
           context: context,
-          projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
+          // projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
+          projectId: 'ec1aaae5ff0cfc95b21c0a59b7a2fe91',
            metadata: const PairingMetadata(
             name: "MyWallet",
             description: "Example Description",
@@ -865,7 +868,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           jsonEncode(abiData),
           'eCommerce Coin',
         ),
-        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS),
+        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE),
       );
 
       final minimumStakeResult = await _web3Client!.call(
@@ -896,7 +899,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           jsonEncode(abiData),
           'eCommerce Coin',
         ),
-        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESS),
+        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE),
       );
 
       final maximumStakeResult = await _web3Client!.call(
@@ -1486,7 +1489,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       final stakingContract = DeployedContract(
           ContractAbi.fromJson(jsonEncode(jsonDecode(stakingAbiString)), 'eCommerce Coin'),
-          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2));
+          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE));
 
       final stakeFunction = stakingContract.function('stake');
       print('>> Staking function: ${stakeFunction.name}');
@@ -1519,7 +1522,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         functionName: 'approve',
         transaction: Transaction(from: EthereumAddress.fromHex(_walletAddress)),
         parameters: [
-          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
+          EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE),
           stakeAmount,
         ],
       );
@@ -1746,7 +1749,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final stakingContract = DeployedContract(
         ContractAbi.fromJson(stakingAbiString, 'eCommerce Coin'),
-        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
+        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE),
       );
 
       /// Call forceUnstake function on contract
@@ -1850,7 +1853,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final stakingAbiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final stakingContract = DeployedContract(
         ContractAbi.fromJson(stakingAbiString, 'eCommerce Coin'),
-        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSV2),
+        EthereumAddress.fromHex(STAKING_CONTRACT_ADDRESSLIVE),
       );
 
       final txResult = await appKitModal!.requestWriteContract(

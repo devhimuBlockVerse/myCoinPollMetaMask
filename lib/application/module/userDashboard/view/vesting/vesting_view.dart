@@ -557,6 +557,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     if (!mounted) return;
 
     vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
+
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
     // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
     cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;

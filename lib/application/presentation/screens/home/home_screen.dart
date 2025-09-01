@@ -79,43 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Helper function to fetch contract data and update the UI state.
-  // void _updateEthFromECM() {
-  //   if (_isUpdating) return;
-  //   _isUpdating = true;
-  //
-  //   final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
-  //   if (ecmAmount == null || ecmAmount == 0.0) {
-  //     ethController.clear();
-  //     _isUpdating = false;
-  //     return;
-  //   }
-  //
-  //
-  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-  //   final ethAmount = ecmAmount * walletVM.ethPrice;
-  //
-  //   ethController.text = ethAmount.toStringAsFixed(6);
-  //
-  //   _isUpdating = false;
-  // }
-  // void _updateECMFromEth() {
-  //   if (_isUpdating) return;
-  //   _isUpdating = true;
-  //
-  //   final ethAmount = double.tryParse(ethController.text) ?? 0.0;
-  //   if (ethAmount == null || ethAmount == 0.0) {
-  //     ecmController.clear();
-  //     _isUpdating = false;
-  //     return;
-  //   }
-  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-  //   if (walletVM.ethPrice > 0) {
-  //     final ecmAmount = ethAmount / walletVM.ethPrice;
-  //     ecmController.text = ecmAmount.toStringAsFixed(6);
-  //   }
-  //   _isUpdating = false;
-  // }
-
 
   void _updateEthFromECM() {
     if (_isUpdating) return;
@@ -188,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _updateEthFromECM();
     _updateECMFromEth();
    }
+
   Future<void> fetchTokens() async {
     try {
       final response = await ApiService().fetchTokens();
@@ -219,6 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
   Future<void> _initializeWalletData() async {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
     if (walletVM.isConnected) {

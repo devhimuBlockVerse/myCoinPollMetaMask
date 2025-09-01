@@ -30,7 +30,6 @@ class _TrendingScreenState extends State<TrendingScreen> {
     final String title = widget.blogData['title'] ?? '';
     final String description = widget.blogData['description'] ?? '';
     final String imageUrl = widget.blogData['imageUrl'] ?? '';
-    final String id = widget.blogData['id'] ?? '';
 
 
     return  Scaffold(

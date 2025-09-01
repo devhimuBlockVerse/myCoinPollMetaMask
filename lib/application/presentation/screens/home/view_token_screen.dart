@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,7 +53,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
   bool _isUpdating = false;
 
 
-  double _ethPrice = 0.0;
+  // double _ethPrice = 0.0;
 
 
   bool isDisconnecting = false;
@@ -74,7 +73,11 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     fetchTokens();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-
+      final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+      await walletVM.ensureModalWithValidContext(context);
+      await walletVM.rehydrate();
+      await _initializeWalletData();
+      await _fetchReferredByAddress();
       await _fetchReferredByAddress();
     });
 
@@ -115,26 +118,13 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
   Future<void> _initializeWalletData() async {
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    await walletVM.init(context);
-    try {
-
-      final ethPrice = walletVM.ethPrice;
-
-      setState(() {
-
-        _ethPrice = ethPrice;
-
-      });
-
-    } catch (e) {
-      if (mounted) {
-        ToastMessage.show(
-          message: "Please connect your wallet",
-          type: MessageType.error,
-        );
-
-      }
+    if (walletVM.isConnected) {
+      await walletVM.fetchConnectedWalletData(isReconnecting: true);
     }
+    await walletVM.fetchLatestETHPrice();
+    _updateECMFromEth();
+    _updateEthFromECM();
+
   }
 
   void _updateEthFromECM() {
@@ -185,6 +175,26 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
 
     _isUpdating = false;
   }
+  Future<void>_refreshData()async{
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    await  walletVM.ensureModalWithValidContext(context);
+
+
+    if(!walletVM.isConnected){
+      await walletVM.init(context);
+    }
+
+    await Future.wait([
+      walletVM.fetchLatestETHPrice(),
+      fetchTokens(),
+      _fetchReferredByAddress(),
+      if(walletVM.isConnected)
+        walletVM.fetchConnectedWalletData(isReconnecting: true),
+
+    ]);
+    _updateEthFromECM();
+    _updateECMFromEth();
+  }
 
 
   @override
@@ -198,14 +208,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      print("App resumed from background, refreshing wallet data.");
-      _initializeWalletData();
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -259,154 +262,157 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     horizontal: screenWidth * 0.02,
                     vertical: screenHeight * 0.02,
                   ),
-                  child: ScrollConfiguration(
-                    behavior: const ScrollBehavior().copyWith(overscroll: false),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children:  [
+                  child: RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: ScrollConfiguration(
+                      behavior: const ScrollBehavior().copyWith(overscroll: false),
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children:  [
 
 
-                          /// White Paper Section
-                            ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
+                            /// White Paper Section
+                              ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
 
-                          SizedBox(height: screenHeight * 0.04),
-
-
-                          /// Buy ECM section
-                          _buildBuyEcmSection(),
-
-                          SizedBox(height: screenHeight * 0.04),
-
-                          InfoCard(
-                            label1: tokens.first.symbol,
-                            label2: tokens.first.fullName,
-                            description: tokens.first.description
-                                .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
-                                .trim(),
-                             imagePath: tokens.first.logo,
-                            backgroundImagePath: 'assets/images/bg.png',
-                            width: screenWidth ,
-                          ),
-
-                          /// Submit & Clear Button Section
-
-                          SizedBox(height: screenHeight * 0.04),
-
-                          InfoCard(
-                            label1: tokens.first.tokenCompany,
-                            label2: 'Founder',
-                            description: tokens.first.companyDetails,
-                            imagePath: tokens.first.companyLogo,
-
-                            width: screenWidth ,
-                          ),
-
-                          SizedBox(height: screenHeight * 0.04),
-
-                          _strategicTokenSection(tokens.first),
+                            SizedBox(height: screenHeight * 0.04),
 
 
+                            /// Buy ECM section
+                            _buildBuyEcmSection(),
+
+                            SizedBox(height: screenHeight * 0.04),
+
+                            InfoCard(
+                              label1: tokens.first.symbol,
+                              label2: tokens.first.fullName,
+                              description: tokens.first.description
+                                  .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
+                                  .trim(),
+                               imagePath: tokens.first.logo,
+                              backgroundImagePath: 'assets/images/bg.png',
+                              width: screenWidth ,
+                            ),
+
+                            /// Submit & Clear Button Section
+
+                            SizedBox(height: screenHeight * 0.04),
+
+                            InfoCard(
+                              label1: tokens.first.tokenCompany,
+                              label2: 'Founder',
+                              description: tokens.first.companyDetails,
+                              imagePath: tokens.first.companyLogo,
+
+                              width: screenWidth ,
+                            ),
+
+                            SizedBox(height: screenHeight * 0.04),
+
+                            _strategicTokenSection(tokens.first),
 
 
 
-                          Center(
-                            child: Container(
-                                width: screenWidth * 0.82,
-                                height: screenHeight * 0.19,
-                                decoration: const BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/images/discoverIMG2.png'),
-                                    fit: BoxFit.fitWidth,
-                                    filterQuality: FilterQuality.medium,
 
+
+                            Center(
+                              child: Container(
+                                  width: screenWidth * 0.82,
+                                  height: screenHeight * 0.19,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/discoverIMG2.png'),
+                                      fit: BoxFit.fitWidth,
+                                      filterQuality: FilterQuality.medium,
+
+                                    ),
                                   ),
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                    child:  Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(width: screenWidth * 0.03),
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                                      child:  Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(width: screenWidth * 0.03),
 
-                                        Image.asset(
-                                          // 'assets/images/discoverIMG.png',
-                                          'assets/images/ecmLarge.png',
-                                          fit: BoxFit.contain,
-                                          width: screenWidth * 0.17,
-                                        ),
+                                          Image.asset(
+                                            // 'assets/images/discoverIMG.png',
+                                            'assets/images/ecmLarge.png',
+                                            fit: BoxFit.contain,
+                                            width: screenWidth * 0.17,
+                                          ),
 
-                                        SizedBox(width: screenWidth * 0.01),
-                                        Flexible(
-                                          child: AutoSizeText(
-                                            "Discover Our Visionary Roadmap",
-                                            textAlign: TextAlign.left,
-                                            maxLines: 2,
+                                          SizedBox(width: screenWidth * 0.01),
+                                          Flexible(
+                                            child: AutoSizeText(
+                                              "Discover Our Visionary Roadmap",
+                                              textAlign: TextAlign.left,
+                                              maxLines: 2,
 
-                                            style:  TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Poppins',
-                                              fontWeight: FontWeight.w500,
-                                              height: 1.3,
-                                              // fontSize: baseSize * 0.036,
-                                              fontSize: baseSize * 0.045,
+                                              style:  TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.3,
+                                                // fontSize: baseSize * 0.036,
+                                                fontSize: baseSize * 0.045,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-
-                                  ),
-                                )
-                            ),
-                          ),
-
-
-                          SizedBox(height: screenHeight * 0.09),
-
-                          /// Road Map Component Functionalities
-
-                          FutureBuilder<TokenDetails>(
-                            future: _tokenDetailsFuture,
-                            builder: (context, snapshot){
-                              if(snapshot.connectionState == ConnectionState.waiting){
-                                return CircularProgressIndicator();
-                              }else if(snapshot.hasError){
-                                return Text('Error: ${snapshot.error}');
-                              }else{
-                                final tokenDetails = snapshot.data!;
-                               return SizedBox(
-                                  width: double.infinity,
-
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-
-                                    children: [
-
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                                        child: buildRoadmapSection(context, screenHeight,tokenDetails),
+                                        ],
                                       ),
 
-                                    ],
-                                  ),
-                                );
+                                    ),
+                                  )
+                              ),
+                            ),
+
+
+                            SizedBox(height: screenHeight * 0.09),
+
+                            /// Road Map Component Functionalities
+
+                            FutureBuilder<TokenDetails>(
+                              future: _tokenDetailsFuture,
+                              builder: (context, snapshot){
+                                if(snapshot.connectionState == ConnectionState.waiting){
+                                  return CircularProgressIndicator();
+                                }else if(snapshot.hasError){
+                                  return Text('Error: ${snapshot.error}');
+                                }else{
+                                  final tokenDetails = snapshot.data!;
+                                 return SizedBox(
+                                    width: double.infinity,
+
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+
+                                      children: [
+
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                          child: buildRoadmapSection(context, screenHeight,tokenDetails),
+                                        ),
+
+                                      ],
+                                    ),
+                                  );
+                                }
+
                               }
 
-                            }
-
-                          ),
+                            ),
 
 
 
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -879,6 +885,7 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     ),
 
                     const SizedBox(height: 18),
+
                     CustomGradientButton(
                       label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,

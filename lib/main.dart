@@ -73,8 +73,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
-         // home: const SplashView(),
-         // home: const DashboardBottomNavBar(),
         home: const PermissionHandlerWidget(child: SplashView()),
         navigatorObservers: [routeObserver],
         builder: (context, child) => WalletAppInitializer(child: child!),

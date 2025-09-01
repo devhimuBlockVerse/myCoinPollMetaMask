@@ -102,16 +102,16 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                           if (index == 3) {
                             // walletVM.getVestingInformation();
 
-                            // Vesting tab logic
+
                             if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
                              await walletVM.ensureModalWithValidContext(context);
                              await walletVM.rehydrate();
 
-                             await walletVM.appKitModal?.openModalView();
-                             // await walletVM.openModalSafely(context);
+                              //  await walletVM.appKitModal?.openModalView();
+                             if (!mounted) return;
+                             await context.read<WalletViewModel>().openWalletModal(context);
+
                             }
-
-
                           }
                         },
                         child: Column(

@@ -2807,7 +2807,9 @@ bool isUserRejectedError(Object error) {
 // }
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
-
+  bool _hasMaterial(BuildContext context) {
+    return Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
+  }
   void setupLifecycleObserver() {
     WidgetsBinding.instance.addObserver(_LifecycleHandler(
         onDetached: _handleAppDetached, onPause: _handleAppPause,
@@ -2815,24 +2817,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     );
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   super.didChangeAppLifecycleState(state);
-  //
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       _handleAppResume();
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       _handleAppPause();
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       _handleAppDetached();
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // }
 
   ///Ensures context is valid and modal is re-initialized if needed
   ReownAppKitModal? appKitModal;
@@ -2975,7 +2959,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     try{
       if (appKitModal == null) {
-        _lastContext = context;
+        // _lastContext = context;
         appKitModal = ReownAppKitModal(
 
           context: context,
@@ -3032,41 +3016,38 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  // Future<void> ensureModalWithValidContext(BuildContext context) async {
-  //   // Don't recreate modal unnecessarily
-  //   if (appKitModal == null) {
-  //     _lastContext = context;
-  //     await init(context);
-  //     return;
-  //   }
-  //
-  //   // Only update context if it's actually different
-  //   if (_lastContext != context) {
-  //     _lastContext = context;
-  //
-  //     // Try to update context first, only recreate if it fails
-  //     try {
-  //       appKitModal!.updateContext(context);
-  //     } catch (e) {
-  //       debugPrint("Context update failed, recreating modal: $e");
-  //      }
-  //   }
-  // }
   Future<void> ensureModalWithValidContext(BuildContext context) async {
-    // Don't recreate modal unnecessarily
-    if (appKitModal == null) {
+    // // Don't recreate modal unnecessarily
+    // if (appKitModal == null) {
+    //   _lastContext = context;
+    //   await init(context);
+    //   return;
+    // }
+    //
+    // // Only update context if it's actually different
+    // if (_lastContext != context) {
+    //   _lastContext = context;
+    //
+    //   // Don't try to update context - just let the modal work with new context
+    //   // The modal will work with the new context automatically
+    //   debugPrint("Context changed, but modal should work with new context");
+    // }
+    ///
+    // final needsReinit = appKitModal == null || !_modalHasMaterialContext || !_hasMaterial(context);
+    //
+    // if (needsReinit) {
+    //   _lastContext = context;
+    //   await init(context);
+    //   return;
+    // }
+    //
+    // // Context changed but still Material — just update the reference
+    // if (_lastContext != context) {
+    //   _lastContext = context;
+    // }
+    if (appKitModal == null || !_hasMaterial(context)) {
       _lastContext = context;
       await init(context);
-      return;
-    }
-
-    // Only update context if it's actually different
-    if (_lastContext != context) {
-      _lastContext = context;
-
-      // Don't try to update context - just let the modal work with new context
-      // The modal will work with the new context automatically
-      debugPrint("Context changed, but modal should work with new context");
     }
   }
 
@@ -3363,7 +3344,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await appKitModal!.openModalView();
 
       // Wait for connection with reasonable timeout
-      final connected = await _waitForConnection(timeout: const Duration(seconds: 5));
+      final connected = await _waitForConnection(timeout: const Duration(seconds: 2));
       if (!connected) {
         debugPrint("Connection timeout");
         return false;
@@ -3381,6 +3362,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  Future<bool> openWalletModal(BuildContext context) async {
+    // 1) Always (re)create with the current valid context
+    await init(context);
+
+    try {
+      await appKitModal!.openModalView();
+      return true;
+    } catch (_) {
+      // 2) If it still fails, recreate once and retry
+      await reset();
+      await init(context);
+      await appKitModal!.openModalView();
+      return true;
+    }
+  }
   bool _handleConnectionError(dynamic error) {
     final errorMsg = error.toString().toLowerCase();
 
@@ -3575,8 +3571,72 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
   }
   Future<bool> openModalSafely(BuildContext context) async {
+    // try {
+    //   // Ensure modal is properly initialized
+    //   await ensureModalWithValidContext(context);
+    //
+    //   if (appKitModal == null) {
+    //     debugPrint("Modal not initialized");
+    //     return false;
+    //   }
+    //
+    //   // Check if modal is already open
+    //   if (appKitModal!.isOpen) {
+    //     debugPrint("Modal is already open");
+    //     return true;
+    //   }
+    //
+    //   // Open modal safely
+    //   await appKitModal!.openModalView();
+    //   return true;
+    //
+    // } catch (e) {
+    //   debugPrint("Error opening modal: $e");
+    //
+    //   // If there's an error, try to reset the modal
+    //   try {
+    //     await _resetModal(context);
+    //     await appKitModal!.openModalView();
+    //     return true;
+    //   } catch (resetError) {
+    //     debugPrint("Failed to reset modal: $resetError");
+    //     return false;
+    //   }
+    // }
+    ///
+    // try {
+    //   await ensureModalWithValidContext(context);
+    //
+    //   if (appKitModal == null) {
+    //     // As a fallback, initialize again
+    //     await init(context);
+    //     if (appKitModal == null) {
+    //       debugPrint("Modal not initialized after init()");
+    //       return false;
+    //     }
+    //   }
+    //
+    //   // Some SDKs expose isOpen, others isModalOpen; keep your current one consistent
+    //   final alreadyOpen = (appKitModal!.isOpen == true);
+    //   if (alreadyOpen) {
+    //     debugPrint("Modal is already open");
+    //     return true;
+    //   }
+    //
+    //   await appKitModal!.openModalView();
+    //   return true;
+    // } catch (e) {
+    //   debugPrint("Error opening modal: $e");
+    //   try {
+    //     await _resetModal(context);
+    //     await appKitModal!.openModalView();
+    //     return true;
+    //   } catch (resetError) {
+    //     debugPrint("Failed to reset modal: $resetError");
+    //     return false;
+    //   }
+    // }
     try {
-      // Ensure modal is properly initialized
       await ensureModalWithValidContext(context);
 
       if (appKitModal == null) {
@@ -3584,28 +3644,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         return false;
       }
 
-      // Check if modal is already open
-      if (appKitModal!.isOpen) {
-        debugPrint("Modal is already open");
-        return true;
-      }
-
-      // Open modal safely
       await appKitModal!.openModalView();
       return true;
-
     } catch (e) {
       debugPrint("Error opening modal: $e");
-
-      // If there's an error, try to reset the modal
-      try {
-        await _resetModal(context);
-        await appKitModal!.openModalView();
-        return true;
-      } catch (resetError) {
-        debugPrint("Failed to reset modal: $resetError");
-        return false;
-      }
+      return false;
     }
   }
 
@@ -3990,6 +4033,57 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  // Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
+  //   const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
+  //   final cachedPrice = prefs.getString('ethPriceUSD');
+  //
+  //   if (!forceLoad && cachedPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
+  //     _ethPrice = double.parse(cachedPrice);
+  //     notifyListeners();
+  //     return cachedPrice;
+  //   }
+  //   try {
+  //     final abiString = await rootBundle.loadString("assets/abi/AggregatorABI.json");
+  //     final abiData = jsonDecode(abiString);
+  //     const aggregatorAddress = AGGREGATO_RADDRESS;
+  //     final contract = DeployedContract(
+  //       ContractAbi.fromJson(
+  //           jsonEncode(abiData),
+  //           'EACAggregatorProxy'
+  //       ),
+  //       EthereumAddress.fromHex(aggregatorAddress),
+  //     );
+  //     final result = await _web3Client!.call(
+  //       contract: contract,
+  //       function: contract.function('latestAnswer'),
+  //        params: [],
+  //     );
+  //     print('##### fetchLatestETHPrice ####');
+  //     print('Test result: $result');
+  //
+  //     final rawPrice = result[0] as BigInt;
+  //     print('RAW_PRICE : $rawPrice');
+  //
+  //
+  //     final ethUsdPrice = rawPrice.toDouble() / 1e8;
+  //     final ethPerEcm = ECM_PRICE_USD / ethUsdPrice;
+  //      final price = ethPerEcm.toStringAsFixed(8);
+  //
+  //     print('RAW_PRICE 8 Decimal: $price');
+  //
+  //     await prefs.setString('ethPriceUSD', price);
+  //     await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
+  //     _ethPrice = double.parse(price);
+  //      notifyListeners();
+  //     return price;
+  //   } catch (e) {
+  //     print('Error fetching ETH price: $e');
+  //     if (cachedPrice != null) return cachedPrice;
+  //     throw Exception('Failed to fetch ETH price');
+  //   }
+  // }
   Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
     const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
     final prefs = await SharedPreferences.getInstance();
@@ -4022,6 +4116,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       final rawPrice = result[0] as BigInt;
       print('RAW_PRICE : $rawPrice');
+      this.rawPrice = rawPrice;
 
 
       final ethUsdPrice = rawPrice.toDouble() / 1e8;
@@ -4043,99 +4138,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
 
-  //  Future<String> getBalance({String? forAddress}) async {
-  //   final String? addressToQuery = forAddress ?? _walletAddress;
-  //
-  //   if (_web3Client == null) {
-  //     print("Web3Client not initialized for getBalance.");
-  //     throw Exception("Web3Client not initialized.");
-  //   }
-  //
-  //   if (addressToQuery == null || addressToQuery.isEmpty) {
-  //     print("No valid address provided to getBalance. User wallet: $_walletAddress, Optional param: $forAddress");
-  //     if (forAddress == null) {
-  //       _balance = "0";
-  //       notifyListeners();
-  //     }
-  //     return "0";
-  //   }
-  //
-  //   try {
-  //     print(">>>> Fetching balanceOf for address: $addressToQuery");
-  //     final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
-  //     final abiData = jsonDecode(abiString);
-  //
-  //     final ecmTokenContract = DeployedContract(
-  //       ContractAbi.fromJson(
-  //         jsonEncode(abiData),
-  //         'ECommerceCoin',
-  //       ),
-  //       EthereumAddress.fromHex(ECM_TOKEN_CONTRACT_ADDRESS),
-  //     );
-  //
-  //     final decimalsResult = await _web3Client!.call(
-  //       contract: ecmTokenContract,
-  //       function: ecmTokenContract.function('decimals'),
-  //       params: [],
-  //     );
-  //     final int tokenDecimals = (decimalsResult[0] as BigInt).toInt();
-  //     print(" Token decimals: $tokenDecimals");
-  //      final balanceOfResult = await _web3Client!.call(
-  //       contract: ecmTokenContract,
-  //       function: ecmTokenContract.function('balanceOf'),
-  //       params: [EthereumAddress.fromHex(addressToQuery!)],
-  //     );
-  //
-  //     final rawBalanceBigInt = balanceOfResult[0] as BigInt;
-  //     print('>>> Raw token balance for $addressToQuery: $rawBalanceBigInt');
-  //
-  //
-  //     if (tokenDecimals == 18) {
-  //       _balance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
-  //           .getValueInUnit(EtherUnit.ether)
-  //           .toString();
-  //     } else {
-  //
-  //       final divisor = BigInt.from(10).pow(tokenDecimals);
-  //       final wholePart = rawBalanceBigInt ~/ divisor;
-  //       final fractionalPart = rawBalanceBigInt % divisor;
-  //       _balance = "$wholePart.${fractionalPart.toString().padLeft(tokenDecimals, '0')}";
-  //       _balance = _balance?.replaceAll(RegExp(r'\.0*$'), '')
-  //           .replaceAll(RegExp(r'(\.\d*?[1-9])0+$'), r'$1');
-  //     }
-  //     //
-  //     // final formattedBalance = EtherAmount.fromBigInt(EtherUnit.wei, rawBalanceBigInt)
-  //     //     .getValueInUnit(EtherUnit.ether)
-  //     //     .toString();
-  //     //
-  //     // print('Formatted token balance for address $addressToQuery: $formattedBalance');
-  //     //
-  //     // if (forAddress == null) {
-  //     //   _balance = formattedBalance;
-  //     //   notifyListeners();
-  //     // }
-  //     //
-  //     // return formattedBalance;
-  //     print("✅ Final formatted balanceOf for $addressToQuery: $_balance");
-  //
-  //     notifyListeners();
-  //     return _balance ?? "0";
-  //
-  //   } catch (e, stack) {
-  //     _balance = null;
-  //     print('Error getting balance for vesting address: $e');
-  //     print(stack);
-  //     notifyListeners();
-  //     rethrow;
-  //     // print('Error getting balance for address $addressToQuery: $e');
-  //     // print(stack);
-  //     //  if (forAddress == null) {
-  //     //   _balance = null;
-  //     //   notifyListeners();
-  //     // }
-  //     // rethrow;
-  //   }
-  // }
   Future<String> getBalance({String? forAddress}) async {
     final String? addressToQuery = forAddress ?? _walletAddress;
 
@@ -4358,47 +4360,72 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   //     notifyListeners();
   //   }
   // }
-
-
-  BigInt? convertECMToWei(double ecmAmount) {
+  bool isValidECMAmount(double ecmAmount) {
+    return ecmAmount >= 50;
+  }
+  Future<bool> checkETHBalance(double ecmAmount) async {
     try {
+      final ethNeededWei = convertECMtoWei(ecmAmount);
+      if (ethNeededWei == null) return false;
+
+      final chainID = getChainIdForRequests();
+      if (chainID == null) return false;
+
+      final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainID);
+      final walletAddress = appKitModal!.session!.getAddress(nameSpace);
+      if (walletAddress == null) return false;
+
+      final ethBalance = await _web3Client!.getBalance(EthereumAddress.fromHex(walletAddress));
+      return ethBalance.getInWei >= ethNeededWei;
+    } catch (e) {
+      debugPrint("Error checking ETH balance: $e");
+      return false;
+    }
+  }
+  BigInt? convertECMtoWei(double ecmAmount) {
+    try {
+      // Validation checks
       if (ecmAmount <= 0) {
-        print("❌ Invalid ECM amount: must be > 0");
+        debugPrint("❌ Invalid ECM amount: must be > 0");
         return null;
       }
-      if (ecmAmount < 50) {
-        print("❌ Minimum 50 ECM required. Entered: $ecmAmount");
-        return null;
-      }
+
+      // if (ecmAmount < 50) {
+      //   debugPrint("❌ Minimum 50 ECM required. Entered: $ecmAmount");
+      //   return null;
+      // }
 
       if (rawPrice == null) {
-        print("❌ ETH price (rawPrice) not loaded");
+        debugPrint("❌ ETH price (rawPrice) not loaded");
         return null;
       }
 
-      // if (ecmAmount <= 0 || rawPrice == null) return null;
-
+      // Convert ECM amount to Wei (18 decimals)
       final BigInt ecmAmountWei = BigInt.from(ecmAmount * 1e18);
+
+      // Convert ECM price USD to Wei (18 decimals)
       final BigInt ecmPriceUSDWei = BigInt.from(ECM_PRICE_USD * 1e18);
 
-      // Total USD needed = ECM amount * ECM price
+      // Calculate total USD needed = ECM amount * ECM price
       final BigInt usdNeeded = (ecmAmountWei * ecmPriceUSDWei) ~/ BigInt.from(10).pow(ECM_DECIMALS);
 
       // ETH price in USD (scaled properly with oracle decimals)
       final BigInt ethPriceUSDWei = rawPrice! * BigInt.from(10).pow(ECM_DECIMALS - AGGREGATOR_DECIMALS);
 
-      // ETH needed in Wei
-      final BigInt ethNeededWei =
-          (usdNeeded * BigInt.from(10).pow(ECM_DECIMALS) + ethPriceUSDWei - BigInt.one) ~/ ethPriceUSDWei;
+      // Calculate ETH needed in Wei
+      final BigInt ethNeededWei = (usdNeeded * BigInt.from(10).pow(ECM_DECIMALS) + ethPriceUSDWei - BigInt.one) ~/ ethPriceUSDWei;
+
+      debugPrint("✅ ECM to Wei conversion successful:");
+      debugPrint("  ECM Amount: $ecmAmount");
+      debugPrint("  ETH Needed (Wei): $ethNeededWei");
+      debugPrint("  ETH Needed (ETH): ${ethNeededWei / BigInt.from(10).pow(18)}");
 
       return ethNeededWei;
     } catch (e) {
-      print("Error converting ECM to Wei: $e");
+      debugPrint("❌ Error converting ECM to Wei: $e");
       return null;
     }
   }
-
-
 
 
   Future<String?> buyECMWithETH({

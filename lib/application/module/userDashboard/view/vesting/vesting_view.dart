@@ -6,17 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
+import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/claimHistoryCard.dart';
+import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../presentation/countdown_timer_helper.dart';
+import '../../../../presentation/screens/bottom_nav_bar.dart';
+import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/countdown_provider.dart';
+import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/dashboard_nav_provider.dart';
@@ -2372,6 +2378,8 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
   bool _hasInitialized = false;
   WalletViewModel? _walletVM; // Store reference to avoid context access after dispose
 
+  bool isDisconnecting = false;
+
   @override
   void initState() {
     super.initState();
@@ -2468,18 +2476,73 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Please connect your wallet to view vesting details.",
+                    // "Connection lost Please connect your wallet to view vesting details.",
+                    "Connection lost Please restart your app or connect your wallet to view vesting details.",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white70),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () async {
 
-                      await walletVM.appKitModal!.openModalView();
-                      // await walletVM.openModalSafely(context);
+                  CustomGradientButton(
+                    label: 'Retry',
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.05,
+                    onTap: ()async{
+                      if (!mounted) return;
+                      await context.read<WalletViewModel>().openWalletModal(context);
                     },
-                    child: const Text("Connect Wallet"),
+                    gradientColors: const [
+                      Color(0xFF2D8EFF),
+                      Color(0xFF2EE4A4)
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+                  DisconnectButton(
+                    label: 'Disconnect',
+                    color: const Color(0xffE04043),
+                    icon: 'assets/icons/disconnected.svg',
+                    onPressed: ()async {
+                      setState(() {
+                        isDisconnecting = true;
+                      });
+                      final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+                      try{
+                        await walletVm.disconnectWallet(context);
+
+                        walletVm.reset();
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.clear();
+
+                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                        if(context.mounted && !walletVm.isConnected){
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (context) => MultiProvider(
+                                  providers: [
+                                    ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                    ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+                                    ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+                                    ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+                                    ChangeNotifierProvider(create: (_) => NavigationProvider()),
+                                  ],
+                                  child: const BottomNavBar(),
+                                )
+                            ),(Route<dynamic> route) => false,
+                          );
+                        }
+
+                      }catch(e){
+                        debugPrint("Error Wallet Disconnecting : $e");
+                      }finally{
+                        if(mounted){
+                          setState(() {
+                            isDisconnecting = false;
+                          });
+                        }
+                      }
+                    },
+
                   ),
                 ],
               ),

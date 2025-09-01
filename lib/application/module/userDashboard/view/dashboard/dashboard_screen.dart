@@ -415,14 +415,17 @@ class DashboardScreen extends StatefulWidget {
                              : formatAddress(model.walletAddress),
                          onTap: () async {
                            try {
-                             await model.ensureModalWithValidContext(context);
-                             await model.appKitModal?.openModalView();
+                             // await model.ensureModalWithValidContext(context);
+                             // await model.appKitModal?.openModalView();
+                             // if (!mounted) return;
                              // final success = await model.openModalSafely(context);
                              // if (!success) {
-                             //   // Show error message to user
-                             //   print('Failed to open wallet modal. Please try again.');
+                             // //  Show error message to user
+                               // print('Failed to open wallet modal. Please try again.');
                              // }
-                           } catch (e) {
+                             if (!mounted) return;
+                             await context.read<WalletViewModel>().openWalletModal(context);
+                            } catch (e) {
                              print("Error opening wallet modal: $e");
                            }
                          },

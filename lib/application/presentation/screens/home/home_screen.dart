@@ -79,12 +79,50 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Helper function to fetch contract data and update the UI state.
+  // void _updateEthFromECM() {
+  //   if (_isUpdating) return;
+  //   _isUpdating = true;
+  //
+  //   final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
+  //   if (ecmAmount == null || ecmAmount == 0.0) {
+  //     ethController.clear();
+  //     _isUpdating = false;
+  //     return;
+  //   }
+  //
+  //
+  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //   final ethAmount = ecmAmount * walletVM.ethPrice;
+  //
+  //   ethController.text = ethAmount.toStringAsFixed(6);
+  //
+  //   _isUpdating = false;
+  // }
+  // void _updateECMFromEth() {
+  //   if (_isUpdating) return;
+  //   _isUpdating = true;
+  //
+  //   final ethAmount = double.tryParse(ethController.text) ?? 0.0;
+  //   if (ethAmount == null || ethAmount == 0.0) {
+  //     ecmController.clear();
+  //     _isUpdating = false;
+  //     return;
+  //   }
+  //   final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //   if (walletVM.ethPrice > 0) {
+  //     final ecmAmount = ethAmount / walletVM.ethPrice;
+  //     ecmController.text = ecmAmount.toStringAsFixed(6);
+  //   }
+  //   _isUpdating = false;
+  // }
+
+
   void _updateEthFromECM() {
     if (_isUpdating) return;
     _isUpdating = true;
 
     final ecmAmount = double.tryParse(ecmController.text) ?? 0.0;
-    if (ecmAmount == null || ecmAmount == 0.0) {
+    if (ecmAmount <= 0) {
       ethController.clear();
       _isUpdating = false;
       return;
@@ -92,9 +130,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    final ethAmount = ecmAmount * walletVM.ethPrice;
 
-    ethController.text = ethAmount.toStringAsFixed(6);
+    // Use the new conversion method
+    final ethAmountInWei = walletVM.convertECMtoWei(ecmAmount);
+    if (ethAmountInWei != null) {
+      final ethAmount = ethAmountInWei / BigInt.from(10).pow(18);
+      ethController.text = ethAmount.toStringAsFixed(6);
+    } else {
+      ethController.clear();
+    }
 
     _isUpdating = false;
   }
@@ -103,18 +147,26 @@ class _HomeScreenState extends State<HomeScreen> {
     _isUpdating = true;
 
     final ethAmount = double.tryParse(ethController.text) ?? 0.0;
-    if (ethAmount == null || ethAmount == 0.0) {
+
+    if (ethAmount <= 0) {
       ecmController.clear();
       _isUpdating = false;
       return;
     }
+
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
     if (walletVM.ethPrice > 0) {
       final ecmAmount = ethAmount / walletVM.ethPrice;
       ecmController.text = ecmAmount.toStringAsFixed(6);
+    } else {
+      ecmController.clear();
     }
+
     _isUpdating = false;
   }
+
+
 
   Future<void>_refreshData()async{
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -824,82 +876,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
 
                     const SizedBox(height: 18),
-                    // CustomGradientButton(
-                    //   label: 'Buy ECM',
-                    //   width: MediaQuery.of(context).size.width * 0.7,
-                    //   height: MediaQuery.of(context).size.height * 0.05,
-                    //   leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
-                    //   onTap: () async {
-                    //     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                    //     if (!walletVM.isConnected) {
-                    //       await walletVM.ensureModalWithValidContext(context);
-                    //       final ok = await walletVM.connectWallet(context);
-                    //       if (ok) return;
-                    //     }
-                    //     final ecmAmount = double.tryParse(ecmController.text.trim());
-                    //     if (ecmAmount == null || ecmAmount <= 0) {
-                    //       ToastMessage.show(
-                    //         message: "Invalid Amount",
-                    //         subtitle: "Please enter a valid ECM amount.",
-                    //         type: MessageType.info,
-                    //         duration: CustomToastLength.SHORT,
-                    //         gravity: CustomToastGravity.BOTTOM,
-                    //       );
-                    //       return;
-                    //     }
-                    //     try {
-                    //
-                    //       final ethPricePerECM = walletVM.ethPrice;
-                    //       final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
-                    //       final ethAmountInWei = EtherAmount.fromBigInt(
-                    //         EtherUnit.wei,
-                    //         (requiredEth * Decimal.parse('1e18')).toBigInt(),
-                    //       );
-                    //
-                    //
-                    //       showDialog(
-                    //         context: context,
-                    //         barrierDismissible: false,
-                    //         builder: (_) => const Center(
-                    //           child: CircularProgressIndicator(color: Colors.white),
-                    //         ),
-                    //       );
-                    //
-                    //       final referralInput = referredController.text.trim();
-                    //
-                    //       final referralAddress = referralInput.isNotEmpty &&
-                    //           EthereumAddress.fromHex(referralInput).hex != defaultReferrerAddress
-                    //           ? EthereumAddress.fromHex(referralInput)
-                    //           : EthereumAddress.fromHex(defaultReferrerAddress);
-                    //
-                    //
-                    //       final txHash = await walletVM.buyECMWithETH(
-                    //         ethAmount: ethAmountInWei,
-                    //         referralAddress: referralAddress,
-                    //         context: context,
-                    //       );
-                    //       Navigator.of(context).pop();
-                    //       ecmController.clear();
-                    //       ethController.clear();
-                    //       if (txHash != null) {
-                    //         ToastMessage.show(
-                    //           message: "Purchase Successful",
-                    //           subtitle: "Transaction hash: $txHash",
-                    //           type: MessageType.success,
-                    //           duration: CustomToastLength.LONG,
-                    //           gravity: CustomToastGravity.BOTTOM,
-                    //         );
-                    //       }
-                    //     } catch (e) {
-                    //       Navigator.of(context).pop();
-                    //
-                    //     }
-                    //   },
-                    //   gradientColors: const [
-                    //     Color(0xFF2D8EFF),
-                    //     Color(0xFF2EE4A4)
-                    //   ],
-                    // ),
+
                     CustomGradientButton(
                       label: 'Buy ECM',
                       width: MediaQuery.of(context).size.width * 0.7,
@@ -907,7 +884,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                        await walletVM.fetchLatestETHPrice(forceLoad: true);
 
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
@@ -925,17 +901,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                           return;
                         }
+                        if (!walletVM.isValidECMAmount(ecmAmount)) {
+                          ToastMessage.show(
+                            message: "Minimum Amount Required",
+                            subtitle: "Minimum 50 ECM tokens per purchase required.",
+                            type: MessageType.info,
+                            duration: CustomToastLength.SHORT,
+                            gravity: CustomToastGravity.BOTTOM,
+                          );
+                          return;
+                        }
+
                         try {
 
+                          final ethAmountInWei = walletVM.convertECMtoWei(ecmAmount);
+                          if (ethAmountInWei == null) {
+                            ToastMessage.show(
+                              message: "Conversion Error",
+                              subtitle: "Failed to calculate ETH amount. Please try again.",
+                              type: MessageType.error,
+                              duration: CustomToastLength.SHORT,
+                              gravity: CustomToastGravity.BOTTOM,
+                            );
+                            return;
+                          }
 
-                          final ethPricePerECM = walletVM.ethPrice;
-                          final requiredEth = Decimal.parse(ecmAmount.toString()) * Decimal.parse(ethPricePerECM.toString());
-                          final ethAmountInWei = EtherAmount.fromBigInt(
-                            EtherUnit.wei,
-                            (requiredEth * Decimal.parse('1e18')).toBigInt(),
-                          );
-
-
+                          // Convert BigInt to EtherAmount
+                          final ethAmount = EtherAmount.fromBigInt(EtherUnit.wei, ethAmountInWei);
 
                           showDialog(
                             context: context,
@@ -954,7 +946,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
                           final txHash = await walletVM.buyECMWithETH(
-                            ethAmount: ethAmountInWei,
+                            // ethAmount: ethAmountInWei,
+                            ethAmount: ethAmount,
                             referralAddress: referralAddress,
                             context: context,
                           );
@@ -975,7 +968,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         }
                       },
-                      gradientColors: const [
+                       gradientColors: const [
                         Color(0xFF2D8EFF),
                         Color(0xFF2EE4A4)
                       ],

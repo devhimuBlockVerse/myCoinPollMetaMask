@@ -35,7 +35,7 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
       if (sdkInt >= 33) {
         // Android 13+
         permissions = [
-          Permission.photos,
+          // Permission.photos,
           Permission.audio,
         ];
       } else if (sdkInt >= 30) {

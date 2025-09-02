@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 
@@ -22,7 +23,7 @@ class ListingField extends StatefulWidget {
   final List<String>? dropdownItems;
   final String? selectedDropdownItem;
   final ValueChanged<String?>? onDropdownChanged;
-
+  final List<TextInputFormatter>? inputFormatters;
   const ListingField({
     super.key,
     this.controller,
@@ -42,7 +43,7 @@ class ListingField extends StatefulWidget {
     this.dropdownItems,
     this.selectedDropdownItem,
     this.onDropdownChanged,
-    this.onChanged,
+    this.onChanged, this.inputFormatters,
   });
 
   @override
@@ -184,6 +185,7 @@ class _ListingFieldState extends State<ListingField> {
                     fontFamily: 'Poppins',
                   ),
                   decoration: const InputDecoration(
+
                     border: InputBorder.none,
                     isCollapsed: true,
                   ),
@@ -210,6 +212,7 @@ class _ListingFieldState extends State<ListingField> {
                             textAlignVertical: TextAlignVertical.top,
                             scrollPhysics: const BouncingScrollPhysics(),
                             scrollController: ScrollController(),
+                            inputFormatters:  widget.inputFormatters ,
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
@@ -218,6 +221,7 @@ class _ListingFieldState extends State<ListingField> {
                               color: Colors.white.withOpacity(0.9),
                             ),
                               decoration: InputDecoration(
+
                                 contentPadding: EdgeInsets.symmetric(vertical: 11), // key to vertical centering
                                 isDense: true,
                                 isCollapsed: false,
@@ -230,6 +234,7 @@ class _ListingFieldState extends State<ListingField> {
                                   fontWeight: FontWeight.w400,
                                   height: 1.6,
                                 ),
+
                               ),
                             ),
                           ),

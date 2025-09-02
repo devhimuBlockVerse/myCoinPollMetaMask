@@ -121,7 +121,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (walletVM.ethPrice > 0) {
       final ecmAmount = ethAmount / walletVM.ethPrice;
-      ecmController.text = ecmAmount.toStringAsFixed(6);
+      ecmController.text = ecmAmount.toStringAsFixed(1);
+      // ecmController.text = ecmAmount.toStringAsFixed(6);
     } else {
       ecmController.clear();
     }

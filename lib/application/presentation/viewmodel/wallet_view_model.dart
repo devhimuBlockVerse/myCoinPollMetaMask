@@ -155,8 +155,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
   // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
-  // static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/XqfORwCuKRs1eB8f6sx23tx8t6Xp-v2b";
-  static const String ALCHEMY_URL_V2 = "https://eth-mainnet.g.alchemy.com/v2/M_dLuGWM1Vxt0s1Mq3Dz9";
+   static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4"; /// MAIN
 
    // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
    static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
@@ -167,7 +166,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   // static const String STAKING_CONTRACT_ADDRESS = '0x0Bce6B3f0412c6650157DC0De959bf548F063833'; /// getMinimunStake , maximumStake
   // static const String STAKING_CONTRACT_ADDRESSV2 = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake
 
-  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake
+  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake ,getMinimunStake , maximumStake
 
   // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
   static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';

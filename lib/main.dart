@@ -14,7 +14,8 @@ import 'application/module/userDashboard/viewmodel/side_navigation_provider.dart
 import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
- import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
+
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>();
@@ -26,8 +27,7 @@ final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>(
 //           (X509Certificate cert, String host, int port) => true;
 //   }
 // }
-void main() async   {
-
+Future <void> main() async   {
   WidgetsFlutterBinding.ensureInitialized();
 
   // HttpOverrides.global = MyHttpOverrides();
@@ -44,6 +44,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // FlutterUxcam.optIntoSchematicRecordings();
+
+    //permission for screen recording
+    // FlutterUxConfig config = FlutterUxConfig(
+    // userAppKey: "o53qy1b6lzz62c6-us",
+    //
+    // enableAutomaticScreenNameTagging: false);
+    //
+    // FlutterUxcam.startWithConfiguration(config);
 
     return MultiProvider(
       providers: [
@@ -74,7 +83,10 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
         ),
         home: const PermissionHandlerWidget(child: SplashView()),
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [
+          routeObserver,
+          // Telemetry.observer
+        ],
         builder: (context, child) => WalletAppInitializer(child: child!),
 
 

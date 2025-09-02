@@ -63,7 +63,9 @@ dependencies:
 
   permission_handler: ^11.3.0
 
-  package_info_plus: ^8.3.1
+
+#  flutter_uxcam: ^2.5.4
+
 
 
 

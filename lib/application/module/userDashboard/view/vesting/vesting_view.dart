@@ -415,11 +415,11 @@ class _VestingViewState extends State<VestingView> {
         "text": "Prevents oversupply and maintains token value."
       },
       {
-        "image": "assets/images/vestingImg5.png",
+        "image": "assets/images/vestingImg4.png",
         "text": "Encourages long-term investors and ecosystem strength."
       },
       {
-        "image": "assets/images/moneyVesting.png",
+        "image": "assets/images/vestingImg5.png",
         "text": "Provides priority in launches, airdrops, or governance."
       },
     ];
@@ -556,10 +556,10 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   void _initializeTimers(VestingInfo vestInfo) {
     if (!mounted) return;
 
-    vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
+    // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
 
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
-    // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
+    vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
     cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000);
 
@@ -869,40 +869,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
                                   claimHistory(screenHeight,screenWidth,context)
                                 ],
-
-                                // if (isVestingPeriodDurationOver) ...[
-                                //   cliffTimerAndClaimSection(screenHeight, screenWidth, context),
-                                //   SizedBox(height: screenHeight * 0.02),
-                                //
-                                //   CustomLabeledInputField(
-                                //     containerWidth: screenWidth * 0.9,
-                                //     labelText: 'Vesting Wallet:',
-                                //     hintText: "0xE4763679E40basdasd1c4e7d117429",
-                                //     isReadOnly: true,
-                                //     trailingIconAsset: 'assets/icons/copyImg.svg',
-                                //     onTrailingIconTap: () {
-                                //       final vestingAddress = "0xE4763679E40b...1c4e7d117429";
-                                //       if(vestingAddress.isNotEmpty){
-                                //         Clipboard.setData(ClipboardData(text:vestingAddress));
-                                //         ToastMessage.show(
-                                //           message: "Vesting Wallet Address copied!",
-                                //           subtitle: vestingAddress,
-                                //           type: MessageType.success,
-                                //           duration: CustomToastLength.SHORT,
-                                //           gravity: CustomToastGravity.BOTTOM,
-                                //         );
-                                //       }
-                                //     },
-                                //   ),
-                                //
-                                //   SizedBox(height: screenHeight * 0.02),
-                                //
-                                //   vestingSummary(screenHeight,screenWidth,context),
-                                //
-                                //   SizedBox(height: screenHeight * 0.02),
-                                //
-                                //   claimHistory(screenHeight,screenWidth,context)
-                                // ],
 
                                 SizedBox(height: screenHeight * 0.02),
 

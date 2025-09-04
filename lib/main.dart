@@ -45,8 +45,9 @@ Future <void> main() async   {
   DependencyInjection.init();
 
   await SentryFlutter.init((options){
-    options.dsn = 'https://af8713a9a33c2a23bc1f568ccc3351d7@o4509954481651712.ingest.us.sentry.io/4509954548170752';
-     
+    // options.dsn = 'https://af8713a9a33c2a23bc1f568ccc3351d7@o4509954481651712.ingest.us.sentry.io/4509954548170752';
+    options.dsn = 'https://994937321cb0bcd4dc6db716db3246de@o4509961187360768.ingest.us.sentry.io/4509961188540416';
+
     options.sendDefaultPii = true;
     options.enableLogs = true;
 

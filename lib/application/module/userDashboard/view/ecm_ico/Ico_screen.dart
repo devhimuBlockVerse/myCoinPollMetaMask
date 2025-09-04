@@ -201,92 +201,98 @@ class _ECMIcoScreenState extends State<ECMIcoScreen> {
     final currentScreenId = navProvider.currentScreenId;
     final navItems = navProvider.drawerNavItems;
 
-    return  Scaffold(
-        key: _scaffoldKey,
-        drawerEnableOpenDragGesture: true,
-        drawerEdgeDragWidth: 80,
-        drawer: SideNavBar(
-          currentScreenId: currentScreenId,
-          navItems: navItems,
-          onScreenSelected: (id) => navProvider.setScreen(id),
-          onLogoutTapped: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Logout Pressed")));
-          },
-        ),
+    return  GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+          key: _scaffoldKey,
+          drawerEnableOpenDragGesture: true,
+          drawerEdgeDragWidth: 80,
+          drawer: SideNavBar(
+            currentScreenId: currentScreenId,
+            navItems: navItems,
+            onScreenSelected: (id) => navProvider.setScreen(id),
+            onLogoutTapped: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Logout Pressed")));
+            },
+          ),
 
-        extendBodyBehindAppBar: true,
-        backgroundColor: Colors.transparent,
+          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
 
-        body: SafeArea(
-          top: false,
-          child: Container(
-              width: screenWidth,
-              height: screenHeight,
-              decoration: const BoxDecoration(
-                color: Color(0xFF01090B),
-                image: DecorationImage(
-                    image: AssetImage('assets/images/starGradientBg.png'),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topRight,
-                    filterQuality : FilterQuality.low
-                ),
-              ),
-              child:Column(
-                children: [
-                  SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child:  Text(
-                      'ECM ICO',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        // fontSize: 20
-                        fontSize: screenWidth * 0.05,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+          body: SafeArea(
+            top: false,
+            child: Container(
+                width: screenWidth,
+                height: screenHeight,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF01090B),
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/starGradientBg.png'),
+                      fit: BoxFit.cover,
+                      alignment: Alignment.topRight,
+                      filterQuality : FilterQuality.low
                   ),
-
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * 0.01,
-                        vertical: screenHeight * 0.02,
+                ),
+                child:Column(
+                  children: [
+                    SizedBox(height: screenHeight * 0.02),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child:  Text(
+                        'ECM ICO',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          // fontSize: 20
+                          fontSize: screenWidth * 0.05,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      child: ScrollConfiguration(
-                        behavior: const ScrollBehavior().copyWith(overscroll: false),
-                        child: SingleChildScrollView(
-                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(height: screenHeight * 0.02),
+                    ),
+
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.01,
+                          vertical: screenHeight * 0.02,
+                        ),
+                        child: ScrollConfiguration(
+                          behavior: const ScrollBehavior().copyWith(overscroll: false),
+                          child: SingleChildScrollView(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(height: screenHeight * 0.02),
 
 
-                              _buildTokenCard(context),
+                                _buildTokenCard(context),
 
-                              SizedBox(height: screenHeight * 0.04),
+                                SizedBox(height: screenHeight * 0.04),
 
 
-                              /// Buy ECM section
-                              _buildBuyEcmSection(),
+                                /// Buy ECM section
+                                _buildBuyEcmSection(),
 
-                              SizedBox(height: screenHeight * 0.04),
+                                SizedBox(height: screenHeight * 0.04),
 
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-          ),
-        )
+                  ],
+                )
+            ),
+          )
+      ),
     );
   }
 

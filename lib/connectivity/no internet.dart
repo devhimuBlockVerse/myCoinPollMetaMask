@@ -81,7 +81,7 @@ class _NoInternetOverlayState extends State<NoInternetOverlay>
                     child: const Icon(
                       Icons.signal_wifi_off_rounded,
                       color: Colors.redAccent,
-                      size: 84,
+                      size: 44,
                     ),
                   );
                 },

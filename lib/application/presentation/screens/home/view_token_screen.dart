@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/presentation/models/eCommerce_model.dart';
 import 'package:provider/provider.dart';
@@ -221,208 +222,214 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     double screenHeight = MediaQuery.of(context).size.height;
     final isPortrait = screenHeight > screenWidth;
     final baseSize = isPortrait ? screenWidth : screenHeight;
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Container(
-          width: screenWidth,
-          height: screenHeight,
-          decoration: const BoxDecoration(
-            color: Color(0xFF01090B),
-            image: DecorationImage(
-              image: AssetImage('assets/images/starGradientBg.png'),
-              fit: BoxFit.cover,
-              alignment: Alignment.topRight,
-              filterQuality: FilterQuality.medium,
-            ),
-          ),
-          child: Column(
-
-            children: [
-              // SizedBox(height: screenHeight * 0.01),
-
-              ///Back Button
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/back_button.svg',
-                    color: Colors.white,
-                    width: screenWidth * 0.04,
-                    height: screenWidth * 0.04,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            decoration: const BoxDecoration(
+              color: Color(0xFF01090B),
+              image: DecorationImage(
+                image: AssetImage('assets/images/starGradientBg.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topRight,
+                filterQuality: FilterQuality.medium,
               ),
-              /// Main Scrollable Content
-              isLoading || tokens.isEmpty ? const Center(child: CircularProgressIndicator(color: Colors.white,)) :
-              Expanded(
-                child: Padding(
+            ),
+            child: Column(
 
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.02,
-                    vertical: screenHeight * 0.02,
+              children: [
+                // SizedBox(height: screenHeight * 0.01),
+
+                ///Back Button
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/back_button.svg',
+                      color: Colors.white,
+                      width: screenWidth * 0.04,
+                      height: screenWidth * 0.04,
+                    ),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                  child: RefreshIndicator(
-                    onRefresh: _refreshData,
-                    child: ScrollConfiguration(
-                      behavior: const ScrollBehavior().copyWith(overscroll: false),
-                      child: SingleChildScrollView(
-                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                ),
+                /// Main Scrollable Content
+                isLoading || tokens.isEmpty ? const Center(child: CircularProgressIndicator(color: Colors.white,)) :
+                Expanded(
+                  child: Padding(
 
-                        physics: const BouncingScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children:  [
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.02,
+                      vertical: screenHeight * 0.02,
+                    ),
+                    child: RefreshIndicator(
+                      onRefresh: _refreshData,
+                      child: ScrollConfiguration(
+                        behavior: const ScrollBehavior().copyWith(overscroll: false),
+                        child: SingleChildScrollView(
+                          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
 
-
-                            /// White Paper Section
-                              ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
-
-                            SizedBox(height: screenHeight * 0.04),
-
-
-                            /// Buy ECM section
-                            _buildBuyEcmSection(),
-
-                            SizedBox(height: screenHeight * 0.04),
-
-                            InfoCard(
-                              label1: tokens.first.symbol,
-                              label2: tokens.first.fullName,
-                              description: tokens.first.description
-                                  .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
-                                  .trim(),
-                               imagePath: tokens.first.logo,
-                              backgroundImagePath: 'assets/images/bg.png',
-                              width: screenWidth ,
-                            ),
-
-                            /// Submit & Clear Button Section
-
-                            SizedBox(height: screenHeight * 0.04),
-
-                            InfoCard(
-                              label1: tokens.first.tokenCompany,
-                              label2: 'Founder',
-                              description: tokens.first.companyDetails,
-                              imagePath: tokens.first.companyLogo,
-
-                              width: screenWidth ,
-                            ),
-
-                            SizedBox(height: screenHeight * 0.04),
-
-                            _strategicTokenSection(tokens.first),
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children:  [
 
 
+                              /// White Paper Section
+                                ...tokens.map((token) => _buildTokenCard(context, token)).toList(),
+
+                              SizedBox(height: screenHeight * 0.04),
+
+
+                              /// Buy ECM section
+                              _buildBuyEcmSection(),
+
+                              SizedBox(height: screenHeight * 0.04),
+
+                              InfoCard(
+                                label1: tokens.first.symbol,
+                                label2: tokens.first.fullName,
+                                description: tokens.first.description
+                                    .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
+                                    .trim(),
+                                 imagePath: tokens.first.logo,
+                                backgroundImagePath: 'assets/images/bg.png',
+                                width: screenWidth ,
+                              ),
+
+                              /// Submit & Clear Button Section
+
+                              SizedBox(height: screenHeight * 0.04),
+
+                              InfoCard(
+                                label1: tokens.first.tokenCompany,
+                                label2: 'Founder',
+                                description: tokens.first.companyDetails,
+                                imagePath: tokens.first.companyLogo,
+
+                                width: screenWidth ,
+                              ),
+
+                              SizedBox(height: screenHeight * 0.04),
+
+                              _strategicTokenSection(tokens.first),
 
 
 
-                            Center(
-                              child: Container(
-                                  width: screenWidth * 0.82,
-                                  height: screenHeight * 0.19,
-                                  decoration: const BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/images/discoverIMG2.png'),
-                                      fit: BoxFit.fitWidth,
-                                      filterQuality: FilterQuality.medium,
 
+
+                              Center(
+                                child: Container(
+                                    width: screenWidth * 0.82,
+                                    height: screenHeight * 0.19,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage('assets/images/discoverIMG2.png'),
+                                        fit: BoxFit.fitWidth,
+                                        filterQuality: FilterQuality.medium,
+
+                                      ),
                                     ),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
-                                      child:  Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          SizedBox(width: screenWidth * 0.03),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: EdgeInsets.fromLTRB( 0,0, screenWidth * 0.070,0),
+                                        child:  Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(width: screenWidth * 0.03),
 
-                                          Image.asset(
-                                            // 'assets/images/discoverIMG.png',
-                                            'assets/images/ecmLarge.png',
-                                            fit: BoxFit.contain,
-                                            width: screenWidth * 0.17,
-                                          ),
+                                            Image.asset(
+                                              // 'assets/images/discoverIMG.png',
+                                              'assets/images/ecmLarge.png',
+                                              fit: BoxFit.contain,
+                                              width: screenWidth * 0.17,
+                                            ),
 
-                                          SizedBox(width: screenWidth * 0.01),
-                                          Flexible(
-                                            child: AutoSizeText(
-                                              "Discover Our Visionary Roadmap",
-                                              textAlign: TextAlign.left,
-                                              maxLines: 2,
+                                            SizedBox(width: screenWidth * 0.01),
+                                            Flexible(
+                                              child: AutoSizeText(
+                                                "Discover Our Visionary Roadmap",
+                                                textAlign: TextAlign.left,
+                                                maxLines: 2,
 
-                                              style:  TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w500,
-                                                height: 1.3,
-                                                // fontSize: baseSize * 0.036,
-                                                fontSize: baseSize * 0.045,
+                                                style:  TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Poppins',
+                                                  fontWeight: FontWeight.w500,
+                                                  height: 1.3,
+                                                  // fontSize: baseSize * 0.036,
+                                                  fontSize: baseSize * 0.045,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-
-                                    ),
-                                  )
-                              ),
-                            ),
-
-
-                            SizedBox(height: screenHeight * 0.09),
-
-                            /// Road Map Component Functionalities
-
-                            FutureBuilder<TokenDetails>(
-                              future: _tokenDetailsFuture,
-                              builder: (context, snapshot){
-                                if(snapshot.connectionState == ConnectionState.waiting){
-                                  return CircularProgressIndicator();
-                                }else if(snapshot.hasError){
-                                  return Text('Error: ${snapshot.error}');
-                                }else{
-                                  final tokenDetails = snapshot.data!;
-                                 return SizedBox(
-                                    width: double.infinity,
-
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-
-                                      children: [
-
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                                          child: buildRoadmapSection(context, screenHeight,tokenDetails),
+                                          ],
                                         ),
 
-                                      ],
-                                    ),
-                                  );
+                                      ),
+                                    )
+                                ),
+                              ),
+
+
+                              SizedBox(height: screenHeight * 0.09),
+
+                              /// Road Map Component Functionalities
+
+                              FutureBuilder<TokenDetails>(
+                                future: _tokenDetailsFuture,
+                                builder: (context, snapshot){
+                                  if(snapshot.connectionState == ConnectionState.waiting){
+                                    return CircularProgressIndicator();
+                                  }else if(snapshot.hasError){
+                                    return Text('Error: ${snapshot.error}');
+                                  }else{
+                                    final tokenDetails = snapshot.data!;
+                                   return SizedBox(
+                                      width: double.infinity,
+
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+
+                                        children: [
+
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                                            child: buildRoadmapSection(context, screenHeight,tokenDetails),
+                                          ),
+
+                                        ],
+                                      ),
+                                    );
+                                  }
+
                                 }
 
-                              }
-
-                            ),
+                              ),
 
 
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

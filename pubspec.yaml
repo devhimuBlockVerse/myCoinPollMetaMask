@@ -65,8 +65,7 @@ dependencies:
   connectivity_plus: ^6.1.5
   get: ^4.6.5
 
-
-#  flutter_uxcam: ^2.5.4
+  sentry_flutter: ^9.6.0
 
 
 

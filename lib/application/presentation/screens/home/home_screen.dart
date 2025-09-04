@@ -11,6 +11,7 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_t
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
  import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
@@ -213,173 +214,178 @@ class _HomeScreenState extends State<HomeScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Container(
-          width: screenWidth,
-          height: screenHeight,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/starGradientBg.png'),
-              fit: BoxFit.cover,
-              alignment: Alignment.topRight,
-              filterQuality: FilterQuality.low,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Container(
+            width: screenWidth,
+            height: screenHeight,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/starGradientBg.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topRight,
+                filterQuality: FilterQuality.low,
+              ),
             ),
-          ),
-          child: RefreshIndicator(
-            onRefresh: _refreshData,
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(overscroll: false),
-              child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const BouncingScrollPhysics(),
+            child: RefreshIndicator(
+              onRefresh: _refreshData,
+              child: ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(overscroll: false),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
 
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: screenWidth * 0.01,
-                    vertical: screenHeight * 0.02,
-                  ),
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.01,
+                      vertical: screenHeight * 0.02,
+                    ),
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
 
-                      ///MyCoinPoll & Connected Wallet Button
-                      RepaintBoundary(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: screenHeight * 0.01,
-                              right: screenWidth * 0.02
-                          ),
-                          child: Image.asset(
-                            'assets/images/mycoinpolllogo.png',
-                            width: screenWidth * 0.40,
-                            height: screenHeight * 0.040,
-                            fit: BoxFit.contain,
-                            filterQuality: FilterQuality.low,
-                          ),
-                        ),
-                      ),
-
-
-                      SizedBox(height: screenHeight * 0.03),
-
-                      /// Apply For Lisign Button
-
-
-                      RepaintBoundary(
-                        child: Container(
-                          width: screenWidth,
-                          height: screenHeight * 0.18,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.transparent
+                        ///MyCoinPoll & Connected Wallet Button
+                        RepaintBoundary(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: screenHeight * 0.01,
+                                right: screenWidth * 0.02
                             ),
-                            image:const DecorationImage(
-                              image: AssetImage('assets/images/applyForListingBG.png'),
-                              fit: BoxFit.fill,
+                            child: Image.asset(
+                              'assets/images/mycoinpolllogo.png',
+                              width: screenWidth * 0.40,
+                              height: screenHeight * 0.040,
+                              fit: BoxFit.contain,
                               filterQuality: FilterQuality.low,
                             ),
                           ),
+                        ),
 
-                          /// Apply For Lisign Button
 
-                          child: Stack(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: screenWidth * 0.035,
-                                    vertical: screenHeight * 0.015,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Blockchain Innovation \nLaunchpad Hub',
-                                        style: TextStyle(
-                                          color: const Color(0xFFFFF5ED),
-                                          fontFamily: 'Poppins',
-                                          // fontSize: screenWidth * 0.04,
-                                          fontSize: getResponsiveFontSize(context, 17),
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        maxLines: 2,
-                                      ),
+                        SizedBox(height: screenHeight * 0.03),
 
-                                      /// Apply For Lising Button
-                                      Padding(
-                                        padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
-                                        child: BlockButton(
-                                          height: screenHeight * 0.05,
-                                          width: screenWidth * 0.4,
-                                          label: 'Apply For Listing',
-                                          textStyle:  TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                            fontSize: getResponsiveFontSize(context, 12),
+                        /// Apply For Lisign Button
 
+
+                        RepaintBoundary(
+                          child: Container(
+                            width: screenWidth,
+                            height: screenHeight * 0.18,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.transparent
+                              ),
+                              image:const DecorationImage(
+                                image: AssetImage('assets/images/applyForListingBG.png'),
+                                fit: BoxFit.fill,
+                                filterQuality: FilterQuality.low,
+                              ),
+                            ),
+
+                            /// Apply For Lisign Button
+
+                            child: Stack(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * 0.035,
+                                      vertical: screenHeight * 0.015,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Blockchain Innovation \nLaunchpad Hub',
+                                          style: TextStyle(
+                                            color: const Color(0xFFFFF5ED),
+                                            fontFamily: 'Poppins',
+                                            // fontSize: screenWidth * 0.04,
+                                            fontSize: getResponsiveFontSize(context, 17),
+                                            fontWeight: FontWeight.w500,
                                           ),
-                                          gradientColors: const [
-                                            Color(0xFF2680EF),
-                                            Color(0xFF1CD494)
-                                            // 1CD494
-                                          ],
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
-                                            );
-
-                                          },
-                                          iconPath: 'assets/icons/arrowIcon.svg',
-                                          iconSize : screenHeight * 0.009,
+                                          maxLines: 2,
                                         ),
-                                      ),
-                                    ],
+
+                                        /// Apply For Lising Button
+                                        Padding(
+                                          padding:  EdgeInsets.only(left: screenWidth * 0.010, top: screenHeight * 0.014),
+                                          child: BlockButton(
+                                            height: screenHeight * 0.05,
+                                            width: screenWidth * 0.4,
+                                            label: 'Apply For Listing',
+                                            textStyle:  TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white,
+                                              fontSize: getResponsiveFontSize(context, 12),
+
+                                            ),
+                                            gradientColors: const [
+                                              Color(0xFF2680EF),
+                                              Color(0xFF1CD494)
+                                              // 1CD494
+                                            ],
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const ApplyForListingScreen()),
+                                              );
+
+                                            },
+                                            iconPath: 'assets/icons/arrowIcon.svg',
+                                            iconSize : screenHeight * 0.009,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: screenWidth * 0.02),
-                                    child: RepaintBoundary(
-                                      child: AnimatedBlockchainImages(
-                                        containerWidth: screenWidth * 0.3,
-                                        containerHeight: screenHeight * 0.3,
-                                        imageAssets: const [
-                                          'assets/images/animatedImg4.png',
-                                          'assets/images/animatedImg1.png',
-                                          'assets/images/animatedImg5.png',
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: screenWidth * 0.02),
+                                      child: RepaintBoundary(
+                                        child: AnimatedBlockchainImages(
+                                          containerWidth: screenWidth * 0.3,
+                                          containerHeight: screenHeight * 0.3,
+                                          imageAssets: const [
+                                            'assets/images/animatedImg4.png',
+                                            'assets/images/animatedImg1.png',
+                                            'assets/images/animatedImg5.png',
 
 
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ]
+                                ]
+                            ),
                           ),
                         ),
-                      ),
 
-                      SizedBox(height: screenHeight * 0.03),
+                        SizedBox(height: screenHeight * 0.03),
 
-                      ...tokens.map((token) => RepaintBoundary(child: _buildTokenCard(context, token))).toList(),
+                        ...tokens.map((token) => RepaintBoundary(child: _buildTokenCard(context, token))).toList(),
 
-                      SizedBox(height: screenHeight * 0.05),
+                        SizedBox(height: screenHeight * 0.05),
 
-                      RepaintBoundary(child: _buildBuyEcmSection()),
-
-
-                      SizedBox(height: screenHeight * 0.03),
-
-                      RepaintBoundary(child: _learnAndEarnContainer()),
+                        RepaintBoundary(child: _buildBuyEcmSection()),
 
 
-                    ],
+                        SizedBox(height: screenHeight * 0.03),
+
+                        RepaintBoundary(child: _learnAndEarnContainer()),
+
+
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -852,7 +858,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-
+                         Sentry.addBreadcrumb(
+                          Breadcrumb(
+                            category: 'ui.action',
+                            type: 'navigation',
+                            message: 'User tapped the "Buy ECM" button',
+                          ),
+                        );
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
@@ -923,6 +935,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ecmController.clear();
                           ethController.clear();
                           if (txHash != null) {
+                            // Sentry: Add a breadcrumb to log a successful purchase
+                            Sentry.captureMessage(
+                              'Successful ECM purchase',
+                              level: SentryLevel.info,
+                              withScope: (scope) {
+                                scope.setTag('source', 'Buy_Ecm_Button');
+                                scope.setExtra('transaction_hash', txHash);
+                                scope.setExtra('ecm_amount', ecmAmount);
+                              },
+                            );
                             ToastMessage.show(
                               message: "Purchase Successful",
                               subtitle: "Transaction hash: $txHash",
@@ -931,8 +953,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               gravity: CustomToastGravity.BOTTOM,
                             );
                           }
-                        } catch (e) {
+                        } catch (e ,stackTrace) {
                           Navigator.of(context).pop();
+
+                          await Sentry.captureEvent(
+                            SentryEvent(
+                              throwable: e,
+                              level: SentryLevel.error,
+                              tags: {'source' :'Buy_Ecm_Button'},
+                              extra: {
+                                'ecmAmount': ecmController.text,
+                                'ethAmount': ethController.text,
+                              }
+                            )
+                          );
 
                         }
                       },

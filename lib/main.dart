@@ -7,6 +7,7 @@ import 'package:mycoinpoll_metamask/connectivity/dependency_injection.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:mycoinpoll_metamask/permission_handler_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'application/presentation/screens/settings/feedback_screen.dart';
 import 'application/presentation/screens/splash/splash_view.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
@@ -40,40 +41,38 @@ Future <void> main() async   {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-
-
-  //permission for screen recording
-  // FlutterUxConfig config = FlutterUxConfig(
-  //     userAppKey: "o53qy1b6lzz62c6-us",
-  //     enableAutomaticScreenNameTagging: false);
-  //
-  // FlutterUxcam.startWithConfiguration(config);
-  // FlutterUxcam.optIntoSchematicRecordings();
-  //
-  // FlutterError.onError = (FlutterErrorDetails details){
-  //   FlutterError.presentError(details);
-  //   // Log to UXCam as a single string event
-  //   FlutterUxcam.logEvent(
-  //     "FlutterError: ${details.exception}\n"
-  //         "Stack: ${details.stack}\n"
-  //         "Library: ${details.library}",
-  //   );
-  //   debugPrint('FlutterError caught: ${details.exception}');
-  // };
-  // // Catch all Dart errors
-  // runZonedGuarded(() {
-  //   runApp(const MyApp());
-  // }, (error, stackTrace) {
-  //   FlutterUxcam.logEvent(
-  //     "Uncaught App Exception: $error\nStack: $stackTrace",
-  //   );
-  //   debugPrint('Uncaught exception: $error');
-  // });
-   //
-
   Get.put(NetworkController());
-   DependencyInjection.init();
+  DependencyInjection.init();
+
+  await SentryFlutter.init((options){
+    options.dsn = 'https://af8713a9a33c2a23bc1f568ccc3351d7@o4509954481651712.ingest.us.sentry.io/4509954548170752';
+     
+    options.sendDefaultPii = true;
+    options.enableLogs = true;
+
+
+    options.replay.sessionSampleRate = 0.0;
+    options.replay.onErrorSampleRate = 0.0;
+
+    options.tracesSampleRate = 0.0;
+    options.profilesSampleRate = 0.0;
+
+    options.autoInitializeNativeSdk  = false;
+    options.captureFailedRequests = true;
+
+
+    options.beforeSend = (SentryEvent event, Hint hint) async {
+      final message = event.message?.formatted?.toLowerCase() ?? '';
+      if (message.contains("api") || message.contains("http") || message.contains('source') ||  message.contains("wallet")) {
+        return event;
+      }
+      return null;
+    };
+
+  },
+
+  );
+
    runApp(const MyApp());
 
 }

@@ -232,6 +232,8 @@ class DashboardScreen extends StatefulWidget {
                    final walletModel = Provider.of<WalletViewModel>(context, listen: false);
                    if (walletModel.isConnected) {
                      await walletModel.fetchConnectedWalletData(isReconnecting: true);
+                     await context.read<WalletViewModel>().openWalletModal(context);
+
                    } else {
                      await walletModel.init(context);
                    }
@@ -578,142 +580,6 @@ class DashboardScreen extends StatefulWidget {
 
 
    }
-
-
-   // Widget _EcmWithGraphChart(){
-   //   double screenWidth = MediaQuery.of(context).size.width;
-   //   double screenHeight = MediaQuery.of(context).size.height;
-   //
-   //   return Consumer2<WalletViewModel,UserAuthProvider>(
-   //     builder: (context, walletVM ,userAuth, child){
-   //       String balanceText = '...';
-   //
-   //
-   //       if (walletVM.balance != null) {
-   //         balanceText = walletVM.balance!;
-   //       } else {
-   //         balanceText = "0";
-   //       }
-   //       debugPrint("Dashboard _EcmWithGraphChart Consumer: walletVM.balance = ${walletVM.balance}, displayBalanceText = $balanceText");
-   //
-   //       return Container(
-   //           width: screenWidth,
-   //           height: screenHeight * 0.16,
-   //           decoration: BoxDecoration(
-   //             border: Border.all(
-   //                 color: Colors.transparent
-   //             ),
-   //             image: const DecorationImage(
-   //               image: AssetImage('assets/images/applyForListingBG.png'),
-   //               filterQuality : FilterQuality.low,
-   //               fit: BoxFit.fill,
-   //             ),
-   //           ),
-   //           child: Stack(
-   //             children: [
-   //
-   //               Padding(
-   //                 padding: EdgeInsets.symmetric(
-   //                   horizontal: screenWidth * 0.025,
-   //                   vertical: screenHeight * 0.015,
-   //                 ),
-   //                 child: Row(
-   //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-   //                   crossAxisAlignment: CrossAxisAlignment.center,
-   //                   children: [
-   //
-   //                     Expanded(
-   //                       flex: 2,
-   //                       child: Column(
-   //                         crossAxisAlignment: CrossAxisAlignment.start,
-   //                         children: [
-   //                           Row(
-   //                             mainAxisAlignment: MainAxisAlignment.start,
-   //                             crossAxisAlignment: CrossAxisAlignment.center,
-   //                             children: [
-   //                               Image.asset(
-   //                                   'assets/images/ecm.png',
-   //                                   height: screenWidth * 0.04,
-   //                                   fit: BoxFit.contain,
-   //                                   filterQuality : FilterQuality.low
-   //                               ),
-   //                               SizedBox(width: screenWidth * 0.01),
-   //                               Text(
-   //                                 'ECM Coin',
-   //                                 textAlign:TextAlign.start,
-   //                                 style: TextStyle(
-   //                                   color: const Color(0xffFFF5ED),
-   //                                   fontFamily: 'Poppins',
-   //                                   fontSize: getResponsiveFontSize(context, 16),
-   //                                   fontWeight: FontWeight.normal,
-   //                                   height: 1.6,
-   //                                 ),
-   //                               ),
-   //
-   //
-   //                             ],
-   //                           ),
-   //
-   //                           (walletVM.isLoading && walletVM.balance == null)
-   //                               ? const SizedBox(
-   //                             height: 24,
-   //                             width: 24,
-   //                             child: CircularProgressIndicator(
-   //                               strokeWidth: 2,
-   //                               color: Colors.white,
-   //                             ),
-   //                           ) : Text(
-   //                             formatBalance(balanceText),
-   //                             style: TextStyle(
-   //                                 color: Colors.white,
-   //                                 fontFamily: 'Poppins',
-   //                                 fontSize: getResponsiveFontSize(context, 24),
-   //                                 fontWeight: FontWeight.w600,
-   //                                 height: 1.3
-   //                             ),
-   //
-   //                           ),
-   //                           SizedBox(height: screenHeight * 0.01),
-   //                         ],
-   //                       ),
-   //                     ),
-   //
-   //                     SingleChildScrollView(
-   //                       child: Column(
-   //                         // mainAxisAlignment: MainAxisAlignment.center,
-   //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-   //                         crossAxisAlignment: CrossAxisAlignment.end,
-   //                         children: [
-   //
-   //                           // Badge
-   //                           const UserBadgeLevel(
-   //                             label: 'Level-1',
-   //                             iconPath: 'assets/icons/check.svg',
-   //                           ),
-   //
-   //                           SizedBox(height: screenHeight * 0.01),
-   //                           Image.asset(
-   //                               'assets/images/staticChart.png',
-   //                               width: screenWidth * 0.38 ,
-   //                               height: screenHeight * 0.08,
-   //                               fit: BoxFit.contain,
-   //                               filterQuality : FilterQuality.low
-   //                           ),
-   //
-   //                         ],
-   //                       ),
-   //                     ),
-   //                   ],
-   //                 ),
-   //               ),
-   //             ],
-   //           )
-   //       );
-   //     },
-   //
-   //
-   //   );
-   // }
 
 
 

@@ -169,6 +169,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
     if (walletVM.ethPrice > 0) {
       final ecmAmount = ethAmount / walletVM.ethPrice;
       ecmController.text = ecmAmount.toStringAsFixed(6);
+      // ecmController.text = ecmAmount.toStringAsFixed(1);
+
     } else {
       ecmController.clear();
     }
@@ -267,6 +269,8 @@ class _ViewTokenScreenState extends State<ViewTokenScreen>with WidgetsBindingObs
                     child: ScrollConfiguration(
                       behavior: const ScrollBehavior().copyWith(overscroll: false),
                       child: SingleChildScrollView(
+                        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+
                         physics: const BouncingScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

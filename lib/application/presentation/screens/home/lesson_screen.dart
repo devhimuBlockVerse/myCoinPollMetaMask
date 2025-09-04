@@ -23,8 +23,6 @@ class _LessonScreenState extends State<LessonScreen> {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isPortrait = screenHeight > screenWidth;
-    final baseSize = isPortrait ? screenWidth : screenHeight;
 
 
     final lesson = widget.lesson;

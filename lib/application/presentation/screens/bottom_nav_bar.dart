@@ -8,8 +8,10 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/features/fe
 import 'package:mycoinpoll_metamask/application/presentation/screens/home/home_screen.dart';
  import 'package:mycoinpoll_metamask/application/presentation/screens/news/news_screen.dart';
  import 'package:provider/provider.dart';
+import '../../../connectivity/connectivity_controller.dart';
 import '../../../framework/components/DialogModalViewComponent.dart';
 import '../viewmodel/bottom_nav_provider.dart';
+import '../viewmodel/wallet_view_model.dart';
 import 'login/sign_in.dart';
 
 
@@ -21,6 +23,8 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin {
+
+
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -58,6 +62,34 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
     return false;
   }
 
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // Listen for connectivity changes
+  //   final connectivity = Provider.of<ConnectivityService>(context, listen: false);
+  //   connectivity.addListener(() async {
+  //     if (connectivity.isConnected) {
+  //       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+  //
+  //       if (!walletVM.isConnected) {
+  //         print("🌐 Internet restored → reconnecting wallet...");
+  //         await Future.delayed(const Duration(milliseconds: 500)); // wait UI ready
+  //
+  //         try {
+  //           await walletVM.init(context);
+  //           await walletVM.rehydrate();
+  //           await walletVM.fetchConnectedWalletData(isReconnecting: true);
+  //           await walletVM.fetchLatestETHPrice();
+  //           print("✅ Wallet reconnected successfully!");
+  //         } catch (e) {
+  //           print("⚠️ Wallet reconnect failed: $e");
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);

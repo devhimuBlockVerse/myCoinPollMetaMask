@@ -1,7 +1,9 @@
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
+import 'package:mycoinpoll_metamask/connectivity/dependency_injection.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:mycoinpoll_metamask/permission_handler_widget.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +17,9 @@ import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter/foundation.dart';
+
+import 'connectivity/connectivity_controller.dart';
+import 'connectivity/no internet.dart';
 
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -36,7 +41,40 @@ Future <void> main() async   {
     DeviceOrientation.portraitDown,
   ]);
 
-   runApp(const MyApp(),);
+
+
+  //permission for screen recording
+  // FlutterUxConfig config = FlutterUxConfig(
+  //     userAppKey: "o53qy1b6lzz62c6-us",
+  //     enableAutomaticScreenNameTagging: false);
+  //
+  // FlutterUxcam.startWithConfiguration(config);
+  // FlutterUxcam.optIntoSchematicRecordings();
+  //
+  // FlutterError.onError = (FlutterErrorDetails details){
+  //   FlutterError.presentError(details);
+  //   // Log to UXCam as a single string event
+  //   FlutterUxcam.logEvent(
+  //     "FlutterError: ${details.exception}\n"
+  //         "Stack: ${details.stack}\n"
+  //         "Library: ${details.library}",
+  //   );
+  //   debugPrint('FlutterError caught: ${details.exception}');
+  // };
+  // // Catch all Dart errors
+  // runZonedGuarded(() {
+  //   runApp(const MyApp());
+  // }, (error, stackTrace) {
+  //   FlutterUxcam.logEvent(
+  //     "Uncaught App Exception: $error\nStack: $stackTrace",
+  //   );
+  //   debugPrint('Uncaught exception: $error');
+  // });
+   //
+
+  Get.put(NetworkController());
+   DependencyInjection.init();
+   runApp(const MyApp());
 
 }
 class MyApp extends StatelessWidget {
@@ -44,15 +82,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // FlutterUxcam.optIntoSchematicRecordings();
-
-    //permission for screen recording
-    // FlutterUxConfig config = FlutterUxConfig(
-    // userAppKey: "o53qy1b6lzz62c6-us",
-    //
-    // enableAutomaticScreenNameTagging: false);
-    //
-    // FlutterUxcam.startWithConfiguration(config);
+    final NetworkController networkController = Get.find<NetworkController>();
 
     return MultiProvider(
       providers: [
@@ -71,27 +101,33 @@ class MyApp extends StatelessWidget {
 
       ],
 
-      child: MaterialApp(
-        navigatorKey: ToastMessage.toastContextNavigatorKey,
-        useInheritedMediaQuery: true,
-        title: 'MyCoinPoll',
-        debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.dark,
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: Colors.black,
-          appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900]),
-        ),
-        home: const PermissionHandlerWidget(child: SplashView()),
-        navigatorObservers: [
-          routeObserver,
-          // Telemetry.observer
-        ],
-        builder: (context, child) => WalletAppInitializer(child: child!),
+       child: GetMaterialApp(
+         navigatorKey: ToastMessage.toastContextNavigatorKey,
+         useInheritedMediaQuery: true,
+         title: 'MyCoinPoll',
+         debugShowCheckedModeBanner: false,
+         themeMode: ThemeMode.dark,
+         darkTheme: ThemeData(
+             brightness: Brightness.dark,
+             scaffoldBackgroundColor: Colors.black,
+             appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900])),
+         home: const PermissionHandlerWidget(child: SplashView()),
+         navigatorObservers: [routeObserver,],
+         builder: (context, child) {
+           final Widget appContent = WalletAppInitializer(child: child!);
+           return  Obx((){
+             return Stack(
+               children: [
+                 appContent,
+                 if (networkController.isOfflineOverlayVisible.value)
+                   const NoInternetOverlay(),
+               ],
+             );
+           });
 
-
-      ),
-    );
+         }
+       ),
+     );
   }
 }
 

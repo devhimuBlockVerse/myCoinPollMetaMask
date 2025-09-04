@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -14,16 +15,15 @@ class VideoPlayerService extends StatefulWidget {
 }
 
 class _VideoPlayerServiceState extends State<VideoPlayerService> {
-  VideoPlayerController? _videoController;
   YoutubePlayerController? _youtubeController;
+  bool _isFullscreen = false;
 
   bool get _isYouTube => YoutubePlayer.convertUrlToId(widget.videoUrl) != null;
-
-  late Future<void> _initializeVideoFuture;
 
   @override
   void initState() {
     super.initState();
+
     if (_isYouTube) {
       final videoId = YoutubePlayer.convertUrlToId(widget.videoUrl)!;
       _youtubeController = YoutubePlayerController(
@@ -31,91 +31,80 @@ class _VideoPlayerServiceState extends State<VideoPlayerService> {
         flags: const YoutubePlayerFlags(
           autoPlay: false,
           mute: false,
+          forceHD: true,
+          enableCaption: false,
         ),
-      );
-    } else {
-      _videoController = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
-      _initializeVideoFuture = _videoController!.initialize();
+      )..addListener(_listener);
+    }
+  }
+
+  void _listener() {
+    if (_youtubeController == null) return;
+
+    final isFull = _youtubeController!.value.isFullScreen;
+
+    if (_isFullscreen != isFull) {
+      _isFullscreen = isFull;
+
+      if (_isFullscreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      }
     }
   }
 
   @override
   void dispose() {
-    _videoController?.dispose();
+    _youtubeController?.removeListener(_listener);
     _youtubeController?.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screen = MediaQuery.of(context).size;
-    final width = screen.width * 0.8;
-    final height = screen.height * 0.25;
+    if (!_isYouTube) return const SizedBox();
 
-    return Center(
-      child: Container(
-        width: width,
-        height: height,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: const Color(0xFF011116),
-          border: Border.all(color: const Color(0xFF7074A6)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: _isYouTube
-            ? ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: YoutubePlayer(
-            controller: _youtubeController!,
-            showVideoProgressIndicator: true,
-          ),
-        )
-            : FutureBuilder(
-          future: _initializeVideoFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  AspectRatio(
-                    aspectRatio: _videoController!.value.aspectRatio,
-                    child: VideoPlayer(_videoController!),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _videoController!.value.isPlaying
-                            ? _videoController!.pause()
-                            : _videoController!.play();
-                      });
-                    },
-                    child: AnimatedOpacity(
-                      opacity: _videoController!.value.isPlaying ? 0.0 : 1.0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: const Icon(Icons.play_arrow,
-                            size: 48, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            } else if (snapshot.hasError) {
-              return const Text(
-                'Error loading video',
-                style: TextStyle(color: Colors.red),
-              );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
+        controller: _youtubeController!,
+        showVideoProgressIndicator: true,
+        progressColors: const ProgressBarColors(
+          playedColor: Colors.red,
+          handleColor: Colors.redAccent,
         ),
       ),
+      builder: (context, player) {
+        return Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF011116),
+            border: Border.all(color: const Color(0xFF7074A6)),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: player,
+          ),
+        );
+      },
     );
   }
 }

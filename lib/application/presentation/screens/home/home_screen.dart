@@ -11,8 +11,10 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_t
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
  import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
+import '../../../../connectivity/connectivity_controller.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/badgeComponent.dart';
@@ -61,12 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isReferredByLoading = false;
   bool _isUpdating = false;
 
+
   @override
   void initState() {
     super.initState();
-    fetchTokens();
     ecmController.addListener(_updateEthFromECM);
     ethController.addListener(_updateECMFromEth);
+    fetchTokens();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -76,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await _fetchReferredByAddress();
 
     });
+
   }
 
   /// Helper function to fetch contract data and update the UI state.
@@ -108,7 +112,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void _updateECMFromEth() {
     if (_isUpdating) return;
     _isUpdating = true;
-
     final ethAmount = double.tryParse(ethController.text) ?? 0.0;
 
     if (ethAmount <= 0) {
@@ -126,10 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       ecmController.clear();
     }
-
     _isUpdating = false;
   }
-
 
 
   Future<void>_refreshData()async{
@@ -152,6 +153,17 @@ class _HomeScreenState extends State<HomeScreen> {
     _updateEthFromECM();
     _updateECMFromEth();
    }
+  Future<void> _initializeWalletData() async {
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    if (walletVM.isConnected) {
+      await walletVM.fetchConnectedWalletData(isReconnecting: true);
+    }
+    await walletVM.fetchLatestETHPrice();
+    _updateECMFromEth();
+    _updateEthFromECM();
+
+  }
+
 
   Future<void> fetchTokens() async {
     try {
@@ -185,23 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _initializeWalletData() async {
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    if (walletVM.isConnected) {
-      await walletVM.fetchConnectedWalletData(isReconnecting: true);
-    }
-     await walletVM.fetchLatestETHPrice();
-    _updateECMFromEth();
-    _updateEthFromECM();
-
-  }
-
   @override
   void dispose() {
-     ecmController.dispose();
-    ethController.dispose();
      ecmController.removeListener(_updateEthFromECM);
      ethController.removeListener(_updateECMFromEth);
+     ecmController.dispose();
+    ethController.dispose();
     readingMoreController.dispose();
     referredController.dispose();
     super.dispose();
@@ -827,7 +828,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintText: 'ECM',
                       iconAssetPath: 'assets/images/ecm.png',
                       controller: ecmController,
-                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),],
+                      onChanged: _updateEthFromECM,
                       inputFormatters: [DecimalTextInputFormatter(),],
 
                     ),
@@ -837,7 +838,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintText:'ETH ',
                       iconAssetPath:'assets/images/eth.png',
                       controller: ethController,
-                      // inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),],
+                      onChanged: _updateECMFromEth,
                       inputFormatters: [DecimalTextInputFormatter(),],
 
                     ),

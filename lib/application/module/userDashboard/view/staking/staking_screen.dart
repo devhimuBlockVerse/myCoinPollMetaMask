@@ -687,17 +687,30 @@ class _StakingScreenState extends State<StakingScreen> {
                       children: [
 
                         Consumer<WalletViewModel>(builder: (context, model, child){
-                          return Text(
-                            // 'Max: 5000',
-                            'Max: ${model.maximumStake ?? '...'} ECM',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Poppins',
-                            ),
-                          );
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Min: ${model.minimumStake ?? '...'}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
+                              Text(
+                                'Max: ${model.maximumStake ?? '...'}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Poppins',
+                                ),
+                              ),
 
+                            ],
+                          );
                         }
                         ),
 
@@ -706,7 +719,7 @@ class _StakingScreenState extends State<StakingScreen> {
                         ListingField(
                           labelText: 'Input Amounts',
                           controller: ecmAmountController,
-                          // keyboard: TextInputType.numberWithOptions(DecimalTextInputFormatter()),
+                          keyboard: TextInputType.number,
                           height: listingFieldHeight,
                           onChanged: (value) {
                             setState(() {

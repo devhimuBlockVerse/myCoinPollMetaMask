@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomInputField extends StatelessWidget {
+class CustomInputField extends StatefulWidget {
   final String hintText;
   final String iconAssetPath;
   final TextEditingController controller;
   final List<TextInputFormatter>? inputFormatters;
+  final VoidCallback? onChanged;
 
 
   const CustomInputField({
@@ -14,7 +15,32 @@ class CustomInputField extends StatelessWidget {
     required this.iconAssetPath,
     required this.controller,
     this.inputFormatters,
+    this.onChanged,
   });
+
+  @override
+  State<CustomInputField> createState() => _CustomInputFieldState();
+}
+
+class _CustomInputFieldState extends State<CustomInputField> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.addListener(_handleTextChanged);
+  }
+
+  void _handleTextChanged() {
+    if (widget.onChanged != null) {
+      widget.onChanged!();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleTextChanged);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +78,7 @@ class CustomInputField extends StatelessWidget {
             margin: EdgeInsets.only(right: screenWidth * 0.025),
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(iconAssetPath),
+                image: AssetImage(widget.iconAssetPath),
                 fit: BoxFit.cover,
               ),
 
@@ -61,7 +87,7 @@ class CustomInputField extends StatelessWidget {
 
           // Token text
           Text(
-            hintText,
+            widget.hintText,
             style: TextStyle(
               color: Colors.white,
               fontSize: fontSize,
@@ -100,9 +126,10 @@ class CustomInputField extends StatelessWidget {
               ),
               alignment: Alignment.centerRight,
               child: TextFormField(
-                controller: controller,
+                autofocus: false,
+                controller: widget.controller,
                 keyboardType: TextInputType.number,
-                inputFormatters: inputFormatters,
+                inputFormatters: widget.inputFormatters,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: fontSize,

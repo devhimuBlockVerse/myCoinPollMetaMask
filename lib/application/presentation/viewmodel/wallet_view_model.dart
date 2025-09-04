@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
- import 'package:http/http.dart';
+  import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
  import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -277,14 +277,73 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _isModalEventsSubscribed = true;
       }
 
+      // await fetchLatestETHPrice();
+
       await _hydrateFromExistingSession();
     }catch(_){
+
       await fetchLatestETHPrice();
     }finally{
       _isLoading = false;
       notifyListeners();
     }
   }
+
+  //  Future<void> init(BuildContext context) async {
+  //   if (_isLoading) return;
+  //   _isLoading = true;
+  //   notifyListeners();
+  //
+  //   if (appKitModal == null) {
+  //     appKitModal = ReownAppKitModal(
+  //
+  //       context: context,
+  //       // projectId: 'f3d7c5a3be3446568bcc6bcc1fcc6389',
+  //       projectId: 'ec1aaae5ff0cfc95b21c0a59b7a2fe91',
+  //       metadata: const PairingMetadata(
+  //         name: "MyWallet",
+  //         description: "Example Description",
+  //         url: 'https://mycoinpoll.com/',
+  //         icons: ['https://example.com/logo.png'],
+  //         redirect: Redirect(
+  //           native: 'MyCoin Poll',
+  //           universal: 'https://reown.com/exampleapp',
+  //           linkMode: true,
+  //         ),
+  //       ),
+  //
+  //       logLevel: LogLevel.error,
+  //       enableAnalytics: false,
+  //       featuresConfig: FeaturesConfig(
+  //         email: false,
+  //         socials: [
+  //           AppKitSocialOption.Google,
+  //           AppKitSocialOption.Discord,
+  //           AppKitSocialOption.Facebook,
+  //           AppKitSocialOption.GitHub,
+  //           AppKitSocialOption.X,
+  //           AppKitSocialOption.Apple,
+  //           AppKitSocialOption.Twitch,
+  //           AppKitSocialOption.Farcaster,
+  //         ],
+  //         showMainWallets: true,
+  //       ),
+  //     );
+  //   }
+  //   await appKitModal!.init();
+  //
+  //   if (!_isModalEventsSubscribed) {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     _subscribeToModalEvents(prefs);
+  //     _isModalEventsSubscribed = true;
+  //   }
+  //
+  //   await _hydrateFromExistingSession();
+  //   await fetchLatestETHPrice();
+  //
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
 
   Future<void> ensureModalWithValidContext(BuildContext context) async {
 
@@ -455,9 +514,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       // Success - data will be fetched by the UI when needed
       return true;
 
-    } catch (e) {
-      debugPrint('connectWallet error: $e');
-      return _handleConnectionError(e);
+    } catch (e,stack) {
+       return _handleConnectionError(e);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -479,7 +537,10 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return true;
     }
   }
+
   bool _handleConnectionError(dynamic error) {
+    // logErrorToUxCam(error, StackTrace.current, "connectWallet(): Wallet Connection error");
+
     final errorMsg = error.toString().toLowerCase();
 
     if (errorMsg.contains("user rejected") ||
@@ -574,10 +635,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         debugPrint("Previous connection found, rehydrating...");
         await _hydrateFromExistingSession();
 
-        // // Start health monitoring if connected
-        // if (_isConnected) {
-        //   _startSessionHealthMonitoring();
-        // }
       } else {
         debugPrint("No previous connection found");
       }
@@ -587,7 +644,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
-
 
   Future<void> _handleAppPause() async {
     debugPrint("App paused - saving session state...");
@@ -637,6 +693,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       debugPrint("Error hydrating session: $e");
     }
   }
+
   String? _getFirstAddressFromSession() {
     final s = appKitModal?.session;
     if (s == null) return null;
@@ -672,7 +729,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String? getChainIdForRequests() {
     return appKitModal?.selectedChain?.chainId ?? _lastKnowChainId ?? _getChainIdFromSession();
   }
-
 
   Future<void> _removePersistedConnection() async {
     final prefs = await SharedPreferences.getInstance();
@@ -759,10 +815,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       // Fetch balance first
       await getBalance();
-
+      await fetchLatestETHPrice();
       await Future.wait([
-        // getBalance(),
-         getMinimunStake(),
+          getMinimunStake(),
         getMaximumStake(),
         getVestingInformation()
       ]);
@@ -880,7 +935,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print("Raw minimumStakeResult: ${minimumStakeResult[0]}");
       return _minimumStake!;
     } catch (e) {
-      print('Error getting minimum stake: $e');
       _minimumStake = null;
       rethrow;
     }
@@ -1006,14 +1060,77 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  // Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
+  //   print('### fetchLatestETHPrice() called');
+  //   print('### forceLoad: $forceLoad');
+  //   const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
+  //   final cachedPrice = prefs.getString('ethPriceUSD');
+  //
+  //
+  //   if (!forceLoad && cachedPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
+  //     _ethPrice = double.parse(cachedPrice);
+  //      print('### Using cached ETH price: $cachedPrice');
+  //
+  //     notifyListeners();
+  //     return cachedPrice;
+  //   }
+  //   try {
+  //     final abiString = await rootBundle.loadString("assets/abi/AggregatorABI.json");
+  //     final abiData = jsonDecode(abiString);
+  //     const aggregatorAddress = AGGREGATO_RADDRESS;
+  //     final contract = DeployedContract(
+  //       ContractAbi.fromJson(
+  //           jsonEncode(abiData),
+  //           'EACAggregatorProxy'
+  //       ),
+  //       EthereumAddress.fromHex(aggregatorAddress),
+  //     );
+  //     final result = await _web3Client!.call(
+  //       contract: contract,
+  //       function: contract.function('latestAnswer'),
+  //        params: [],
+  //     );
+  //     print('##### fetchLatestETHPrice ####');
+  //     print('Test result: $result');
+  //
+  //     final rawPrice = result[0] as BigInt;
+  //     print('RAW_PRICE : $rawPrice');
+  //     this.rawPrice = rawPrice;
+  //
+  //
+  //     final ethUsdPrice = rawPrice.toDouble() / 1e8;
+  //     final ethPerEcm = ECM_PRICE_USD / ethUsdPrice;
+  //      final price = ethPerEcm.toStringAsFixed(8);
+  //
+  //     print('RAW_PRICE 8 Decimal: $price');
+  //
+  //     await prefs.setString('ethPriceUSD', price);
+  //     await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
+  //     _ethPrice = double.parse(price);
+  //      notifyListeners();
+  //     return price;
+  //   } catch (e) {
+  //     print('Error fetching ETH price: $e');
+  //     if (cachedPrice != null) return cachedPrice;
+  //     throw Exception('Failed to fetch ETH price');
+  //   }
+  // }
   Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
+    print('### fetchLatestETHPrice() called');
+    print('### forceLoad: $forceLoad');
     const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
     final prefs = await SharedPreferences.getInstance();
     final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
     final cachedPrice = prefs.getString('ethPriceUSD');
+    final cachedRawPrice = prefs.getString('ethPriceRaw'); // Get the cached raw price
 
-    if (!forceLoad && cachedPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
+
+    if (!forceLoad && cachedPrice != null && cachedRawPrice != null && DateTime.now().millisecondsSinceEpoch - lastUpdated < cacheDurationMs) {
       _ethPrice = double.parse(cachedPrice);
+      rawPrice = BigInt.parse(cachedRawPrice); // Set the rawPrice from cache
+
       notifyListeners();
       return cachedPrice;
     }
@@ -1036,12 +1153,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('##### fetchLatestETHPrice ####');
       print('Test result: $result');
 
-      final rawPrice = result[0] as BigInt;
+      final newRawPrice = result[0] as BigInt;
       print('RAW_PRICE : $rawPrice');
-      this.rawPrice = rawPrice;
+      rawPrice = newRawPrice;
 
 
-      final ethUsdPrice = rawPrice.toDouble() / 1e8;
+
+      final ethUsdPrice = newRawPrice.toDouble() / 1e8;
       final ethPerEcm = ECM_PRICE_USD / ethUsdPrice;
        final price = ethPerEcm.toStringAsFixed(8);
 
@@ -1049,6 +1167,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       await prefs.setString('ethPriceUSD', price);
       await prefs.setInt('ethPriceLastUpdated', DateTime.now().millisecondsSinceEpoch);
+      await prefs.setString('ethPriceRaw', newRawPrice.toString());
+
       _ethPrice = double.parse(price);
        notifyListeners();
       return price;
@@ -1185,6 +1305,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       if (rawPrice == null) {
+        debugPrint("⛔️ Conversion failed: rawPrice is null.");
         return null;
       }
 
@@ -1213,7 +1334,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return null;
     }
   }
-
 
   Future<String?> buyECMWithETH({
     required EtherAmount ethAmount,
@@ -1344,7 +1464,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       notifyListeners();
     }
   }
-
 
   Future<Map<String, dynamic>> _parseTransactionLogs(
       TransactionReceipt receipt,
@@ -1729,7 +1848,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
 
   }
-
 
   Future<String?> forceUnstake(int stakeId)async{
     final chainID = getChainIdForRequests();
@@ -2198,25 +2316,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         params: [],
       );
 
-      // final claimableResult = await _web3Client!.call(
-      //     contract: vestingContract,
-      //     function: vestingContract.function('vestedAmount'),
-      //     params: []
-      // );
-
       // Convert the BigInt to a double and format to 6 decimal places,
       final releasedWei = releasedResult[0] as BigInt;
-      // final claimableWei = claimableResult[0] as BigInt;
 
       final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
-      // final claimableEther = EtherAmount.fromBigInt(EtherUnit.wei, claimableWei).getValueInUnit(EtherUnit.ether);
 
       final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
-      // final claimableAmountFormatted = claimableEther.toStringAsFixed(6);
 
       // Update Vesting Info Model to reflect new data
       vestInfo.released = releasedEther;
-      // vestInfo.claimable = claimableEther;
 
       ToastMessage.show(
         message: "Vesting Refreshed",
@@ -2331,14 +2439,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   /// Mock function to format decimal value to token unit (BigInt)
-  BigInt _formatValue(double amount, {required BigInt decimals}) {
-    final decimalPlaces = decimals.toInt(); // e.g., 6 for USDT, 18 for ETH
-    final factor = BigInt.from(10).pow(decimalPlaces);
-    return BigInt.from(amount * factor.toDouble());
-  }
+
+
 
 }
 
+// void logErrorToUxCam(dynamic error, [StackTrace? stackTrace, String? contextInfo]) {
+//   final message = StringBuffer()
+//     ..writeln('WalletViewModel Error: $error')
+//     ..writeln('Context: ${contextInfo ?? "N/A"}')
+//     ..writeln('StackTrace: ${stackTrace ?? StackTrace.current}');
+//   // FlutterUxcam.logEvent(message.toString());
+//   debugPrint(message.toString());
+// }
+
+
+BigInt _formatValue(double amount, {required BigInt decimals}) {
+  final decimalPlaces = decimals.toInt(); // e.g., 6 for USDT, 18 for ETH
+  final factor = BigInt.from(10).pow(decimalPlaces);
+  return BigInt.from(amount * factor.toDouble());
+}
 
 class _LifecycleHandler extends WidgetsBindingObserver {
   final Future<void> Function() onResume;

@@ -1,44 +1,55 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+ import 'package:mycoinpoll_metamask/application/domain/constants/api_constants.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/BlockButton.dart';
+import '../../../data/services/api_service.dart';
+import '../../models/user_model.dart';
+
 
 class FeedbackViewModel extends ChangeNotifier {
   final TextEditingController controller = TextEditingController();
   final ImagePicker _picker = ImagePicker();
 
-  File? _image;
+  List<File> _images = [];
   bool _sending = false;
 
-  static const String webhookUrl =
-       'https://webhook.site/408b6f19-873f-4c9f-bf00-14533168ef06';
+  static const String apiUrl = "${ApiConstants.baseUrl}/user-app-feedback";
 
-  File? get image => _image;
+  List<File> get images => _images;
   bool get sending => _sending;
 
-  /// Pick image from gallery
+  /// Pick multiple images from gallery
   Future<void> pickImage() async {
-    final picked =
-    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
-    if (picked != null) {
-      _image = File(picked.path);
-      notifyListeners();
+    try {
+      final List<XFile>? pickedFiles = await _picker.pickMultiImage(
+        imageQuality: 75,
+      );
+      if (pickedFiles != null && pickedFiles.isNotEmpty) {
+        _images.addAll(pickedFiles.map((xfile) => File(xfile.path)));
+        notifyListeners();
+      }
+    } catch (e) {
+      print("Error picking images: $e");
+      ToastMessage.show(message: "Failed to pick images");
     }
   }
 
+
   /// Remove selected image
-  void removeImage() {
-    _image = null;
+  void removeImage(int index) {
+    _images.removeAt(index);
     notifyListeners();
   }
 
   /// Submit feedback
-  Future<void> submitFeedback() async {
-    if (controller.text.trim().isEmpty && _image == null) {
+  Future<void> submitFeedback(String username) async {
+    if (controller.text.trim().isEmpty && _images.isEmpty) {
       ToastMessage.show(message: 'Please write feedback or upload an image');
       return;
     }
@@ -47,31 +58,34 @@ class FeedbackViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final request = http.MultipartRequest('POST', Uri.parse(webhookUrl));
-      request.fields["message"] = controller.text.trim();
-      request.fields["createdAt"] = DateTime.now().toIso8601String();
-
-      if (_image != null) {
-        request.files.add(await http.MultipartFile.fromPath("image", _image!.path));
+      List<String> base64Images = [];
+      for (var img in _images) {
+        final bytes = await img.readAsBytes();
+        base64Images.add(base64Encode(bytes));
       }
 
-      final response = await request.send();
-      final res = await http.Response.fromStream(response);
+    final success = await ApiService().submitUserFeedback(
+      message: controller.text.trim(),
+      username: username,
+      base64Images: base64Images,
+    );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ToastMessage.show(
-            gravity: CustomToastGravity.TOP,
-            message: 'Feedback submitted successfully!');
-        controller.clear();
-        removeImage();
-      } else {
-        ToastMessage.show(
-            gravity: CustomToastGravity.TOP, message: 'Failed to submit feedback');
-        print("Server response: ${res.body}");
-      }
+    if (success) {
+      ToastMessage.show(
+        gravity: CustomToastGravity.TOP,
+        message: 'Feedback submitted successfully!',
+      );
+      controller.clear();
+      _images.clear();
+      notifyListeners();
+    }
+
     } catch (e) {
       print("Error submitFeedback: $e");
-      ToastMessage.show(gravity: CustomToastGravity.TOP, message: 'Error: $e');
+      ToastMessage.show(
+        gravity: CustomToastGravity.TOP,
+        message: 'Error: $e',
+      );
     } finally {
       _sending = false;
       notifyListeners();
@@ -84,7 +98,6 @@ class FeedbackViewModel extends ChangeNotifier {
     super.dispose();
   }
 }
-
 
 
 class FeedbackScreen extends StatelessWidget {
@@ -259,55 +272,79 @@ class FeedbackScreenBody extends StatelessWidget {
     );
   }
 
+
   Widget _buildImagePicker(
       double screenWidth, double screenHeight, FeedbackViewModel vm) {
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: vm.pickImage,
           child: Container(
-            width: screenWidth * 0.8,
-             decoration: BoxDecoration(
+            width: screenWidth,
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+            decoration: BoxDecoration(
               color: Colors.black26,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white54),
             ),
-            child: vm.image == null
+            child: vm.images.isEmpty
                 ? const Center(
               child: Text(
                 "Tap to upload screenshots",
-                style: TextStyle(color: Colors.white70, height: 3.5),
+                style: TextStyle(color: Colors.white70, height: 1.5),
               ),
             )
-                : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(vm.image!, fit: BoxFit.cover),
+                : SizedBox(
+              height: screenHeight * 0.15,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: vm.images.length,
+                itemBuilder: (context, index) {
+                  final img = vm.images[index];
+                  return Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                        width: screenWidth * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: FileImage(img),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 4,
+                        right: 4,
+                        child: GestureDetector(
+                          onTap: () => vm.removeImage(index),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              Icons.close,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
-        if (vm.image != null)
-          Positioned(
-            top: 8,
-            right: 8,
-            child: GestureDetector(
-              onTap: vm.removeImage,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black54,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(4),
-                child: const Icon(
-                  Icons.close,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
+
 
   Widget _buildSubmitButton(
       double screenWidth, double screenHeight, double baseSize, FeedbackViewModel vm) {
@@ -326,7 +363,22 @@ class FeedbackScreenBody extends StatelessWidget {
         Color(0xFF2680EF),
         Color(0xFF1CD494),
       ],
-      onTap: vm.submitFeedback,
+      onTap: ()async{
+        try{
+          final prefs = await SharedPreferences.getInstance();
+          final userJson = prefs.getString('user');
+
+          if (userJson == null) {
+            ToastMessage.show(message: "User not found. Please login again.");
+            return;
+          }
+          final user = UserModel.fromJson(jsonDecode(userJson));
+          final username = user.username ?? "Unknown";
+          await vm.submitFeedback(username);
+        }catch(e){
+
+        }
+      },
     );
   }
 }

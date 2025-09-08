@@ -1,7 +1,5 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:decimal/decimal.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,11 +9,8 @@ import 'package:mycoinpoll_metamask/application/presentation/screens/home/view_t
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
  import 'package:provider/provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/web3dart.dart';
-import '../../../../connectivity/connectivity_controller.dart';
 import '../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../framework/components/BlockButton.dart';
 import '../../../../framework/components/badgeComponent.dart';
@@ -858,13 +853,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                         Sentry.addBreadcrumb(
-                          Breadcrumb(
-                            category: 'ui.action',
-                            type: 'navigation',
-                            message: 'User tapped the "Buy ECM" button',
-                          ),
-                        );
+                        //  Sentry.addBreadcrumb(
+                        //   Breadcrumb(
+                        //     category: 'ui.action',
+                        //     type: 'navigation',
+                        //     message: 'User tapped the "Buy ECM" button',
+                        //   ),
+                        // );
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);
@@ -936,15 +931,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           ethController.clear();
                           if (txHash != null) {
                             // Sentry: Add a breadcrumb to log a successful purchase
-                            Sentry.captureMessage(
-                              'Successful ECM purchase',
-                              level: SentryLevel.info,
-                              withScope: (scope) {
-                                scope.setTag('source', 'Buy_Ecm_Button');
-                                scope.setExtra('transaction_hash', txHash);
-                                scope.setExtra('ecm_amount', ecmAmount);
-                              },
-                            );
+                            // Sentry.captureMessage(
+                            //   'Successful ECM purchase',
+                            //   level: SentryLevel.info,
+                            //   withScope: (scope) {
+                            //     scope.setTag('source', 'Buy_Ecm_Button');
+                            //     scope.setExtra('transaction_hash', txHash);
+                            //     scope.setExtra('ecm_amount', ecmAmount);
+                            //   },
+                            // );
                             ToastMessage.show(
                               message: "Purchase Successful",
                               subtitle: "Transaction hash: $txHash",
@@ -956,17 +951,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         } catch (e ,stackTrace) {
                           Navigator.of(context).pop();
 
-                          await Sentry.captureEvent(
-                            SentryEvent(
-                              throwable: e,
-                              level: SentryLevel.error,
-                              tags: {'source' :'Buy_Ecm_Button'},
-                              extra: {
-                                'ecmAmount': ecmController.text,
-                                'ethAmount': ethController.text,
-                              }
-                            )
-                          );
+                          // await Sentry.captureEvent(
+                          //   SentryEvent(
+                          //     throwable: e,
+                          //     level: SentryLevel.error,
+                          //     tags: {'source' :'Buy_Ecm_Button'},
+                          //     extra: {
+                          //       'ecmAmount': ecmController.text,
+                          //       'ethAmount': ethController.text,
+                          //     }
+                          //   )
+                          // );
 
                         }
                       },

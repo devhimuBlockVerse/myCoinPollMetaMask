@@ -18,7 +18,6 @@ class ECMProgressIndicator extends StatelessWidget {
      final screenShortestSide = size.longestSide;
 
     final containerHeight = screenShortestSide * 0.019;
-    // final progress = (maxECM > 0) ? (currentECM / maxECM).clamp(0.0, 1.0) : 0.0;
 
     final now = DateTime.now();
     final totalDuration = fullVestedDate.difference(vestingStartDate).inSeconds;

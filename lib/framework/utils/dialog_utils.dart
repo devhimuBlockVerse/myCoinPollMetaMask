@@ -21,7 +21,6 @@ class DialogUtils {
               items: roadmapDatum.tasks.map((task){
                 return DialogItem(
                     text: task.name,
-                    // icon: task.status ? Icons.check_box : Icons.timer,
                     icon: task.status ?
                     Image.asset(
                       'assets/images/checked.png',

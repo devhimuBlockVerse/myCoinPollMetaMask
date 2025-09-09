@@ -1,8 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../../../../../../framework/components/referralStatDetailComponenet.dart';
-import '../../../../../domain/model/ReferralUserListModel.dart';
-
+// import 'package:flutter/material.dart';
 // class ReferralDetails extends StatelessWidget {
 //   final ReferralUserListModel data;
 //

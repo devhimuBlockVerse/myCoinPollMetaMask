@@ -3,8 +3,7 @@ import '../../../framework/utils/enums/sort_option.dart';
 import '../../presentation/models/get_referral_user.dart';
 import '../../presentation/models/get_staking_history.dart';
 import '../model/PurchaseLogModel.dart';
-import '../model/ReferralUserListModel.dart';
-import 'package:intl/intl.dart';
+ import 'package:intl/intl.dart';
 
 class SortDataUseCase {
   List<StakingHistoryModel> call(List<StakingHistoryModel> data, SortOption option) {

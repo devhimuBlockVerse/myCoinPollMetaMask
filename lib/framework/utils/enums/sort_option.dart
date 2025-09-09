@@ -1,8 +1,6 @@
 enum SortOption { dateLatest, dateOldest}
 
-enum SortTransactionHistoryOption {
-  // dateLatest, dateOldest, statusAsc, statusDesc,
-  amountAsc, amountDesc, }
+enum SortTransactionHistoryOption { amountAsc, amountDesc, }
 
 enum SortPurchaseLogOption {
   dateLatest,
@@ -12,7 +10,6 @@ enum SortPurchaseLogOption {
 }
 
 enum SortReferralUserListOption {
-
   statusAsc,
   statusDesc,
 

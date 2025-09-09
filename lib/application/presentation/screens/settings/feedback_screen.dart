@@ -8,6 +8,7 @@ import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../framework/components/BlockButton.dart';
+import '../../../../framework/utils/enums/toast_type.dart';
 import '../../../data/services/api_service.dart';
 import '../../models/user_model.dart';
 
@@ -23,20 +24,44 @@ class FeedbackViewModel extends ChangeNotifier {
 
   List<File> get images => _images;
   bool get sending => _sending;
+  bool _loading = false;
+  bool get loading => _loading;
 
   /// Pick multiple images from gallery
   Future<void> pickImage() async {
     try {
+      _loading = true;
+      notifyListeners();
+
       final List<XFile>? pickedFiles = await _picker.pickMultiImage(
         imageQuality: 75,
       );
       if (pickedFiles != null && pickedFiles.isNotEmpty) {
-        _images.addAll(pickedFiles.map((xfile) => File(xfile.path)));
+        for (var xfile in pickedFiles){
+          if(_images.length >= 10){
+            ToastMessage.show(message: "You can only upload 10 images");
+            return;
+          }
+          final file = File(xfile.path);
+          final sizeInMb = await file.length() / (1024 * 1024);
+
+          if(sizeInMb > 7){
+            ToastMessage.show(message: "Image size should be less than 7 MB");
+            continue;
+          }
+          _images.add(file);
+        }
         notifyListeners();
+
+        // _images.addAll(pickedFiles.map((xfile) => File(xfile.path)));
+        // notifyListeners();
       }
     } catch (e) {
       print("Error picking images: $e");
       ToastMessage.show(message: "Failed to pick images");
+    }finally{
+      _loading = false;
+      notifyListeners();
     }
   }
 
@@ -72,7 +97,8 @@ class FeedbackViewModel extends ChangeNotifier {
 
     if (success) {
       ToastMessage.show(
-        gravity: CustomToastGravity.TOP,
+        type:MessageType.success,
+        gravity: CustomToastGravity.BOTTOM,
         message: 'Feedback submitted successfully!',
       );
       controller.clear();
@@ -83,7 +109,7 @@ class FeedbackViewModel extends ChangeNotifier {
     } catch (e) {
       print("Error submitFeedback: $e");
       ToastMessage.show(
-        gravity: CustomToastGravity.TOP,
+        gravity: CustomToastGravity.BOTTOM,
         message: 'Error: $e',
       );
     } finally {
@@ -289,10 +315,23 @@ class FeedbackScreenBody extends StatelessWidget {
               border: Border.all(color: Colors.white54),
             ),
             child: vm.images.isEmpty
-                ? const Center(
-              child: Text(
-                "Tap to upload screenshots",
-                style: TextStyle(color: Colors.white70, height: 1.5),
+                ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Tap to upload screenshots",
+                    style: TextStyle(color: Colors.white70, height: 1.5),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Max 10 images, each should be less than 7 MB",
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: screenWidth * 0.03,
+                    ),
+                  ),
+                ],
               ),
             )
                 : SizedBox(
@@ -306,7 +345,7 @@ class FeedbackScreenBody extends StatelessWidget {
                     children: [
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 6),
-                        width: screenWidth * 0.3,
+                        width: screenWidth * 0.28,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
@@ -334,6 +373,35 @@ class FeedbackScreenBody extends StatelessWidget {
                           ),
                         ),
                       ),
+                      // Loading overlay
+                      if (vm.loading)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black45,
+                            child: const Center(
+                              child: CircularProgressIndicator(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 4,
+                        left: 4,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${index + 1}/${vm.images.length}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
@@ -341,10 +409,22 @@ class FeedbackScreenBody extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 6),
+
+        // Optional: show remaining image count
+        if (vm.images.isNotEmpty)
+          Text(
+            'You can upload ${10 - vm.images.length} more image(s)',
+            style: TextStyle(
+              color: Colors.white38,
+              fontSize: screenWidth * 0.03,
+            ),
+          ),
+
+
       ],
     );
   }
-
 
   Widget _buildSubmitButton(
       double screenWidth, double screenHeight, double baseSize, FeedbackViewModel vm) {

@@ -41,7 +41,7 @@ class VestingWrapper extends StatefulWidget {
 class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAliveClientMixin {
   bool _isFetchingData = false;
   bool _hasInitialized = false;
-  WalletViewModel? _walletVM; // Store reference to avoid context access after dispose
+  WalletViewModel? _walletVM;
 
   bool isDisconnecting = false;
 

@@ -30,49 +30,44 @@ class ToastMessage {
       }
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (toastContextNavigatorKey.currentState?.mounted ?? false) {
-        final overlayState = toastContextNavigatorKey.currentState?.overlay;
-        if (overlayState == null) {
-          debugPrint('ToastMessage Error: Overlay state not available');
-          return;
-        }
-          overlayEntry = OverlayEntry(
-          builder: (context) => Positioned(
-            top: gravity == CustomToastGravity.TOP ? 50.0 : null,
-            bottom: gravity == CustomToastGravity.BOTTOM ? 50.0 : null,
-            left: 0,
-            right: 0,
-            child: Material(
-              color: Colors.transparent,
-              child: Center(
-                child: _ToastContent(
-                  message: message,
-                  subtitle: subtitle,
-                  type: type,
-                  gravity: gravity,
-                  duration: duration,
-                  overlayEntry: overlayEntry,
-                  onRemove: safeRemoveToast,
-                  remainingSeconds: remainingSeconds,
-                ),
+      final overlayState = toastContextNavigatorKey.currentState?.overlay;
+      if (overlayState == null) {
+        debugPrint('ToastMessage Error: Overlay state not available');
+        return;
+      }
+      overlayEntry = OverlayEntry(
+        builder: (context) => Positioned(
+          top: gravity == CustomToastGravity.TOP ? 50.0 : null,
+          bottom: gravity == CustomToastGravity.BOTTOM ? 50.0 : null,
+          left: 0,
+          right: 0,
+          child: Material(
+            color: Colors.transparent,
+            child: Center(
+              child: _ToastContent(
+                message: message,
+                subtitle: subtitle,
+                type: type,
+                gravity: gravity,
+                duration: duration,
+                overlayEntry: overlayEntry,
+                onRemove: safeRemoveToast,
+                remainingSeconds: remainingSeconds,
               ),
             ),
           ),
-        );
+        ),
+      );
 
-        overlayState.insert(overlayEntry);
+      overlayState.insert(overlayEntry);
 
-        Future.delayed(
-          Duration(seconds: duration == CustomToastLength.SHORT ? 2 : 4),
-              (){
-              safeRemoveToast();
-            },
-        );
-      } else {
-        debugPrint('ToastMessage Error: Navigator not mounted');
-      }
-    });
+      Future.delayed(
+        Duration(seconds: duration == CustomToastLength.SHORT ? 2 : 4),
+            (){
+          safeRemoveToast();
+        },
+      );
+
   }
 }
 

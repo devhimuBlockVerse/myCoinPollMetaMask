@@ -65,8 +65,6 @@ dependencies:
   connectivity_plus: ^6.1.5
   get: ^4.6.5
 
-#  sentry_flutter: ^9.6.0
-#  clarity_flutter: ^1.4.0
   logrocket_flutter: ^1.56.2
 
 

@@ -35,6 +35,7 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     'assets/icons/vesting.svg',
     'assets/icons/profileIcon.svg',
   ];
+
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
@@ -155,4 +156,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
 
 
 }
+
+
 

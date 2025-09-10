@@ -150,7 +150,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
       _visibleItems = List<bool>.filled(_transactionData.length, false);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         for (int i = 0; i < _transactionData.length; i++) {
-          Future.delayed(Duration(milliseconds: 80 * i), () {
+          Future.delayed(Duration(milliseconds: 280 * i), () {
             if (!mounted) return;
             setState(() {
               if (i < _visibleItems.length) _visibleItems[i] = true;
@@ -171,7 +171,7 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       for (int i = 0; i < _transactionData.length; i++) {
-        Future.delayed(Duration(milliseconds: 80 * i), () {
+        Future.delayed(Duration(milliseconds: 280 * i), () {
           if (!mounted) return;
           setState(() {
             if (i < _visibleItems.length) _visibleItems[i] = true;

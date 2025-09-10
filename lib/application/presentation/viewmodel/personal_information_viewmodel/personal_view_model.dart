@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PersonalViewModel extends ChangeNotifier {
@@ -31,32 +32,66 @@ class PersonalViewModel extends ChangeNotifier {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       _pickedImage = File(pickedFile.path);
-      print("✅ Image picked: ${_pickedImage!.path}");
-      notifyListeners();
+       notifyListeners();
     } else {
       print("⚠️ No image picked");
     }
   }
 
   // Save the current picked image path to SharedPreferences
+  // Future<void> saveImageToPrefs() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   if (_pickedImage != null) {
+  //     await prefs.setString('userImagePath', _pickedImage!.path);
+  //     _originalImagePath = _pickedImage!.path;
+  //    } else {
+  //     await prefs.remove('userImagePath');
+  //     _originalImagePath = null;
+  //     print("✅ Image path removed from SharedPreferences.");
+  //   }
+  // }
+
+
+
   Future<void> saveImageToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (_pickedImage != null) {
-      await prefs.setString('userImagePath', _pickedImage!.path);
-      _originalImagePath = _pickedImage!.path;
-      print("✅ Image path saved to SharedPreferences: ${_pickedImage!.path}");
+      final newPath = await saveImagePermanently(_pickedImage!);
+      await prefs.setString('userImagePath', newPath);
+      _pickedImage = File(newPath);
+      _originalImagePath = newPath;
     } else {
       await prefs.remove('userImagePath');
       _originalImagePath = null;
       print("✅ Image path removed from SharedPreferences.");
     }
+    notifyListeners();
   }
+
 
    bool hasImageChanged() {
     return _pickedImage?.path != _originalImagePath;
   }
 
 
+  void resetImageChange(){
+    if(_pickedImage!= null){
+      _originalImagePath = _pickedImage!.path;
+    }else{
+      _originalImagePath = null;
+    }
+    notifyListeners();
+  }
+
+
+  Future<String> saveImagePermanently(File image) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final fileName = image.path.split('/').last;
+    final newPath = '${directory.path}/profile_images/$fileName';
+    await Directory('${directory.path}/profile_images').create(recursive: true);
+    final newFile = await image.copy(newPath);
+    return newFile.path;
+  }
 
 
 }

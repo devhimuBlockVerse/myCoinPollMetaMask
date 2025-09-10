@@ -10,19 +10,14 @@ import '../../../../../framework/res/colors.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/sort_option.dart';
 import '../../../../data/services/api_service.dart';
-import '../../../../domain/constants/api_constants.dart';
-import '../../../../domain/model/PurchaseLogModel.dart';
+ import '../../../../domain/model/PurchaseLogModel.dart';
 import '../../../../domain/usecases/sort_data.dart';
 import '../../../../presentation/models/user_model.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import '../../../side_nav_bar.dart';
 import 'widget/purchase_card.dart';
-import 'package:http/http.dart'as http;
-
-
-
-
+ import 'package:intl/intl.dart';
 
 class PurchaseLogScreen extends StatefulWidget {
   const PurchaseLogScreen({super.key});
@@ -46,11 +41,15 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
   bool isLoading = true;
   String? errorMessage;
 
+  List<bool> _visibleItems = [];
+
+
 
   @override
   void initState() {
     super.initState();
     _fetchTransactions();
+
   }
 
   Future<void> _fetchTransactions() async {
@@ -96,8 +95,20 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
       setState(() {
         _originalData = logs;
         _transactionData = List.from(logs);
-      });
 
+        _visibleItems = List<bool>.filled(_transactionData.length, false);
+
+      });
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (int i = 0; i < _transactionData.length; i++) {
+          Future.delayed(Duration(milliseconds: 80 * i), () {
+            if (!mounted) return;
+            setState(() {
+              if (i < _visibleItems.length) _visibleItems[i] = true;
+            });
+          });
+        }
+      });
       print("Purchase logs fetched: ${logs.length}");
 
     } catch (e) {
@@ -116,12 +127,17 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
   void _applyFiltersAndSort() {
     String query = _searchController.text.toLowerCase().trim();
+    final DateFormat formatter = DateFormat('d MMMM yyyy');
 
     List<PurchaseLogModel> filtered = _originalData.where((tx) {
+      final formattedDate = formatter.format(DateTime.parse(tx.createdAt)).toLowerCase();
+
+
       return tx.hash.toLowerCase().contains(query) ||
           tx.buyer.toLowerCase().contains(query) ||
           tx.amount.toString().contains(query) ||
-          tx.createdAt.toLowerCase().contains(query) ||
+          // tx.createdAt.toLowerCase().contains(query) ||
+          formattedDate.contains(query) ||
           tx.icoStage.toLowerCase().contains(query);
     }).toList();
 
@@ -131,6 +147,18 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
 
     setState(() {
       _transactionData = filtered;
+      _visibleItems = List<bool>.filled(_transactionData.length, false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (int i = 0; i < _transactionData.length; i++) {
+          Future.delayed(Duration(milliseconds: 80 * i), () {
+            if (!mounted) return;
+            setState(() {
+              if (i < _visibleItems.length) _visibleItems[i] = true;
+            });
+          });
+        }
+      });
+
     });
   }
 
@@ -140,6 +168,18 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
       _currentSort = option;
       _applyFiltersAndSort();
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      for (int i = 0; i < _transactionData.length; i++) {
+        Future.delayed(Duration(milliseconds: 80 * i), () {
+          if (!mounted) return;
+          setState(() {
+            if (i < _visibleItems.length) _visibleItems[i] = true;
+          });
+        });
+      }
+    });
+
   }
   @override
   void dispose() {
@@ -353,7 +393,8 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                                 errorMessage!,
                                 style: const TextStyle(color: Colors.redAccent, fontSize: 16),
                               ),
-                            ) : _transactionData.isEmpty ? Center(
+                            ) :
+                            _transactionData.isEmpty ? Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -371,11 +412,14 @@ class _PurchaseLogScreenState extends State<PurchaseLogScreen> {
                                 ],
                               ),
                             ) : ListView.builder(
+                                  primary: false,
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemCount: _transactionData.length,
                                   itemBuilder: (context, index) {
-                                    return PurchaseCard(transaction: _transactionData[index]);
+                                    final visible = index < _visibleItems.length ? _visibleItems[index] : false;
+
+                                    return PurchaseCard(transaction: _transactionData[index],visible: visible ,index: index,);
                                   },
                                 ),
 

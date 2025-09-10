@@ -125,9 +125,14 @@ class _ListingFieldState extends State<ListingField> {
           // vertical: screenHeight * 0.012,
         ),
         decoration: ShapeDecoration(
-          color: const Color(0XFF101A29),
+          // color: const Color(0XFF101A29),
+          color: widget.readOnly ? Colors.black87.withOpacity(0.9) : const Color(0XFF101A29),
           shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 1.2, color: Color(0xFF141317)),
+            side:  BorderSide(
+                width: 1.2,
+                // color: Color(0xFF141317)
+                color: widget.readOnly ? Colors.white :  Color(0xFF141317)
+            ),
             borderRadius: BorderRadius.circular(responsiveBorderRadius),
           ),
           shadows: const [
@@ -218,7 +223,8 @@ class _ListingFieldState extends State<ListingField> {
                               fontWeight: FontWeight.w400,
                               fontSize: responsiveFontSize,
                               height: 1.6,
-                              color: Colors.white.withOpacity(0.9),
+                              color: widget.readOnly
+                                  ? Colors.white.withOpacity(0.5) : Colors.white.withOpacity(0.9),
                             ),
                               decoration: InputDecoration(
 

@@ -10,10 +10,12 @@ import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/ListingFields.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../../main.dart';
 import '../../../../domain/constants/api_constants.dart';
 import '../../../models/user_model.dart';
 import '../../../viewmodel/bottom_nav_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({super.key});
@@ -228,6 +230,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
         print(">> Profile update successful:");
         print(">>Profile Updated : $responseData");
+        await updateLogRocketUser(
+          prefs.getString('unique_id') ?? const Uuid().v4(),
+          updatedProfile['eth_address'] ?? 'unknown',
+          updatedProfile['username'] ?? 'unknown',
+        );
+
         ToastMessage.show(
           message: "Profile Updated",
           subtitle: "Your changes have been saved successfully.",
@@ -493,7 +501,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
 
                                     ListingField(
                                       controller: phoneNumberController,
-                                      labelText: 'Contract Number',
+                                      labelText: 'Contact Number',
                                       height: screenHeight * 0.05,
                                       expandable: false,
                                       keyboard: TextInputType.number,

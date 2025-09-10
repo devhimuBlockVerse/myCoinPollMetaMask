@@ -154,21 +154,20 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isUserBalanceLoading => _isUserBalanceLoading;
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
-  // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
-   static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4"; /// MAIN
+  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
+   // static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4"; /// MAIN
 
-   // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
-   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
+   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
+   // static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
 
-   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
-   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
+   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
+   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
 
-  // static const String STAKING_CONTRACT_ADDRESSLIVE = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake TEST
+  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake TEST
+  // static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake ,getMinimunStake , maximumStake
 
-  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake ,getMinimunStake , maximumStake
-
-  // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
-  static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
+  static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
+  // static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
   static const double ECM_PRICE_USD = 1.2;
   static const int ECM_DECIMALS = 18;
@@ -457,26 +456,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         return false;
       }
 
-      await logRocketTrackBlockChainEvent(
-        "WALLET_ACTION",
-        "connectWallet",
-        "",
-        true,
-        DateTime.now().difference(start).inMilliseconds,
-        extra: {"walletAddress": _walletAddress},
-      );
+      // await logRocketTrackBlockChainEvent(
+      //   "WALLET_ACTION",
+      //   "connectWallet",
+      //   "",
+      //   true,
+      //   DateTime.now().difference(start).inMilliseconds,
+      //   extra: {"walletAddress": _walletAddress},
+      // );
 
       return true;
 
     } catch (e,stack) {
-      await logRocketTrackBlockChainEvent(
-        "WALLET_ACTION",
-        "connectWallet",
-        "",
-        false,
-        DateTime.now().difference(start).inMilliseconds,
-        extra: {"error": e.toString()},
-      );
+      // await logRocketTrackBlockChainEvent(
+      //   "WALLET_ACTION",
+      //   "connectWallet",
+      //   "",
+      //   false,
+      //   DateTime.now().difference(start).inMilliseconds,
+      //   extra: {"error": e.toString()},
+      // );
        return _handleConnectionError(e);
     } finally {
       _isLoading = false;

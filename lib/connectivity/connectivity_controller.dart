@@ -50,26 +50,26 @@ class NetworkController extends GetxController{
 
       if (Get.isSnackbarOpen!) Get.closeCurrentSnackbar();
 
-      // Show brief back online snackbar
-      Get.rawSnackbar(
-        messageText: const Text(
-          'Back Online!',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        duration: const Duration(seconds: 3),
-        backgroundColor: Colors.green[400]!,
-        icon: const Icon(
-          Icons.wifi,
-          color: Colors.white,
-          size: 35,
-        ),
-        snackStyle: SnackStyle.GROUNDED,
-        margin: EdgeInsets.zero,
-      );
+      // // Show brief back online snackbar
+      // Get.rawSnackbar(
+      //   messageText: const Text(
+      //     'Back Online!',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: 14,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      //   duration: const Duration(seconds: 3),
+      //   backgroundColor: Colors.green[400]!,
+      //   icon: const Icon(
+      //     Icons.wifi,
+      //     color: Colors.white,
+      //     size: 35,
+      //   ),
+      //   snackStyle: SnackStyle.GROUNDED,
+      //   margin: EdgeInsets.zero,
+      // );
     }
   }
 }

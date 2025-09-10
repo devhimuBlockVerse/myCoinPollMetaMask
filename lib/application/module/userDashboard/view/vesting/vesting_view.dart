@@ -400,27 +400,27 @@ class _VestingViewState extends State<VestingView> {
     final vestingData = [
       {
         "image": "assets/images/vestingImg1.png",
-        "text": "Ensures a healthy token economy and reduces market dumps."
+        "text": "Vested users may gain early access to upcoming launches, airdrops, or governance participation."
       },
-      {
-        "image": "assets/images/moneyVesting.png",
-        "text": "Builds investor trust and shows project commitment"
-      },
+      // {
+      //   "image": "assets/images/moneyVesting.png",
+      //   "text": "Builds investor trust and shows project commitment"
+      // },
       {
         "image": "assets/images/vestingImg2.png",
-        "text": "Offers bonus rewards or reduced transaction fees."
+        "text": "Vesting may unlock special incentives such as bonus rewards, reduced fees, or priority in ecosystem benefits."
       },
       {
         "image": "assets/images/vestingImg3.png",
-        "text": "Prevents oversupply and maintains token value."
+        "text": "Vesting reduces sudden market oversupply, helping to stabilize ECM’s value and support long-term growth."
       },
       {
         "image": "assets/images/vestingImg4.png",
-        "text": "Encourages long-term investors and ecosystem strength."
+        "text": "Vesting builds a committed base of long-term holders, making the ECM ecosystem stronger together."
       },
       {
         "image": "assets/images/vestingImg5.png",
-        "text": "Provides priority in launches, airdrops, or governance."
+        "text": "Only vested tokens will be tradable once ECM is listed at the end of Q1 2026. Without vesting, your coins will remain non-tradable."
       },
     ];
 

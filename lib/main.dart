@@ -72,20 +72,40 @@ Future <void> main() async   {
   ));
 
   // Identify user (guest or logged in)
+  // LogRocket.identify(uniqueId, {
+  //   "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
+  //   "userName": prefs.getString('userName') ?? 'unknown',
+  // });
   LogRocket.identify(uniqueId, {
-    "walletAddress": prefs.getString('wallet_address') ?? 'unknown',
-    "userName": prefs.getString('userName') ?? 'unknown',
+    "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
+    "userName": prefs.getString('userName') ?? 'guest',
   });
 }
-Future<void> updateLogRocketUser(String userId, String walletAddress, String userName) async {
+// Future<void> updateLogRocketUser(String userId, String walletAddress, String userName) async {
+//   final prefs = await SharedPreferences.getInstance();
+//   await prefs.setString('unique_id', userId);
+//
+//   LogRocket.identify(userId, {
+//     "walletAddress": walletAddress,
+//     "userName": userName,
+//   });
+// }
+
+Future<void> updateLogRocketUser(
+    String userId, String walletAddress, String userName) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('unique_id', userId);
+  await prefs.setString('walletAddress', walletAddress);
+  await prefs.setString('userName', userName);
 
   LogRocket.identify(userId, {
     "walletAddress": walletAddress,
     "userName": userName,
   });
+
+  print("🔗 LogRocket user updated: $userName | $walletAddress");
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

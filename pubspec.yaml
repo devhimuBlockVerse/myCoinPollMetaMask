@@ -114,6 +114,7 @@ flutter:
     - assets/abi/ECMContractABI.json
     - assets/abi/AggregatorABI.json
     - assets/abi/VestingABI.json
+    - assets/abi/ExitingVestingABI.json
     - assets/images/tokens.png
     - assets/images/frame.png
     - assets/icons/copyImg.svg

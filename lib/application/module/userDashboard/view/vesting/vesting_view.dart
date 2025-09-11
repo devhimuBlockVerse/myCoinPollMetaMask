@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/existing_user_vesting.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
@@ -42,8 +43,9 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
   bool _isFetchingData = false;
   bool _hasInitialized = false;
   WalletViewModel? _walletVM;
-
   bool isDisconnecting = false;
+
+
 
   @override
   void initState() {
@@ -272,7 +274,6 @@ class _VestingViewState extends State<VestingView> {
         backgroundColor: Colors.transparent,
 
         body: SafeArea(
-          top: false,
           child: Container(
               width: screenWidth,
               height: screenHeight,
@@ -289,19 +290,49 @@ class _VestingViewState extends State<VestingView> {
               Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child:  Text(
-                      'ECM Vesting',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        // fontSize: 20
-                        fontSize: screenWidth * 0.05,
+                  // Align(
+                  //   alignment: Alignment.topCenter,
+                  //   child:  Text(
+                  //     'ECM Vesting',
+                  //     style: TextStyle(
+                  //       fontFamily: 'Poppins',
+                  //       color: Colors.white,
+                  //       fontWeight: FontWeight.w600,
+                  //       // fontSize: 20
+                  //       fontSize: screenWidth * 0.05,
+                  //     ),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/back_button.svg',
+                          color: Colors.white,
+                          width: screenWidth * 0.04,
+                          height: screenWidth * 0.04,
+                        ),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'ECM Vesting',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: screenWidth * 0.05,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.12),
+                    ],
                   ),
 
                   Expanded(
@@ -385,6 +416,7 @@ class _VestingViewState extends State<VestingView> {
               Color(0xFF1CD494)
             ],
             onTap: () {
+              Navigator.pop(context);
               Provider.of<DashboardNavProvider>(context, listen: false).setIndex(1);
             },
             iconPath: 'assets/icons/arrowIcon.svg',
@@ -467,6 +499,7 @@ class SleepPeriodScreen extends StatefulWidget {
   @override
   State<SleepPeriodScreen> createState() => _SleepPeriodScreenState();
 }
+
 class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   String balanceText = '...';
 
@@ -710,7 +743,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
         backgroundColor: Colors.transparent,
 
         body: SafeArea(
-          top: false,
           child: Container(
               width: screenWidth,
               height: screenHeight,
@@ -727,18 +759,48 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
               Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child:  Text(
-                      'ECM Vesting',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: screenWidth * 0.05,
+                  // Align(
+                  //   alignment: Alignment.topCenter,
+                  //   child:  Text(
+                  //     'ECM Vesting',
+                  //     style: TextStyle(
+                  //       fontFamily: 'Poppins',
+                  //       color: Colors.white,
+                  //       fontWeight: FontWeight.w600,
+                  //       fontSize: screenWidth * 0.05,
+                  //     ),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/back_button.svg',
+                          color: Colors.white,
+                          width: screenWidth * 0.04,
+                          height: screenWidth * 0.04,
+                        ),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'ECM Vesting',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: screenWidth * 0.05,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.12),
+                    ],
                   ),
 
                   Expanded(
@@ -1428,6 +1490,9 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   }
 
 }
+
+
+
 
 String _formatOverallDuration(Duration duration) {
   if (duration.inDays < 0) return "N/A";

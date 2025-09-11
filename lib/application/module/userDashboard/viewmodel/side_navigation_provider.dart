@@ -14,6 +14,8 @@ import '../../../presentation/viewmodel/wallet_view_model.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
 import '../view/transactions/transaction_screen.dart';
+import '../view/vesting/existing_user_vesting.dart';
+import '../view/vesting/vesting_view.dart';
 import 'dashboard_nav_provider.dart';
 
 class NavigationProvider extends ChangeNotifier {
@@ -39,7 +41,27 @@ class NavigationProvider extends ChangeNotifier {
   }
 
   List<NavItem> get drawerNavItems => [
+    NavItem(
+      id: 'vesting_options',
+      title: 'Vesting',
+      iconPath: 'assets/icons/vesting.svg',
+      subItems: [
+        NavItem(
+          id: 'vesting_ico',
+          title: 'ICO Vesting',
+          iconPath: 'assets/icons/ico.svg',
+          screenBuilder: (context) => const VestingWrapper(),
+        ),
+        NavItem(
+          id: 'vesting_existing_user',
+          title: 'Existing User Vesting',
+          iconPath: 'assets/icons/staking.svg',
+          screenBuilder: (context) => const ExistingUserVesting(),
+        ),
+      ],
+      onTap: null,
 
+    ),
     NavItem(
       id: 'purchase_log',
       title: 'Purchase Log',
@@ -48,13 +70,14 @@ class NavigationProvider extends ChangeNotifier {
 
     ),
 
-    NavItem(
-      id: 'transaction',
-      title: 'Transactions',
-      iconPath: 'assets/icons/transaction.svg',
-      screenBuilder: (context) => const TransactionScreen(),
 
-    ),
+    // NavItem(
+    //   id: 'transaction',
+    //   title: 'Transactions',
+    //   iconPath: 'assets/icons/transaction.svg',
+    //   screenBuilder: (context) => const TransactionScreen(),
+    //
+    // ),
 
 
     NavItem(
@@ -137,3 +160,9 @@ class NavigationProvider extends ChangeNotifier {
   ];
 }
 
+class DialogOption {
+  final String label;
+  final VoidCallback onTap;
+
+  DialogOption({required this.label, required this.onTap});
+}

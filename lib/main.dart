@@ -40,46 +40,46 @@ Future <void> main() async   {
   DependencyInjection.init();
 
 
-  // runApp(const MyApp());
+  runApp(const MyApp());
 
-  // Generate a guest UUID if none exists
-  final prefs = await SharedPreferences.getInstance();
-  String? uniqueId = prefs.getString('unique_id');
-  if (uniqueId == null) {
-    uniqueId = const Uuid().v4();
-    await prefs.setString('unique_id', uniqueId);
-  }
 
-  LogRocket.wrapAndInitialize(
-      LogRocketWrapConfiguration(
-        errorCaptureEnabled: true,
-        logCaptureEnabled: true,
-        networkCaptureEnabled: true,
-        getSessionUrl: (sessionUrl) {
-           print("LogRocket Session URL: $sessionUrl");
-        },
-
-      ),
-      LogRocketInitConfiguration(
-        appID: 'blockverse/mycoinpoll',
-        logLevel: LogRocketInternalLogLevel.verbose,
-        viewCaptureEnabled: true,
-        screenshotPixelRatio: 1.0
-      ), () => runApp(
-      LogRocketWidget(
-          child: MyApp()
-      )
-  ));
-
-  // Identify user (guest or logged in)
+  // final prefs = await SharedPreferences.getInstance();
+  // String? uniqueId = prefs.getString('unique_id');
+  // if (uniqueId == null) {
+  //   uniqueId = const Uuid().v4();
+  //   await prefs.setString('unique_id', uniqueId);
+  // }
+  //
+  // LogRocket.wrapAndInitialize(
+  //     LogRocketWrapConfiguration(
+  //       errorCaptureEnabled: true,
+  //       logCaptureEnabled: true,
+  //       networkCaptureEnabled: true,
+  //       getSessionUrl: (sessionUrl) {
+  //          print("LogRocket Session URL: $sessionUrl");
+  //       },
+  //
+  //     ),
+  //     LogRocketInitConfiguration(
+  //       appID: 'blockverse/mycoinpoll',
+  //       logLevel: LogRocketInternalLogLevel.verbose,
+  //       viewCaptureEnabled: true,
+  //       screenshotPixelRatio: 1.0
+  //     ), () => runApp(
+  //     LogRocketWidget(
+  //         child: MyApp()
+  //     )
+  // ));
+  //
+  // // Identify user (guest or logged in)
+  // // LogRocket.identify(uniqueId, {
+  // //   "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
+  // //   "userName": prefs.getString('userName') ?? 'unknown',
+  // // });
   // LogRocket.identify(uniqueId, {
   //   "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
-  //   "userName": prefs.getString('userName') ?? 'unknown',
+  //   "userName": prefs.getString('userName') ?? 'guest',
   // });
-  LogRocket.identify(uniqueId, {
-    "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
-    "userName": prefs.getString('userName') ?? 'guest',
-  });
 }
 // Future<void> updateLogRocketUser(String userId, String walletAddress, String userName) async {
 //   final prefs = await SharedPreferences.getInstance();

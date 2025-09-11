@@ -188,6 +188,104 @@ class _SideNavBarState extends State<SideNavBar> {
     final double itemFontSize = drawerWidth * 0.058;
     final double itemIconSize = drawerWidth * 0.09;
 
+    if (item.subItems != null && item.subItems!.isNotEmpty) {
+      // Handle parent item with sub-items using ExpansionTile
+      return Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: itemHorizontalPadding / 3,
+          vertical: drawerWidth * 0.02,
+        ),
+        decoration: BoxDecoration(
+          // image: DecorationImage(
+          //   // image: AssetImage(
+          //   //   isSelected || item.subItems!.any((subItem) => subItem.id == widget.currentScreenId)
+          //   //       ? 'assets/images/sideNavSelectedOptionsBg.png'
+          //   //       : 'assets/images/sideNavUnselectedOptionsBg.png',
+          //   // ),
+          //   fit: BoxFit.fill,
+          // ),
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent,
+          ),
+          child: ExpansionTile(
+            leading: SvgPicture.asset(
+              item.iconPath,
+              width: itemIconSize,
+              height: itemIconSize,
+              fit: BoxFit.scaleDown,
+            ),
+            title: Text(
+              item.title,
+              style: TextStyle(
+                color: isSelected || item.subItems!.any((subItem) => subItem.id == widget.currentScreenId)
+                    ? AppColors.navItemSelected
+                    : AppColors.navItemDefault,
+                fontSize: itemFontSize,
+                fontWeight: isSelected || item.subItems!.any((subItem) => subItem.id == widget.currentScreenId)
+                    ? FontWeight.w600
+                    : FontWeight.normal,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            children: item.subItems!.map((subItem) {
+              final bool isSubItemSelected = subItem.id == widget.currentScreenId;
+              return Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: itemHorizontalPadding,
+                  vertical: drawerWidth * 0.005,
+                ),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      isSubItemSelected
+                          ? 'assets/images/sideNavSelectedOptionsBg.png'
+                          : 'assets/images/sideNavUnselectedOptionsBg.png',
+                    ),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: itemHorizontalPadding * 0.5,
+                    vertical: drawerWidth * 0.001,
+                  ),
+                  leading: SvgPicture.asset(
+                    subItem.iconPath,
+                    width: itemIconSize * 0.8,
+                    height: itemIconSize * 0.8,
+                    fit: BoxFit.scaleDown,
+                  ),
+                  title: Text(
+                    subItem.title,
+                    style: TextStyle(
+                      color: isSubItemSelected ? AppColors.navItemSelected : AppColors.navItemDefault,
+                      fontSize: itemFontSize * 0.9,
+                      fontWeight: isSubItemSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(context);
+                    widget.onScreenSelected(subItem.id);
+                    if (subItem.screenBuilder != null) {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: subItem.screenBuilder!),
+                      );
+                    } else if (subItem.onTap != null) {
+                      subItem.onTap!(context);
+                    }
+                  },
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
+
     Widget navTile = ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: itemHorizontalPadding, vertical: drawerWidth * 0.001),
       leading: SvgPicture.asset(

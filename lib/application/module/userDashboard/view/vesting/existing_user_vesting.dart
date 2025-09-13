@@ -683,6 +683,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                       if (widget.onStartVestingComplete != null) {
                         await widget.onStartVestingComplete!();
                       }
+
                       await walletVm.getBalance();
 
                       if (mounted) {

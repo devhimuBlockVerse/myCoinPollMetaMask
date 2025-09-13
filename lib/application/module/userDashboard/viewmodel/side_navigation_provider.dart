@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
  import 'package:provider/provider.dart';
@@ -8,15 +7,10 @@ import '../../../domain/model/nav_item.dart';
 import '../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../presentation/screens/settings/feedback_screen.dart';
 import '../../../presentation/viewmodel/bottom_nav_provider.dart';
-import '../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../presentation/viewmodel/user_auth_provider.dart';
-import '../../../presentation/viewmodel/wallet_view_model.dart';
 import '../view/purchaseLog/purchase_log_screen.dart';
 import '../view/referralStat/referralStatScreen.dart';
-import '../view/transactions/transaction_screen.dart';
-import '../view/vesting/existing_user_vesting.dart';
 import '../view/vesting/vesting_view.dart';
-import 'dashboard_nav_provider.dart';
 
 class NavigationProvider extends ChangeNotifier {
   String _currentScreenId = 'milestone';
@@ -52,12 +46,7 @@ class NavigationProvider extends ChangeNotifier {
           iconPath: 'assets/icons/ico.svg',
           screenBuilder: (context) => const VestingWrapper(),
         ),
-        NavItem(
-          id: 'vesting_existing_user',
-          title: 'Existing User Vesting',
-          iconPath: 'assets/icons/staking.svg',
-          screenBuilder: (context) => const ExistingVestingWrapper(),
-        ),
+
       ],
       onTap: null,
 

@@ -109,26 +109,28 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
     return Scaffold(
       // backgroundColor: Color(0XFF01090B),
       backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          if (isReady)
-             FittedBox(
-              fit: BoxFit.contain,
-              child: SizedBox(
-                width: _videoController.value.size.width,
-                height: _videoController.value.size.height,
-                child: VideoPlayer(_videoController),
-              ),
-            )
-          else
-             const ColoredBox(color: Color(0xFF01090B)),
-
-           FadeTransition(
-            opacity: _fadeAnimation,
-            child: const ColoredBox(color: Colors.black),
-          ),
-        ],
+      body: SafeArea(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (isReady)
+               FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: _videoController.value.size.width,
+                  height: _videoController.value.size.height,
+                  child: VideoPlayer(_videoController),
+                ),
+              )
+            else
+               const ColoredBox(color: Color(0xFF01090B)),
+        
+             FadeTransition(
+              opacity: _fadeAnimation,
+              child: const ColoredBox(color: Colors.black),
+            ),
+          ],
+        ),
       ),
     );
   }

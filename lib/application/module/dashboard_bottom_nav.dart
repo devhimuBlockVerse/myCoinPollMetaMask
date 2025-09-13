@@ -22,7 +22,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     const DashboardScreen(),
     const ECMIcoScreen(),
     const StakingScreen(),
-    // const VestingWrapper(),
     const TransactionScreen(),
     const ProfileScreen(),
   ];
@@ -33,7 +32,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
     'assets/icons/dasboard.svg',
     'assets/icons/ico.svg',
     'assets/icons/staking.svg',
-    // 'assets/icons/vesting.svg',
     'assets/icons/transaction.svg',
     'assets/icons/profileIcon.svg',
   ];
@@ -103,8 +101,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                           navProvider.setIndex(index);
 
                           if (index == 3) {
-                            // walletVM.getVestingInformation();
-
 
                             if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
                              await walletVM.ensureModalWithValidContext(context);

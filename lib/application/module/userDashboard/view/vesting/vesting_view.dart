@@ -126,12 +126,6 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
         debugPrint('vestingAddress: ${walletVM.vestingAddress}');
         debugPrint('Vesting balance: ${walletVM.vestingContractBalance}');
 
-        if (walletVM.isLoading || walletVM.isSessionSettling) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-
         // Check if wallet is connected
         if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
           return Scaffold(
@@ -589,7 +583,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     if (!mounted) return;
 
     // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
-
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
     vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
     cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
@@ -714,12 +707,12 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
     final walletVm = Provider.of<WalletViewModel>(context);
 
-    if(walletVm.isLoading || walletVm.vestingAddress == null){
-      return const Scaffold(
-        backgroundColor: Color(0xFF01090B),
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
+    // if(walletVm.isLoading || walletVm.vestingAddress == null){
+    //   return const Scaffold(
+    //     backgroundColor: Color(0xFF01090B),
+    //     body: Center(child: CircularProgressIndicator()),
+    //   );
+    // }
 
     final bool isLoadingVestingData = vestingStartDate == null;
 
@@ -806,9 +799,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                         horizontal: screenWidth * 0.01,
                         vertical: screenHeight * 0.02,
                       ),
-                      child: isLoadingVestingData || walletVm.isLoading
-                          ? const Center(child: CircularProgressIndicator(color: Colors.white))
-                          : ScrollConfiguration(
+                      child: ScrollConfiguration(
                         behavior: const ScrollBehavior().copyWith(overscroll: false),
 
                         child: RefreshIndicator(
@@ -1193,7 +1184,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                           child: VestingDetailInfoRow(
                             iconPath: 'assets/icons/checkIcon.svg',
                             title: 'Claimed',
-                            // value: 'ECM 125.848',
                             value: 'ECM ${walletVM.vestInfo.released?.toStringAsFixed(6) ?? 'Loading ...'}',
                             iconSize: screenHeight *0.025,
 

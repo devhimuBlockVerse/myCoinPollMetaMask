@@ -231,15 +231,12 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
 
 }
 
-
-
 class VestingView extends StatefulWidget {
   const VestingView({super.key});
 
   @override
   State<VestingView> createState() => _VestingViewState();
 }
-
 
 class _VestingViewState extends State<VestingView> {
 
@@ -1064,8 +1061,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
   }
 
-
-
   Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context){
     const baseWidth = 335.0;
     const baseHeight = 1600.0;
@@ -1490,6 +1485,8 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   }
 
 }
+
+
 
 
 

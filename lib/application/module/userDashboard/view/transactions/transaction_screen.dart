@@ -263,35 +263,20 @@ class _TransactionScreenState extends State<TransactionScreen> {
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/icons/back_button.svg',
-                          color: Colors.white,
-                          width: screenWidth * 0.04,
-                          height: screenWidth * 0.04,
-                        ),
-                        onPressed: () => Navigator.pop(context),
+                  SizedBox(height: screenHeight * 0.02),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child:  Text(
+                      'Transactions',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        // fontSize: 20
+                        fontSize: screenWidth * 0.05,
                       ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            'Transactions',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: screenWidth * 0.05,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: screenWidth * 0.12),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
 
                   Expanded(

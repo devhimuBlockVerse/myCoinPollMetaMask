@@ -56,7 +56,7 @@ class NavigationProvider extends ChangeNotifier {
           id: 'vesting_existing_user',
           title: 'Existing User Vesting',
           iconPath: 'assets/icons/staking.svg',
-          screenBuilder: (context) => const ExistingUserVesting(),
+          screenBuilder: (context) => const ExistingVestingWrapper(),
         ),
       ],
       onTap: null,

@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:convert/convert.dart' as convert;
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-  import 'package:http/http.dart';
+import 'package:http/http.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:mycoinpoll_metamask/logrocket/logrocket_utils.dart';
  import 'package:reown_appkit/reown_appkit.dart';
@@ -15,6 +17,7 @@ import '../../../framework/utils/enums/toast_type.dart';
 import '../../domain/constants/api_constants.dart';
 import 'dart:typed_data';
 
+import '../../module/userDashboard/view/dashboard/dashboard_screen.dart';
 import '../../module/userDashboard/view/vesting/helper/vesting_info.dart';
 
 bool isUserRejectedError(Object error) {
@@ -3126,7 +3129,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   String? _existingVestingAddress;
   String? _existingVestingStatus;
 
-  final VestingInfo vestInfo = VestingInfo(
+  final IcoVestingInfo vestInfo = IcoVestingInfo(
+    start: 0,
+    cliff: 0,
+    duration: 0,
+    end: 0,
+    released: 0.0,
+    claimable: 0.0,
+  );
+  final ExistingVestingInfo existingVestInfo = ExistingVestingInfo(
     start: 0,
     cliff: 0,
     duration: 0,
@@ -5169,6 +5180,25 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         throw Exception("Wallet address not found.");
       }
 
+      final releasedFunction = vestingContract.findFunctionsByName('released').firstWhere((func) => func.parameters.isEmpty);
+      final releasedResult = await _web3Client!.call(
+          contract: vestingContract,
+          function: releasedFunction,
+          params: []
+      );
+      print("Raw released: ${releasedResult[0]}");
+      print('claimECM: Raw releasedResult = $releasedResult');
+
+      final releasedWei = releasedResult.length > 0 ? releasedResult[0] as BigInt : BigInt.zero;
+      if (releasedResult.length > 1) {
+        print('claimECM: Warning - Multiple values returned by released(): $releasedResult');
+      }
+
+      final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
+      final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
+      print('claimECM: Released amount = $releasedAmountFormatted');
+
+
       // 3. Request the transaction via the AppKitModal
       print('Attempting to claim ECM from vesting contract...');
       final txResult = await appKitModal!.requestWriteContract(
@@ -5179,7 +5209,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         transaction: Transaction(from: EthereumAddress.fromHex(walletAddress)),
         parameters: [],
       );
+      print('claimECM: Raw txResult = $txResult');
 
+      String? transactionHash;
+      if (txResult is String) {
+        transactionHash = txResult;
+      } else if (txResult is Map<String, dynamic> && txResult['code'] != null) {
+        throw Exception("Transaction failed: ${txResult['message']}");
+      } else {
+        throw Exception("Unknown transaction result format");
+      }
 
       await logRocketTrackBlockChainEvent(
         "TRANSACTION",
@@ -5187,14 +5226,35 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _vestingAddress!,
         true,
         DateTime.now().difference(start).inMilliseconds,
-        transactionHash: txResult,
+        transactionHash: transactionHash,
         extra: {
           "walletAddress": walletAddress,
           "vestingAddress": _vestingAddress!,
         },
       );
 
-      print('Transaction Hash: $txResult');
+      print('Transaction Hash: $transactionHash');
+
+      const payloadApi = API_ENDPOINT;
+      //  API call to log claim history
+      final payload = {
+        "amount": releasedAmountFormatted,
+        "wallet_address": walletAddress,
+        "hash": txResult,
+        "type": "ICO_Vesting",
+      };
+
+      final response = await http.post(
+        Uri.parse('$payloadApi/vesting-claim'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200) {
+        print('Claim history logged successfully');
+      } else {
+        print('Failed to log claim history: ${response.body}');
+      }
 
       ToastMessage.show(
         message: "Your ECM tokens have been claimed successfully.",
@@ -5226,6 +5286,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           ? "Transaction rejected by user."
           : "Claim failed. Please try again.";
 
+      print('CLAIM Button : ${errorMessage}');
       ToastMessage.show(
         message: "Claim Failed",
         subtitle: errorMessage,
@@ -5263,12 +5324,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         params: [],
       );
 
+      print('refreshVesting: Raw releasedResult = $releasedResult'); // Debug the full result
       // Convert the BigInt to a double and format to 6 decimal places,
-      final releasedWei = releasedResult[0] as BigInt;
-
+      final releasedWei = releasedResult.length > 0 ? releasedResult[0] as BigInt : BigInt.zero;
+      if (releasedResult.length > 1) {
+        print('refreshVesting: Warning - Multiple values returned by released(): $releasedResult');
+      }
       final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
-
       final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
+
+
+      // final releasedWei = releasedResult[0] as BigInt;
+      //
+      // final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
+      //
+      // final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
 
       await logRocketTrackBlockChainEvent(
         "CONTRACT_CALL",
@@ -5285,6 +5355,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       // Update Vesting Info Model to reflect new data
       vestInfo.released = releasedEther;
+      print('claimECM: Raw releasedResult = ${vestInfo.released}');
 
       ToastMessage.show(
         message: "Vesting Refreshed",
@@ -5519,7 +5590,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
       // Refresh vesting information
       await getExistingVestingInformation();
-      print('Post-vesting state: existingVestingStatus = $_existingVestingStatus, vestInfo = $vestInfo');
+      print('Post-vesting state: existingVestingStatus = $_existingVestingStatus, vestInfo = $existingVestInfo');
 
       return vestingTxHash;
 
@@ -5559,7 +5630,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   Future<void> getExistingVestingInformation() async {
     if (!_isConnected || _walletAddress.isEmpty) {
-      print('getExistingVestingInformation: Wallet not connected or address empty'); // Debug
+      print('getExistingVestingInformation: Wallet not connected or address empty');
       return;
     }
     _isLoading = true;
@@ -5592,7 +5663,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         );
 
         print('getVestingSchedulesCount raw countResult: $countResult');
-        count = countResult[0] as BigInt;
+        count = countResult[0] is BigInt ? countResult[0] as BigInt : BigInt.from(countResult[0]);
         print('getExistingVestingInformation: Vesting schedules count = $count');
         if (count == BigInt.zero && retryCount < maxRetries) {
           await Future.delayed(const Duration(seconds: 2));
@@ -5615,21 +5686,41 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
 
       if(count > BigInt.zero){
-        print('getExistingVestingInformation: Count > 0, resolving vested start');
         // Step 2: Resolve details from last schedule
         await resolveExistingVestedStart(vestingContract);
-      }else{
+        final vestingIdFunction = vestingContract.function('computeVestingScheduleIdForAddressAndIndex');
+        final vestingIdResult = await _web3Client!.call(
+          contract: vestingContract,
+          function: vestingIdFunction,
+          params: [EthereumAddress.fromHex(_walletAddress), BigInt.zero],
+        );
+        //  Compute vestingId (bytes32) and handle as byte array
+        final vestingIdBytes = vestingIdResult[0] as Uint8List;
+
+        final releasableFunction = vestingContract.function('computeReleasableAmount');
+        final releasableBnResult = await _web3Client!.call(
+          contract: vestingContract,
+          function: releasableFunction,
+          params: [vestingIdBytes],
+        );
+
+        final releasableBn = releasableBnResult[0] as BigInt; // Directly cast as BigInt
+        final releasable = EtherAmount.fromBigInt(EtherUnit.wei, releasableBn).getValueInUnit(EtherUnit.ether).toDouble();
+        print('getExistingVestingInformation: Computed releasable = $releasable');
+        existingVestInfo.claimable = releasable;
+
+       }else{
         print('getExistingVestingInformation: No vesting schedules (count=0)');
         // No vesting schedules
         _existingVestingAddress = null;
         _existingVestingStatus = null;
-        vestInfo.start = 0;
-        vestInfo.cliff = 0;
-        vestInfo.duration = 0;
-        vestInfo.end = 0;
-        vestInfo.released = 0.0;
-        vestInfo.claimable = 0.0;
-        vestInfo.totalVestingAmount = 0.0;
+        existingVestInfo.start = 0;
+        existingVestInfo.cliff = 0;
+        existingVestInfo.duration = 0;
+        existingVestInfo.end = 0;
+        existingVestInfo.released = 0.0;
+        existingVestInfo.claimable = 0.0;
+        existingVestInfo.totalVestingAmount = 0.0;
         notifyListeners();
       }
 
@@ -5653,85 +5744,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       _existingVestingAddress = null;
       _existingVestingStatus = null;
-      vestInfo.start = 0;
-      vestInfo.cliff = 0;
-      vestInfo.duration = 0;
-      vestInfo.end = 0;
-      vestInfo.released = 0.0;
-      vestInfo.claimable = 0.0;
-      vestInfo.totalVestingAmount = 0.0;
+      existingVestInfo.start = 0;
+      existingVestInfo.cliff = 0;
+      existingVestInfo.duration = 0;
+      existingVestInfo.end = 0;
+      existingVestInfo.released = 0.0;
+      existingVestInfo.claimable = 0.0;
+      existingVestInfo.totalVestingAmount = 0.0;
       notifyListeners();
 
     }
-  }
-
-  Future<void> getVestingSchedulesCount()async{
-    if(_isLoading || !_isConnected) return;
-
-    _isLoading = true;
-    notifyListeners();
-    final start = DateTime.now();
-
-
-    try{
-      final chainId = getChainIdForRequests();
-      if (chainId == null) throw Exception('Chain ID is not available.');
-
-      final vestingAbiString = await rootBundle.loadString("assets/abi/ExitingVestingABI.json");
-      final vestingAbiData = jsonDecode(vestingAbiString);
-
-      final vestingContract = DeployedContract(
-        ContractAbi.fromJson(jsonEncode(vestingAbiData), 'ECMcoinVesting'),
-        EthereumAddress.fromHex(EXITING_VESTING_ADDRESS),
-      );
-
-      final countResult = await _web3Client!.call(
-        contract: vestingContract,
-        function: vestingContract.function('getVestingSchedulesCountByBeneficiary'),
-        params: [EthereumAddress.fromHex(_walletAddress)],
-      );
-      // final count = countResult[0] as BigInt;
-      final count = countResult as BigInt;
-      print('getVestingSchedulesCount countResult:$count');
-      await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
-        "getVestingSchedulesCountByBeneficiary",
-        EXITING_VESTING_ADDRESS,
-        true,
-        DateTime.now().difference(start).inMilliseconds,
-        extra: {
-          "walletAddress": _walletAddress,
-          "count": count.toString(),
-        },
-      );
-      if (count > BigInt.zero) {
-        await _resolveVestedStart(EthereumAddress.fromHex(EXITING_VESTING_ADDRESS));
-      } else {
-        _existingVestingAddress = null;
-        _existingVestingStatus = null;
-        notifyListeners();
-      }
-
-    }catch(e){
-      await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
-        "getVestingSchedulesCountByBeneficiary",
-        EXITING_VESTING_ADDRESS,
-        false,
-        DateTime.now().difference(start).inMilliseconds,
-        extra: {
-          "error": e.toString(),
-          "walletAddress": _walletAddress,
-        },
-      );
-      _existingVestingAddress = null;
-      _existingVestingStatus = null;
-      notifyListeners();
-    }finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-
   }
 
   Future<void> resolveExistingVestedStart(DeployedContract vestingContract)async{
@@ -5748,8 +5770,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         return;
       }
 
+
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // Current Unix timestamp (~1757548800 on Sep 11, 2025)
-      print('resolveExistingVestedStart: Current now timestamp = $now');
+       print('resolveExistingVestedStart: Current now timestamp = $now');
 
       final scheduleResult = await _web3Client!.call(
           contract: vestingContract,
@@ -5762,35 +5785,52 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('resolveExistingVestedStart: Raw schedule result = $scheduleResult');
       final schedule = scheduleResult[0] as List; // Get the inner array
 
-      final cliffBn = schedule[1] as BigInt;
-      final startBn = schedule[2] as BigInt;
-      final durationBn = schedule[3] as BigInt;
-      final totalVestingAmountBn = schedule[5] as BigInt;
-      final releasedBn = schedule[6] as BigInt;
+      /// Safely cast to BigInt, handling potential byte array or numeric types
+      final cliffBn = schedule[1] is BigInt ? schedule[1] as BigInt : BigInt.from(schedule[1]);
+      final startBn = schedule[2] is BigInt ? schedule[2] as BigInt : BigInt.from(schedule[2]);
+      final durationBn = schedule[3] is BigInt ? schedule[3] as BigInt : BigInt.from(schedule[3]);
+      final totalVestingAmountBn = schedule[5] is BigInt ? schedule[5] as BigInt : BigInt.from(schedule[5]);
+      final releasedBn = schedule[6] is BigInt ? schedule[6] as BigInt : BigInt.from(schedule[6]);
 
 
-      final startVal = 1757674940; // Current timestamp for Testing
-      // final startVal = (startBn).toInt();
-      print('resolveExistingVestedStart: Parsed startVal = $startVal');
-      const cliff = 1757674940;
-      // final cliff = (cliffBn).toInt();
+      final startVal = (startBn).toInt();
+       print('resolveExistingVestedStart: Parsed startVal = $startVal');
+      // Override startVal to yesterday if it's in the future
+      final adjustedStartVal = startVal > now ? DateTime.now().toUtc().subtract(const Duration(days: 1)).millisecondsSinceEpoch ~/ 1000 : startVal;
+      print('resolveExistingVestedStart: Adjusted startVal = $adjustedStartVal');
+      final cliff = (cliffBn).toInt();
       final duration = (durationBn).toInt();
-      final end = startVal + duration;
+      // final end = startVal + duration;
+      final end = adjustedStartVal + duration;
       final released = EtherAmount.fromBigInt(EtherUnit.wei, releasedBn).getValueInUnit(EtherUnit.ether).toDouble();
       final totalVestingAmount = EtherAmount.fromBigInt(EtherUnit.wei, totalVestingAmountBn).getValueInUnit(EtherUnit.ether).toDouble();
       final claimable = 0.0;
 
-      print("resolveExistingVestedStart :: Existing vesting details: start=$startVal, cliff=$cliff, duration=$duration, end=$end, released=$released, total=$totalVestingAmount");
+      print("resolveExistingVestedStart: "
+          "Existing vesting details: "
+          // "start=$startVal,"
+          "start=$adjustedStartVal,"
+          " cliff=$cliff,"
+          " duration=$duration,"
+          " end=$end,"
+          " released=$released,"
+          " total=$totalVestingAmount");
 
-      vestInfo.start = startVal;
-      vestInfo.cliff = cliff;
-      vestInfo.duration = duration;
-      vestInfo.end = end;
-      vestInfo.released = released;
-      vestInfo.claimable = claimable;
-      vestInfo.totalVestingAmount = totalVestingAmount;
+      // existingVestInfo.start = startVal;
+      existingVestInfo.start = adjustedStartVal;
+      existingVestInfo.cliff = cliff;
+      existingVestInfo.duration = duration;
+      existingVestInfo.end = end;
+      existingVestInfo.released = released;
+      existingVestInfo.claimable = claimable;
+      existingVestInfo.totalVestingAmount = totalVestingAmount;
 
-      final status = startVal > now ? 'locked' : 'process';
+      // final status = startVal > now ? 'locked' : 'process';
+      // Determine status based on adjusted start
+      final status = adjustedStartVal > now ? 'locked' : 'process';
+      print('resolveExistingVestedStart: Setting status = $status (start $adjustedStartVal vs now $now)');
+
+
       print('resolveExistingVestedStart: Setting status = $status (start $startVal vs now $now)');
 
 
@@ -5841,6 +5881,149 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  // Future<void> releaseECM(BuildContext context) async {
+  //   if (_isLoading || !_isConnected) return;
+  //
+  //   _isLoading = true;
+  //   notifyListeners();
+  //   final start = DateTime.now();
+  //
+  //   try {
+  //     // 1. Load ABI and create DeployedContract instance
+  //     final abiString = await rootBundle.loadString("assets/abi/ExitingVestingABI.json");
+  //     final abiData = jsonDecode(abiString);
+  //     final vestingContract = DeployedContract(
+  //       ContractAbi.fromJson(jsonEncode(abiData), 'ECMcoinVesting'),
+  //       EthereumAddress.fromHex(EXITING_VESTING_ADDRESS),
+  //     );
+  //
+  //     // 2. Get chain and wallet details
+  //     final chainId = getChainIdForRequests();
+  //     if (chainId == null) {
+  //       throw Exception("Selected chain not available.");
+  //     }
+  //     final nameSpace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+  //     final walletAddress = appKitModal!.session!.getAddress(nameSpace);
+  //     if (walletAddress == null) {
+  //       throw Exception("Wallet address not found.");
+  //     }
+  //
+  //     // 3. Compute vestingId
+  //     final vestingIdFunction = vestingContract.function('computeVestingScheduleIdForAddressAndIndex');
+  //     final vestingIdResult = await _web3Client!.call(
+  //       contract: vestingContract,
+  //       function: vestingIdFunction,
+  //       params: [EthereumAddress.fromHex(walletAddress), BigInt.zero],
+  //     );
+  //     final vestingIdBytes = vestingIdResult[0] as Uint8List;
+  //
+  //
+  //     final function = vestingContract.function('computeReleasableAmount');
+  //     final releasableBnResult = await _web3Client!.call(
+  //       contract: vestingContract,
+  //       function: function,
+  //       params: [vestingIdBytes],
+  //     );
+  //
+  //     print('releaseECM: Raw releasableBnResult = $releasableBnResult');
+  //     final releasableBn = releasableBnResult[0] as BigInt; // Directly cast as BigInt
+  //
+  //     final releasable = EtherAmount.fromBigInt(EtherUnit.wei, releasableBn).getValueInUnit(EtherUnit.ether).toDouble();
+  //     print('releaseECM:  claimable = $releasable');
+  //
+  //
+  //     // 4. Request the release transaction
+  //     print('Attempting to release ECM from vesting contract...');
+  //     final txResult = await appKitModal!.requestWriteContract(
+  //       topic: appKitModal!.session!.topic,
+  //       chainId: chainId,
+  //       deployedContract: vestingContract,
+  //       functionName: 'release',
+  //       transaction: Transaction(from: EthereumAddress.fromHex(walletAddress)),
+  //       // parameters: [vestingIdBytes, BigInt.from(releasable * pow(10, 18))]
+  //       parameters: [vestingIdBytes, releasableBn],
+  //     );
+  //
+  //     // 5. Log the transaction
+  //     await logRocketTrackBlockChainEvent(
+  //       "TRANSACTION",
+  //       "release",
+  //       _existingVestingAddress!,
+  //       true,
+  //       DateTime.now().difference(start).inMilliseconds,
+  //       transactionHash: txResult,
+  //       extra: {
+  //         "walletAddress": walletAddress,
+  //         "vestingAddress": _existingVestingAddress!,
+  //         "amount": releasable.toString(),
+  //       },
+  //     );
+  //
+  //     print('Transaction Hash: $txResult');
+  //
+  //     const payloadApi = API_ENDPOINT;
+  //     // 6. API call to log claim history
+  //     final payload = {
+  //       "amount": releasable.toString(),
+  //       "wallet_address": walletAddress,
+  //       "hash": txResult,
+  //       "type": "Exiting_Vesting",
+  //     };
+  //
+  //     final response = await http.post(
+  //       Uri.parse('$payloadApi/vesting-claim'),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode(payload),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       print('Claim history logged successfully');
+  //     } else {
+  //       print('Failed to log claim history: ${response.body}');
+  //     }
+  //
+  //     ToastMessage.show(
+  //       message: "Your ECM tokens have been released successfully.",
+  //       subtitle: "Transaction hash: $txResult.",
+  //       type: MessageType.success,
+  //       duration: CustomToastLength.LONG,
+  //       gravity: CustomToastGravity.BOTTOM,
+  //     );
+  //
+  //     // 7. Refresh vesting data
+  //     await getExistingVestingInformation();
+  //   } catch (e, stackTrace) {
+  //     await logRocketTrackBlockChainEvent(
+  //       "TRANSACTION",
+  //       "release",
+  //       _existingVestingAddress ?? "unknown",
+  //       false,
+  //       DateTime.now().difference(start).inMilliseconds,
+  //       extra: {
+  //         "error": e.toString(),
+  //         "walletAddress": _walletAddress,
+  //         "vestingAddress": _existingVestingAddress ?? "none",
+  //       },
+  //     );
+  //
+  //     print('Error during releaseECM: $e');
+  //     final errorMessage = e.toString().contains("User rejected")
+  //         ? "Transaction rejected by user."
+  //         : "Release failed. Please try again.";
+  //
+  //     ToastMessage.show(
+  //       message: "Release Failed",
+  //       subtitle: errorMessage,
+  //       type: MessageType.error,
+  //       duration: CustomToastLength.LONG,
+  //       gravity: CustomToastGravity.BOTTOM,
+  //     );
+  //   } finally {
+  //     _isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+///
   Future<void> releaseECM(BuildContext context) async {
     if (_isLoading || !_isConnected) return;
 
@@ -5868,35 +6051,45 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         throw Exception("Wallet address not found.");
       }
 
-      // 3. Compute releasable amount
-      final vestingId = existingVestingAddress;
-      if (vestingId == null) {
-        throw Exception("Missing vestingId");
-      }
-
-      final function = vestingContract.function('computeReleasableAmount');
-      final releasableBn = await _web3Client!.call(
+      // 3. Compute vestingId
+      final vestingIdFunction = vestingContract.function('computeVestingScheduleIdForAddressAndIndex');
+      final vestingIdResult = await _web3Client!.call(
         contract: vestingContract,
-        function: function,
-        params: [BigInt.parse(vestingId)],
+        function: vestingIdFunction,
+        params: [EthereumAddress.fromHex(walletAddress), BigInt.zero],
       );
-      final releasable = EtherAmount.fromBigInt(EtherUnit.wei, releasableBn[0]).getValueInUnit(EtherUnit.ether).toDouble();
+      final vestingIdBytes = vestingIdResult[0] as Uint8List;
+      print('releaseECM: Computed vestingIdBytes = ${bytesToHex(vestingIdBytes)}');
+
+      // 4. Compute releasable amount
+      final releasableFunction = vestingContract.function('computeReleasableAmount');
+      final releasableBnResult = await _web3Client!.call(
+        contract: vestingContract,
+        function: releasableFunction,
+        params: [vestingIdBytes],
+      );
+      print('releaseECM: Raw releasableBnResult = $releasableBnResult');
+      final releasableBn = releasableBnResult[0] as BigInt;
+      final releasable = EtherAmount.fromBigInt(EtherUnit.wei, releasableBn).getValueInUnit(EtherUnit.ether).toDouble();
+      print('releaseECM: Releasable amount in ether = $releasable');
+
+      // 5. Validate releasable amount
       if (releasable <= 0) {
-        throw Exception("Nothing to release right now.");
+        throw Exception("No ECM available for release.");
       }
 
-      // 4. Request the release transaction
+      // 6. Request the release transaction
       print('Attempting to release ECM from vesting contract...');
-      final txResult = await appKitModal!.requestWriteContract(
+       final txResult = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: chainId,
         deployedContract: vestingContract,
         functionName: 'release',
         transaction: Transaction(from: EthereumAddress.fromHex(walletAddress)),
-        parameters: [BigInt.parse(vestingId), BigInt.from(releasable * pow(10, 18))],
+        parameters: [vestingIdBytes,releasableBn], // Check ABI if amount is needed
       );
 
-      // 5. Log the transaction
+      // 7. Log the transaction
       await logRocketTrackBlockChainEvent(
         "TRANSACTION",
         "release",
@@ -5914,18 +6107,20 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('Transaction Hash: $txResult');
 
       const payloadApi = API_ENDPOINT;
-      // 6. API call to log claim history
+      // 8. API call to log claim history
       final payload = {
         "amount": releasable.toString(),
         "wallet_address": walletAddress,
         "hash": txResult,
-        "type": "Exiting_vesting",
+        "type": "Exiting_Vesting",
       };
+
       final response = await http.post(
         Uri.parse('$payloadApi/vesting-claim'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(payload),
       );
+
       if (response.statusCode == 200) {
         print('Claim history logged successfully');
       } else {
@@ -5940,8 +6135,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         gravity: CustomToastGravity.BOTTOM,
       );
 
-      // 7. Refresh vesting data
-      await refreshVesting();
+      // 9. Refresh vesting data
+      await getExistingVestingInformation();
     } catch (e, stackTrace) {
       await logRocketTrackBlockChainEvent(
         "TRANSACTION",
@@ -5951,14 +6146,17 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         DateTime.now().difference(start).inMilliseconds,
         extra: {
           "error": e.toString(),
+          "stackTrace": stackTrace.toString(),
           "walletAddress": _walletAddress,
           "vestingAddress": _existingVestingAddress ?? "none",
         },
       );
 
-      print('Error during releaseECM: $e');
+      print('Error during releaseECM: $e\nStackTrace: $stackTrace');
       final errorMessage = e.toString().contains("User rejected")
           ? "Transaction rejected by user."
+          : e.toString().contains("No ECM available")
+          ? "No ECM available for release."
           : "Release failed. Please try again.";
 
       ToastMessage.show(
@@ -5974,121 +6172,82 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  // Future<void> resolveExistingVestedStart(DeployedContract vestingContract)async{
-  //   final startTime = DateTime.now();
+
+  // Getter to calculate the total amount of ECM vested so far
+  // double get existingVestedAmount {
+  //   if (existingVestInfo.start == 0 || existingVestInfo.end == 0 || balance == null) return 0.0;
   //
-  //   try{
-  //     print("Resolving existing vesting for wallet: $_walletAddress");
+  //   final nowSec = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  //   final start = existingVestInfo.start;
+  //   final end = existingVestInfo.end;
+  //   final duration = existingVestInfo.duration;
   //
-  //     if(_web3Client == null){
-  //       print('resolveExistingVestedStart: Web3Client null');
-  //       _existingVestingAddress = null;
-  //       _existingVestingStatus = null;
-  //       notifyListeners();
-  //       return;
-  //     }
-  //
-  //     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000; // Current Unix timestamp (~1757548800 on Sep 11, 2025)
-  //     print('resolveExistingVestedStart: Current now timestamp = $now');
-  //
-  //     final scheduleResult = await _web3Client!.call(
-  //         contract: vestingContract,
-  //         function: vestingContract.function('getLastVestingScheduleForHolder'),
-  //         params: [EthereumAddress.fromHex(_walletAddress)]
-  //     );
-  //
-  //     print('resolveExistingVestedStart: Raw schedule result = $scheduleResult');
-  //
-  //     final cliffBn = scheduleResult[1] as BigInt;
-  //     final startBn = scheduleResult[2] as BigInt;
-  //     final durationBn = scheduleResult[3] as BigInt;
-  //     final totalVestingAmountBn = scheduleResult[5] as BigInt;
-  //     final releasedBn = scheduleResult[6] as BigInt;
+  //   final totalVestingECM = double.tryParse(balance!) ?? 0.0;
   //
   //
-  //     final startVal = (startBn).toInt();
-  //     print('resolveExistingVestedStart: Parsed startVal = $startVal');
-  //     final cliff = (cliffBn).toInt();
-  //     final duration = (durationBn).toInt();
-  //     final end = startVal + duration;
-  //     final released = EtherAmount.fromBigInt(EtherUnit.wei, releasedBn).getValueInUnit(EtherUnit.ether).toDouble();
-  //     final totalVestingAmount = EtherAmount.fromBigInt(EtherUnit.wei, totalVestingAmountBn).getValueInUnit(EtherUnit.ether).toDouble();
-  //     final claimable = 0.0;
-  //
-  //     print("resolveExistingVestedStart :: Existing vesting details: start=$startVal, cliff=$cliff, duration=$duration, end=$end, released=$released, total=$totalVestingAmount");
-  //
-  //     vestInfo.start = startVal;
-  //     vestInfo.cliff = cliff;
-  //     vestInfo.duration = duration;
-  //     vestInfo.end = end;
-  //     vestInfo.released = released;
-  //     vestInfo.claimable = claimable;
-  //     vestInfo.totalVestingAmount = totalVestingAmount;
-  //
-  //     final status = startVal > now ? 'locked' : 'process';
-  //     print('resolveExistingVestedStart: Setting status = $status (start $startVal vs now $now)');
-  //
-  //
-  //     _existingVestingStatus = status;
-  //     _existingVestingAddress = EXITING_VESTING_ADDRESS;
-  //
-  //     await logRocketTrackBlockChainEvent(
-  //       "VESTING_DURATIONS",
-  //       "resolveExistingVestedStart",
-  //       EXITING_VESTING_ADDRESS,
-  //       true,
-  //       DateTime.now().difference(startTime).inMilliseconds,
-  //       extra: {
-  //         "walletAddress": _walletAddress,
-  //         "vestingAddress": EXITING_VESTING_ADDRESS,
-  //         "start": startVal.toString(),
-  //         "cliff": cliff.toString(),
-  //         "duration": duration.toString(),
-  //         "end": end.toString(),
-  //         "released": released.toString(),
-  //         "totalVestingAmount": totalVestingAmount.toString(),
-  //       },
-  //     );
-  //
-  //     notifyListeners();
-  //
-  //   }catch(e){
-  //     print('resolveExistingVestedStart Error: $e');
-  //     if (e.toString().contains('function does not exist') || e.toString().contains('revert')) {
-  //       print('ABI/Function mismatch - Check ExitingVestingABI.json for getLastVestingScheduleForHolder');
-  //     }
-  //     await logRocketTrackBlockChainEvent(
-  //       "VESTING_DURATIONS",
-  //       "resolveExistingVestedStart",
-  //       EXITING_VESTING_ADDRESS,
-  //       false,
-  //       DateTime.now().difference(startTime).inMilliseconds,
-  //       extra: {
-  //         "error": e.toString(),
-  //         "walletAddress": _walletAddress,
-  //         "vestingAddress": EXITING_VESTING_ADDRESS,
-  //       },
-  //     );
-  //
-  //     _existingVestingAddress = null;
-  //     _existingVestingStatus = null;
-  //     notifyListeners();
+  //   debugPrint('existingVestedAmount: nowSec=$nowSec, start=$start, end=$end, duration=$duration, totalVestingECM=$totalVestingECM');
+  //   if (nowSec <= start!) {
+  //     debugPrint('existingVestedAmount: Vesting not started, returning 0.0');
+  //     return 0.0;
   //   }
+  //   if (nowSec >= end!) {
+  //     debugPrint('existingVestedAmount: Vesting complete, returning $totalVestingECM');
+  //     return totalVestingECM;
+  //   }
+  //
+  //   final elapsed = nowSec - start;
+  //   final calculatedAmount = (totalVestingECM * elapsed) / duration!;
+  //   debugPrint('existingVestedAmount: elapsed=$elapsed, calculatedAmount=$calculatedAmount');
+  //   return double.parse(calculatedAmount.toStringAsFixed(6));
+  // }
+  // Getter to calculate the amount of ECM available for claim
+  // double get availableClaimableAmountForExistingUser {
+  //   final vested = existingVestedAmount;
+  //   final released = existingVestInfo.released;
+  //   final available = vested - released!;
+  //   debugPrint('availableClaimableAmountForExistingUser: vested=$vested, released=$released, available=$available');
+  //   return available > 0 ? available : 0.0;
   // }
 
-  // void resetVestingData() {
-  //   _existingVestingAddress = null;
-  //   _existingVestingStatus = null;
-  //   vestInfo.start = 0;
-  //   vestInfo.cliff = 0;
-  //   vestInfo.duration = 0;
-  //   vestInfo.end = 0;
-  //   vestInfo.released = 0.0;
-  //   vestInfo.claimable = 0.0;
-  //   vestInfo.totalVestingAmount = 0.0;
-  //   notifyListeners();
-  //   print('resetVestingData: Cleared stale vesting data');
-  // }
+// Getter to calculate the total amount of ECM vested so far
+  double get existingVestedAmount {
+    if (existingVestInfo.start == 0 || existingVestInfo.end == 0 || balance == null) return 0.0;
+
+    final nowSec = DateTime.now().millisecondsSinceEpoch ~/ 1000; // ~1757925560
+    final start = existingVestInfo.start;
+    final end = existingVestInfo.end;
+    final duration = existingVestInfo.duration;
+
+    final totalVestingECM = double.tryParse(
+      existingVestingStatus != null
+          ? existingVestInfo.totalVestingAmount?.toString() ?? '0.0'
+          : formatBalance(balance!),
+    ) ?? 0.0;
+
+    debugPrint('existingVestedAmount: nowSec=$nowSec, start=$start, end=$end, duration=$duration, totalVestingECM=$totalVestingECM');
+    if (nowSec <= start!) {
+      debugPrint('existingVestedAmount: Vesting not started, returning 0.0');
+      return 0.0;
+    }
+    if (nowSec >= end!) {
+      debugPrint('existingVestedAmount: Vesting complete, returning $totalVestingECM');
+      return totalVestingECM;
+    }
+
+    final elapsed = nowSec - start;
+    final calculatedAmount = (totalVestingECM * elapsed) / duration!;
+    debugPrint('existingVestedAmount: elapsed=$elapsed, calculatedAmount=$calculatedAmount');
+    return double.parse(calculatedAmount.toStringAsFixed(6));
+  }
+
+  // Getter to calculate the amount of ECM available for claim
+  double get availableClaimableAmountForExistingUser {
+    final vested = existingVestedAmount; // Ensure type safety
+    final released = existingVestInfo.released ?? 0.0; // Handle null with default 0.0
+    final available = vested - released;
+    debugPrint('availableClaimableAmountForExistingUser: vested=$vested, released=$released, available=$available');
+    return available > 0 ? available : 0.0;
+  }
 
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{

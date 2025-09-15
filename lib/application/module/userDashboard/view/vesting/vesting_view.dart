@@ -1,13 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/existing_user_vesting.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:mycoinpoll_metamask/framework/utils/dynamicFontSize.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
@@ -19,6 +20,7 @@ import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../domain/constants/api_constants.dart';
 import '../../../../presentation/countdown_timer_helper.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
@@ -30,6 +32,7 @@ import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'helper/claim.dart';
 import 'helper/vesting_info.dart';
+import 'package:http/http.dart'as http;
 
 
 class VestingWrapper extends StatefulWidget {
@@ -503,8 +506,9 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   bool isVestingPeriodDurationOver = false;
   bool isCliffPeriodOver = false;
   String _countdownText = '';
-
-
+  /// New timer for vested amount updates
+  Timer? _vestingUpdateTimer;
+  double? _lastVestedAmount;
 
   List<Claim> _claimHistory = []; // keep track of claims
   List<Claim> _filteredClaimHistory = []; // filtered list for search
@@ -522,8 +526,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
 
     WidgetsBinding.instance.addPostFrameCallback((_)async{
-      // _fetchVestingDataAndStartTimers();
-      _setupScreen();
+       _setupScreen();
 
       fetchClaimHistory().then((claims) {
         if (mounted) {
@@ -534,6 +537,18 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
         }
       });
 
+    });
+    _vestingUpdateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      final newVestedAmount = _walletVM?.vestedAmount;
+      if (newVestedAmount != _lastVestedAmount) {
+        setState(() {
+          _lastVestedAmount = newVestedAmount;
+        });
+      }
     });
   }
 
@@ -579,16 +594,18 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     }
   }
 
-  void _initializeTimers(VestingInfo vestInfo) {
+  void _initializeTimers(IcoVestingInfo vestInfo) {
     if (!mounted) return;
 
     // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
-    // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
+    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
+
     vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
-    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
+    // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000);
 
     _startCountdownTimer();
+    _lastVestedAmount = _walletVM?.vestedAmount;
   }
 
   void _startCountdownTimer() {
@@ -638,6 +655,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   @override
   void dispose() {
     _countdownTimer?.cancel();
+    _vestingUpdateTimer?.cancel();
     _searchController.dispose();
     if (_walletVM != null) {
       _walletVM!.removeListener(_onVestingDataUpdated);
@@ -667,25 +685,53 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
 
 
   Future<List<Claim>> fetchClaimHistory() async {
-    await Future.delayed(const Duration(seconds: 1));
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    final _walletAddress = walletVM.walletAddress;
+    if (_walletAddress == null || _walletAddress.isEmpty) {
+      print('fetchClaimHistory: Wallet address not available');
+      return [];
+    }
+    int retryCount = 0;
+    const maxRetries = 3;
+    while (retryCount < maxRetries) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
 
-    return [
+        final response = await http.get(
+          Uri.parse('${ApiConstants.baseUrl}/vesting-claim-history/ICO_Vesting/$_walletAddress'),
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token != null && token.isNotEmpty ? 'Bearer $token' : '',
 
-      // Claim(
-      //   amount: "ECM 120.200",
-      //   dateTime: "15 Nov 2025 11:10:20",
-      //   walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
-      // ),     Claim(
-      //   amount: "ECM 258.665",
-      //   dateTime: "06 Nov 2025 21:30:48",
-      //   walletAddress: "0x298f3EF46F26625e709c11ca2e84a7f34489C71d",
-      // ),
-      // Claim(
-      //   amount: "ECM 100.200",
-      //   dateTime: "15 Nov 2025 11:10:20",
-      //   walletAddress: "0x9a6fbF46F26625e709c11ca2e84a7f34481bc7d",
-      // ),
-    ];
+          },
+        );
+        if (response.statusCode == 200 && mounted) {
+          print('fetchClaimHistory ICO_VESTING: Response status code = ${response.statusCode},'
+              ' body = ${response.body}');
+
+          final data = jsonDecode(response.body) as List;
+          return data.map((json) => Claim(
+            amount: 'ECM ${json['amount'] ?? '0.0'}',
+            dateTime: json['created_at'] ?? '',
+            walletAddress: json['wallet_address'] ?? '',
+            hash: json['hash'] ?? '',
+          )).toList();
+        } else if (response.statusCode >= 400) {
+          print('fetchClaimHistory: Server error (attempt $retryCount): ${response.body}');
+          await Future.delayed(const Duration(seconds: 2));
+          retryCount++;
+        } else {
+          print('fetchClaimHistory: Unexpected response (attempt $retryCount): ${response.body}');
+          break;
+        }
+      } catch (e) {
+        print('fetchClaimHistory: Error (attempt $retryCount): $e');
+        await Future.delayed(const Duration(seconds: 2));
+        retryCount++;
+      }
+    }
+    return [];
   }
 
 
@@ -714,7 +760,6 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     //   );
     // }
 
-    final bool isLoadingVestingData = vestingStartDate == null;
 
     return  Scaffold(
         key: _scaffoldKey,
@@ -749,19 +794,7 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
               Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02),
-                  // Align(
-                  //   alignment: Alignment.topCenter,
-                  //   child:  Text(
-                  //     'ECM Vesting',
-                  //     style: TextStyle(
-                  //       fontFamily: 'Poppins',
-                  //       color: Colors.white,
-                  //       fontWeight: FontWeight.w600,
-                  //       fontSize: screenWidth * 0.05,
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1457,12 +1490,16 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                 separatorBuilder: (_, __) => SizedBox(height: screenHeight * 0.01),
                 itemBuilder: (context, index) {
                   final claim = _filteredClaimHistory[index];
+                  final explorerUrl = 'https://etherscan.io/tx/${claim.hash}';
                   return ClaimHistoryCard(
                     amount: claim.amount,
                     dateTime: claim.dateTime,
                     walletAddress: claim.walletAddress,
                     buttonLabel: "Explore",
-                    onButtonTap: () {
+                    onButtonTap: ()  async{
+                      if(await canLaunchUrl(Uri.parse(explorerUrl))){
+                        await launchUrl(Uri.parse(explorerUrl));
+                      }
                       debugPrint("Explore tapped for ${claim.walletAddress}");
                     },
                   );

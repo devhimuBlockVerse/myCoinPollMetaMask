@@ -33,6 +33,7 @@ import 'helper/claim.dart';
 import 'helper/vesting_info.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart'as http;
+
 class ExistingVestingWrapper extends StatefulWidget {
   const ExistingVestingWrapper({super.key});
 
@@ -84,7 +85,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     try {
       _isFetchingData = true;
 
-      if (_walletVM!.existingVestingAddress != null && _walletVM!.vestInfo.start == 0) {
+      if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestInfo.start == 0) {
         debugPrint('Fetching Existing vesting information...');
         await _walletVM!.getExistingVestingInformation();
 
@@ -101,9 +102,6 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     }
 
   }
-
-
-
   @override
   void dispose() {
     if (_walletVM != null) {
@@ -111,14 +109,15 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     }
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Consumer<WalletViewModel>(
       builder: (context, walletVM, child) {
 
-        _walletVM = walletVM;
-
+        // _walletVM = walletVM;
+        _walletVM ??= walletVM;
         debugPrint('ExistingVestingWrapper Consumer isLoading: ${walletVM.isLoading},'
             ' existingVestingAddress: ${walletVM.existingVestingAddress},existingVestingStatus: ${walletVM.existingVestingStatus}');
         debugPrint('walletAddress: ${walletVM.walletAddress}');
@@ -210,9 +209,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         }
 
         return ExistingUserVesting(
-          // key: ValueKey(walletVM.existingVestingStatus ?? 'initial'),
-          // key: ValueKey('${walletVM.existingVestingStatus}_${walletVM.vestInfo.start ?? 0}'),
-          key: ValueKey('${walletVM.existingVestingStatus}_${walletVM.vestInfo.start ?? 0}_${walletVM.balance ?? '0'}_${walletVM.isLoading}'),
+          key: ValueKey('${walletVM.existingVestingStatus}_${walletVM.existingVestInfo.start ?? 0}_${walletVM.balance ?? '0'}_${walletVM.isLoading}'),
           onStartVestingComplete: () async {
             await walletVM.getExistingVestingInformation();
             if (mounted) {
@@ -220,8 +217,8 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
             }
           },
           isPostVesting: walletVM.existingVestingStatus != null,
-          vestingInfo:  walletVM.vestInfo,
-          vestingStatus: walletVM.existingVestingStatus,
+          existingVestingInfo:  walletVM.existingVestInfo,
+          existingVestingStatus: walletVM.existingVestingStatus,
           vestingBalance: walletVM.balance ?? '0',
         );
 
@@ -235,19 +232,18 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 }
 
 class ExistingUserVesting extends StatefulWidget {
-  // final VoidCallback? onStartVestingComplete;
-  final Future<void> Function()? onStartVestingComplete;
+   final Future<void> Function()? onStartVestingComplete;
   final bool isPostVesting;
-  final VestingInfo vestingInfo;
-  final String? vestingStatus;
+  final ExistingVestingInfo existingVestingInfo;
+  final String? existingVestingStatus;
   final String vestingBalance;
 
   const ExistingUserVesting({
     super.key,
     this.onStartVestingComplete,
     this.isPostVesting = false,
-    required this.vestingInfo,
-    this.vestingStatus,
+    required this.existingVestingInfo,
+    this.existingVestingStatus,
     required this.vestingBalance,
   });
 
@@ -268,6 +264,9 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
   bool isCliffPeriodOver = false;
   String _countdownText = '';
   bool _isSearchOpen = false;
+  WalletViewModel? _walletVM;
+  Timer? _vestingUpdateTimer;
+  double? _lastVestedAmount;
 
   TextEditingController _searchController = TextEditingController();
 
@@ -275,53 +274,127 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
   List<Claim> _claimHistory = [];
   List<Claim> _filteredClaimHistory = [];
 
+
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
-
     _startLoadingTimeout();
     balanceText = widget.vestingBalance;
-    if(widget.isPostVesting){
-      _initializeTimers(widget.vestingInfo);
+    if (widget.isPostVesting) {
+      _initializeTimers(widget.existingVestingInfo);
     }
 
+    /// Force isCliffPeriodOver for testing
+    // if (widget.existingVestingStatus == 'process') {
+    //   isCliffPeriodOver = true; // Override for testing
+    // }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      fetchClaimHistory().then((claims) {
-        if (mounted) {
-          setState(() {
-            _claimHistory = claims;
-            _filteredClaimHistory = claims;
-          });
-        }
-      });
+      if (!mounted) return;
+      await _fetchInitialData();
+    });
 
+    _vestingUpdateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      final newVestedAmount = _walletVM?.existingVestedAmount;
+      if (newVestedAmount != _lastVestedAmount) {
+        setState(() {
+          _lastVestedAmount = newVestedAmount;
+        });
+      }
+    });
+
+  }
+
+  Future<void> _fetchInitialData() async {
+    if (!mounted) return;
+    try {
       final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-      try{
-        await walletVM.ensureModalWithValidContext(context);
-        await walletVM.rehydrate();
-        await walletVM.getBalance();
-        await walletVM.getExistingVestingInformation();
-        print('initState: Vesting status = ${walletVM.existingVestingStatus}, vestInfo = ${walletVM.vestInfo.toString()}');
-        if (mounted) {
-          setState(() {
-            balanceText = walletVM.balance ?? '0';
-          });
-        }
-      }catch (e) {
-        print('initState Error: $e');
-      }finally {
+      await walletVM.ensureModalWithValidContext(context);
+      await walletVM.rehydrate();
+      await walletVM.getBalance();
+      await walletVM.getExistingVestingInformation();
+      final claims = await fetchClaimHistory();
+      if (mounted) {
+        setState(() {
+          _claimHistory = claims;
+          _filteredClaimHistory = claims;
+          balanceText = walletVM.balance ?? '0';
+
+          /// Reinitialize timers with updated data testing
+          // if (widget.isPostVesting) {
+          //   _initializeTimers(widget.existingVestingInfo);
+          // }
+        });
+      }
+    } catch (e) {
+      print('initState Error: $e');
+    } finally {
+      if (mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) => _endLoading());
       }
-
-       if(mounted){
-        setState(() {});
-      }
-     });
+    }
   }
+
+
+  Future<List<Claim>> fetchClaimHistory() async {
+    if (!mounted) return [];
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+    final _walletAddress = walletVM.walletAddress;
+    if (_walletAddress == null || _walletAddress.isEmpty) {
+      print('fetchClaimHistory: Wallet address not available');
+      return [];
+    }
+
+    int retryCount = 0;
+    const maxRetries = 3;
+    while (retryCount < maxRetries) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+
+        final response = await http.get(
+          Uri.parse('${ApiConstants.baseUrl}/vesting-claim-history/Exiting_Vesting/$_walletAddress'),
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': token != null && token.isNotEmpty ? 'Bearer $token' : '',
+
+          },
+        );
+        if (response.statusCode == 200 && mounted) {
+          print('fetchClaimHistory Exiting_Vesting: Response status code = ${response.statusCode},'
+              ' body = ${response.body}');
+
+          final data = jsonDecode(response.body) as List;
+          return data.map((json) => Claim(
+            amount: 'ECM ${json['amount'] ?? '0.0'}',
+            dateTime: json['created_at'] ?? '',
+            walletAddress: json['wallet_address'] ?? '',
+            hash: json['hash'] ?? '',
+          )).toList();
+        } else if (response.statusCode >= 400) {
+          print('fetchClaimHistory: Server error (attempt $retryCount): ${response.body}');
+          await Future.delayed(const Duration(seconds: 2));
+          retryCount++;
+        } else {
+          print('fetchClaimHistory: Unexpected response (attempt $retryCount): ${response.body}');
+          break;
+        }
+      } catch (e) {
+        print('fetchClaimHistory: Error (attempt $retryCount): $e');
+        await Future.delayed(const Duration(seconds: 2));
+        retryCount++;
+      }
+    }
+     return [];
+  }
+
   void _startLoadingTimeout() {
     _loadingTimeout = Timer(const Duration(seconds: 3), () {
-      if (_localLoading) {
+      if (_localLoading && mounted) {
         print('Loading timeout - forcing end of loading state');
         _endLoading();
       }
@@ -338,6 +411,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
   }
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase().trim();
+    if (!mounted) return;
 
     setState(() {
       _filteredClaimHistory = _claimHistory.where((claim) {
@@ -352,45 +426,13 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     });
   }
 
-  Future<List<Claim>> fetchClaimHistory() async {
-    await Future.delayed(const Duration(seconds: 1));
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    final _walletAddress = walletVM.walletAddress;
-     if (_walletAddress == null || _walletAddress.isEmpty) {
-       print('fetchClaimHistory: Wallet address not available');
-      return [];
-    }
-
-     try{
-       final response = await http.get(
-         Uri.parse('${ApiConstants.baseUrl}/vesting-claim-history/Exiting_vesting/$_walletAddress'),
-         headers: {"Content-Type": "application/json"},
-
-       );
-       if(response.statusCode == 200){
-         final data = jsonDecode(response.body) as List;
-         print('fetchClaimHistory data: $data');
-
-         return data.map((json) => Claim(
-           amount: 'ECM ${json['amount'] ?? '0.0'}',
-           dateTime: json['created_at'] ?? '',
-           walletAddress: json['wallet_address'] ?? '',
-           hash: json['hash'] ?? '',
-         )).toList();
-       }else{
-         print('Failed to fetch claim history: ${response.body}');
-         return[];
-       }
-     }catch(e){
-       print('Error fetching claim history: $e');
-       return [];
-     }
-  }
 
   @override
   void dispose() {
     _loadingTimeout?.cancel();
     _countdownTimer?.cancel();
+    _vestingUpdateTimer?.cancel();
+
     _searchController.dispose();
 
     super.dispose();
@@ -400,11 +442,13 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     return double.tryParse(walletVM.balance ?? '0') ?? 0.0;
   }
 
-  void _initializeTimers(VestingInfo vestInfo) {
+  void _initializeTimers(ExistingVestingInfo existingVestInfo) {
     if (!mounted) return;
-    existingVestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
-    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000);
-     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000);
+    existingVestingStartDate = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.start! * 1000);
+    // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000).subtract(const Duration(days: 365));
+    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000);
+    fullVestedDate = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.end! * 1000);
+  _lastVestedAmount = _walletVM?.existingVestedAmount;
     _startCountdownTimer();
   }
 
@@ -417,20 +461,28 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
       }
       final now = DateTime.now();
       if (existingVestingStartDate == null || cliffEndTime == null) return;
+
       if (now.isBefore(existingVestingStartDate!)) {
-        setState(() {
-          _countdownText = "Vesting Starts Soon";
-        });
+        if (mounted) {
+          setState(() {
+            _countdownText = "Vesting Starts Soon";
+          });
+        }
       } else if (now.isBefore(cliffEndTime!)) {
-        setState(() {
-          isCliffPeriodOver = false;
-          _countdownText = "Cliff Period Active";
-        });
-      } else {
-        setState(() {
-          isCliffPeriodOver = true;
-          _countdownText = "Vesting Active - Claim Available";
-        });
+        if (mounted) {
+          setState(() {
+            isCliffPeriodOver = false;
+            _countdownText = "Cliff Period Active";
+          });
+        }
+      }
+      else {
+        if (mounted) {
+          setState(() {
+            isCliffPeriodOver = true;
+            _countdownText = "Vesting Active - Claim Available";
+          });
+        }
         timer.cancel();
       }
     });
@@ -452,7 +504,12 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
-    debugPrint('Building ExistingUserVesting with isPostVesting: ${widget.isPostVesting}, vestingStatus: ${widget.vestingStatus}, balance: ${widget.vestingBalance}');
+
+    final testStatus = widget.existingVestingStatus ?? 'process';
+    debugPrint('Building ExistingUserVesting with isPostVesting: ${widget.isPostVesting}, '
+        'vestingStatus: ${widget.existingVestingStatus}, balance: ${widget.vestingBalance}, '
+        'isCliffPeriodOver: $isCliffPeriodOver, cliffEndTime: $cliffEndTime');
+
     return  Scaffold(
         key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
@@ -461,10 +518,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
           currentScreenId: currentScreenId,
           navItems: navItems,
           onScreenSelected: (id) => navProvider.setScreen(id),
-          onLogoutTapped: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Logout Pressed")));
-          },
+          onLogoutTapped: () {},
         ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
@@ -527,6 +581,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
                         child: RefreshIndicator(
                           onRefresh: () async {
+                            if (!mounted) return;
                             setState(() {
                               _localLoading = true;
                             });
@@ -545,9 +600,11 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                             }catch (e) {
                               print('Refresh Error: $e');
                             } finally {
-                              Future.delayed(const Duration(milliseconds: 500), () {
-                                _endLoading();
-                              });
+                              if (mounted) {
+                                Future.delayed(const Duration(milliseconds: 500), () {
+                                  _endLoading();
+                                });
+                              }
                             }
 
                           },
@@ -562,7 +619,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                                   return Column(
                                    children: [
 
-                                     if (widget.vestingStatus == 'locked') ...[
+                                     // if (widget.existingVestingStatus == 'locked') ...[
+                                     if (testStatus == 'locked') ...[
 
                                        VestingContainer(
                                          width: screenWidth * 0.9,
@@ -630,8 +688,10 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                                        SizedBox(height: screenHeight * 0.02),
                                        existingVestingDetails(screenHeight, screenWidth, context,),
                                        SizedBox(height: screenHeight * 0.9),
-                                     ] else if (widget.vestingStatus == 'process') ...[
-                                        SizedBox(height: screenHeight * 0.02),
+                                     // ] else if (widget.existingVestingStatus == 'process') ...[
+                                     ] else if (testStatus == 'process') ...[
+
+                                       SizedBox(height: screenHeight * 0.02),
                                        cliffTimerAndClaimSection(screenHeight, screenWidth, context, walletVM),
                                        SizedBox(height: screenHeight * 0.02),
                                        vestingSummary(screenHeight, screenWidth, context),
@@ -666,7 +726,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
   Widget totalBalance(double screenHeight,double screenWidth,BuildContext context,WalletViewModel walletVm ,double userBalance, bool isPostVesting){
     final isLowBalance = userBalance <= 1;
-    final displayBalance = widget.vestingStatus != null ? widget.vestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
+    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
     return VestingContainer(
             width: screenWidth * 0.9,
             child: Column(
@@ -725,7 +785,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     Color(0xFF1CD494)
                   ],
                   // onTap:!isPostVesting && !isLowBalance && !_isStartingVesting
-                  onTap: widget.vestingStatus == null && !isLowBalance && !_isStartingVesting
+                  onTap: widget.existingVestingStatus == null && !isLowBalance && !_isStartingVesting
                       ? () async{
                     print('Start Vesting button clicked - initiating process');
                     setState(() {
@@ -744,7 +804,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                       if (mounted) {
                         setState(() {
                           balanceText = walletVm.balance ?? '0';
-                          _initializeTimers(widget.vestingInfo);
+                          _initializeTimers(widget.existingVestingInfo);
                         });
                       }
 
@@ -830,7 +890,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
   }
 
   Widget existingVestingDetails(double screenHeight, double screenWidth, BuildContext context) {
-    final displayBalance = widget.vestingStatus != null ? widget.vestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
+    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
 
     return Consumer<WalletViewModel>(
         builder: (context,walletVM, child) {
@@ -931,8 +991,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
   }
 
   Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context, WalletViewModel walletVM) {
-    final displayBalance = widget.vestingStatus != null ? widget.vestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
-
+    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
+    debugPrint('cliffTimerAndClaimSection: isCliffPeriodOver=$isCliffPeriodOver, availableClaimableAmount=${walletVM.availableClaimableAmountForExistingUser}');
     return VestingContainer(
       width: screenWidth * 0.9,
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
@@ -1012,7 +1072,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     child: VestingDetailInfoRow(
                       iconPath: 'assets/icons/checkIcon.svg',
                       title: 'Claimed',
-                      value: 'ECM ${walletVM.vestInfo.released?.toStringAsFixed(6) ?? '0.0'}',
+                      value: 'ECM ${walletVM.existingVestInfo.released?.toStringAsFixed(6) ?? '0.0'}',
                       iconSize: screenHeight * 0.025,
                     ),
                   ),
@@ -1021,7 +1081,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     child: VestingDetailInfoRow(
                       iconPath: 'assets/icons/claimedIcon.svg',
                       title: 'Available claim',
-                      value: 'ECM ${walletVM.vestInfo.claimable?.toStringAsFixed(6)}',
+                      // value: 'ECM ${walletVM.vestInfo.claimable?.toStringAsFixed(6)}',
+                      value: 'ECM ${walletVM.availableClaimableAmountForExistingUser.toStringAsFixed(6)}',
                       iconSize: screenHeight * 0.032,
                     ),
                   ),

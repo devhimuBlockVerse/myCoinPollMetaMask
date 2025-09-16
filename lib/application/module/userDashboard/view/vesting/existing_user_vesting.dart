@@ -66,6 +66,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         walletVM.addListener(_onWalletAddressChanged);
         _walletVM = walletVM;
         _fetchVestingDataIfConnected();
+        // _checkAndOpenModal();
       }
     });
   }
@@ -77,6 +78,11 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
       if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
         _fetchVestingDataIfConnected();
       }
+
+      // else{
+      // _checkAndOpenModal();
+      //
+      // }
     });
 
   }
@@ -91,7 +97,6 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 
     try {
       _isFetchingData = true;
-
       if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestInfo.start == 0) {
         debugPrint('Fetching Existing vesting information...');
         await _walletVM!.getExistingVestingInformation();
@@ -109,6 +114,20 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     }
 
   }
+
+  // Future<void> _checkAndOpenModal() async {
+  //   if (!mounted || _walletVM == null || _isFetchingData) return;
+  //   final walletVM = context.read<WalletViewModel>();
+  //   if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
+  //     debugPrint('Attempting to open modal with context: ${context.mounted}');
+  //     try {
+  //       await walletVM.openWalletModal(context); // Ensure context is passed
+  //     } catch (e) {
+  //       debugPrint('Error opening modal: $e');
+  //     }
+  //   }
+  // }
+
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -206,6 +225,83 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
               ),
             );
           }
+          // if (!data.item3) {
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     if (!_isFetchingData && mounted) {
+          //       _checkAndOpenModal(); // Trigger modal on build if not connected
+          //     }
+          //   });
+          //   return Scaffold(
+          //     backgroundColor: const Color(0xFF01090B),
+          //     body: Center(
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           const Text(
+          //             "Connection lost Please restart your app or connect your wallet to view vesting details.",
+          //             textAlign: TextAlign.center,
+          //             style: TextStyle(color: Colors.white70),
+          //           ),
+          //           const SizedBox(height: 20),
+          //           CustomGradientButton(
+          //             label: 'Retry',
+          //             width: MediaQuery.of(context).size.width * 0.7,
+          //             height: MediaQuery.of(context).size.height * 0.05,
+          //             onTap: () async {
+          //               if (!mounted) return;
+          //               await _checkAndOpenModal(); // Reuse the modal opening logic
+          //             },
+          //             gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+          //           ),
+          //           const SizedBox(height: 20),
+          //           DisconnectButton(
+          //             label: 'Disconnect',
+          //             color: const Color(0xffE04043),
+          //             icon: 'assets/icons/disconnected.svg',
+          //             onPressed: () async {
+          //               setState(() {
+          //                 isDisconnecting = true;
+          //               });
+          //               final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+          //               try {
+          //                 await walletVm.disconnectWallet(context);
+          //                 walletVm.reset();
+          //                 final prefs = await SharedPreferences.getInstance();
+          //                 await prefs.clear();
+          //                 Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+          //                 if (context.mounted && !walletVm.isConnected) {
+          //                   Navigator.of(context).pushAndRemoveUntil(
+          //                     MaterialPageRoute(
+          //                       builder: (context) => MultiProvider(
+          //                         providers: [
+          //                           ChangeNotifierProvider(create: (context) => WalletViewModel()),
+          //                           ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+          //                           ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+          //                           ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+          //                           ChangeNotifierProvider(create: (_) => NavigationProvider()),
+          //                         ],
+          //                         child: const BottomNavBar(),
+          //                       ),
+          //                     ),
+          //                         (Route<dynamic> route) => false,
+          //                   );
+          //                 }
+          //               } catch (e) {
+          //                 debugPrint("Error Wallet Disconnecting : $e");
+          //               } finally {
+          //                 if (mounted) {
+          //                   setState(() {
+          //                     isDisconnecting = false;
+          //                   });
+          //                 }
+          //               }
+          //             },
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   );
+          // }
 
           return ExistingUserVesting(
             key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
@@ -227,122 +323,6 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     );
 
 
-
-      /**
-          Consumer<WalletViewModel>(
-          builder: (context, walletVM, child) {
-
-          // _walletVM = walletVM;
-          _walletVM ??= walletVM;
-          debugPrint('ExistingVestingWrapper Consumer isLoading: ${walletVM.isLoading},'
-          ' existingVestingAddress: ${walletVM.existingVestingAddress},existingVestingStatus: ${walletVM.existingVestingStatus}');
-          debugPrint('walletAddress: ${walletVM.walletAddress}');
-          debugPrint('Existing vestingAddress: ${walletVM.existingVestingAddress}');
-          debugPrint('Existing Vesting balance: ${walletVM.balance}');
-
-
-
-          // Check if wallet is connected
-          if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
-          return Scaffold(
-          backgroundColor: const Color(0xFF01090B),
-          body: Center(
-          child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          const Text(
-          "Connection lost Please restart your app or connect your wallet to view vesting details.",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white70),
-          ),
-          const SizedBox(height: 20),
-
-          CustomGradientButton(
-          label: 'Retry',
-          width: MediaQuery.of(context).size.width * 0.7,
-          height: MediaQuery.of(context).size.height * 0.05,
-          onTap: ()async{
-          if (!mounted) return;
-          await context.read<WalletViewModel>().openWalletModal(context);
-          },
-          gradientColors: const [
-          Color(0xFF2D8EFF),
-          Color(0xFF2EE4A4)
-          ],
-          ),
-
-          const SizedBox(height: 20),
-          DisconnectButton(
-          label: 'Disconnect',
-          color: const Color(0xffE04043),
-          icon: 'assets/icons/disconnected.svg',
-          onPressed: ()async {
-          setState(() {
-          isDisconnecting = true;
-          });
-          final walletVm = Provider.of<WalletViewModel>(context, listen: false);
-          try{
-          await walletVm.disconnectWallet(context);
-
-          walletVm.reset();
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.clear();
-
-          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-          if(context.mounted && !walletVm.isConnected){
-          Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-          builder: (context) => MultiProvider(
-          providers: [
-          ChangeNotifierProvider(create: (context) => WalletViewModel(),),
-          ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-          ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-          ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-          ChangeNotifierProvider(create: (_) => NavigationProvider()),
-          ],
-          child: const BottomNavBar(),
-          )
-          ),(Route<dynamic> route) => false,
-          );
-          }
-
-          }catch(e){
-          debugPrint("Error Wallet Disconnecting : $e");
-          }finally{
-          if(mounted){
-          setState(() {
-          isDisconnecting = false;
-          });
-          }
-          }
-          },
-
-          ),
-          ],
-          ),
-          ),
-          );
-          }
-
-          return ExistingUserVesting(
-          key: ValueKey('${walletVM.existingVestingStatus}_${walletVM.existingVestInfo.start ?? 0}_${walletVM.balance ?? '0'}_${walletVM.isLoading}'),
-          onStartVestingComplete: () async {
-          await walletVM.getExistingVestingInformation();
-          if (mounted) {
-          setState(() {});
-          }
-          },
-          isPostVesting: walletVM.existingVestingStatus != null,
-          existingVestingInfo:  walletVM.existingVestInfo,
-          existingVestingStatus: walletVM.existingVestingStatus,
-          vestingBalance: walletVM.balance ?? '0',
-          );
-
-          },
-          );
-
-
-       **/
   }
 
   @override

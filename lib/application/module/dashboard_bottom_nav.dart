@@ -113,7 +113,6 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                               //  await walletVM.appKitModal?.openModalView();
                              if (!mounted) return;
                              await context.read<WalletViewModel>().openWalletModal(context);
-
                             }
                           }
                         },

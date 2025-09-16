@@ -152,6 +152,8 @@ class _VestingWrapperState extends State<VestingWrapper> with AutomaticKeepAlive
                     onTap: ()async{
                       if (!mounted) return;
                       await context.read<WalletViewModel>().openWalletModal(context);
+
+
                     },
                     gradientColors: const [
                       Color(0xFF2D8EFF),
@@ -284,20 +286,7 @@ class _VestingViewState extends State<VestingView> {
               Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02),
-                  // Align(
-                  //   alignment: Alignment.topCenter,
-                  //   child:  Text(
-                  //     'ECM Vesting',
-                  //     style: TextStyle(
-                  //       fontFamily: 'Poppins',
-                  //       color: Colors.white,
-                  //       fontWeight: FontWeight.w600,
-                  //       // fontSize: 20
-                  //       fontSize: screenWidth * 0.05,
-                  //     ),
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -430,10 +419,7 @@ class _VestingViewState extends State<VestingView> {
         "image": "assets/images/vestingImg1.png",
         "text": "Vested users may gain early access to upcoming launches, airdrops, or governance participation."
       },
-      // {
-      //   "image": "assets/images/moneyVesting.png",
-      //   "text": "Builds investor trust and shows project commitment"
-      // },
+
       {
         "image": "assets/images/vestingImg2.png",
         "text": "Vesting may unlock special incentives such as bonus rewards, reduced fees, or priority in ecosystem benefits."
@@ -510,8 +496,8 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
   Timer? _vestingUpdateTimer;
   double? _lastVestedAmount;
 
-  List<Claim> _claimHistory = []; // keep track of claims
-  List<Claim> _filteredClaimHistory = []; // filtered list for search
+  List<Claim> _claimHistory = [];
+  List<Claim> _filteredClaimHistory = [];
   TextEditingController _searchController = TextEditingController();
   bool _isSearchOpen = false;
   WalletViewModel? _walletVM;
@@ -598,10 +584,10 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
     if (!mounted) return;
 
     // vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000).add(const Duration(days: 120)); // For Testing
-    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
+    // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000).subtract(const Duration(days: 120)); // For Testing
 
     vestingStartDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.start! * 1000);
-    // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
+    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(vestInfo.cliff! * 1000) ;
     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(vestInfo.end! * 1000);
 
     _startCountdownTimer();
@@ -1253,10 +1239,9 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                         Color(0xFF1CD494)
                       ],
 
-                      onTap: walletVM.isLoading ? null : (){
+                      onTap: (){
                         walletVM.claimECM(context);
                       }
-
                   ),
                 ],
 
@@ -1491,9 +1476,18 @@ class _SleepPeriodScreenState extends State<SleepPeriodScreen> {
                 itemBuilder: (context, index) {
                   final claim = _filteredClaimHistory[index];
                   final explorerUrl = 'https://etherscan.io/tx/${claim.hash}';
+
+                  final amountNumeric = double.tryParse(claim.amount.replaceAll('ECM ', '')) ?? 0.0;
+                  final formattedAmount = "ECM ${amountNumeric.toStringAsFixed(6)}";
+
+                  final dateTimeFormatted = DateFormat("dd MMM yyyy HH:mm")
+                      .format(DateTime.parse(claim.dateTime));
+
                   return ClaimHistoryCard(
-                    amount: claim.amount,
-                    dateTime: claim.dateTime,
+                    // amount: claim.amount,
+                    // dateTime: claim.dateTime,
+                    amount: formattedAmount,
+                    dateTime: dateTimeFormatted,
                     walletAddress: claim.walletAddress,
                     buttonLabel: "Explore",
                     onButtonTap: ()  async{

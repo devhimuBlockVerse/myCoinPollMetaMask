@@ -34,6 +34,14 @@ import 'helper/vesting_info.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart'as http;
 
+
+class Tuple3<A, B, C> {
+  final A item1;
+  final B item2;
+  final C item3;
+  Tuple3(this.item1, this.item2, this.item3);
+}
+
 class ExistingVestingWrapper extends StatefulWidget {
   const ExistingVestingWrapper({super.key});
 
@@ -46,36 +54,35 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
   bool _hasInitialized = false;
   WalletViewModel? _walletVM;
   bool isDisconnecting = false;
-
-
+  Timer? _debounceTimer;
 
   @override
   void initState() {
     super.initState();
-    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-
-    walletVM.addListener(_onWalletAddressChanged);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_hasInitialized) {
         _hasInitialized = true;
+        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+        walletVM.addListener(_onWalletAddressChanged);
+        _walletVM = walletVM;
+        _fetchVestingDataIfConnected();
+      }
+    });
+  }
+
+  void _onWalletAddressChanged() {
+    if (!mounted || _isFetchingData) return;
+    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+    _debounceTimer = Timer(const Duration(seconds: 1), () {
+      if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
         _fetchVestingDataIfConnected();
       }
     });
 
   }
 
-  void _onWalletAddressChanged() {
-    if (!mounted || _isFetchingData) return;
-    // final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-    if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
-      _fetchVestingDataIfConnected();
-    }
-
-  }
-
   void _fetchVestingDataIfConnected() async {
-    if (_isFetchingData) return;
+    if (_isFetchingData || _walletVM == null) return;
     if (!_walletVM!.isConnected || _walletVM!.walletAddress.isEmpty) {
       debugPrint('Wallet not connected, skipping vesting data fetch');
       return;
@@ -104,6 +111,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
   }
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     if (_walletVM != null) {
       _walletVM!.removeListener(_onWalletAddressChanged);
     }
@@ -113,117 +121,228 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Consumer<WalletViewModel>(
-      builder: (context, walletVM, child) {
+    return Selector<WalletViewModel, Tuple3<String?, String?, bool>>(
+        selector: (context, walletVM) => Tuple3(
+          walletVM.existingVestingAddress,
+          walletVM.existingVestingStatus,
+          walletVM.isConnected && walletVM.walletAddress.isNotEmpty,
+        ),
+        builder: (context, data, child){
+          final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+          _walletVM ??= walletVM;
+          debugPrint('ExistingVestingWrapper Selector: isLoading: ${walletVM.isLoading}, '
+              'existingVestingAddress: ${walletVM.existingVestingAddress}, '
+              'existingVestingStatus: ${walletVM.existingVestingStatus}');
 
-        // _walletVM = walletVM;
-        _walletVM ??= walletVM;
-        debugPrint('ExistingVestingWrapper Consumer isLoading: ${walletVM.isLoading},'
-            ' existingVestingAddress: ${walletVM.existingVestingAddress},existingVestingStatus: ${walletVM.existingVestingStatus}');
-        debugPrint('walletAddress: ${walletVM.walletAddress}');
-        debugPrint('Existing vestingAddress: ${walletVM.existingVestingAddress}');
-        debugPrint('Existing Vesting balance: ${walletVM.balance}');
-
-
-
-        // Check if wallet is connected
-        if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
-          return Scaffold(
-            backgroundColor: const Color(0xFF01090B),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Connection lost Please restart your app or connect your wallet to view vesting details.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 20),
-
-                  CustomGradientButton(
-                    label: 'Retry',
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    onTap: ()async{
-                      if (!mounted) return;
-                      await context.read<WalletViewModel>().openWalletModal(context);
-                    },
-                    gradientColors: const [
-                      Color(0xFF2D8EFF),
-                      Color(0xFF2EE4A4)
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-                  DisconnectButton(
-                    label: 'Disconnect',
-                    color: const Color(0xffE04043),
-                    icon: 'assets/icons/disconnected.svg',
-                    onPressed: ()async {
-                      setState(() {
-                        isDisconnecting = true;
-                      });
-                      final walletVm = Provider.of<WalletViewModel>(context, listen: false);
-                      try{
-                        await walletVm.disconnectWallet(context);
-
-                        walletVm.reset();
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.clear();
-
-                        Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-                        if(context.mounted && !walletVm.isConnected){
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
+          if(!data.item3){
+            return Scaffold(
+              backgroundColor: const Color(0xFF01090B),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Connection lost Please restart your app or connect your wallet to view vesting details.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 20),
+                    CustomGradientButton(
+                      label: 'Retry',
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      onTap: () async {
+                        if (!mounted) return;
+                        await context.read<WalletViewModel>().openWalletModal(context);
+                      },
+                      gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+                    ),
+                    const SizedBox(height: 20),
+                    DisconnectButton(
+                      label: 'Disconnect',
+                      color: const Color(0xffE04043),
+                      icon: 'assets/icons/disconnected.svg',
+                      onPressed: () async {
+                        setState(() {
+                          isDisconnecting = true;
+                        });
+                        final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+                        try {
+                          await walletVm.disconnectWallet(context);
+                          walletVm.reset();
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+                          if (context.mounted && !walletVm.isConnected) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(
                                 builder: (context) => MultiProvider(
                                   providers: [
-                                    ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+                                    ChangeNotifierProvider(create: (context) => WalletViewModel()),
                                     ChangeNotifierProvider(create: (_) => BottomNavProvider()),
                                     ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
                                     ChangeNotifierProvider(create: (_) => PersonalViewModel()),
                                     ChangeNotifierProvider(create: (_) => NavigationProvider()),
                                   ],
                                   child: const BottomNavBar(),
-                                )
-                            ),(Route<dynamic> route) => false,
-                          );
+                                ),
+                              ),
+                                  (Route<dynamic> route) => false,
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint("Error Wallet Disconnecting : $e");
+                        } finally {
+                          if (mounted) {
+                            setState(() {
+                              isDisconnecting = false;
+                            });
+                          }
                         }
-
-                      }catch(e){
-                        debugPrint("Error Wallet Disconnecting : $e");
-                      }finally{
-                        if(mounted){
-                          setState(() {
-                            isDisconnecting = false;
-                          });
-                        }
-                      }
-                    },
-
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        return ExistingUserVesting(
+          return ExistingUserVesting(
+            key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
+            onStartVestingComplete: () async {
+              await walletVM.getExistingVestingInformation();
+              if (mounted) {
+                setState(() {});
+              }
+            },
+            isPostVesting: data.item2 != null,
+            existingVestingInfo: walletVM.existingVestInfo,
+            existingVestingStatus: data.item2,
+            vestingBalance: walletVM.balance ?? '0',
+          );
+
+        },
+
+
+    );
+
+
+
+      /**
+          Consumer<WalletViewModel>(
+          builder: (context, walletVM, child) {
+
+          // _walletVM = walletVM;
+          _walletVM ??= walletVM;
+          debugPrint('ExistingVestingWrapper Consumer isLoading: ${walletVM.isLoading},'
+          ' existingVestingAddress: ${walletVM.existingVestingAddress},existingVestingStatus: ${walletVM.existingVestingStatus}');
+          debugPrint('walletAddress: ${walletVM.walletAddress}');
+          debugPrint('Existing vestingAddress: ${walletVM.existingVestingAddress}');
+          debugPrint('Existing Vesting balance: ${walletVM.balance}');
+
+
+
+          // Check if wallet is connected
+          if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
+          return Scaffold(
+          backgroundColor: const Color(0xFF01090B),
+          body: Center(
+          child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          const Text(
+          "Connection lost Please restart your app or connect your wallet to view vesting details.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white70),
+          ),
+          const SizedBox(height: 20),
+
+          CustomGradientButton(
+          label: 'Retry',
+          width: MediaQuery.of(context).size.width * 0.7,
+          height: MediaQuery.of(context).size.height * 0.05,
+          onTap: ()async{
+          if (!mounted) return;
+          await context.read<WalletViewModel>().openWalletModal(context);
+          },
+          gradientColors: const [
+          Color(0xFF2D8EFF),
+          Color(0xFF2EE4A4)
+          ],
+          ),
+
+          const SizedBox(height: 20),
+          DisconnectButton(
+          label: 'Disconnect',
+          color: const Color(0xffE04043),
+          icon: 'assets/icons/disconnected.svg',
+          onPressed: ()async {
+          setState(() {
+          isDisconnecting = true;
+          });
+          final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+          try{
+          await walletVm.disconnectWallet(context);
+
+          walletVm.reset();
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.clear();
+
+          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+          if(context.mounted && !walletVm.isConnected){
+          Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+          builder: (context) => MultiProvider(
+          providers: [
+          ChangeNotifierProvider(create: (context) => WalletViewModel(),),
+          ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+          ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+          ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+          ChangeNotifierProvider(create: (_) => NavigationProvider()),
+          ],
+          child: const BottomNavBar(),
+          )
+          ),(Route<dynamic> route) => false,
+          );
+          }
+
+          }catch(e){
+          debugPrint("Error Wallet Disconnecting : $e");
+          }finally{
+          if(mounted){
+          setState(() {
+          isDisconnecting = false;
+          });
+          }
+          }
+          },
+
+          ),
+          ],
+          ),
+          ),
+          );
+          }
+
+          return ExistingUserVesting(
           key: ValueKey('${walletVM.existingVestingStatus}_${walletVM.existingVestInfo.start ?? 0}_${walletVM.balance ?? '0'}_${walletVM.isLoading}'),
           onStartVestingComplete: () async {
-            await walletVM.getExistingVestingInformation();
-            if (mounted) {
-              setState(() {});
-            }
+          await walletVM.getExistingVestingInformation();
+          if (mounted) {
+          setState(() {});
+          }
           },
           isPostVesting: walletVM.existingVestingStatus != null,
           existingVestingInfo:  walletVM.existingVestInfo,
           existingVestingStatus: walletVM.existingVestingStatus,
           vestingBalance: walletVM.balance ?? '0',
-        );
+          );
 
-      },
-    );
+          },
+          );
+
+
+       **/
   }
 
   @override
@@ -232,7 +351,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 }
 
 class ExistingUserVesting extends StatefulWidget {
-   final Future<void> Function()? onStartVestingComplete;
+  final Future<void> Function()? onStartVestingComplete;
   final bool isPostVesting;
   final ExistingVestingInfo existingVestingInfo;
   final String? existingVestingStatus;
@@ -285,16 +404,12 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
       _initializeTimers(widget.existingVestingInfo);
     }
 
-    /// Force isCliffPeriodOver for testing
-    // if (widget.existingVestingStatus == 'process') {
-    //   isCliffPeriodOver = true; // Override for testing
-    // }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       await _fetchInitialData();
     });
 
-    _vestingUpdateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _vestingUpdateTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
@@ -323,11 +438,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
           _claimHistory = claims;
           _filteredClaimHistory = claims;
           balanceText = walletVM.balance ?? '0';
-
-          /// Reinitialize timers with updated data testing
-          // if (widget.isPostVesting) {
-          //   _initializeTimers(widget.existingVestingInfo);
-          // }
         });
       }
     } catch (e) {
@@ -361,13 +471,9 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
           headers: {
             "Content-Type": "application/json",
             'Authorization': token != null && token.isNotEmpty ? 'Bearer $token' : '',
-
           },
         );
         if (response.statusCode == 200 && mounted) {
-          print('fetchClaimHistory Exiting_Vesting: Response status code = ${response.statusCode},'
-              ' body = ${response.body}');
-
           final data = jsonDecode(response.body) as List;
           return data.map((json) => Claim(
             amount: 'ECM ${json['amount'] ?? '0.0'}',
@@ -376,20 +482,17 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
             hash: json['hash'] ?? '',
           )).toList();
         } else if (response.statusCode >= 400) {
-          print('fetchClaimHistory: Server error (attempt $retryCount): ${response.body}');
           await Future.delayed(const Duration(seconds: 2));
           retryCount++;
         } else {
-          print('fetchClaimHistory: Unexpected response (attempt $retryCount): ${response.body}');
           break;
         }
       } catch (e) {
-        print('fetchClaimHistory: Error (attempt $retryCount): $e');
         await Future.delayed(const Duration(seconds: 2));
         retryCount++;
       }
     }
-     return [];
+    return [];
   }
 
   void _startLoadingTimeout() {
@@ -400,6 +503,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
       }
     });
   }
+
   void _endLoading() {
     if (mounted) {
       setState(() {
@@ -409,6 +513,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     }
     _loadingTimeout?.cancel();
   }
+
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase().trim();
     if (!mounted) return;
@@ -416,7 +521,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     setState(() {
       _filteredClaimHistory = _claimHistory.where((claim) {
         final amount = claim.amount.replaceAll('ECM ', '').toLowerCase();
-        final dateTime = claim.dateTime.toLowerCase();
+         final dateTime = claim.dateTime.toLowerCase();
         final wallet = claim.walletAddress.toLowerCase();
 
         return amount.contains(query) ||
@@ -434,7 +539,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     _vestingUpdateTimer?.cancel();
 
     _searchController.dispose();
-
     super.dispose();
   }
 
@@ -448,7 +552,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000).subtract(const Duration(days: 365));
     cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000);
     fullVestedDate = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.end! * 1000);
-  _lastVestedAmount = _walletVM?.existingVestedAmount;
+    _lastVestedAmount = _walletVM?.existingVestedAmount;
     _startCountdownTimer();
   }
 
@@ -466,6 +570,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
         if (mounted) {
           setState(() {
             _countdownText = "Vesting Starts Soon";
+            isCliffPeriodOver = false;
           });
         }
       } else if (now.isBefore(cliffEndTime!)) {
@@ -504,11 +609,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     double scaleWidth(double size) => size * screenWidth / baseWidth;
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
-
-    final testStatus = widget.existingVestingStatus ?? 'process';
-    debugPrint('Building ExistingUserVesting with isPostVesting: ${widget.isPostVesting}, '
-        'vestingStatus: ${widget.existingVestingStatus}, balance: ${widget.vestingBalance}, '
-        'isCliffPeriodOver: $isCliffPeriodOver, cliffEndTime: $cliffEndTime');
 
     return  Scaffold(
         key: _scaffoldKey,
@@ -613,103 +713,79 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
 
                             child: Consumer<WalletViewModel>(
-                              builder: (context , walletVM, child){
+                                builder: (context , walletVM, child){
 
-                                final userBalance = getUserBalance(walletVM);
+                                  final userBalance = getUserBalance(walletVM);
                                   return Column(
-                                   children: [
+                                    children: [
 
-                                     // if (widget.existingVestingStatus == 'locked') ...[
-                                     if (testStatus == 'locked') ...[
+                                      if (widget.existingVestingStatus == 'locked') ...[
 
-                                       VestingContainer(
-                                         width: screenWidth * 0.9,
-                                         child: Column(
-                                           crossAxisAlignment: CrossAxisAlignment.center,
-                                           children: [
-                                             SizedBox(height: screenHeight * 0.02),
-                                             if (existingVestingStartDate != null)
-                                               Text(
-                                                 'Vesting Period Begin on \n${DateFormat('d MMMM yyyy').format(existingVestingStartDate!)}',
-                                                 textAlign: TextAlign.center,
-                                                 style: TextStyle(
-                                                   color: const Color(0xFFFFF5ED),
-                                                   fontSize: getResponsiveFontSize(context, 22),
-                                                   fontFamily: 'Poppins',
-                                                   fontWeight: FontWeight.w500,
+                                        VestingContainer(
+                                          width: screenWidth * 0.9,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(height: screenHeight * 0.02),
+                                              if (existingVestingStartDate != null)
+                                                Text(
+                                                  'Vesting Period Begin on \n${DateFormat('d MMMM yyyy').format(existingVestingStartDate!)}',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: const Color(0xFFFFF5ED),
+                                                    fontSize: getResponsiveFontSize(context, 22),
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: FontWeight.w500,
 
-                                                 ),
-                                               ),
-                                             SizedBox(height: screenHeight * 0.02),
-                                             if (existingVestingStartDate != null)
-                                               ChangeNotifierProvider(
-                                                 create: (_) {
-                                                   return CountdownTimerProvider(
-                                                     targetDateTime: existingVestingStartDate!,
-                                                   );
-                                                 },
-                                                 child: CountdownTimer(
-                                                   scaleWidth: scaleWidth,
-                                                   scaleHeight: scaleHeight,
-                                                   scaleText: scaleText,
-                                                   showMonths: true,
-                                                 ),
-                                               ),
-                                             SizedBox(height: screenHeight * 0.03),
+                                                  ),
+                                                ),
+                                              SizedBox(height: screenHeight * 0.02),
+                                              if (existingVestingStartDate != null)
+                                                ChangeNotifierProvider(
+                                                  create: (_) {
+                                                    return CountdownTimerProvider(
+                                                      targetDateTime: existingVestingStartDate!,
+                                                    );
+                                                  },
+                                                  child: CountdownTimer(
+                                                    scaleWidth: scaleWidth,
+                                                    scaleHeight: scaleHeight,
+                                                    scaleText: scaleText,
+                                                    showMonths: true,
+                                                  ),
+                                                ),
+                                              SizedBox(height: screenHeight * 0.03),
 
-                                           ],
-                                         ),
-                                       ),
+                                            ],
+                                          ),
+                                        ),
 
-                                       SizedBox(height: screenHeight * 0.02),
+                                        SizedBox(height: screenHeight * 0.02),
+                                        existingVestingDetails(screenHeight, screenWidth, context,),
+                                        SizedBox(height: screenHeight * 0.9),
 
-                                       /// Vesting Wallet Address
-                                       CustomLabeledInputField(
-                                         containerWidth: screenWidth * 0.9,
-                                         labelText: 'Vesting Wallet:',
-                                         hintText: walletVM.existingVestingAddress ?? "...",
-                                         isReadOnly: true,
-                                         trailingIconAsset: 'assets/icons/copyImg.svg',
-                                         onTrailingIconTap: () {
-                                           final existingVestingAddress = walletVM.existingVestingAddress;
-                                           if(existingVestingAddress != null && existingVestingAddress.isNotEmpty){
-                                             Clipboard.setData(ClipboardData(text:existingVestingAddress));
-                                             ToastMessage.show(
-                                               message: "Vesting Wallet Address copied!",
-                                               subtitle: existingVestingAddress,
-                                               type: MessageType.success,
-                                               duration: CustomToastLength.SHORT,
-                                               gravity: CustomToastGravity.BOTTOM,
-                                             );
-                                           }
-                                         },
-                                       ),
+                                        ] else if (widget.existingVestingStatus == 'process') ...[
 
-                                       SizedBox(height: screenHeight * 0.02),
-                                       existingVestingDetails(screenHeight, screenWidth, context,),
-                                       SizedBox(height: screenHeight * 0.9),
-                                     // ] else if (widget.existingVestingStatus == 'process') ...[
-                                     ] else if (testStatus == 'process') ...[
+                                        SizedBox(height: screenHeight * 0.02),
+                                        cliffTimerAndClaimSection(screenHeight, screenWidth, context, walletVM),
+                                        SizedBox(height: screenHeight * 0.02),
+                                        vestingSummary(screenHeight, screenWidth, context),
+                                        SizedBox(height: screenHeight * 0.02),
+                                        claimHistory(screenHeight, screenWidth, context),
 
-                                       SizedBox(height: screenHeight * 0.02),
-                                       cliffTimerAndClaimSection(screenHeight, screenWidth, context, walletVM),
-                                       SizedBox(height: screenHeight * 0.02),
-                                       vestingSummary(screenHeight, screenWidth, context),
-                                       SizedBox(height: screenHeight * 0.02),
-                                       claimHistory(screenHeight, screenWidth, context),
-                                     ] else ...[
+                                      ] else ...[
                                         totalBalance(screenHeight, screenWidth, context, walletVM, userBalance, widget.isPostVesting),
-                                       SizedBox(height: screenHeight * 0.02),
-                                       whyVesting(screenHeight, screenWidth, context),
-                                       SizedBox(height: screenHeight * 0.09),
-                                     ],
+                                        SizedBox(height: screenHeight * 0.02),
+                                        whyVesting(screenHeight, screenWidth, context),
+                                        SizedBox(height: screenHeight * 0.09),
+                                      ],
 
 
-                                   ],
-                                 );
+                                    ],
+                                  );
 
 
-                              }
+                                }
                             ),
 
                           ),
@@ -728,103 +804,103 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     final isLowBalance = userBalance <= 1;
     final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
     return VestingContainer(
-            width: screenWidth * 0.9,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+      width: screenWidth * 0.9,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
 
-                SizedBox(height: screenHeight * 0.02),
+          SizedBox(height: screenHeight * 0.02),
 
-                Text(
-                  'Total Balance',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0XFFFFF5ED),
-                    fontSize: getResponsiveFontSize(context, 12),
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.001),
-                ShaderMask(
-                  blendMode: BlendMode.srcIn,
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: const [
-                        Color(0xFF2680EF),
-                        Color(0xFF1CD494),
-                      ],
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'ECM ${_formatBalance(balanceText)}',
-                    // 'ECM $displayBalance',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getResponsiveFontSize(context, 22),
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: screenHeight * 0.02),
-                BlockButton(
-                  height: screenHeight * 0.05,
-                  width: screenWidth * 0.8,
-                  label: _isStartingVesting ? "Starting.." : "Start Vesting",
-                  textStyle:  TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontSize: getResponsiveFontSize(context, 16),
-                    height: 1.6,
-                  ),
-                  gradientColors: const [
-                    Color(0xFF2680EF),
-                    Color(0xFF1CD494)
-                  ],
-                  // onTap:!isPostVesting && !isLowBalance && !_isStartingVesting
-                  onTap: widget.existingVestingStatus == null && !isLowBalance && !_isStartingVesting
-                      ? () async{
-                    print('Start Vesting button clicked - initiating process');
-                    setState(() {
-                      _isStartingVesting = true;
-                    });
-
-                    try{
-                      await walletVm.startVesting(context);
-                      print('Start Vesting completed - navigating to vesting status screen');
-                      if (widget.onStartVestingComplete != null) {
-                        await widget.onStartVestingComplete!();
-                      }
-
-                      await walletVm.getBalance();
-
-                      if (mounted) {
-                        setState(() {
-                          balanceText = walletVm.balance ?? '0';
-                          _initializeTimers(widget.existingVestingInfo);
-                        });
-                      }
-
-                    } catch (e) {
-                      print('totalBalance: startVesting error: $e');
-                    }finally{
-                      if(mounted){
-                        setState(() {
-                          _isStartingVesting = false;
-                        });
-                      }
-                    }
-                  } : null,
-
-                ),
-                SizedBox(height: screenHeight * 0.02),
-
-              ],
+          Text(
+            'Total Balance',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0XFFFFF5ED),
+              fontSize: getResponsiveFontSize(context, 12),
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
             ),
-          );
+          ),
+          SizedBox(height: screenHeight * 0.001),
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                colors: const [
+                  Color(0xFF2680EF),
+                  Color(0xFF1CD494),
+                ],
+              ).createShader(bounds);
+            },
+            child: Text(
+              'ECM ${_formatBalance(balanceText)}',
+              // 'ECM $displayBalance',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: getResponsiveFontSize(context, 22),
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+
+          SizedBox(height: screenHeight * 0.02),
+          BlockButton(
+            height: screenHeight * 0.05,
+            width: screenWidth * 0.8,
+            label: _isStartingVesting ? "Starting.." : "Start Vesting",
+            textStyle:  TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              fontSize: getResponsiveFontSize(context, 16),
+              height: 1.6,
+            ),
+            gradientColors: const [
+              Color(0xFF2680EF),
+              Color(0xFF1CD494)
+            ],
+            // onTap:!isPostVesting && !isLowBalance && !_isStartingVesting
+            onTap: widget.existingVestingStatus == null && !isLowBalance && !_isStartingVesting
+                ? () async{
+              print('Start Vesting button clicked - initiating process');
+              setState(() {
+                _isStartingVesting = true;
+              });
+
+              try{
+                await walletVm.startVesting(context);
+                print('Start Vesting completed - navigating to vesting status screen');
+                if (widget.onStartVestingComplete != null) {
+                  await widget.onStartVestingComplete!();
+                }
+
+                await walletVm.getBalance();
+
+                if (mounted) {
+                  setState(() {
+                    balanceText = walletVm.balance ?? '0';
+                    _initializeTimers(widget.existingVestingInfo);
+                  });
+                }
+
+              } catch (e) {
+                print('totalBalance: startVesting error: $e');
+              }finally{
+                if(mounted){
+                  setState(() {
+                    _isStartingVesting = false;
+                  });
+                }
+              }
+            } : null,
+
+          ),
+          SizedBox(height: screenHeight * 0.02),
+
+        ],
+      ),
+    );
   }
 
   Widget whyVesting(screenHeight, screenWidth, context){
@@ -990,10 +1066,9 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
   }
 
-  Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context, WalletViewModel walletVM) {
+  Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context, WalletViewModel walletVM ) {
     final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
-    debugPrint('cliffTimerAndClaimSection: isCliffPeriodOver=$isCliffPeriodOver, availableClaimableAmount=${walletVM.availableClaimableAmountForExistingUser}');
-    return VestingContainer(
+     return VestingContainer(
       width: screenWidth * 0.9,
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
       child: Column(
@@ -1081,7 +1156,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     child: VestingDetailInfoRow(
                       iconPath: 'assets/icons/claimedIcon.svg',
                       title: 'Available claim',
-                      // value: 'ECM ${walletVM.vestInfo.claimable?.toStringAsFixed(6)}',
                       value: 'ECM ${walletVM.availableClaimableAmountForExistingUser.toStringAsFixed(6)}',
                       iconSize: screenHeight * 0.032,
                     ),
@@ -1104,7 +1178,10 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                 Color(0xFF2680EF),
                 Color(0xFF1CD494)
               ],
-              onTap: walletVM.isLoading ? null : () => walletVM.releaseECM(context),
+              onTap: () {
+                print('CLAIM button tapped for testing');
+                walletVM.releaseECM(context);
+              },
             ),
           ],
         ],
@@ -1285,9 +1362,18 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                 itemBuilder: (context, index) {
                   final claim = _filteredClaimHistory[index];
                   final explorerUrl = 'https://etherscan.io/tx/${claim.hash}';
+
+                  final amountNumeric = double.tryParse(claim.amount.replaceAll('ECM ', '')) ?? 0.0;
+                  final formattedAmount = "ECM ${amountNumeric.toStringAsFixed(6)}";
+
+                  final dateTimeFormatted = DateFormat("dd MMM yyyy HH:mm")
+                      .format(DateTime.parse(claim.dateTime));
+
                   return ClaimHistoryCard(
-                    amount: claim.amount,
-                    dateTime: claim.dateTime,
+                    // amount: claim.amount,
+                    // dateTime: claim.dateTime,
+                    amount: formattedAmount,
+                    dateTime: dateTimeFormatted,
                     walletAddress: claim.walletAddress,
                     buttonLabel: "Explore",
                     onButtonTap: () async{
@@ -1305,6 +1391,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     );
   }
 }
+
+
 
 String _formatOverallDuration(Duration duration) {
   if (duration.inDays < 0) return "N/A";

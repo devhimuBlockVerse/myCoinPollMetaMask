@@ -65,6 +65,8 @@ dependencies:
   connectivity_plus: ^6.1.5
   get: ^4.6.5
 
+  firebase_core: ^2.24.0
+  firebase_analytics: ^10.8.0
 
 
 dev_dependencies:

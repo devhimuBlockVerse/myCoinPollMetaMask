@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "164526671065",
+    "project_id": "my-coin-poll-app",
+    "storage_bucket": "my-coin-poll-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164526671065:android:d38b3a373644fc567caac8",
+        "android_client_info": {
+          "package_name": "com.mycoinpoll"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwc6ZmMml12hgZHTuk2ESJEwSSUK03u-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

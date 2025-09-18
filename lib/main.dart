@@ -1,5 +1,6 @@
 import 'dart:async';
- import 'package:flutter/material.dart';
+ import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
  import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
@@ -7,7 +8,7 @@ import 'package:mycoinpoll_metamask/connectivity/dependency_injection.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:mycoinpoll_metamask/permission_handler_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
  import 'application/presentation/screens/settings/feedback_screen.dart';
 import 'application/presentation/screens/splash/splash_view.dart';
 import 'application/presentation/viewmodel/bottom_nav_provider.dart';
@@ -18,7 +19,7 @@ import 'application/presentation/viewmodel/user_auth_provider.dart';
 import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
+
 
 import 'connectivity/connectivity_controller.dart';
 import 'connectivity/no internet.dart';
@@ -30,6 +31,9 @@ final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>(
 Future <void> main() async   {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // HttpOverrides.global = MyHttpOverrides();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

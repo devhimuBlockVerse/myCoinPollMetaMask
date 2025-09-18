@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
- import '../../../logrocket/logrocket_utils.dart';
-import '../../../main.dart' ;
+
 import '../../domain/constants/api_constants.dart';
 import '../../domain/model/PurchaseLogModel.dart';
 import '../../presentation/models/eCommerce_model.dart';
@@ -18,23 +17,7 @@ import '../../presentation/viewmodel/bottom_nav_provider.dart';
 
 /// logRockets
 class ApiService {
-  ///  Helper to track API calls
-  Future<void> trackApiEvent(
-      String endpoint,
-      int statusCode,
-      DateTime start, {
-        String method = "GET",
-        Map<String, dynamic>? extra,
-      }) async {
-    final duration = DateTime.now().difference(start).inMilliseconds;
-    await logRocketTrackApiEvent(
-      endpoint,
-      statusCode,
-      duration,
-      method: method,
-      extra: extra,
-    );
-  }
+
 
 
   Future<List<TokenModel>> fetchTokens() async {
@@ -48,7 +31,6 @@ class ApiService {
       final response = await http.get(url, headers: headers);
 
       //LogRockets
-      await trackApiEvent("/tokens", response.statusCode, start, method: "GET");
 
 
       if (response.statusCode == 200) {
@@ -61,7 +43,6 @@ class ApiService {
         throw Exception('Failed to load tokens: ${response.reasonPhrase}');
       }
     } catch (e) {
-      await trackApiEvent("/tokens", 500, start, method: "GET", extra: {"error": e.toString()});
 
       rethrow;
     }
@@ -85,7 +66,6 @@ class ApiService {
       print('>> Response Body: ${response.body}');
 
        //LogRockets
-      await trackApiEvent("/auth/login", response.statusCode, start, method: "POST", extra: {"username": username});
 
 
 
@@ -105,11 +85,7 @@ class ApiService {
         await prefs.setString('user', jsonEncode(user.toJson()));
         await prefs.setString('unique_id', user.uniqueId ?? '');
 
-        await updateLogRocketUser(
-          (user.uniqueId ?? user.id).toString(),
-          user.ethAddress ?? 'unknown',
-          user.username ?? 'unknown',
-        );
+
 
 
 
@@ -119,7 +95,6 @@ class ApiService {
         throw error['message'] ?? 'Login failed';
       }
     } catch (e) {
-      await trackApiEvent("/auth/login", 500, start, method: "POST", extra: {"error": e.toString()});
 
       rethrow;
     }
@@ -132,7 +107,6 @@ class ApiService {
 
     try {
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/token/$slug", response.statusCode, start);
 
       if (response.statusCode == 200) {
         return tokenDetailsFromJson(response.body);
@@ -140,7 +114,6 @@ class ApiService {
         throw Exception('Failed to load token details: ${response.reasonPhrase}');
       }
     } catch (e) {
-      await trackApiEvent("/token/$slug", 500, start, extra: {"error": e.toString()});
 
       rethrow;
     }
@@ -171,7 +144,6 @@ class ApiService {
 
     try {
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/get-purchase-logs", response.statusCode, start);
 
 
       if (response.statusCode == 200) {
@@ -186,7 +158,6 @@ class ApiService {
       }
     } catch (e) {
       print('  Error fetching logs: $e');
-      await trackApiEvent("/get-purchase-logs", 500, start, extra: {"error": e.toString()});
 
       rethrow;
     }
@@ -210,7 +181,6 @@ class ApiService {
 
     try {
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/get-purchase-referral", response.statusCode, start);
 
       if (response.statusCode == 200) {
 
@@ -229,7 +199,6 @@ class ApiService {
         throw Exception('Failed to fetch referral data: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      await trackApiEvent("/get-purchase-referral", 500, start, extra: {"error": e.toString()});
 
       rethrow;
     }
@@ -255,7 +224,6 @@ class ApiService {
 
       try{
         final response = await http.get(url,headers: headers);
-        await trackApiEvent("/get-referral-users?page=$page", response.statusCode, start);
 
         if(response.statusCode == 200) {
           final decoded = json.decode(response.body);
@@ -269,8 +237,7 @@ class ApiService {
           throw Exception('Failed to fetch referral users: ${response.statusCode}');
         }
       }catch(e){
-        await trackApiEvent("/get-referral-users?page=$page", 500, start, extra: {"error": e.toString()});
-        rethrow;
+         rethrow;
 
       }
 
@@ -293,7 +260,6 @@ class ApiService {
 
     try{
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/get-purchase-stats", response.statusCode, start);
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
@@ -302,8 +268,7 @@ class ApiService {
         throw Exception('Failed to fetch purchase stats');
       }
     }catch(e){
-      await trackApiEvent("/get-purchase-stats", 500, start, extra: {"error": e.toString()});
-      rethrow;
+       rethrow;
     }
 
   }
@@ -321,7 +286,6 @@ class ApiService {
 
     try{
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/get-referral-stats", response.statusCode, start);
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
@@ -330,8 +294,7 @@ class ApiService {
         throw Exception('Failed to fetch purchase stats');
       }
     }catch(e){
-      await trackApiEvent("/get-referral-stats", 500, start, extra: {"error": e.toString()});
-      rethrow;
+       rethrow;
 
     }
 
@@ -350,7 +313,6 @@ class ApiService {
 
     try{
       final response = await http.get(url, headers: headers);
-      await trackApiEvent("/token-balance/$contractAddress/$walletAddress", response.statusCode, start);
 
       if (response.statusCode == 401 || response.statusCode == 403) {
         return '0';
@@ -369,8 +331,7 @@ class ApiService {
       print('[TokenBalance] -> parsed: { raw: $raw, human: $human }');
       return human;
     }catch(e){
-      await trackApiEvent("/token-balance/$contractAddress/$walletAddress", 500, start, extra: {"error": e.toString()});
-      rethrow;
+       rethrow;
     }
 
   }
@@ -395,7 +356,6 @@ class ApiService {
         }),
       );
 
-      await trackApiEvent("/auth/web3-login", response.statusCode, start, method: "POST", extra: {"address": address});
 
 
       if (response.statusCode == 200) {
@@ -422,12 +382,6 @@ class ApiService {
         bottomNavProvider.setFullName(user.name ?? '');
 
 
-        // Update LogRocket user
-        await updateLogRocketUser(
-          (user.uniqueId ?? user.id).toString(),
-          user.ethAddress ?? 'unknown',
-          user.username ?? 'unknown',
-        );
 
 
 
@@ -436,8 +390,7 @@ class ApiService {
         throw Exception('Failed to login with Web3: ${response.body}');
       }
     }catch(e){
-      await trackApiEvent("/auth/web3-login", 500, start, method: "POST", extra: {"error": e.toString()});
-      rethrow;
+       rethrow;
     }
 
   }
@@ -467,7 +420,6 @@ class ApiService {
 
     try{
       final response = await http.post(url, headers: headers, body: body);
-      await trackApiEvent("/user-app-feedback", response.statusCode, start, method: "POST", extra: {"username": username});
 
       print("Feedback API response status: ${response.statusCode}");
       print("Feedback API response body: ${response.body}");
@@ -479,8 +431,7 @@ class ApiService {
         throw Exception("Failed to submit feedback");
       }
     }catch(e){
-      await trackApiEvent("/user-app-feedback", 500, start, method: "POST", extra: {"error": e.toString()});
-      print("Error submitting feedback: $e");
+       print("Error submitting feedback: $e");
 
       rethrow;
     }

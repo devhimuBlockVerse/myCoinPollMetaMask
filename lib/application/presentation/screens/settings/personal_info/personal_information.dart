@@ -942,12 +942,6 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
         print(">> Profile update successful:");
         print(">>Profile Updated : $responseData");
 
-        await updateLogRocketUser(
-          prefs.getString('unique_id') ?? const Uuid().v4(),
-          updatedProfile['eth_address'] ?? 'unknown',
-          updatedProfile['username'] ?? 'unknown',
-        );
-
 
 
         ToastMessage.show(

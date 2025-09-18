@@ -825,57 +825,69 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
             ),
           ),
 
-          SizedBox(height: screenHeight * 0.02),
-          BlockButton(
-            height: screenHeight * 0.05,
-            width: screenWidth * 0.8,
-            label: _isStartingVesting ? "Starting.." : "Start Vesting",
-            textStyle:  TextStyle(
+          SizedBox(height: screenHeight * 0.01),
+
+          /// Start Vesting Enable Button
+          // BlockButton(
+          //   height: screenHeight * 0.05,
+          //   width: screenWidth * 0.8,
+          //   label: _isStartingVesting ? "Starting.." : "Start Vesting",
+          //   textStyle:  TextStyle(
+          //     fontWeight: FontWeight.w700,
+          //     color: Colors.white,
+          //     fontSize: getResponsiveFontSize(context, 16),
+          //     height: 1.6,
+          //   ),
+          //   gradientColors: const [
+          //     Color(0xFF2680EF),
+          //     Color(0xFF1CD494)
+          //   ],
+          //   // onTap:!isPostVesting && !isLowBalance && !_isStartingVesting
+          //   onTap: widget.existingVestingStatus == null && !isLowBalance && !_isStartingVesting
+          //       ? () async{
+          //     print('Start Vesting button clicked - initiating process');
+          //     setState(() {
+          //       _isStartingVesting = true;
+          //     });
+          //
+          //     try{
+          //       await walletVm.startVesting(context);
+          //       print('Start Vesting completed - navigating to vesting status screen');
+          //       if (widget.onStartVestingComplete != null) {
+          //         await widget.onStartVestingComplete!();
+          //       }
+          //
+          //       await walletVm.getBalance();
+          //
+          //       if (mounted) {
+          //         setState(() {
+          //           balanceText = walletVm.balance ?? '0';
+          //           _initializeTimers(widget.existingVestingInfo);
+          //         });
+          //       }
+          //
+          //     } catch (e) {
+          //       print('totalBalance: startVesting error: $e');
+          //     }finally{
+          //       if(mounted){
+          //         setState(() {
+          //           _isStartingVesting = false;
+          //         });
+          //       }
+          //     }
+          //   } : null,
+          //
+          // ),
+          /// Start Vesting Disable Button
+          Text(
+            'Vesting period has expired.',
+            style:  TextStyle(
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Colors.white54,
               fontSize: getResponsiveFontSize(context, 16),
-              height: 1.6,
-            ),
-            gradientColors: const [
-              Color(0xFF2680EF),
-              Color(0xFF1CD494)
-            ],
-            // onTap:!isPostVesting && !isLowBalance && !_isStartingVesting
-            onTap: widget.existingVestingStatus == null && !isLowBalance && !_isStartingVesting
-                ? () async{
-              print('Start Vesting button clicked - initiating process');
-              setState(() {
-                _isStartingVesting = true;
-              });
-
-              try{
-                await walletVm.startVesting(context);
-                print('Start Vesting completed - navigating to vesting status screen');
-                if (widget.onStartVestingComplete != null) {
-                  await widget.onStartVestingComplete!();
-                }
-
-                await walletVm.getBalance();
-
-                if (mounted) {
-                  setState(() {
-                    balanceText = walletVm.balance ?? '0';
-                    _initializeTimers(widget.existingVestingInfo);
-                  });
-                }
-
-              } catch (e) {
-                print('totalBalance: startVesting error: $e');
-              }finally{
-                if(mounted){
-                  setState(() {
-                    _isStartingVesting = false;
-                  });
-                }
-              }
-            } : null,
-
+             ),
           ),
+
           SizedBox(height: screenHeight * 0.02),
 
         ],
@@ -908,7 +920,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
       },
       {
         "image": "assets/images/moneyVesting.png",
-        "text": "No. Claims are only possible after the cliff period is over. At that time, the tokens vested during the cliff will be released to you."
+        "text": "Claims are only possible after the cliff period is over. At that time, the tokens vested during the cliff will be released to you."
       },
     ];
 

@@ -3080,7 +3080,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
   //SEPHOLIA ADDRESS
-  /** SEPHOLIA ADDRESS **/
+  /** SEPHOLIA ADDRESS**/
   static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506';
   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0';
@@ -3097,8 +3097,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092';
   static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
   static const String EXITING_VESTING_ADDRESS = '0x5bC875476C73C76092755226d59747e37c467d90';
-  **/
 
+  **/
   static const double ECM_PRICE_USD = 1.2;
   static const int ECM_DECIMALS = 18;
   static const int AGGREGATOR_DECIMALS = 8;
@@ -4993,7 +4993,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final zeroAddress = EthereumAddress.fromHex('0x0000000000000000000000000000000000000000');
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
+        "ICO_VESTING_INFO",
         "vestingOf",
         SALE_CONTRACT_ADDRESS,
         true,
@@ -5015,7 +5015,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } catch (e, stackTrace) {
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
+        "ICO_VESTING_INFO",
         "vestingOf",
         SALE_CONTRACT_ADDRESS,
         false,
@@ -5074,9 +5074,11 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       //'vestedAmount' function that takes one parameter (timestamp)
       final vestedAmountFunction = vestedContract.findFunctionsByName('vestedAmount').firstWhere((func) => func.parameters.length == 1,);
       final claimableResult = await _web3Client!.call(contract: vestedContract, function: vestedAmountFunction, params: [BigInt.from(now)]);
+
+
       print("Raw vestedAmount (claimable): ${claimableResult[0]}");
 
-
+      final balance = await getBalance(forAddress: vestingAddress.toString());
       final startVal = (startResult[0] as BigInt).toInt();
       final cliff = (cliffResult[0] as BigInt).toInt();
       final duration = (durationResult[0] as BigInt).toInt();
@@ -5099,7 +5101,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _vestingStatus = startVal > now ? 'locked' : 'process';
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_DURATIONS",
+        "ICO_VESTING_DURATIONS",
         "resolveVestedStart",
         vestingContractAddress.hex,
         true,
@@ -5107,6 +5109,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         extra: {
           "walletAddress": _walletAddress,
           "vestingAddress": vestingContractAddress.hex,
+          "ICO-vestedAmount": balance,
           "start": startVal.toString(),
           "cliff": cliff.toString(),
           "duration": duration.toString(),
@@ -5119,7 +5122,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
     } catch (e, stackTrace) {
       await logRocketTrackBlockChainEvent(
-        "VESTING_DURATIONS",
+        "ICO_VESTING_DURATIONS",
         "resolveVestedStart",
         vestingContractAddress.hex,
         false,
@@ -5202,7 +5205,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       await logRocketTrackBlockChainEvent(
-        "TRANSACTION",
+        "EXISTING_CLAIM_PAYLOAD",
         "claim",
         _vestingAddress!,
         true,
@@ -5211,6 +5214,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         extra: {
           "walletAddress": walletAddress,
           "vestingAddress": _vestingAddress!,
+          "amount": releasedAmountFormatted,
         },
       );
 
@@ -5236,15 +5240,28 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         body: jsonEncode(payload),
       );
 
-      print("claimECM response.statusCode ${response.statusCode}");
-      print("claimECM ${response.body}");
-      print("claimECM ${payload}");
+
       if (response.statusCode == 200) {
         print('Claim history logged successfully');
       } else {
         print('Failed to log claim history: ${response.body}');
       }
 
+
+      await logRocketTrackBlockChainEvent(
+        "EXISTING_CLAIM_PAYLOAD ",
+        "claim",
+        _existingVestingAddress!,
+        true,
+        DateTime.now().difference(start).inMilliseconds,
+        transactionHash: jsonEncode(payload),
+        extra: {
+          "amount": releasedAmountFormatted,
+          "wallet_address": walletAddress,
+          "hash": transactionHash,
+          "type": "ICO_Vesting",
+        },
+      );
       ToastMessage.show(
         message: "Your ECM tokens have been claimed successfully.",
         subtitle: "Transaction hash: $txResult.",
@@ -5259,7 +5276,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } catch (e, stackTrace) {
 
       await logRocketTrackBlockChainEvent(
-        "TRANSACTION",
+        "ICO_CLAIM_ECM",
         "claim",
         _vestingAddress ?? "unknown",
         false,
@@ -5321,7 +5338,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final releasedEther = EtherAmount.fromBigInt(EtherUnit.wei, releasedWei).getValueInUnit(EtherUnit.ether);
       final releasedAmountFormatted = releasedEther.toStringAsFixed(6);
       await logRocketTrackBlockChainEvent(
-        "CONTRACT_CALL",
+        "REFRESH_ICO_VESTING",
         "released",
         _vestingAddress!,
         true,
@@ -5350,7 +5367,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     } catch (e, stackTrace) {
 
       await logRocketTrackBlockChainEvent(
-        "CONTRACT_CALL",
+        "REFRESH_ICO_VESTING",
         "released",
         _vestingAddress ?? "unknown",
         false,
@@ -5547,7 +5564,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         throw Exception("Vesting transaction failed or timed out.");
       }
       await logRocketTrackBlockChainEvent(
-        "TRANSACTION",
+        "EXISTING_USER_VESTING",
         "vestTokens",
         EXITING_VESTING_ADDRESS,
         true,
@@ -5574,7 +5591,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     }catch(e){
       print('startVesting Error: $e');
       await logRocketTrackBlockChainEvent(
-        "TRANSACTION",
+        "EXISTING_USER_VESTING",
         "startVesting",
         EXITING_VESTING_ADDRESS,
         false,
@@ -5647,7 +5664,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
+        "EXISTING_VESTING_INFO",
         "getVestingSchedulesCountByBeneficiary",
         EXITING_VESTING_ADDRESS,
         true,
@@ -5703,7 +5720,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_INFO",
+        "EXISTING_VESTING_INFO",
         "getVestingSchedulesCountByBeneficiary",
         EXITING_VESTING_ADDRESS,
         false,
@@ -5797,20 +5814,20 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _existingVestingAddress = EXITING_VESTING_ADDRESS;
 
       await logRocketTrackBlockChainEvent(
-        "VESTING_DURATIONS",
+        "EXISTING_VESTING_DURATIONS",
         "resolveExistingVestedStart",
         EXITING_VESTING_ADDRESS,
         true,
         DateTime.now().difference(startTime).inMilliseconds,
         extra: {
           "walletAddress": _walletAddress,
-          "vestingAddress": EXITING_VESTING_ADDRESS,
+          "totalVestingAmount": totalVestingAmount.toString(),
           "start": startVal.toString(),
           "cliff": cliff.toString(),
           "duration": duration.toString(),
           "end": end.toString(),
           "released": released.toString(),
-          "totalVestingAmount": totalVestingAmount.toString(),
+          "existingVestingAddress": EXITING_VESTING_ADDRESS,
         },
       );
       print('Notifying listeners with existingVestingStatus: $_existingVestingStatus, existingVestingAddress: $_existingVestingAddress');
@@ -5822,7 +5839,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         print('ABI/Function mismatch - Check ExitingVestingABI.json for getLastVestingScheduleForHolder');
       }
       await logRocketTrackBlockChainEvent(
-        "VESTING_DURATIONS",
+        "EXISTING_VESTING_DURATIONS",
         "resolveExistingVestedStart",
         EXITING_VESTING_ADDRESS,
         false,
@@ -5904,7 +5921,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       // 7. Log the transaction
       await logRocketTrackBlockChainEvent(
-        "TRANSACTION",
+        "EXISTING_CLAIM_ECM",
         "release",
         _existingVestingAddress!,
         true,
@@ -5912,8 +5929,8 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         transactionHash: txResult,
         extra: {
           "walletAddress": walletAddress,
-          "vestingAddress": _existingVestingAddress!,
           "amount": releasable.toString(),
+          "existingVestingAddress": _existingVestingAddress!,
         },
       );
 
@@ -5950,6 +5967,21 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         print('releaseECM: Failed to log claim history: ${response.body}');
       }
 
+
+      await logRocketTrackBlockChainEvent(
+        "EXISTING_CLAIM_PAYLOAD ",
+        "release",
+        _existingVestingAddress!,
+        true,
+        DateTime.now().difference(start).inMilliseconds,
+        transactionHash: jsonEncode(payload),
+        extra: {
+          "amount": releasable.toString(),
+          "wallet_address": walletAddress,
+          "hash": txResult,
+          "type": "Exiting_Vesting",
+        },
+      );
       ToastMessage.show(
         message: "Your ECM tokens have been released successfully.",
         subtitle: "Transaction hash: $txResult.",

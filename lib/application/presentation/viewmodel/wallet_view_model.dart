@@ -3105,12 +3105,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   static const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
 
 
-  // Future<void> setAuthToken(String token) async {
-  //   _authToken = token;
-  //   notifyListeners();
-  // }
-
-
   WalletViewModel() {
     _web3Client = Web3Client(ALCHEMY_URL_V2, Client());
     WidgetsBinding.instance.addObserver(this);

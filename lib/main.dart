@@ -40,7 +40,7 @@ Future <void> main() async   {
   DependencyInjection.init();
 
 
-  runApp(const MyApp());
+  // runApp(const MyApp());
 
 
   final prefs = await SharedPreferences.getInstance();
@@ -71,25 +71,11 @@ Future <void> main() async   {
       )
   ));
 
-  // Identify user (guest or logged in)
-  // LogRocket.identify(uniqueId, {
-  //   "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
-  //   "userName": prefs.getString('userName') ?? 'unknown',
-  // });
   LogRocket.identify(uniqueId, {
     "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
     "userName": prefs.getString('userName') ?? 'guest',
   });
 }
-// Future<void> updateLogRocketUser(String userId, String walletAddress, String userName) async {
-//   final prefs = await SharedPreferences.getInstance();
-//   await prefs.setString('unique_id', userId);
-//
-//   LogRocket.identify(userId, {
-//     "walletAddress": walletAddress,
-//     "userName": userName,
-//   });
-// }
 
 Future<void> updateLogRocketUser(
     String userId, String walletAddress, String userName) async {

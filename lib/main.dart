@@ -1,5 +1,7 @@
 import 'dart:async';
- import 'package:firebase_core/firebase_core.dart';
+ import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -34,11 +36,23 @@ Future <void> main() async   {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FlutterError.onError = (errorDetails){
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack){
+    FirebaseCrashlytics.instance.recordError(error, stack);
+    return true;
+  };
+
   // HttpOverrides.global = MyHttpOverrides();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+
   Get.put(NetworkController());
   DependencyInjection.init();
 
@@ -82,7 +96,10 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: Colors.black,
               appBarTheme: AppBarTheme(backgroundColor: Colors.grey[900])),
           home: const PermissionHandlerWidget(child: SplashView()),
-          navigatorObservers: [routeObserver,],
+          navigatorObservers: [
+            routeObserver,
+            FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+          ],
           builder: (context, child) {
             final Widget appContent = WalletAppInitializer(child: child!);
             return  Obx((){

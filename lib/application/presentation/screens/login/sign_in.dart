@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -111,10 +112,12 @@ class _SignInState extends State<SignIn> {
 
       Provider.of<BottomNavProvider>(context, listen: false).setFullName(response.user.name);
 
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const DashboardBottomNavBar()),
       );
+
     } catch (e) {
       ToastMessage.show(
         message: "Login Failed",

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -65,10 +66,6 @@ class ApiService {
       print('>> Status Code: ${response.statusCode}');
       print('>> Response Body: ${response.body}');
 
-       //LogRockets
-
-
-
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -86,7 +83,15 @@ class ApiService {
         await prefs.setString('unique_id', user.uniqueId ?? '');
 
 
-
+        await FirebaseAnalytics.instance.logEvent(
+          name: "LOGIN_NOW_BUTTON",
+          parameters: {
+            "token": token,
+            "userName": user.username,
+            "unique_id": user.uniqueId,
+            "ethAddress": user.ethAddress,
+          },
+        );
 
 
         return LoginResponse(user: user, token: token);

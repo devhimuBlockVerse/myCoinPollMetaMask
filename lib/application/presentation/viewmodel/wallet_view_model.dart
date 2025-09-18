@@ -12,7 +12,6 @@ import '../../../framework/utils/customToastMessage.dart';
 import '../../../framework/utils/enums/toast_type.dart';
 import '../../domain/constants/api_constants.dart';
 import 'dart:typed_data';
-
 import '../../module/userDashboard/view/vesting/helper/vesting_info.dart';
 
 bool isUserRejectedError(Object error) {
@@ -181,16 +180,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   static const String API_ENDPOINT = 'https://app.mycoinpoll.com/api/v1';
 
 
-  Future<void> setAuthToken(String token) async {
-    _authToken = token;
-    notifyListeners();
-  }
 
-
-  WalletViewModel() {
-    _web3Client = Web3Client(ALCHEMY_URL_V2, Client());
-    WidgetsBinding.instance.addObserver(this);
-  }
 
   String? _vestingAddress;
   String? _vestingStatus; // 'locked' | 'process' | null
@@ -208,6 +198,19 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 // Getters for the new properties
   String? get vestingAddress => _vestingAddress;
   String? get vestingStatus => _vestingStatus;
+
+
+  Future<void> setAuthToken(String token) async {
+    _authToken = token;
+    notifyListeners();
+  }
+  WalletViewModel() {
+    _web3Client = Web3Client(ALCHEMY_URL_V2, Client());
+    WidgetsBinding.instance.addObserver(this);
+   }
+
+
+
 
   @override
   void dispose() {
@@ -254,16 +257,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           enableAnalytics: false,
           featuresConfig: FeaturesConfig(
             email: false,
-            socials: [
-              AppKitSocialOption.Google,
-              AppKitSocialOption.Discord,
-              AppKitSocialOption.Facebook,
-              AppKitSocialOption.GitHub,
-              AppKitSocialOption.X,
-              AppKitSocialOption.Apple,
-              AppKitSocialOption.Twitch,
-              AppKitSocialOption.Farcaster,
-            ],
+            // socials: [
+            //   AppKitSocialOption.Google,
+            //   AppKitSocialOption.Discord,
+            //   AppKitSocialOption.Facebook,
+            //   AppKitSocialOption.GitHub,
+            //   AppKitSocialOption.X,
+            //   AppKitSocialOption.Apple,
+            //   AppKitSocialOption.Twitch,
+            //   AppKitSocialOption.Farcaster,
+            // ],
             showMainWallets: true,
           ),
         );

@@ -1,4 +1,4 @@
-package com.example.mycoinpoll_metamask
+package com.blockverse.mycoinpoll
 
 import io.flutter.embedding.android.FlutterActivity
 

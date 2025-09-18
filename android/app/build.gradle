@@ -29,7 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.mycoinpoll_metamask"
+    namespace = "com.blockverse.mycoinpoll"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 

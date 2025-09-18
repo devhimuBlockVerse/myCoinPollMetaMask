@@ -28,7 +28,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.example.mycoinpoll_metamask</string>
+			<string>com.blockverse.mycoinpoll</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>exampleapp</string>

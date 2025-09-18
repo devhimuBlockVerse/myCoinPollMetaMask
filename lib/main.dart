@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
  import 'package:mycoinpoll_metamask/application/module/userDashboard/viewmodel/dashboard_nav_provider.dart';
 import 'package:mycoinpoll_metamask/connectivity/dependency_injection.dart';
+import 'package:mycoinpoll_metamask/firebase_service/AnalyticsService.dart';
 import 'package:mycoinpoll_metamask/framework/utils/customToastMessage.dart';
 import 'package:mycoinpoll_metamask/permission_handler_widget.dart';
 import 'package:provider/provider.dart';
@@ -37,12 +38,24 @@ Future <void> main() async   {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  Get.put(AnalyticsService()..initialize());
+
   FlutterError.onError = (errorDetails){
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+    Get.find<AnalyticsService>().logCrash(
+      error: errorDetails.exception,
+      stackTrace: errorDetails.stack ?? StackTrace.current,
+      context: 'FlutterError',
+    );
   };
 
   PlatformDispatcher.instance.onError = (error, stack){
     FirebaseCrashlytics.instance.recordError(error, stack);
+    Get.find<AnalyticsService>().logCrash(
+      error: error,
+      stackTrace: stack,
+      context: 'PlatformError',
+    );
     return true;
   };
 

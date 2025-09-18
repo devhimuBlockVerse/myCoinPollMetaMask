@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:decimal/decimal.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
   import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
   import 'package:reown_appkit/reown_appkit.dart';
  import 'package:shared_preferences/shared_preferences.dart';
  import 'package:web3dart/crypto.dart';
+import '../../../firebase_service/AnalyticsService.dart';
 import '../../../framework/utils/customToastMessage.dart';
 import '../../../framework/utils/enums/toast_type.dart';
 import '../../domain/constants/api_constants.dart';
@@ -72,6 +76,8 @@ bool isUserRejectedError(Object error) {
 }
 
 class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
+
+  final AnalyticsService _analyticsService = Get.find<AnalyticsService>();
 
   bool _hasMaterial(BuildContext context) {
     return Localizations.of<MaterialLocalizations>(context, MaterialLocalizations) != null;
@@ -168,11 +174,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
 
-
-
-
-
-
   static const double ECM_PRICE_USD = 1.2;
   static const int ECM_DECIMALS = 18;
   static const int AGGREGATOR_DECIMALS = 8;
@@ -209,6 +210,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(this);
    }
 
+  final startTime = DateTime.now().millisecondsSinceEpoch;
 
 
 
@@ -229,6 +231,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> init(BuildContext context) async {
+    _analyticsService.logUserAction(
+      action: 'wallet_init()',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+    _analyticsService.logScreenView(screenName: 'WALLET_INIT');
+
     if (_isLoading) return;
     _isLoading = true;
     notifyListeners();
@@ -288,9 +298,30 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       await _hydrateFromExistingSession();
 
+      /// Log success
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+      _analyticsService.logUserAction(
+        action: 'wallet_init()',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
 
     }catch(e,stack){
-
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'wallet_init',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'wallet_init()',
+      );
       await fetchLatestETHPrice();
     }finally{
       _isLoading = false;
@@ -317,6 +348,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     // Simple connection handler - only update state, don't fetch data immediately
     appKitModal!.onModalConnect.subscribe((_) async {
       debugPrint("Modal connected event triggered");
+      _analyticsService.logEvent(name: 'modal_connect_triggered');
 
       // Update basic state
       _isConnected = true;
@@ -328,18 +360,18 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       if (address != null) {
         _walletAddress = address;
+        await _analyticsService.setUserProperty(name: 'wallet_address', value: _walletAddress);
         // Save to prefs
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
       }
-
-      // Don't fetch data here - let the UI handle it
       notifyListeners();
     });
 
     // Simple update handler - minimal processing
     appKitModal!.onModalUpdate.subscribe((_) async {
       debugPrint("Modal update event triggered");
+      _analyticsService.logEvent(name: 'modal_update_triggered');
 
       // Only update if something actually changed
       final newChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
@@ -354,6 +386,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       if (newAddress != null && newAddress != _walletAddress) {
         _walletAddress = newAddress;
+        await _analyticsService.setUserProperty(name: 'wallet_address', value: _walletAddress);
         await prefs.setString('walletAddress', _walletAddress);
         shouldNotify = true;
       }
@@ -366,7 +399,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     // Simple disconnect handler - don't clear everything immediately
     appKitModal!.onModalDisconnect.subscribe((_) async {
       debugPrint("Modal disconnect event triggered");
-
+      _analyticsService.logEvent(name: 'modal_disconnect_triggered');
       // Only clear if we're actually disconnected
       if (appKitModal?.session == null) {
         await _handleDisconnect(prefs);
@@ -413,8 +446,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return;
     }
 
-    debugPrint("Actually disconnecting - clearing state");
-
     final prevAddress = _walletAddress;
     if (prevAddress.isNotEmpty) {
       await prefs.remove('web3_sig_$prevAddress');
@@ -430,7 +461,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     await _removePersistedConnection();
     await _clearWalletAndStageInfo();
     await fetchLatestETHPrice();
-
+    await _analyticsService.setUserProperty(name: 'wallet_address', value: null);
     notifyListeners();
   }
   /// Connect the wallet using the ReownAppKitModal UI.
@@ -441,7 +472,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     _walletConnectedManually = true;
     _isLoading = true;
     notifyListeners();
-    final start = DateTime.now();
+
+    _analyticsService.logUserAction(
+      action: 'wallet_connect',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
 
     try {
       // Ensure modal is initialized
@@ -452,6 +490,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       // Check if already connected
       if (_isConnected && appKitModal?.session != null) {
         debugPrint("Already connected, skipping connection");
+        final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+        _analyticsService.logUserAction(
+          action: 'wallet_connect',
+          success: true,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+          extra: {'skipped': true},
+        );
         return true;
       }
 
@@ -462,18 +508,23 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       final connected = await _waitForConnection(timeout: const Duration(seconds: 2));
       if (!connected) {
         debugPrint("Connection timeout");
+        final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+        _analyticsService.logUserAction(
+          action: 'wallet_connect',
+          success: false,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+          extra: {'reason': 'timeout'},
+        );
         return false;
       }
-
-      // await logRocketTrackBlockChainEvent(
-      //   "WALLET_ACTION",
-      //   "connectWallet",
-      //   "",
-      //   true,
-      //   DateTime.now().difference(start).inMilliseconds,
-      //   extra: {"walletAddress": _walletAddress},
-      // );
-
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'wallet_connect',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
       return true;
 
     } catch (e,stack) {

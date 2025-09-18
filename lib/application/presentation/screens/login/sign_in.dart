@@ -477,7 +477,7 @@ class _SignInState extends State<SignIn> {
                                             ],
 
                                             onTap: login,
-                                          ),
+                                           ),
                                           SizedBox(height: screenHeight * 0.01),
 
                                           Row(

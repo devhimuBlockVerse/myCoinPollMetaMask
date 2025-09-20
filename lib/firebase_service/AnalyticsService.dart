@@ -55,7 +55,7 @@ class AnalyticsService {
   }) async {
     final params = <String, Object?>{
       'action': action,
-      'success': success,
+      'success': success.toString(),
       'duration_ms': durationMs,
       'wallet_address': walletAddress,
       ...extra,
@@ -67,7 +67,7 @@ class AnalyticsService {
   /// Records to Crashlytics and logs as 'error' event to Analytics.
   Future<void> logError({
     required dynamic error,
-    required StackTrace stackTrace,
+     StackTrace? stackTrace,
     required String context, // e.g., 'connectWallet'
     Map<String, Object?>? extra,
   }) async {
@@ -94,9 +94,23 @@ class AnalyticsService {
     required dynamic error,
     required StackTrace stackTrace,
     required String context,
+    Map<String, Object?>? extra,
   }) async {
-    await _crashlytics.recordFatalError(error);
-    await logError(error: error, stackTrace: stackTrace, context: context);
+    // await _crashlytics.recordFatalError(error);
+    // await logError(error: error, stackTrace: stackTrace, context: context);
+
+    try{
+      await _crashlytics.recordError(error, stackTrace, fatal: true, reason: context);
+      await logError(error: error, stackTrace: stackTrace, context: context);
+
+      if(kDebugMode){
+        debugPrint('Crash Logged: $context - $error');
+      }
+    }catch(e){
+      if (kDebugMode) debugPrint('Failed to log crash: $e');
+    }
+
+
   }
 
   /// Sets a user property (e.g., wallet address).

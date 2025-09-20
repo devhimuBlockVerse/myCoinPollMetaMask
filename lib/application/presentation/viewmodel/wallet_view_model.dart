@@ -158,20 +158,20 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   bool get isUserBalanceLoading => _isUserBalanceLoading;
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
-  // static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
-   static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4"; /// MAIN
+  static const String ALCHEMY_URL_V2 = "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe"; // Test/**/
+   // static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4"; /// MAIN
 
-   // static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
-   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
+   static const String SALE_CONTRACT_ADDRESS = '0x732c5dFF0db1070d214F72Fc6056CF8B48692506'; // Test
+   // static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
 
-   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
-   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
+   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x4C324169890F42c905f3b8f740DBBe7C4E5e55C0'; // Test
+   // static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
 
-  // static const String STAKING_CONTRACT_ADDRESSLIVE = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake TEST
-  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake ,getMinimunStake , maximumStake
+  static const String STAKING_CONTRACT_ADDRESSLIVE = '0x878323894bE6c7E019dBA7f062e003889C812715'; /// statke , unstake TEST
+  // static const String STAKING_CONTRACT_ADDRESSLIVE = '0x6c6a6450b95d15Fbd80356EFe0b7DaE27ea00092'; /// statke , unstake ,getMinimunStake , maximumStake
 
-  // static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
-  static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
+  static const String AGGREGATO_RADDRESS = '0x694AA1769357215DE4FAC081bf1f309aDC325306'; // Test
+  // static const String AGGREGATO_RADDRESS = '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
 
 
   static const double ECM_PRICE_USD = 1.2;
@@ -264,7 +264,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
           ),
 
           logLevel: LogLevel.error,
-          enableAnalytics: false,
+          enableAnalytics: true,
           featuresConfig: FeaturesConfig(
             email: false,
             // socials: [
@@ -528,14 +528,19 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       return true;
 
     } catch (e,stack) {
-      // await logRocketTrackBlockChainEvent(
-      //   "WALLET_ACTION",
-      //   "connectWallet",
-      //   "",
-      //   false,
-      //   DateTime.now().difference(start).inMilliseconds,
-      //   extra: {"error": e.toString()},
-      // );
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'wallet_connect',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'connectWallet',
+      );
        return _handleConnectionError(e);
     } finally {
       _isLoading = false;
@@ -544,24 +549,64 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<bool> openWalletModal(BuildContext context) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'open_wallet_modal',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
     // 1) Always (re)create with the current valid context
     await init(context);
 
     try {
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
       await appKitModal!.openModalView();
+      _analyticsService.logUserAction(
+        action: 'open_wallet_modal',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
       return true;
-    } catch (_) {
+    } catch (e, stack) {
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'open_wallet_modal',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'openWalletModal',
+      );
 
       await reset();
       await init(context);
       await appKitModal!.openModalView();
+      final retryDuration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'open_wallet_modal_retry',
+        success: true,
+        durationMs: retryDuration,
+        walletAddress: _walletAddress,
+      );
       return true;
     }
   }
 
   bool _handleConnectionError(dynamic error) {
-    // logErrorToUxCam(error, StackTrace.current, "connectWallet(): Wallet Connection error");
-
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'handle_connection_error',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
     final errorMsg = error.toString().toLowerCase();
 
     if (errorMsg.contains("user rejected") ||
@@ -578,6 +623,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         duration: CustomToastLength.LONG,
         gravity: CustomToastGravity.BOTTOM,
       );
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'handle_connection_error',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'type': 'user_cancelled'},
+      );
       return false;
     } else {
 
@@ -588,12 +641,38 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         duration: CustomToastLength.LONG,
         gravity: CustomToastGravity.BOTTOM,
       );
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'handle_connection_error',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'type': 'connection_failed'},
+      );
       return false;
     }
   }
   /// Disconnect from the wallet and clear stored wallet info.
   Future<void> disconnectWallet(BuildContext context) async {
-    if (appKitModal == null) return;
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'disconnect_wallet',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
+    if (appKitModal == null) {
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'disconnect_wallet',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
+      return;
+    }
     _isLoading = true;
     _vestingTimer?.cancel();
     notifyListeners();
@@ -615,10 +694,28 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await _removePersistedConnection();
       await _clearWalletAndStageInfo(shouldNotify: false);
        await fetchLatestETHPrice();
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'disconnect_wallet',
+        success: true,
+        durationMs: duration,
+        walletAddress: prevAddress,
+      );
     } catch (e, stack) {
-
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'disconnect_wallet',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'disconnectWallet',
+      );
     } finally {
-
       _isLoading = false;
       notifyListeners();
     }
@@ -626,11 +723,48 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
   Future<void> rehydrate() async {
-    if (_isLoading || _isSessionSettling) return;
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'rehydrate',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
+    if (_isLoading || _isSessionSettling) {
+      _analyticsService.logUserAction(
+        action: 'rehydrate',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
+      return;
+    }
     _isLoading = true;
     notifyListeners();
     try {
       await _hydrateFromExistingSession();
+      _analyticsService.logUserAction(
+        action: 'rehydrate',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
+    }catch(e,stack){
+      _analyticsService.logUserAction(
+        action: 'rehydrate',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'rehydrate',
+      );
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -639,12 +773,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   ///LifeCycle Functions
 
   Future<void> _handleAppResume() async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'handle_app_resume',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
     debugPrint("App resumed - checking wallet connection...");
 
     if (appKitModal == null) {
       debugPrint("AppKitModal is null, initializing...");
       if (_lastContext != null) {
         await init(_lastContext!);
+        _analyticsService.logUserAction(
+          action: 'handle_app_resume',
+          success: true,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+        );
       }
       return;
     }
@@ -660,9 +808,25 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       } else {
         debugPrint("No previous connection found");
       }
+      _analyticsService.logUserAction(
+        action: 'handle_app_resume',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
     } catch (e, stack) {
-
-
+      _analyticsService.logUserAction(
+        action: 'handle_app_resume',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: '_handleAppResume',
+      );
       debugPrint("App resume error: $e\n$stack");
     } finally {
       notifyListeners();
@@ -691,6 +855,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> _hydrateFromExistingSession() async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'hydrate_existing_session',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
     try {
       final prefs = await SharedPreferences.getInstance();
       final wasConnected = prefs.getBool('isConnected') ?? false;
@@ -708,8 +881,25 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
         notifyListeners();
       }
+      _analyticsService.logUserAction(
+        action: 'hydrate_existing_session',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
     } catch (e,stack) {
-
+      _analyticsService.logUserAction(
+        action: 'hydrate_existing_session',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: '_hydrateFromExistingSession',
+      );
       debugPrint("Error hydrating session: $e");
     }
   }
@@ -734,21 +924,68 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   String? _getChainIdFromSession() {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'get_chain_id_from_session',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
     final s = appKitModal?.session;
-    if (s == null) return null;
+    if (s == null) {
+      _analyticsService.logUserAction(
+        action: 'get_chain_id_from_session',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': null},
+      );
+      return null;
+    }
     try {
       final values = s.namespaces?.values;
       if (values == null) return null;
       for (final ns in values) {
         if (ns.accounts.isNotEmpty) {
           final parts = ns.accounts.first.split(':'); // eip155:11155111:0x...
-          if (parts.length >= 2) return '${parts[0]}:${parts[1]}';
+          if (parts.length >= 2) {
+            _analyticsService.logUserAction(
+              action: 'get_chain_id_from_session',
+              success: true,
+              durationMs: duration,
+              walletAddress: _walletAddress,
+              extra: {'result': '${parts[0]}:${parts[1]}'},
+            );
+            return '${parts[0]}:${parts[1]}';
+          }
         }
       }
+      _analyticsService.logUserAction(
+        action: 'get_chain_id_from_session',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': null},
+      );
+      return null;
     } catch (e, stack) {
+      _analyticsService.logUserAction(
+        action: 'get_chain_id_from_session',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
 
-    }
+      _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: '_getChainIdFromSession',
+      );
     return null;
+    }
   }
 
   String? getChainIdForRequests() {
@@ -805,19 +1042,51 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> fetchConnectedWalletData({bool isReconnecting = false}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'fetch_connected_wallet_data',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'is_reconnecting': isReconnecting},
+    );
+
      if (appKitModal == null || appKitModal!.session == null || appKitModal!.selectedChain == null) {
       _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
       return;
     }
 
     if (!_isConnected) {
       _clearWalletSpecificInfo(shouldNotify: !isReconnecting);
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped_not_connected': true},
+      );
       return;
     }
 
     final chainID = getChainIdForRequests();
     if (chainID == null) {
       await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped_no_chain_id': true},
+      );
       return;
     }
 
@@ -826,6 +1095,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     final currentSessionAddress = appKitModal!.session!.getAddress(nameSpace);
     if (currentSessionAddress == null || currentSessionAddress.isEmpty) {
       await _clearWalletAndStageInfo(shouldNotify: !isReconnecting);
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped_no_address': true},
+      );
       return;
     }
 
@@ -846,9 +1122,25 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         getMaximumStake(),
         getVestingInformation(),
       ]);
-
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+      );
     } catch (e, stack) {
-
+      _analyticsService.logUserAction(
+        action: 'fetch_connected_wallet_data',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'fetchConnectedWalletData',
+      );
       _clearWalletSpecificInfo(shouldNotify: true);
     } finally {
       if (!isReconnecting) {
@@ -868,6 +1160,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<int> getTokenDecimals({required String contractAddress}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'get_token_decimals',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'contract_address': contractAddress},
+    );
     try {
       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
       final abiData = jsonDecode(abiString);
@@ -887,19 +1188,51 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       // Validate the decimals value
       if (decimals < 0 || decimals > 18) {
         debugPrint("Invalid decimals returned from contract: $decimals, using default of 18");
+        _analyticsService.logUserAction(
+          action: 'get_token_decimals',
+          success: true,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+          extra: {'result': 18, 'invalid_decimals': decimals},
+        );
         return 18; // Return a safe default
       }
 
       debugPrint("Token decimals: $decimals");
+      _analyticsService.logUserAction(
+        action: 'get_token_decimals',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': decimals},
+      );
       return decimals;
     } catch (e, stack) {
-
-       return 18;
+      _analyticsService.logUserAction(
+        action: 'get_token_decimals',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'getTokenDecimals',
+      );
+      return 18;
     }
   }
 
-
   Future<String> getMinimunStake() async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'get_minimum_stake',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
     try {
       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final abiData = jsonDecode(abiString);
@@ -921,16 +1254,42 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
       final min = (minimumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
       _minimumStake = min.toDouble().toStringAsFixed(0);
-      print("Raw minimumStakeResult: ${minimumStakeResult[0]}");
+       _analyticsService.logUserAction(
+        action: 'get_minimum_stake',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': _minimumStake},
+      );
       return _minimumStake!;
     } catch (e, stack) {
-
+      _analyticsService.logUserAction(
+        action: 'get_minimum_stake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'getMinimunStake',
+      );
       _minimumStake = null;
       rethrow;
     }
   }
 
   Future<String> getMaximumStake() async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'get_maximum_stake',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
     try {
       final abiString = await rootBundle.loadString("assets/abi/ECMStakingContractABI.json");
       final abiData = jsonDecode(abiString);
@@ -954,18 +1313,45 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       final max = (maximumStakeResult[0] as BigInt) / BigInt.from(10).pow(decimals);
       _maximumStake = max.toDouble().toStringAsFixed(0);
+      _analyticsService.logUserAction(
+        action: 'get_maximum_stake',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': _maximumStake},
+      );
       return _maximumStake!;
     } catch (e, stack) {
-
+      _analyticsService.logUserAction(
+        action: 'get_maximum_stake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'getMaximumStake',
+      );
       _maximumStake = null;
       rethrow;
     }
   }
 
-
   Future<String> fetchLatestETHPrice({bool forceLoad = false}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'fetch_latest_eth_price',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'force_load': forceLoad},
+    );
+
     print('### fetchLatestETHPrice() called');
-    print('### forceLoad: $forceLoad');
     const cacheDurationMs = 3 * 60 * 1000; // 3 minutes
     final prefs = await SharedPreferences.getInstance();
     final lastUpdated = prefs.getInt('ethPriceLastUpdated') ?? 0;
@@ -978,10 +1364,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       rawPrice = BigInt.parse(cachedRawPrice);
 
       notifyListeners();
+      _analyticsService.logUserAction(
+        action: 'fetch_latest_eth_price',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'from_cache': true},
+      );
       return cachedPrice;
     }
 
-    final start = DateTime.now();
 
     try {
       final abiString = await rootBundle.loadString("assets/abi/AggregatorABI.json");
@@ -1006,8 +1398,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       print('RAW_PRICE : $rawPrice');
       rawPrice = newRawPrice;
 
-
-
       final ethUsdPrice = newRawPrice.toDouble() / 1e8;
       final ethPerEcm = ECM_PRICE_USD / ethUsdPrice;
        final price = ethPerEcm.toStringAsFixed(8);
@@ -1021,18 +1411,54 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       _ethPrice = double.parse(price);
        notifyListeners();
+      _analyticsService.logUserAction(
+        action: 'fetch_latest_eth_price',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'price': price},
+      );
       return price;
     } catch (e,stack) {
-
+      _analyticsService.logUserAction(
+        action: 'fetch_latest_eth_price',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'fetchLatestETHPrice',
+      );
       if (cachedPrice != null) return cachedPrice;
       throw Exception('Failed to fetch ETH price');
     }
   }
 
   Future<String> getBalance({String? forAddress}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'get_balance',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'for_address': forAddress ?? 'user_wallet'},
+    );
+
     final String? addressToQuery = forAddress ?? _walletAddress;
 
     if (_web3Client == null) {
+      _analyticsService.logUserAction(
+        action: 'get_balance',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'web3client_null'},
+      );
       debugPrint("Web3Client not initialized for getBalance.");
       throw Exception("Web3Client not initialized.");
     }
@@ -1043,9 +1469,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _balance = "0";
         notifyListeners();
       }
+      _analyticsService.logUserAction(
+        action: 'get_balance',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': '0', 'no_address': true},
+      );
       return "0";
     }
-    final start = DateTime.now();
+
     try {
       final abiString = await rootBundle.loadString("assets/abi/MyContract.json");
       final abiData = jsonDecode(abiString);
@@ -1104,9 +1537,28 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _userWalletBalance = formattedBalance;
       }
 
+      _analyticsService.logUserAction(
+        action: 'get_balance',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'result': formattedBalance},
+      );
       return formattedBalance;
 
     } catch (e, stack) {
+      _analyticsService.logUserAction(
+        action: 'get_balance',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stack,
+        context: 'getBalance',
+      );
 
        // Set default values on error`
       if (forAddress == null) {
@@ -1149,8 +1601,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       // Calculate ETH needed in Wei
       final BigInt ethNeededWei = (usdNeeded * BigInt.from(10).pow(ECM_DECIMALS) + ethPriceUSDWei - BigInt.one) ~/ ethPriceUSDWei;
 
-      debugPrint("✅ ECM to Wei conversion successful:");
-      debugPrint("  ECM Amount: $ecmAmount");
       debugPrint("  ETH Needed (Wei): $ethNeededWei");
       debugPrint("  ETH Needed (ETH): ${ethNeededWei / BigInt.from(10).pow(18)}");
 
@@ -1166,9 +1616,25 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     required BuildContext context
   }) async {
     final chainID = getChainIdForRequests();
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'buy_ecm',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'eth_amount': ethAmount.getValueInUnit(EtherUnit.ether), 'referral': referralAddress.hex},
+    );
     print("buyECMWithETH Chaid Id ${chainID}");
 
     if (appKitModal == null || !_isConnected || appKitModal!.session == null || chainID == null) {
+      _analyticsService.logUserAction(
+        action: 'buy_ecm',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'wallet_not_connected'},
+      );
       throw Exception("Wallet not Connected or selected chain not available.");
     }
     _isLoading = true;
@@ -1266,11 +1732,30 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
          fetchConnectedWalletData(),
          fetchLatestETHPrice(),
        ]);
+
+       _analyticsService.logUserAction(
+         action: 'buy_ecm',
+         success: true,
+         durationMs: duration,
+         walletAddress: _walletAddress,
+         extra: {
+           'tx_hash': result,
+           'eth_amount': ethAmount.getValueInUnit(EtherUnit.ether),
+         },
+       );
+
        return result;
 
     } catch (e,stack) {
       print("Error buying ECM with ETH: $e");
-
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'buy_ecm',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
 
       if (e.toString().contains("INSUFFICIENT_ETH_BALANCE")) {
          return Future.error(e);
@@ -1298,6 +1783,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       DeployedContract contract,
       EthereumAddress walletAddress,
       ) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'parse_transaction_logs_buy_ecm',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
     final payload = {
       'hash': '0x${bytesToHex(receipt.transactionHash, include0x: false)}',
       'buyer': walletAddress.hex,
@@ -1316,7 +1809,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       'refVesting': '',
       'referralAmount': 0.0,
     };
-
     final saleAddrLc = SALE_CONTRACT_ADDRESS.toLowerCase();
     final ecmPurchasedEvent = contract.event('ECMPurchased');
     final referralRewardEvent = contract.event('ReferralRewardPaid');
@@ -1366,11 +1858,27 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       } catch (e, stackTrace) {
        }
     }
-
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'parse_transaction_logs_buy_ecm',
+      success: true,
+      durationMs: duration,
+      walletAddress: _walletAddress,
+      extra: {'payload_hash': payload},
+    );
     return payload;
   }
 
   Future<void> _sendPurchaseDataToApi(Map<String, dynamic> payload) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'send_purchase_data_to_api_buy_ecm',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'tx_hash': payload},
+    );
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final headers = {
@@ -1389,14 +1897,43 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     print("API Response: ${response.statusCode} ${response.body}");
 
     if(response.statusCode != 201){
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'send_purchase_data_to_api',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'response error': response.body.toString()},
+      );
+      await _analyticsService.logError(
+        error: response.body.toString(),
+        extra: {'status_code': response.statusCode},
+        context: '_sendPurchaseDataToApi',
+      );
       throw Exception('Failed to send purchase data to API: ${response.statusCode}- ${response.body}');
     }else{
       debugPrint("✅ Purchase data sent successfully: ${response.body}");
+      _analyticsService.logUserAction(
+        action: 'send_purchase_data_to_api',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'status_code': response.statusCode},
+      );
     }
-
   }
 
   Future<String?> stakeNow(BuildContext context, double amount, int planIndex, {String referrerAddress = '0x0000000000000000000000000000000000000000'}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'stake_now',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'amount': amount, 'plan_index': planIndex, 'referrer': referrerAddress},
+    );
     final chainID = getChainIdForRequests();
 
     /// Modal Check
@@ -1406,6 +1943,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         subtitle: "Please connect your wallet before staking.",
         type: MessageType.error,
       );
+      _analyticsService.logUserAction(
+        action: 'stake_now',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'wallet_error'},
+      );
       throw Exception("Wallet not connected or chain not selected.");
     }
 
@@ -1414,6 +1958,13 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         message: "Invalid Input",
         subtitle: "Please enter a valid amount and select a plan",
         type: MessageType.info,
+      );
+      _analyticsService.logUserAction(
+        action: 'stake_now',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'invalid_input'},
       );
       return null;
     }
@@ -1461,8 +2012,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         duration: CustomToastLength.LONG,
       );
 
-      final approveStart = DateTime.now();
-      final dynamic approveTxResult = await appKitModal!.requestWriteContract(
+       final dynamic approveTxResult = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: chainID,
         deployedContract: ecmTokenContract,
@@ -1505,8 +2055,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         type: MessageType.info,
         duration: CustomToastLength.LONG,
       );
-      final stakeStart = DateTime.now();
-      final dynamic stakeTxResult = await appKitModal!.requestWriteContract(
+       final dynamic stakeTxResult = await appKitModal!.requestWriteContract(
         topic: appKitModal!.session!.topic,
         chainId: chainID,
         deployedContract: stakingContract,
@@ -1617,6 +2166,16 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
               await fetchConnectedWalletData();
               successShown = true;
+              _analyticsService.logUserAction(
+                action: 'stake_now',
+                success: true,
+                durationMs: duration,
+                walletAddress: _walletAddress,
+                extra: {
+                  'tx_hash': bytesToHex(stakeReceipt.transactionHash),
+                  'payload': payload,
+                },
+              );
               return bytesToHex(stakeReceipt.transactionHash);
             }
           } else {
@@ -1628,19 +2187,37 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       }
 
       if (!successShown) {
-
-
         ToastMessage.show(
           message: "Staking Success (No Event Found)",
           subtitle: "Stake transaction confirmed, but event not parsed.",
           type: MessageType.success,
         );
         await fetchConnectedWalletData();
+        _analyticsService.logUserAction(
+          action: 'stake_now',
+          success: true,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+          extra: {'tx_hash': bytesToHex(stakeReceipt.transactionHash), 'no_event': true,},
+        );
         return bytesToHex(stakeReceipt.transactionHash);
       }
 
       return null;
     } catch (e, stackTrace) {
+      _analyticsService.logUserAction(
+        action: 'stake_now',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString(), },
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'stakeNow',
+        extra: {'amount': amount, 'plan_index': planIndex, 'referrer': referrerAddress, 'error': e.toString(),},
+      );
 
       final isUserRejected = isUserRejectedError(e);
       ToastMessage.show(
@@ -1660,10 +2237,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<String?> forceUnstake(int stakeId)async{
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'force_unstake',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'stake_id': stakeId},
+    );
     final chainID = getChainIdForRequests();
 
     if (!_isConnected || appKitModal?.session == null || chainID == null) {
       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
+      _analyticsService.logUserAction(
+        action: 'force_unstake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'not_connected'},
+      );
       return null;
     }
     _isLoading = true;
@@ -1743,10 +2336,30 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await fetchConnectedWalletData();
       await getBalance();
       ToastMessage.show(message: "Force unstake successful!", type: MessageType.success);
+      _analyticsService.logUserAction(
+        action: 'force_unstake',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'tx_hash': txHash, 'stake_id': stakeId, },
+      );
       return txHash;
     }catch(e, stackTrace){
+      _analyticsService.logUserAction(
+        action: 'force_unstake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'forceUnstake',
+        extra: {'stake_id': stakeId},
+      );
 
-       final isUserRejected = isUserRejectedError(e);
+      final isUserRejected = isUserRejectedError(e);
       ToastMessage.show(
         message: isUserRejected ? "Transaction Cancelled" : "Force Unstake Failed",
         subtitle: isUserRejected
@@ -1755,26 +2368,40 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         type: isUserRejected ? MessageType.info : MessageType.error,
         duration: CustomToastLength.LONG,
       );
-
       return null;
     }finally {
       _isLoading = false;
       notifyListeners();
     }
-
   }
 
   Future<String?> unstake(int stakeId) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+    _analyticsService.logUserAction(
+      action: 'unstake',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'stake_id': stakeId},
+    );
     final chainID = getChainIdForRequests();
 
     if (!_isConnected || appKitModal?.session == null || chainID == null) {
       ToastMessage.show(message: "Connect wallet first.", type: MessageType.error);
+      _analyticsService.logUserAction(
+        action: 'unstake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'reason': 'not_connected'},
+      );
       return null;
     }
 
     _isLoading = true;
     notifyListeners();
-    final start = DateTime.now();
 
     try {
 
@@ -1843,8 +2470,28 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       await getBalance();
 
       ToastMessage.show(message: "Unstake successful!", type: MessageType.success);
+      _analyticsService.logUserAction(
+        action: 'unstake',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'tx_hash': txHash, 'stake_id': stakeId,},
+      );
       return txHash;
     } catch (e, stackTrace) {
+      _analyticsService.logUserAction(
+        action: 'unstake',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'unstake',
+        extra: {'stake_id': stakeId},
+      );
 
        final isUserRejected = isUserRejectedError(e);
       ToastMessage.show(
@@ -1863,6 +2510,14 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> unStakeCreate(String hash, List<dynamic> decodedLog) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'unstake_create',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'hash': hash},
+    );
     final payload = {
       'unstake_hash': hash,
       'stakeId': (decodedLog[1] as BigInt).toString(),
@@ -1886,9 +2541,27 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Failed to sync unstake create');
     }
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'unstake_create',
+      success: true,
+      durationMs: duration,
+      walletAddress: _walletAddress,
+      extra: {'status_code': response.statusCode, 'hash': hash, 'payload': payload,},
+    );
+
   }
 
   Future<void> unStakeReferral(String hash, List<dynamic> decodedLog) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    _analyticsService.logUserAction(
+      action: 'unstake_referral',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'hash': hash},
+    );
+
     final payload = {
       'hash': hash,
       'referral': decodedLog[0].toString(),
@@ -1913,15 +2586,39 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Failed to sync unstake referral');
     }
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'unstake_referral',
+      success: true,
+      durationMs: duration,
+      walletAddress: _walletAddress,
+      extra: {'status_code': response.statusCode, 'hash': hash, 'payload': payload, 'body': response.body},
+    );
   }
 
   Future<void> getVestingInformation() async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'get_vesting_information',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
 
-    if (!_isConnected || _walletAddress.isEmpty) return;
+    if (!_isConnected || _walletAddress.isEmpty) {
+      _analyticsService.logUserAction(
+        action: 'get_vesting_information',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
+      return;
+    }
 
     // _isLoading = true;
     notifyListeners();
-    final start = DateTime.now();
 
     try {
       final chainId = getChainIdForRequests();
@@ -1958,7 +2655,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
         _vestingAddress = vestingContractAddress.hex;
         await _resolveVestedStart(vestingContractAddress);
       }
+      _analyticsService.logUserAction(
+        action: 'get_vesting_information',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'vesting_address': _vestingAddress},
+      );
     } catch (e, stackTrace) {
+      _analyticsService.logUserAction(
+        action: 'get_vesting_information',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'getVestingInformation',
+      );
 
        _vestingAddress = null;
       _vestingStatus = null;
@@ -1969,7 +2685,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<void> _resolveVestedStart(EthereumAddress vestingContractAddress) async {
-    final start = DateTime.now();
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+
+    _analyticsService.logUserAction(
+      action: 'resolve_vested_start',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'vesting_contract': vestingContractAddress.hex},
+    );
 
     try {
       print("fetching vestingContract Address : ${vestingContractAddress.hex}");
@@ -1977,6 +2701,15 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       if (_web3Client == null) {
          _vestingAddress = null;
         notifyListeners();
+         final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+
+         _analyticsService.logUserAction(
+           action: 'resolve_vested_start',
+           success: false,
+           durationMs: duration,
+           walletAddress: _walletAddress,
+           extra: {'reason': 'web3client_null'},
+         );
         return;
       }
 
@@ -2034,16 +2767,61 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
       notifyListeners();
+       _analyticsService.logUserAction(
+        action: 'resolve_vested_start',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {
+          'status': _vestingStatus,
+          'vesting_contract': vestingContractAddress.hex,
+          'start': startVal,
+          'cliff': cliff,
+          'duration': duration,
+          'released': released,
+          'claimable': claimable,
 
+        },
+      );
     } catch (e, stackTrace) {
-
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+      _analyticsService.logUserAction(
+        action: 'resolve_vested_start',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: '_resolveVestedStart',
+      );
        _vestingStatus = null;
       notifyListeners();
     }
   }
 
   Future<void>claimECM(BuildContext context)async{
-    if (_isLoading || !_isConnected || _vestingAddress == null) return;
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'claim_ecm',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
+    if (_isLoading || !_isConnected || _vestingAddress == null) {
+      _analyticsService.logUserAction(
+        action: 'claim_ecm',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
+      return;
+    }
 
     _isLoading = true;
     notifyListeners();
@@ -2094,8 +2872,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
       // 4. Automatically refresh vesting data after a successful claim
       await refreshVesting();
+      _analyticsService.logUserAction(
+        action: 'claim_ecm',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'tx_hash': txResult, 'vesting_contract': _vestingAddress},
+      );
     } catch (e, stackTrace) {
-
+      _analyticsService.logUserAction(
+        action: 'claim_ecm',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'claimECM',
+      );
 
        print('Error during claimECM: $e');
       final errorMessage = e.toString().contains("User rejected")
@@ -2117,10 +2913,27 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   // Get the latest vesting data.
   Future<void> refreshVesting() async {
-    if (_isLoading || _vestingAddress == null) return;
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+      final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'refresh_vesting',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+    );
+
+    if (_isLoading || _vestingAddress == null) {
+      _analyticsService.logUserAction(
+        action: 'refresh_vesting',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'skipped': true},
+      );
+      return;
+    }
     _isLoading = true;
     notifyListeners();
-    final start = DateTime.now();
 
     try{
       // 1. Get the ABI and create a DeployedContract instance
@@ -2158,9 +2971,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       );
       print("Vesting refreshed successfully , Released :$releasedAmountFormatted ");
 
-
+      _analyticsService.logUserAction(
+        action: 'refresh_vesting',
+        success: true,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'released': releasedAmountFormatted},
+      );
     } catch (e, stackTrace) {
-
+      _analyticsService.logUserAction(
+        action: 'refresh_vesting',
+        success: false,
+        durationMs: duration,
+        walletAddress: _walletAddress,
+        extra: {'error': e.toString()},
+      );
+      await _analyticsService.logError(
+        error: e,
+        stackTrace: stackTrace,
+        context: 'refreshVesting',
+      );
 
        final errorMessage = e.toString().contains('no contract')
           ? 'Vesting contract not found or invalid address.'
@@ -2217,6 +3047,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
   ///Helper Function to wait transaction to be mined.
   Future<TransactionReceipt?> _waitForTransaction(String txHash)async{
+
     const pollInterval = Duration(seconds: 3);
     const timeout = Duration(minutes: 3);
     final expiry = DateTime.now().add(timeout);
@@ -2246,11 +3077,26 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   }
 
   Future<bool> _waitForConnection({Duration timeout = const Duration(seconds: 3)}) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+        final duration = DateTime.now().millisecondsSinceEpoch - startTime;
+    _analyticsService.logUserAction(
+      action: 'wait_for_connection',
+      success: false,
+      durationMs: 0,
+      walletAddress: _walletAddress,
+      extra: {'timeout_sec': timeout.inSeconds},
+    );
+
     final start = DateTime.now();
     final end = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(end)) {
       if (_isConnected && _walletAddress.isNotEmpty) {
-
+        _analyticsService.logUserAction(
+          action: 'wait_for_connection',
+          success: true,
+          durationMs: duration,
+          walletAddress: _walletAddress,
+        );
 
         return true;
       };
@@ -2269,12 +3115,24 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
 
 
           notifyListeners();
+          _analyticsService.logUserAction(
+            action: 'wait_for_connection',
+            success: true,
+            durationMs: duration,
+            walletAddress: _walletAddress,
+          );
           return true;
         }
       }
       await Future.delayed(const Duration(milliseconds: 200));
     }
-
+    _analyticsService.logUserAction(
+      action: 'wait_for_connection',
+      success: false,
+      durationMs: duration,
+      walletAddress: _walletAddress,
+      extra: {'reason': 'timeout'},
+    );
     return false;
   }
 

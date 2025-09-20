@@ -46,6 +46,7 @@ Future <void> main() async   {
       error: errorDetails.exception,
       stackTrace: errorDetails.stack ?? StackTrace.current,
       context: 'FlutterError',
+      extra: {'library': errorDetails.library},
     );
   };
 
@@ -55,6 +56,7 @@ Future <void> main() async   {
       error: error,
       stackTrace: stack,
       context: 'PlatformError',
+      extra: {'error_type': error.runtimeType.toString()},
     );
     return true;
   };

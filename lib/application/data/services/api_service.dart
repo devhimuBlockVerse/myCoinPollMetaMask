@@ -83,15 +83,6 @@ class ApiService {
         await prefs.setString('unique_id', user.uniqueId ?? '');
 
 
-        await FirebaseAnalytics.instance.logEvent(
-          name: "LOGIN_NOW_BUTTON",
-          parameters: {
-            "token": token,
-            "userName": user.username,
-            "unique_id": user.uniqueId,
-            "ethAddress": user.ethAddress,
-          },
-        );
 
 
         return LoginResponse(user: user, token: token);

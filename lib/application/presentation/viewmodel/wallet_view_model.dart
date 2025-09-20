@@ -165,7 +165,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
   **/
 
   //MAINNET ADDRESS
-  /** MAINNET ADDRESS**/
+  /** MAINNET ADDRESS **/
   static const String ALCHEMY_URL_V2 = "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4";
   static const String SALE_CONTRACT_ADDRESS = '0xf19A1ca2441995BB02090F57046147f36555b0aC';
   static const String ECM_TOKEN_CONTRACT_ADDRESS = '0x6f9c25edc02f21e9df8050a3e67947c99b88f0b2';
@@ -330,11 +330,12 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver{
       _lastKnowChainId = appKitModal!.selectedChain?.chainId ?? _getChainIdFromSession();
       final address = _getFirstAddressFromSession();
 
-      if (address != null) {
+       if (address != null) {
         _walletAddress = address;
         // Save to prefs
         await prefs.setBool('isConnected', true);
         await prefs.setString('walletAddress', _walletAddress);
+
       }
 
       // Don't fetch data here - let the UI handle it

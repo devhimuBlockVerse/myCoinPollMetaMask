@@ -6,12 +6,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/constants/api_constants.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:provider/provider.dart';
+import 'package:reown_appkit/modal/pages/wallet_features_page.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web3dart/crypto.dart';
 import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
+import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/claimHistoryCard.dart';
 import '../../../../../framework/components/disconnectButton.dart';
@@ -20,11 +24,13 @@ import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
 import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
+import '../../../../data/services/api_service.dart';
 import '../../../../presentation/countdown_timer_helper.dart';
 import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/countdown_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
+import '../../../../presentation/viewmodel/user_auth_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/dashboard_nav_provider.dart';
@@ -115,18 +121,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 
   }
 
-  // Future<void> _checkAndOpenModal() async {
-  //   if (!mounted || _walletVM == null || _isFetchingData) return;
-  //   final walletVM = context.read<WalletViewModel>();
-  //   if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
-  //     debugPrint('Attempting to open modal with context: ${context.mounted}');
-  //     try {
-  //       await walletVM.openWalletModal(context); // Ensure context is passed
-  //     } catch (e) {
-  //       debugPrint('Error opening modal: $e');
-  //     }
-  //   }
-  // }
+
 
   @override
   void dispose() {
@@ -154,12 +149,15 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
               'existingVestingStatus: ${walletVM.existingVestingStatus}');
 
           if(!data.item3){
+
             return Scaffold(
               backgroundColor: const Color(0xFF01090B),
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
+
                     const Text(
                       "Connection lost Please restart your app or connect your wallet to view vesting details.",
                       textAlign: TextAlign.center,
@@ -174,7 +172,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
                         if (!mounted) return;
                         await context.read<WalletViewModel>().openWalletModal(context);
                       },
-                      gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+                       gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
                     ),
                     const SizedBox(height: 20),
                     DisconnectButton(
@@ -225,83 +223,7 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
               ),
             );
           }
-          // if (!data.item3) {
-          //   WidgetsBinding.instance.addPostFrameCallback((_) {
-          //     if (!_isFetchingData && mounted) {
-          //       _checkAndOpenModal(); // Trigger modal on build if not connected
-          //     }
-          //   });
-          //   return Scaffold(
-          //     backgroundColor: const Color(0xFF01090B),
-          //     body: Center(
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         children: [
-          //           const Text(
-          //             "Connection lost Please restart your app or connect your wallet to view vesting details.",
-          //             textAlign: TextAlign.center,
-          //             style: TextStyle(color: Colors.white70),
-          //           ),
-          //           const SizedBox(height: 20),
-          //           CustomGradientButton(
-          //             label: 'Retry',
-          //             width: MediaQuery.of(context).size.width * 0.7,
-          //             height: MediaQuery.of(context).size.height * 0.05,
-          //             onTap: () async {
-          //               if (!mounted) return;
-          //               await _checkAndOpenModal(); // Reuse the modal opening logic
-          //             },
-          //             gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
-          //           ),
-          //           const SizedBox(height: 20),
-          //           DisconnectButton(
-          //             label: 'Disconnect',
-          //             color: const Color(0xffE04043),
-          //             icon: 'assets/icons/disconnected.svg',
-          //             onPressed: () async {
-          //               setState(() {
-          //                 isDisconnecting = true;
-          //               });
-          //               final walletVm = Provider.of<WalletViewModel>(context, listen: false);
-          //               try {
-          //                 await walletVm.disconnectWallet(context);
-          //                 walletVm.reset();
-          //                 final prefs = await SharedPreferences.getInstance();
-          //                 await prefs.clear();
-          //                 Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-          //                 if (context.mounted && !walletVm.isConnected) {
-          //                   Navigator.of(context).pushAndRemoveUntil(
-          //                     MaterialPageRoute(
-          //                       builder: (context) => MultiProvider(
-          //                         providers: [
-          //                           ChangeNotifierProvider(create: (context) => WalletViewModel()),
-          //                           ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-          //                           ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-          //                           ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-          //                           ChangeNotifierProvider(create: (_) => NavigationProvider()),
-          //                         ],
-          //                         child: const BottomNavBar(),
-          //                       ),
-          //                     ),
-          //                         (Route<dynamic> route) => false,
-          //                   );
-          //                 }
-          //               } catch (e) {
-          //                 debugPrint("Error Wallet Disconnecting : $e");
-          //               } finally {
-          //                 if (mounted) {
-          //                   setState(() {
-          //                     isDisconnecting = false;
-          //                   });
-          //                 }
-          //               }
-          //             },
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   );
-          // }
+
 
           return ExistingUserVesting(
             key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
@@ -985,7 +907,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                 ),
                 SizedBox(height: screenHeight * 0.001),
 
-                (walletVM.vestingStatus == null)
+                (walletVM.existingVestingStatus == null)
                     ? const SizedBox(
                   height: 24,
                   width: 24,

@@ -41,31 +41,36 @@ Future <void> main() async   {
 
   final prefs = await SharedPreferences.getInstance();
   String? uniqueId = prefs.getString('unique_id');
+
+  //. If not found, generate a temporary one
   if (uniqueId == null) {
     uniqueId = const Uuid().v4();
     await prefs.setString('unique_id', uniqueId);
   }
 
-  LogRocket.wrapAndInitialize(
-      LogRocketWrapConfiguration(
-        errorCaptureEnabled: true,
-        logCaptureEnabled: true,
-        networkCaptureEnabled: true,
-        getSessionUrl: (sessionUrl) {
-           print("LogRocket Session URL: $sessionUrl");
-        },
+  runApp(MyApp());
 
-      ),
-      LogRocketInitConfiguration(
-        appID: 'blockverse/mycoinpoll',
-        logLevel: LogRocketInternalLogLevel.verbose,
-        viewCaptureEnabled: true,
-        screenshotPixelRatio: 1.0
-      ), () => runApp(
-      LogRocketWidget(
-          child: MyApp()
-      )
-  ));
+  // LogRocket.wrapAndInitialize(
+  //     LogRocketWrapConfiguration(
+  //       errorCaptureEnabled: true,
+  //       logCaptureEnabled: true,
+  //       networkCaptureEnabled: true,
+  //       getSessionUrl: (sessionUrl) {
+  //          print("LogRocket Session URL: $sessionUrl");
+  //       },
+  //
+  //     ),
+  //     LogRocketInitConfiguration(
+  //       // appID: 'blockverse/mycoinpoll',// DevHimu
+  //       appID: 'shzrdl/mycoinpoll-app', // Hostinger
+  //       logLevel: LogRocketInternalLogLevel.verbose,
+  //       viewCaptureEnabled: true,
+  //       screenshotPixelRatio: 1.0
+  //     ), () => runApp(
+  //     LogRocketWidget(
+  //         child: MyApp()
+  //     )
+  // ));
 
   LogRocket.identify(uniqueId, {
     "walletAddress": prefs.getString('walletAddress') ?? 'unknown',

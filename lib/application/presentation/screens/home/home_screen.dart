@@ -853,13 +853,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       leadingImagePath: 'assets/icons/buyEcmLeadingImg.svg',
                       onTap: () async {
                         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-                        //  Sentry.addBreadcrumb(
-                        //   Breadcrumb(
-                        //     category: 'ui.action',
-                        //     type: 'navigation',
-                        //     message: 'User tapped the "Buy ECM" button',
-                        //   ),
-                        // );
+
                         if (!walletVM.isConnected) {
                           await walletVM.ensureModalWithValidContext(context);
                           final ok = await walletVM.connectWallet(context);

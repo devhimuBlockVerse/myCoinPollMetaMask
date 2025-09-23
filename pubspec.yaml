@@ -67,6 +67,8 @@ dependencies:
   get: ^4.6.5
 
   logrocket_flutter: ^1.56.2
+  firebase_core: ^2.24.0
+  firebase_analytics: ^10.8.0
 
 
 

@@ -20,7 +20,8 @@ import 'application/presentation/viewmodel/walletAppInitializer.dart';
 import 'application/presentation/viewmodel/wallet_view_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'connectivity/connectivity_controller.dart';
 import 'connectivity/no internet.dart';
 
@@ -30,6 +31,9 @@ final GlobalKey<NavigatorState> contextNavigatorKey = GlobalKey<NavigatorState>(
 /// logRocket
 Future <void> main() async   {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+
 
   // HttpOverrides.global = MyHttpOverrides();
   await SystemChrome.setPreferredOrientations([
@@ -48,29 +52,40 @@ Future <void> main() async   {
     await prefs.setString('unique_id', uniqueId);
   }
 
-  runApp(MyApp());
+  // runApp(MyApp());
 
-  // LogRocket.wrapAndInitialize(
-  //     LogRocketWrapConfiguration(
-  //       errorCaptureEnabled: true,
-  //       logCaptureEnabled: true,
-  //       networkCaptureEnabled: true,
-  //       getSessionUrl: (sessionUrl) {
-  //          print("LogRocket Session URL: $sessionUrl");
-  //       },
-  //
-  //     ),
-  //     LogRocketInitConfiguration(
-  //       // appID: 'blockverse/mycoinpoll',// DevHimu
-  //       appID: 'shzrdl/mycoinpoll-app', // Hostinger
-  //       logLevel: LogRocketInternalLogLevel.verbose,
-  //       viewCaptureEnabled: true,
-  //       screenshotPixelRatio: 1.0
-  //     ), () => runApp(
-  //     LogRocketWidget(
-  //         child: MyApp()
-  //     )
-  // ));
+  LogRocket.wrapAndInitialize(
+      LogRocketWrapConfiguration(
+        errorCaptureEnabled: true,
+        logCaptureEnabled: true,
+        networkCaptureEnabled: true,
+        getSessionUrl: (sessionUrl) async{
+          print("LogRocket Session URL: $sessionUrl");
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await FirebaseAnalytics.instance.logEvent(
+              name: 'logrocket',
+              parameters: {
+                'session_url': sessionUrl,
+                'user_id': prefs.getString('unique_id') ?? 'unknown',
+                'wallet_address': prefs.getString('walletAddress') ?? 'unknown',
+                'username': prefs.getString('userName') ?? 'guest',
+               },
+            );
+          } catch (e) {
+            print("Error sending LogRocket session URL to Firebase Analytics: $e");
+          }
+        },
+      ),
+      LogRocketInitConfiguration(
+        // appID: 'blockverse/mycoinpoll',// DevHimu
+          appID: 'shzrdl/mycoinpoll-app', // Hostinger
+          logLevel: LogRocketInternalLogLevel.verbose,
+          viewCaptureEnabled: true,
+          screenshotPixelRatio: 1.0
+      ), () => runApp(
+      LogRocketWidget(child: MyApp()))
+  );
 
   LogRocket.identify(uniqueId, {
     "walletAddress": prefs.getString('walletAddress') ?? 'unknown',
@@ -137,8 +152,8 @@ class MyApp extends StatelessWidget {
                   ..putBool('isOfflineOverlayVisible', true));
               }else{
                 LogRocket.track(LogRocketCustomEventBuilder('NETWORK_STATUS')
-                ..putString('status', 'online')
-                ..putBool('isOfflineOverlayVisible', false));
+                  ..putString('status', 'online')
+                  ..putBool('isOfflineOverlayVisible', false));
               }
               return Stack(
                 children: [

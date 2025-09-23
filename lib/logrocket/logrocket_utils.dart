@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:logrocket_flutter/logrocket_flutter.dart';
 
 Future<void> logRocketTrackApiEvent(
@@ -7,6 +8,7 @@ Future<void> logRocketTrackApiEvent(
       String method = "GET",
       Map<String, dynamic>? extra,
     }) async {
+  /// LogRocket event
   final event = LogRocketCustomEventBuilder("API_REQUEST")
     ..putString("endpoint", endpoint)
     ..putString("method", method)
@@ -23,8 +25,21 @@ Future<void> logRocketTrackApiEvent(
   }
 
   await LogRocket.track(event);
-}
 
+  ///Firebase Analytics event
+  try{
+    final analyticsParams = {
+      'endpoint': endpoint,
+      'method': method,
+      'status': statusCode.toString(),
+      'duration_ms': durationMs.toString(),
+      if (extra != null) ...extra.map((key, value) => MapEntry(key, value.toString())),
+    };
+    await FirebaseAnalytics.instance.logEvent(name: 'api_request' , parameters: analyticsParams);
+  }catch(e){
+    print("Error sending API_REQUEST to Firebase Analytics: $e");
+  }
+}
 
 Future<void> logRocketTrackBlockChainEvent(
     String eventName,
@@ -34,8 +49,9 @@ Future<void> logRocketTrackBlockChainEvent(
     int durationMs,{
       String? transactionHash,
       Map<String, dynamic>? extra,
-})async{
+    })async{
 
+  /// LogRocket event
   final event = LogRocketCustomEventBuilder(eventName)
     ..putString("function", functionName)
     ..putString("contract", contractAddress)
@@ -57,6 +73,21 @@ Future<void> logRocketTrackBlockChainEvent(
 
   await LogRocket.track(event);
 
+  /// Firebase Analytics event
+  try{
+    final analyticsParams = {
+      'function': functionName,
+      'contract': contractAddress,
+      'success': success.toString(),
+      'duration_ms': durationMs.toString(),
+      if (transactionHash != null) 'tx_hash': transactionHash,
+      if (extra != null) ...extra.map((key, value) => MapEntry(key, value.toString())),
+    };
 
-
+    await FirebaseAnalytics.instance.logEvent(
+        name: eventName.toLowerCase().replaceAll(' ', '_'),
+        parameters: analyticsParams);
+  }catch(e){
+    print("Error sending $eventName to Firebase Analytics: $e");
+  }
 }

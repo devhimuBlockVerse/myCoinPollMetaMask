@@ -6,7 +6,6 @@ import 'package:mycoinpoll_metamask/application/domain/constants/api_constants.d
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class VersionService {
 
   static Future<void> checkVersion(BuildContext context) async {

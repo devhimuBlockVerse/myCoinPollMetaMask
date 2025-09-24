@@ -102,19 +102,19 @@ class _DashboardBottomNavBarState extends State<DashboardBottomNavBar> {
                         onTap: () async {
                           navProvider.setIndex(index);
 
-                          if (index == 3) {
-                            // walletVM.getVestingInformation();
-
-
-                            if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
-                             await walletVM.ensureModalWithValidContext(context);
-                             await walletVM.rehydrate();
-
-                              //  await walletVM.appKitModal?.openModalView();
-                             if (!mounted) return;
-                             await context.read<WalletViewModel>().openWalletModal(context);
-                            }
-                          }
+                          // if (index == 3) {
+                          //   // walletVM.getVestingInformation();
+                          //
+                          //
+                          //   if (walletVM.walletAddress == null || walletVM.walletAddress!.isEmpty) {
+                          //    await walletVM.ensureModalWithValidContext(context);
+                          //    await walletVM.rehydrate();
+                          //
+                          //     //  await walletVM.appKitModal?.openModalView();
+                          //    if (!mounted) return;
+                          //    await context.read<WalletViewModel>().openWalletModal(context);
+                          //   }
+                          // }
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

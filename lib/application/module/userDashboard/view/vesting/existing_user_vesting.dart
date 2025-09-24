@@ -6,16 +6,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mycoinpoll_metamask/application/domain/constants/api_constants.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:provider/provider.dart';
-import 'package:reown_appkit/modal/pages/wallet_features_page.dart';
+import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/crypto.dart';
-import '../../../../../framework/components/AddressFieldComponent.dart';
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
-import '../../../../../framework/components/buy_Ecm.dart';
 import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/claimHistoryCard.dart';
 import '../../../../../framework/components/disconnectButton.dart';
@@ -32,6 +30,7 @@ import '../../../../presentation/viewmodel/countdown_provider.dart';
 import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../../presentation/viewmodel/user_auth_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
+import '../../../dashboard_bottom_nav.dart';
 import '../../../side_nav_bar.dart';
 import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
@@ -55,13 +54,211 @@ class ExistingVestingWrapper extends StatefulWidget {
   State<ExistingVestingWrapper> createState() => _ExistingVestingWrapperState();
 }
 
+// class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with AutomaticKeepAliveClientMixin {
+//   bool _isFetchingData = false;
+//   bool _hasInitialized = false;
+//   WalletViewModel? _walletVM;
+//   bool isDisconnecting = false;
+//   Timer? _debounceTimer;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       if (!_hasInitialized) {
+//         _hasInitialized = true;
+//         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+//         walletVM.addListener(_onWalletAddressChanged);
+//         _walletVM = walletVM;
+//         _fetchVestingDataIfConnected();
+//        }
+//     });
+//   }
+//
+//   void _onWalletAddressChanged() {
+//     if (!mounted || _isFetchingData) return;
+//     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+//     _debounceTimer = Timer(const Duration(seconds: 1), () {
+//       if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
+//         _fetchVestingDataIfConnected();
+//       }
+//
+//     });
+//
+//   }
+//
+//   void _fetchVestingDataIfConnected() async {
+//     if (_isFetchingData || _walletVM == null) return;
+//     if (!_walletVM!.isConnected || _walletVM!.walletAddress.isEmpty) {
+//       debugPrint('Wallet not connected, skipping vesting data fetch');
+//       return;
+//     }
+//
+//
+//     try {
+//       _isFetchingData = true;
+//       if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestInfo.start == 0) {
+//         debugPrint('Fetching Existing vesting information...');
+//         await _walletVM!.getExistingVestingInformation();
+//
+//         // Fetch balance only if vesting address is available
+//         if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestingAddress!.isNotEmpty) {
+//           debugPrint('Fetching vesting balance...');
+//           await _walletVM!.getBalance(forAddress: _walletVM!.existingVestingAddress);
+//         }
+//       }
+//     } catch (e) {
+//       debugPrint('Error fetching vesting data: $e');
+//     } finally {
+//       _isFetchingData = false;
+//     }
+//
+//   }
+//
+//
+//
+//   @override
+//   void dispose() {
+//     _debounceTimer?.cancel();
+//     if (_walletVM != null) {
+//       _walletVM!.removeListener(_onWalletAddressChanged);
+//     }
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     super.build(context);
+//     return Selector<WalletViewModel, Tuple3<String?, String?, bool>>(
+//         selector: (context, walletVM) => Tuple3(
+//           walletVM.existingVestingAddress,
+//           walletVM.existingVestingStatus,
+//           walletVM.isConnected && walletVM.walletAddress.isNotEmpty,
+//         ),
+//         builder: (context, data, child){
+//           final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+//           _walletVM ??= walletVM;
+//           debugPrint('ExistingVestingWrapper Selector: isLoading: ${walletVM.isLoading}, '
+//               'existingVestingAddress: ${walletVM.existingVestingAddress}, '
+//               'existingVestingStatus: ${walletVM.existingVestingStatus}');
+//
+//           if(!data.item3){
+//
+//             return Scaffold(
+//               backgroundColor: const Color(0xFF01090B),
+//               body: Center(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//
+//
+//                     const Text(
+//                       "Connection lost Please restart your app or connect your wallet to view vesting details.",
+//                       textAlign: TextAlign.center,
+//                       style: TextStyle(color: Colors.white70),
+//                     ),
+//                     const SizedBox(height: 20),
+//                     CustomGradientButton(
+//                       label: 'Retry',
+//                       width: MediaQuery.of(context).size.width * 0.7,
+//                       height: MediaQuery.of(context).size.height * 0.05,
+//                       onTap: () async {
+//                         if (!mounted) return;
+//                         await context.read<WalletViewModel>().openWalletModal(context);
+//                       },
+//                        gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
+//                     ),
+//
+//                     const SizedBox(height: 20),
+//                     DisconnectButton(
+//                       label: 'Disconnect',
+//                       color: const Color(0xffE04043),
+//                       icon: 'assets/icons/disconnected.svg',
+//                       onPressed: () async {
+//                         setState(() {
+//                           isDisconnecting = true;
+//                         });
+//                         final walletVm = Provider.of<WalletViewModel>(context, listen: false);
+//                         try {
+//                           await walletVm.disconnectWallet(context);
+//                           walletVm.reset();
+//                           final prefs = await SharedPreferences.getInstance();
+//                           await prefs.clear();
+//                           Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
+//                           if (context.mounted && !walletVm.isConnected) {
+//                             Navigator.of(context).pushAndRemoveUntil(
+//                               MaterialPageRoute(
+//                                 builder: (context) => MultiProvider(
+//                                   providers: [
+//                                     ChangeNotifierProvider(create: (context) => WalletViewModel()),
+//                                     ChangeNotifierProvider(create: (_) => BottomNavProvider()),
+//                                     ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
+//                                     ChangeNotifierProvider(create: (_) => PersonalViewModel()),
+//                                     ChangeNotifierProvider(create: (_) => NavigationProvider()),
+//                                   ],
+//                                   child: const BottomNavBar(),
+//                                 ),
+//                               ),
+//                                   (Route<dynamic> route) => false,
+//                             );
+//                           }
+//                         } catch (e) {
+//                           debugPrint("Error Wallet Disconnecting : $e");
+//                         } finally {
+//                           if (mounted) {
+//                             setState(() {
+//                               isDisconnecting = false;
+//                             });
+//                           }
+//                         }
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//           }
+//
+//
+//           return ExistingUserVesting(
+//             key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
+//             onStartVestingComplete: () async {
+//               await walletVM.getExistingVestingInformation();
+//               if (mounted) {
+//                 setState(() {});
+//               }
+//             },
+//             isPostVesting: data.item2 != null,
+//             existingVestingInfo: walletVM.existingVestInfo,
+//             existingVestingStatus: data.item2,
+//             vestingBalance: walletVM.balance ?? '0',
+//           );
+//
+//         },
+//
+//
+//     );
+//
+//
+//   }
+//
+//   @override
+//   bool get wantKeepAlive => true;
+//
+// }
 class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with AutomaticKeepAliveClientMixin {
   bool _isFetchingData = false;
   bool _hasInitialized = false;
   WalletViewModel? _walletVM;
   bool isDisconnecting = false;
   Timer? _debounceTimer;
+  bool _hasOpenedModal = false;
+  int _retryCount = 0;
+  static const int _maxRetries = 3;
+  bool _isNavigating = false;
 
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
@@ -72,8 +269,13 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         walletVM.addListener(_onWalletAddressChanged);
         _walletVM = walletVM;
         _fetchVestingDataIfConnected();
-        // _checkAndOpenModal();
-      }
+        // Check connection and open modal if disconnected
+        if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
+          // _openWalletModal();
+          // _handleWeb3Login();
+          _tryWeb3Login();
+        }
+       }
     });
   }
 
@@ -83,12 +285,12 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     _debounceTimer = Timer(const Duration(seconds: 1), () {
       if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
         _fetchVestingDataIfConnected();
+      } else if (!_hasOpenedModal && _retryCount < _maxRetries) {
+        // _openWalletModal();
+        // _handleWeb3Login();
+        _tryWeb3Login();
       }
 
-      // else{
-      // _checkAndOpenModal();
-      //
-      // }
     });
 
   }
@@ -97,6 +299,11 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     if (_isFetchingData || _walletVM == null) return;
     if (!_walletVM!.isConnected || _walletVM!.walletAddress.isEmpty) {
       debugPrint('Wallet not connected, skipping vesting data fetch');
+      if (!_hasOpenedModal && _retryCount < _maxRetries) {
+        // _openWalletModal();
+        // _handleWeb3Login();
+        _tryWeb3Login();
+      }
       return;
     }
 
@@ -117,10 +324,257 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
       debugPrint('Error fetching vesting data: $e');
     } finally {
       _isFetchingData = false;
+      if (mounted) setState(() {});
     }
 
   }
 
+  String _resolveAddressFromSession(ReownAppKitModal? modal, String? chainId, String current) {
+    if (current.isNotEmpty) return current;
+    final session = modal?.session;
+    if (session == null) return '';
+
+    // Try exact chain match first: eip155:<chainId>:<address>
+    if (chainId != null) {
+      final exact = session.namespaces!.values
+          .expand((ns) => ns.accounts)
+          .firstWhere(
+            (a) => a.toLowerCase().startsWith('${chainId.toLowerCase()}:'),
+        orElse: () => '',
+      );
+      if (exact.isNotEmpty) {
+        final parts = exact.split(':');
+        if (parts.length >= 3) return parts.last;
+      }
+    }
+
+    // Fallback: first account in any namespace
+    final any = session.namespaces!.values.expand((ns) => ns.accounts).toList();
+    if (any.isNotEmpty) {
+      final parts = any.first.split(':');
+      if (parts.length >= 3) return parts.last;
+    }
+    return '';
+  }
+
+  Future<void> _tryWeb3Login() async {
+    if (_hasOpenedModal || !mounted || _retryCount >= _maxRetries) return;
+    _hasOpenedModal = true;
+    _retryCount++;
+    debugPrint('Attempting Web3 login, attempt $_retryCount of $_maxRetries');
+
+    try {
+      await _handleWeb3Login();
+      _retryCount = 0;
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e, stack) {
+      debugPrint('Error in Web3 login: $e, stack: $stack');
+      if (mounted) {
+        String message = 'Failed to connect wallet. Please try again.';
+        String subtitle = 'An unexpected error occurred.';
+        if (e.toString().contains('Bad state: No element')) {
+          message = 'Wallet connection failed.';
+          subtitle = 'Please restart the app.';
+        } else if (e.toString().contains('timeout')) {
+          message = 'Connection timed out.';
+          subtitle = 'Check your network and try again.';
+        } else if (e.toString().contains('Invalid context') || e.toString().contains('No context was found')) {
+          message = 'Invalid app state.';
+          subtitle = 'Please restart the app.';
+        }else if (e.toString().contains('Failed to parse signature') || e.toString().contains('User rejected')) {
+          message = 'Signature verification failed.';
+          subtitle =
+          'Please ensure your wallet is on the correct network ) and try again.';
+        }
+        ToastMessage.show(
+          message: message,
+          subtitle: subtitle,
+          type: MessageType.error,
+          duration: CustomToastLength.LONG,
+        );
+      }
+      if (_retryCount < _maxRetries) {
+        Future.delayed(const Duration(seconds: 5), () {
+          if (mounted && !_walletVM!.isConnected) {
+            _hasOpenedModal = false;
+            _tryWeb3Login();
+          }
+        });
+      }
+    }
+  }
+
+  Future<void> _handleWeb3Login() async {
+    if (_isNavigating) return;
+    if(!mounted) return;
+    setState(() => _isNavigating = true);
+
+    final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+
+    try {
+      debugPrint('Context in _handleWeb3Login: ${context.runtimeType}, mounted: ${context.mounted}');
+      await walletVM.ensureModalWithValidContext(context);
+
+      if (!walletVM.isConnected) {
+         await walletVM.openWalletModal(context);
+        }
+
+
+      if ( walletVM.appKitModal?.session == null) {
+        if(!mounted) return;
+        ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+        setState(() => _isNavigating = false);
+        return;
+      }
+
+      // String walletAddress = walletVM.walletAddress;
+
+      // Validate chain ID
+      final chainId = walletVM.getChainIdForRequests();
+      if (chainId == null) {
+        if (!mounted) return;
+        ToastMessage.show(
+          message: "Chain Error",
+          subtitle: "No chain selected. Please select a network.",
+          type: MessageType.error,
+        );
+        setState(() => _isNavigating = false);
+        return;
+      }
+
+      String walletAddress = _resolveAddressFromSession(
+        walletVM.appKitModal,
+        chainId,
+        walletVM.walletAddress,
+      );
+
+      debugPrint(' walletAdress Before personal_sign :  $walletAddress');
+      final message = _generateSignatureMessage(walletAddress);
+      if (message.isEmpty) {
+        throw Exception("Failed to generate signature message.");
+      }
+      final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+      debugPrint('personal_sign request: topic=${walletVM.appKitModal!.session!.topic}, chainId=$chainId, params=[$hexMessage, $walletAddress]');
+
+
+      final dynamic rawSignatureResponse = await walletVM.appKitModal!.request(
+        topic: walletVM.appKitModal!.session!.topic,
+        chainId: chainId,
+        request: SessionRequestParams(
+          method: 'personal_sign',
+          params: [hexMessage, walletAddress],
+        ),
+      );
+
+      debugPrint('Raw signature response: $rawSignatureResponse, type: ${rawSignatureResponse.runtimeType}');
+      String signatureString;
+      if (rawSignatureResponse is String) {
+        signatureString = rawSignatureResponse;
+      }else if (rawSignatureResponse is Map<String, dynamic>) {
+
+        if (rawSignatureResponse.containsKey('result') && rawSignatureResponse['result'] is String) {
+          signatureString = rawSignatureResponse['result'] as String;
+        } else if (rawSignatureResponse.containsKey('signature') && rawSignatureResponse['signature'] is String) {
+          signatureString = rawSignatureResponse['signature'] as String;
+        }else if (rawSignatureResponse.containsKey('code') && rawSignatureResponse['code'] == 5000) {
+          throw Exception("Wallet rejected signature request: ${rawSignatureResponse['message']}");
+        } else {
+          throw Exception("Failed to parse signature from wallet response.");
+        }
+      } else {
+        print("Web3 Login Error: Signature response is not a String or Map: $rawSignatureResponse");
+        throw Exception("Invalid signature format received from wallet.");
+      }
+
+      if (signatureString.isEmpty) {
+        throw Exception("Empty signature received.");
+      }
+
+      if (!mounted) return;
+
+      //Verify signature with your backend
+      final response = await ApiService().web3Login(context, message, walletAddress, signatureString);
+      print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
+
+      //Save session and navigate
+      final prefs = await SharedPreferences.getInstance();
+
+      final sessionJson = walletVM.appKitModal!.session?.toJson();
+      if(sessionJson != null){
+        await prefs.setString('walletSession', jsonEncode(sessionJson));
+      }
+      await prefs.setBool('isConnected', true);
+      await prefs.setString('walletAddress', walletVM.walletAddress);
+
+      await prefs.setString('token', response.token);
+      await prefs.setString('user', jsonEncode(response.user.toJson()));
+      await prefs.setString('firstName', response.user.name ?? '');
+      await prefs.setString('userName', response.user.username ?? '');
+      await prefs.setString('emailAddress', response.user.email ?? '');
+      await prefs.setString('phoneNumber', response.user.phone ?? '');
+      await prefs.setString('ethAddress', response.user.ethAddress ?? '');
+      await prefs.setString('unique_id', response.user.uniqueId ?? '');
+      if (response.user.image != null && response.user.image!.isNotEmpty) {
+        await prefs.setString('profileImage', response.user.image!);
+      }
+      await prefs.setString('auth_method', 'web3');
+      await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
+
+
+
+      if (!mounted) return;
+
+      final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
+      await userAuth.loadUserFromPrefs();
+
+
+      if (!mounted) return;
+      final bottomNavProvider = Provider.of<BottomNavProvider>(context, listen: false);
+      bottomNavProvider.setFullName(response.user.name ?? '');
+
+      if (!mounted) return;
+      ToastMessage.show(message: "Login Successful", type: MessageType.success);
+
+       walletVM.appKitModal!.closeModal();
+    } catch (e) {
+      final errorString = e.toString().toLowerCase();
+      String subtitle;
+
+      if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
+        subtitle = "You cancelled the signature request in your wallet.";
+      } else {
+        subtitle = "An unexpected error occurred. Please try again.";
+        print("Web3 Login Error: $e");
+      }
+
+      ToastMessage.show(
+        message: "Login Failed",
+        subtitle: subtitle,
+        type: MessageType.error,
+        duration: CustomToastLength.LONG,
+      );
+      walletVM.appKitModal!.closeModal();
+      throw e;
+    } finally {
+      if (mounted) setState(() => _isNavigating = false);
+    }
+  }
+
+  String _generateSignatureMessage(String? address) {
+    final safeAddress = address ?? 'Unknown Wallet';
+    debugPrint('Generating signature message for address: $safeAddress');
+    return [
+      "Welcome to MyCoinPoll!",
+      "",
+      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
+      "",
+      "Wallet: $safeAddress",
+      "",
+      "Thank you for being a part of our community!"
+    ].join("\n");
+  }
 
 
   @override
@@ -149,80 +603,18 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
               'existingVestingStatus: ${walletVM.existingVestingStatus}');
 
           if(!data.item3){
+            if (_retryCount >= _maxRetries) {
+              print('Connection failed. Please restart the app.');
+            }
 
             return Scaffold(
               backgroundColor: const Color(0xFF01090B),
               body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-
-
-                    const Text(
-                      "Connection lost Please restart your app or connect your wallet to view vesting details.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                    const SizedBox(height: 20),
-                    CustomGradientButton(
-                      label: 'Retry',
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      onTap: () async {
-                        if (!mounted) return;
-                        await context.read<WalletViewModel>().openWalletModal(context);
-                      },
-                       gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
-                    ),
-                    const SizedBox(height: 20),
-                    DisconnectButton(
-                      label: 'Disconnect',
-                      color: const Color(0xffE04043),
-                      icon: 'assets/icons/disconnected.svg',
-                      onPressed: () async {
-                        setState(() {
-                          isDisconnecting = true;
-                        });
-                        final walletVm = Provider.of<WalletViewModel>(context, listen: false);
-                        try {
-                          await walletVm.disconnectWallet(context);
-                          walletVm.reset();
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.clear();
-                          Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-                          if (context.mounted && !walletVm.isConnected) {
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (context) => MultiProvider(
-                                  providers: [
-                                    ChangeNotifierProvider(create: (context) => WalletViewModel()),
-                                    ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-                                    ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-                                    ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-                                    ChangeNotifierProvider(create: (_) => NavigationProvider()),
-                                  ],
-                                  child: const BottomNavBar(),
-                                ),
-                              ),
-                                  (Route<dynamic> route) => false,
-                            );
-                          }
-                        } catch (e) {
-                          debugPrint("Error Wallet Disconnecting : $e");
-                        } finally {
-                          if (mounted) {
-                            setState(() {
-                              isDisconnecting = false;
-                            });
-                          }
-                        }
-                      },
-                    ),
-                  ],
-                ),
+                child: CircularProgressIndicator()
               ),
             );
           }
+
 
 
           return ExistingUserVesting(
@@ -247,8 +639,6 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 
   }
 
-  @override
-  bool get wantKeepAlive => true;
 
 }
 

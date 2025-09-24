@@ -426,7 +426,8 @@ class DashboardScreen extends StatefulWidget {
                                // print('Failed to open wallet modal. Please try again.');
                              // }
                              if (!mounted) return;
-                             await context.read<WalletViewModel>().openWalletModal(context);
+                             await model.appKitModal?.openModalView();
+                             // await context.read<WalletViewModel>().openWalletModal(context);
                             } catch (e) {
                              print("Error opening wallet modal: $e");
                            }

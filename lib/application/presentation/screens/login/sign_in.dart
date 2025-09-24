@@ -35,18 +35,6 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   bool _isNavigating = false;
 
-  String _generateSignatureMessage(String? address) {
-    final safeAddress = address ?? 'Unknown Wallet';
-    return [
-      "Welcome to MyCoinPoll!",
-      "",
-      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
-      "",
-      "Wallet: $safeAddress",
-      "",
-      "Thank you for being a part of our community!"
-    ].join("\n");
-  }
 
 
   @override
@@ -61,6 +49,51 @@ class _SignInState extends State<SignIn> {
 
     });
   }
+
+  String _resolveAddressFromSession(ReownAppKitModal? modal, String? chainId, String current) {
+    if (current.isNotEmpty) return current;
+    final session = modal?.session;
+    if (session == null) return '';
+
+    // Try exact chain match first: eip155:<chainId>:<address>
+    if (chainId != null) {
+      final exact = session.namespaces!.values
+          .expand((ns) => ns.accounts)
+          .firstWhere(
+            (a) => a.toLowerCase().startsWith('${chainId.toLowerCase()}:'),
+        orElse: () => '',
+      );
+      if (exact.isNotEmpty) {
+        final parts = exact.split(':');
+        if (parts.length >= 3) return parts.last;
+      }
+    }
+
+    // Fallback: first account in any namespace
+    final any = session.namespaces!.values.expand((ns) => ns.accounts).toList();
+    if (any.isNotEmpty) {
+      final parts = any.first.split(':');
+      if (parts.length >= 3) return parts.last;
+    }
+    return '';
+  }
+
+
+  String _generateSignatureMessage(String? address) {
+    final safeAddress = address ?? 'Unknown Wallet';
+    debugPrint('Generating signature message for address: $safeAddress');
+
+    return [
+      "Welcome to MyCoinPoll!",
+      "",
+      "Signing confirms wallet ownership and agreement to our terms. No transaction or fees involved—authentication only.",
+      "",
+      "Wallet: $safeAddress",
+      "",
+      "Thank you for being a part of our community!"
+    ].join("\n");
+  }
+
 
   Future<void> login() async {
     final username = userNameOrIdController.text.trim();
@@ -153,7 +186,7 @@ class _SignInState extends State<SignIn> {
         return;
       }
 
-      final walletAddress = walletVM.walletAddress;
+      // final walletAddress = walletVM.walletAddress;
       // Validate chain ID
       final chainId = walletVM.getChainIdForRequests();
       if (chainId == null) {
@@ -169,11 +202,21 @@ class _SignInState extends State<SignIn> {
 
       //Generate message and request signature
 
-      final message = _generateSignatureMessage(walletVM.walletAddress);
+      String walletAddress = _resolveAddressFromSession(
+        walletVM.appKitModal,
+        chainId,
+        walletVM.walletAddress,
+      );
+      debugPrint(' walletAdress Before personal_sign :  $walletAddress');
+
+
+      // final message = _generateSignatureMessage(walletVM.walletAddress);
+      final message = _generateSignatureMessage(walletAddress);
       if (message.isEmpty) {
         throw Exception("Failed to generate signature message.");
       }
       final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
+      debugPrint('personal_sign request: topic=${walletVM.appKitModal!.session!.topic}, chainId=$chainId, params=[$hexMessage, $walletAddress]');
 
 
 
@@ -186,6 +229,7 @@ class _SignInState extends State<SignIn> {
         ),
       );
 
+      debugPrint('Raw signature response: $rawSignatureResponse, type: ${rawSignatureResponse.runtimeType}');
 
       String signatureString;
       if (rawSignatureResponse is String) {

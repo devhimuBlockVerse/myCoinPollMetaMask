@@ -47,7 +47,7 @@ dependencies:
   shared_preferences:
   url_launcher: ^6.2.5
   path_provider: ^2.1.2
-  device_info_plus: ^10.1.0
+  device_info_plus: ^12.1.0
   flutter_svg: ^2.0.7
   xml: ^6.1.0
   share_plus:
@@ -58,23 +58,23 @@ dependencies:
   file_selector: ^1.0.3
   youtube_player_flutter: ^9.1.1
   open_file: ^3.2.1
-  decimal: ^2.3.3
+  decimal: ^3.2.4
   dio: ^5.4.0
-  android_intent_plus: ^4.0.3
+  android_intent_plus: ^6.0.0
 
-  permission_handler: ^11.3.0
+  permission_handler: ^12.0.1
   connectivity_plus: ^6.1.5
   get: ^4.6.5
 
   logrocket_flutter: ^1.56.2
-  firebase_core: ^2.24.0
-  firebase_analytics: ^10.8.0
+  firebase_core: ^4.1.1
+  firebase_analytics: ^12.0.2
 
 
 
 
 dev_dependencies:
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
 
@@ -86,7 +86,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 flutter_launcher_icons:
   android: true

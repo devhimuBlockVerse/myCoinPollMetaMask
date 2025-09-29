@@ -490,55 +490,6 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>?> _getCachedData(
-      String key, int expiryHours) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final cachedData = prefs.getString(key);
-      final timestamp = prefs.getInt('${key}_timestamp');
-
-      if (cachedData != null && timestamp != null) {
-        final now = DateTime.now();
-        final cacheTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-        final expiry = cacheTime.add(Duration(hours: expiryHours));
-
-        if (now.isBefore(expiry)) {
-          return jsonDecode(cachedData);
-        } else {
-          // Cache expired, clean up
-          await _clearCachedData(key);
-        }
-      }
-    } catch (e) {
-      print('Error reading cached data for $key: $e');
-    }
-
-    return null;
-  }
-
-  Future<void> _setCachedData(String key, Map<String, dynamic> data) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(key, jsonEncode(data));
-      await prefs.setInt(
-          '${key}_timestamp', DateTime.now().millisecondsSinceEpoch);
-      print('Data cached for $key');
-    } catch (e) {
-      print('Error caching data for $key: $e');
-    }
-  }
-
-  Future<void> _clearCachedData(String key) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(key);
-      await prefs.remove('${key}_timestamp');
-      print('Cleared expired cache for $key');
-    } catch (e) {
-      print('Error clearing cache for $key: $e');
-    }
-  }
-
   Future<Map<String, dynamic>> checkGeolocation() async {
     /// Api  Caching
     // const String cacheKey = 'geolocation_check';

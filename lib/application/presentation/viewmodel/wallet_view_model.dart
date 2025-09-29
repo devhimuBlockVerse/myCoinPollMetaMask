@@ -152,7 +152,7 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver {
   bool get isVestingBalanceLoading => _isVestingBalanceLoading;
 
   //SEPHOLIA ADDRESS
-  /** SEPHOLIA ADDRESS **/
+  /** SEPHOLIA ADDRESS
   static const String ALCHEMY_URL_V2 =
       "https://eth-sepolia.g.alchemy.com/v2/Z-5ts6Ke8ik_CZOD9mNqzh-iekLYPySe";
   static const String SALE_CONTRACT_ADDRESS =
@@ -165,9 +165,9 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver {
       '0x694AA1769357215DE4FAC081bf1f309aDC325306';
   static const String EXITING_VESTING_ADDRESS =
       '0x6EB1b13f3A71b0dfDC2F2e4E9490468aB3BAB266';
-
+  **/
   //MAINNET ADDRESS
-  /** MAINNET ADDRESS
+  /** MAINNET ADDRESS **/
 
   static const String ALCHEMY_URL_V2 =
       "https://mainnet.infura.io/v3/8e59f629376f4c459566f61b213bb3f4";
@@ -181,7 +181,6 @@ class WalletViewModel extends ChangeNotifier with WidgetsBindingObserver {
       '0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419';
   static const String EXITING_VESTING_ADDRESS =
       '0x5bC875476C73C76092755226d59747e37c467d90';
-  **/
 
   static const double ECM_PRICE_USD = 1.2;
   static const int ECM_DECIMALS = 18;

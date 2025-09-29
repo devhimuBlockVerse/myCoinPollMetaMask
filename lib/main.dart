@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,37 +55,37 @@ Future<void> main() async {
 
   runApp(const MyApp());
 
-  // LogRocket.wrapAndInitialize(
-  //     LogRocketWrapConfiguration(
-  //       errorCaptureEnabled: true,
-  //       logCaptureEnabled: true,
-  //       networkCaptureEnabled: true,
-  //       getSessionUrl: (sessionUrl) async {
-  //         print("LogRocket Session URL: $sessionUrl");
-  //         try {
-  //           final prefs = await SharedPreferences.getInstance();
-  //           await FirebaseAnalytics.instance.logEvent(
-  //             name: 'logrocket',
-  //             parameters: {
-  //               'session_url': sessionUrl,
-  //               'user_id': prefs.getString('unique_id') ?? 'unknown',
-  //               'wallet_address': prefs.getString('walletAddress') ?? 'unknown',
-  //               'username': prefs.getString('userName') ?? 'guest',
-  //             },
-  //           );
-  //         } catch (e) {
-  //           print(
-  //               "Error sending LogRocket session URL to Firebase Analytics: $e");
-  //         }
-  //       },
-  //     ),
-  //     LogRocketInitConfiguration(
-  //         // appID: 'blockverse/mycoinpoll',// DevHimu
-  //         appID: 'shzrdl/mycoinpoll-app', // Hostinger
-  //         logLevel: LogRocketInternalLogLevel.verbose,
-  //         viewCaptureEnabled: true,
-  //         screenshotPixelRatio: 1.0),
-  //     () => runApp(LogRocketWidget(child: MyApp())));
+  LogRocket.wrapAndInitialize(
+      LogRocketWrapConfiguration(
+        errorCaptureEnabled: true,
+        logCaptureEnabled: true,
+        networkCaptureEnabled: true,
+        getSessionUrl: (sessionUrl) async {
+          print("LogRocket Session URL: $sessionUrl");
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await FirebaseAnalytics.instance.logEvent(
+              name: 'logrocket',
+              parameters: {
+                'session_url': sessionUrl,
+                'user_id': prefs.getString('unique_id') ?? 'unknown',
+                'wallet_address': prefs.getString('walletAddress') ?? 'unknown',
+                'username': prefs.getString('userName') ?? 'guest',
+              },
+            );
+          } catch (e) {
+            print(
+                "Error sending LogRocket session URL to Firebase Analytics: $e");
+          }
+        },
+      ),
+      LogRocketInitConfiguration(
+          // appID: 'blockverse/mycoinpoll',// DevHimu
+          appID: 'shzrdl/mycoinpoll-app', // Hostinger
+          logLevel: LogRocketInternalLogLevel.verbose,
+          viewCaptureEnabled: true,
+          screenshotPixelRatio: 1.0),
+      () => runApp(LogRocketWidget(child: MyApp())));
 
   LogRocket.identify(uniqueId, {
     "walletAddress": prefs.getString('walletAddress') ?? 'unknown',

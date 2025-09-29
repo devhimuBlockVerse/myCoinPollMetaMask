@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mycoinpoll_metamask/application/domain/constants/api_constants.dart';
 import 'package:mycoinpoll_metamask/application/module/userDashboard/view/vesting/vesting_Item.dart';
 import 'package:provider/provider.dart';
-import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web3dart/crypto.dart';
+
 import '../../../../../framework/components/BlockButton.dart';
 import '../../../../../framework/components/VestingContainer.dart';
 import '../../../../../framework/components/VestingSummaryRow.dart';
-import '../../../../../framework/components/buy_ecm_button.dart';
 import '../../../../../framework/components/claimHistoryCard.dart';
-import '../../../../../framework/components/disconnectButton.dart';
 import '../../../../../framework/components/loader.dart';
 import '../../../../../framework/components/vestingDetailRow.dart';
 import '../../../../../framework/utils/customToastMessage.dart';
@@ -24,21 +24,14 @@ import '../../../../../framework/utils/dynamicFontSize.dart';
 import '../../../../../framework/utils/enums/toast_type.dart';
 import '../../../../data/services/api_service.dart';
 import '../../../../presentation/countdown_timer_helper.dart';
-import '../../../../presentation/screens/bottom_nav_bar.dart';
 import '../../../../presentation/viewmodel/bottom_nav_provider.dart';
 import '../../../../presentation/viewmodel/countdown_provider.dart';
-import '../../../../presentation/viewmodel/personal_information_viewmodel/personal_view_model.dart';
 import '../../../../presentation/viewmodel/user_auth_provider.dart';
 import '../../../../presentation/viewmodel/wallet_view_model.dart';
-import '../../../dashboard_bottom_nav.dart';
 import '../../../side_nav_bar.dart';
-import '../../viewmodel/dashboard_nav_provider.dart';
 import '../../viewmodel/side_navigation_provider.dart';
 import 'helper/claim.dart';
 import 'helper/vesting_info.dart';
-import 'package:intl/intl.dart';
-import 'package:http/http.dart'as http;
-
 
 class Tuple3<A, B, C> {
   final A item1;
@@ -54,199 +47,8 @@ class ExistingVestingWrapper extends StatefulWidget {
   State<ExistingVestingWrapper> createState() => _ExistingVestingWrapperState();
 }
 
-// class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with AutomaticKeepAliveClientMixin {
-//   bool _isFetchingData = false;
-//   bool _hasInitialized = false;
-//   WalletViewModel? _walletVM;
-//   bool isDisconnecting = false;
-//   Timer? _debounceTimer;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       if (!_hasInitialized) {
-//         _hasInitialized = true;
-//         final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-//         walletVM.addListener(_onWalletAddressChanged);
-//         _walletVM = walletVM;
-//         _fetchVestingDataIfConnected();
-//        }
-//     });
-//   }
-//
-//   void _onWalletAddressChanged() {
-//     if (!mounted || _isFetchingData) return;
-//     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
-//     _debounceTimer = Timer(const Duration(seconds: 1), () {
-//       if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
-//         _fetchVestingDataIfConnected();
-//       }
-//
-//     });
-//
-//   }
-//
-//   void _fetchVestingDataIfConnected() async {
-//     if (_isFetchingData || _walletVM == null) return;
-//     if (!_walletVM!.isConnected || _walletVM!.walletAddress.isEmpty) {
-//       debugPrint('Wallet not connected, skipping vesting data fetch');
-//       return;
-//     }
-//
-//
-//     try {
-//       _isFetchingData = true;
-//       if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestInfo.start == 0) {
-//         debugPrint('Fetching Existing vesting information...');
-//         await _walletVM!.getExistingVestingInformation();
-//
-//         // Fetch balance only if vesting address is available
-//         if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestingAddress!.isNotEmpty) {
-//           debugPrint('Fetching vesting balance...');
-//           await _walletVM!.getBalance(forAddress: _walletVM!.existingVestingAddress);
-//         }
-//       }
-//     } catch (e) {
-//       debugPrint('Error fetching vesting data: $e');
-//     } finally {
-//       _isFetchingData = false;
-//     }
-//
-//   }
-//
-//
-//
-//   @override
-//   void dispose() {
-//     _debounceTimer?.cancel();
-//     if (_walletVM != null) {
-//       _walletVM!.removeListener(_onWalletAddressChanged);
-//     }
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     super.build(context);
-//     return Selector<WalletViewModel, Tuple3<String?, String?, bool>>(
-//         selector: (context, walletVM) => Tuple3(
-//           walletVM.existingVestingAddress,
-//           walletVM.existingVestingStatus,
-//           walletVM.isConnected && walletVM.walletAddress.isNotEmpty,
-//         ),
-//         builder: (context, data, child){
-//           final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-//           _walletVM ??= walletVM;
-//           debugPrint('ExistingVestingWrapper Selector: isLoading: ${walletVM.isLoading}, '
-//               'existingVestingAddress: ${walletVM.existingVestingAddress}, '
-//               'existingVestingStatus: ${walletVM.existingVestingStatus}');
-//
-//           if(!data.item3){
-//
-//             return Scaffold(
-//               backgroundColor: const Color(0xFF01090B),
-//               body: Center(
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//
-//
-//                     const Text(
-//                       "Connection lost Please restart your app or connect your wallet to view vesting details.",
-//                       textAlign: TextAlign.center,
-//                       style: TextStyle(color: Colors.white70),
-//                     ),
-//                     const SizedBox(height: 20),
-//                     CustomGradientButton(
-//                       label: 'Retry',
-//                       width: MediaQuery.of(context).size.width * 0.7,
-//                       height: MediaQuery.of(context).size.height * 0.05,
-//                       onTap: () async {
-//                         if (!mounted) return;
-//                         await context.read<WalletViewModel>().openWalletModal(context);
-//                       },
-//                        gradientColors: const [Color(0xFF2D8EFF), Color(0xFF2EE4A4)],
-//                     ),
-//
-//                     const SizedBox(height: 20),
-//                     DisconnectButton(
-//                       label: 'Disconnect',
-//                       color: const Color(0xffE04043),
-//                       icon: 'assets/icons/disconnected.svg',
-//                       onPressed: () async {
-//                         setState(() {
-//                           isDisconnecting = true;
-//                         });
-//                         final walletVm = Provider.of<WalletViewModel>(context, listen: false);
-//                         try {
-//                           await walletVm.disconnectWallet(context);
-//                           walletVm.reset();
-//                           final prefs = await SharedPreferences.getInstance();
-//                           await prefs.clear();
-//                           Provider.of<BottomNavProvider>(context, listen: false).setIndex(0);
-//                           if (context.mounted && !walletVm.isConnected) {
-//                             Navigator.of(context).pushAndRemoveUntil(
-//                               MaterialPageRoute(
-//                                 builder: (context) => MultiProvider(
-//                                   providers: [
-//                                     ChangeNotifierProvider(create: (context) => WalletViewModel()),
-//                                     ChangeNotifierProvider(create: (_) => BottomNavProvider()),
-//                                     ChangeNotifierProvider(create: (_) => DashboardNavProvider()),
-//                                     ChangeNotifierProvider(create: (_) => PersonalViewModel()),
-//                                     ChangeNotifierProvider(create: (_) => NavigationProvider()),
-//                                   ],
-//                                   child: const BottomNavBar(),
-//                                 ),
-//                               ),
-//                                   (Route<dynamic> route) => false,
-//                             );
-//                           }
-//                         } catch (e) {
-//                           debugPrint("Error Wallet Disconnecting : $e");
-//                         } finally {
-//                           if (mounted) {
-//                             setState(() {
-//                               isDisconnecting = false;
-//                             });
-//                           }
-//                         }
-//                       },
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             );
-//           }
-//
-//
-//           return ExistingUserVesting(
-//             key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
-//             onStartVestingComplete: () async {
-//               await walletVM.getExistingVestingInformation();
-//               if (mounted) {
-//                 setState(() {});
-//               }
-//             },
-//             isPostVesting: data.item2 != null,
-//             existingVestingInfo: walletVM.existingVestInfo,
-//             existingVestingStatus: data.item2,
-//             vestingBalance: walletVM.balance ?? '0',
-//           );
-//
-//         },
-//
-//
-//     );
-//
-//
-//   }
-//
-//   @override
-//   bool get wantKeepAlive => true;
-//
-// }
-class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with AutomaticKeepAliveClientMixin {
+class _ExistingVestingWrapperState extends State<ExistingVestingWrapper>
+    with AutomaticKeepAliveClientMixin {
   bool _isFetchingData = false;
   bool _hasInitialized = false;
   WalletViewModel? _walletVM;
@@ -271,11 +73,9 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         _fetchVestingDataIfConnected();
         // Check connection and open modal if disconnected
         if (!walletVM.isConnected || walletVM.walletAddress.isEmpty) {
-          // _openWalletModal();
-          // _handleWeb3Login();
           _tryWeb3Login();
         }
-       }
+      }
     });
   }
 
@@ -283,16 +83,14 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     if (!mounted || _isFetchingData) return;
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
     _debounceTimer = Timer(const Duration(seconds: 1), () {
-      if (_walletVM != null && _walletVM!.isConnected && _walletVM!.walletAddress.isNotEmpty) {
+      if (_walletVM != null &&
+          _walletVM!.isConnected &&
+          _walletVM!.walletAddress.isNotEmpty) {
         _fetchVestingDataIfConnected();
       } else if (!_hasOpenedModal && _retryCount < _maxRetries) {
-        // _openWalletModal();
-        // _handleWeb3Login();
         _tryWeb3Login();
       }
-
     });
-
   }
 
   void _fetchVestingDataIfConnected() async {
@@ -300,24 +98,24 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     if (!_walletVM!.isConnected || _walletVM!.walletAddress.isEmpty) {
       debugPrint('Wallet not connected, skipping vesting data fetch');
       if (!_hasOpenedModal && _retryCount < _maxRetries) {
-        // _openWalletModal();
-        // _handleWeb3Login();
         _tryWeb3Login();
       }
       return;
     }
 
-
     try {
       _isFetchingData = true;
-      if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestInfo.start == 0) {
+      if (_walletVM!.existingVestingAddress != null &&
+          _walletVM!.existingVestInfo.start == 0) {
         debugPrint('Fetching Existing vesting information...');
         await _walletVM!.getExistingVestingInformation();
 
         // Fetch balance only if vesting address is available
-        if (_walletVM!.existingVestingAddress != null && _walletVM!.existingVestingAddress!.isNotEmpty) {
+        if (_walletVM!.existingVestingAddress != null &&
+            _walletVM!.existingVestingAddress!.isNotEmpty) {
           debugPrint('Fetching vesting balance...');
-          await _walletVM!.getBalance(forAddress: _walletVM!.existingVestingAddress);
+          await _walletVM!
+              .getBalance(forAddress: _walletVM!.existingVestingAddress);
         }
       }
     } catch (e) {
@@ -326,22 +124,21 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
       _isFetchingData = false;
       if (mounted) setState(() {});
     }
-
   }
 
-  String _resolveAddressFromSession(ReownAppKitModal? modal, String? chainId, String current) {
+  String _resolveAddressFromSession(
+      ReownAppKitModal? modal, String? chainId, String current) {
     if (current.isNotEmpty) return current;
     final session = modal?.session;
     if (session == null) return '';
 
     // Try exact chain match first: eip155:<chainId>:<address>
     if (chainId != null) {
-      final exact = session.namespaces!.values
-          .expand((ns) => ns.accounts)
-          .firstWhere(
-            (a) => a.toLowerCase().startsWith('${chainId.toLowerCase()}:'),
-        orElse: () => '',
-      );
+      final exact =
+          session.namespaces!.values.expand((ns) => ns.accounts).firstWhere(
+                (a) => a.toLowerCase().startsWith('${chainId.toLowerCase()}:'),
+                orElse: () => '',
+              );
       if (exact.isNotEmpty) {
         final parts = exact.split(':');
         if (parts.length >= 3) return parts.last;
@@ -380,13 +177,15 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         } else if (e.toString().contains('timeout')) {
           message = 'Connection timed out.';
           subtitle = 'Check your network and try again.';
-        } else if (e.toString().contains('Invalid context') || e.toString().contains('No context was found')) {
+        } else if (e.toString().contains('Invalid context') ||
+            e.toString().contains('No context was found')) {
           message = 'Invalid app state.';
           subtitle = 'Please restart the app.';
-        }else if (e.toString().contains('Failed to parse signature') || e.toString().contains('User rejected')) {
+        } else if (e.toString().contains('Failed to parse signature') ||
+            e.toString().contains('User rejected')) {
           message = 'Signature verification failed.';
           subtitle =
-          'Please ensure your wallet is on the correct network ) and try again.';
+              'Please ensure your wallet is on the correct network ) and try again.';
         }
         ToastMessage.show(
           message: message,
@@ -408,23 +207,26 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
 
   Future<void> _handleWeb3Login() async {
     if (_isNavigating) return;
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() => _isNavigating = true);
 
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
 
     try {
-      debugPrint('Context in _handleWeb3Login: ${context.runtimeType}, mounted: ${context.mounted}');
+      debugPrint(
+          'Context in _handleWeb3Login: ${context.runtimeType}, mounted: ${context.mounted}');
       await walletVM.ensureModalWithValidContext(context);
 
       if (!walletVM.isConnected) {
-         await walletVM.openWalletModal(context);
-        }
+        await walletVM.openWalletModal(context);
+      }
 
-
-      if ( walletVM.appKitModal?.session == null) {
-        if(!mounted) return;
-        ToastMessage.show(message: "Connection cancelled", subtitle: "Wallet connection is required to proceed.", type: MessageType.info);
+      if (walletVM.appKitModal?.session == null) {
+        if (!mounted) return;
+        ToastMessage.show(
+            message: "Connection cancelled",
+            subtitle: "Wallet connection is required to proceed.",
+            type: MessageType.info);
         setState(() => _isNavigating = false);
         return;
       }
@@ -456,8 +258,8 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         throw Exception("Failed to generate signature message.");
       }
       final hexMessage = bytesToHex(utf8.encode(message), include0x: true);
-      debugPrint('personal_sign request: topic=${walletVM.appKitModal!.session!.topic}, chainId=$chainId, params=[$hexMessage, $walletAddress]');
-
+      debugPrint(
+          'personal_sign request: topic=${walletVM.appKitModal!.session!.topic}, chainId=$chainId, params=[$hexMessage, $walletAddress]');
 
       final dynamic rawSignatureResponse = await walletVM.appKitModal!.request(
         topic: walletVM.appKitModal!.session!.topic,
@@ -468,23 +270,28 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         ),
       );
 
-      debugPrint('Raw signature response: $rawSignatureResponse, type: ${rawSignatureResponse.runtimeType}');
+      debugPrint(
+          'Raw signature response: $rawSignatureResponse, type: ${rawSignatureResponse.runtimeType}');
       String signatureString;
       if (rawSignatureResponse is String) {
         signatureString = rawSignatureResponse;
-      }else if (rawSignatureResponse is Map<String, dynamic>) {
-
-        if (rawSignatureResponse.containsKey('result') && rawSignatureResponse['result'] is String) {
+      } else if (rawSignatureResponse is Map<String, dynamic>) {
+        if (rawSignatureResponse.containsKey('result') &&
+            rawSignatureResponse['result'] is String) {
           signatureString = rawSignatureResponse['result'] as String;
-        } else if (rawSignatureResponse.containsKey('signature') && rawSignatureResponse['signature'] is String) {
+        } else if (rawSignatureResponse.containsKey('signature') &&
+            rawSignatureResponse['signature'] is String) {
           signatureString = rawSignatureResponse['signature'] as String;
-        }else if (rawSignatureResponse.containsKey('code') && rawSignatureResponse['code'] == 5000) {
-          throw Exception("Wallet rejected signature request: ${rawSignatureResponse['message']}");
+        } else if (rawSignatureResponse.containsKey('code') &&
+            rawSignatureResponse['code'] == 5000) {
+          throw Exception(
+              "Wallet rejected signature request: ${rawSignatureResponse['message']}");
         } else {
           throw Exception("Failed to parse signature from wallet response.");
         }
       } else {
-        print("Web3 Login Error: Signature response is not a String or Map: $rawSignatureResponse");
+        print(
+            "Web3 Login Error: Signature response is not a String or Map: $rawSignatureResponse");
         throw Exception("Invalid signature format received from wallet.");
       }
 
@@ -495,14 +302,16 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
       if (!mounted) return;
 
       //Verify signature with your backend
-      final response = await ApiService().web3Login(context, message, walletAddress, signatureString);
-      print('Web3 Login Success: ${response.user.name}, Token: ${response.token}');
+      final response = await ApiService()
+          .web3Login(context, message, walletAddress, signatureString);
+      print(
+          'Web3 Login Success: ${response.user.name}, Token: ${response.token}');
 
       //Save session and navigate
       final prefs = await SharedPreferences.getInstance();
 
       final sessionJson = walletVM.appKitModal!.session?.toJson();
-      if(sessionJson != null){
+      if (sessionJson != null) {
         await prefs.setString('walletSession', jsonEncode(sessionJson));
       }
       await prefs.setBool('isConnected', true);
@@ -520,29 +329,29 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
         await prefs.setString('profileImage', response.user.image!);
       }
       await prefs.setString('auth_method', 'web3');
-      await prefs.setInt('lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
-
-
+      await prefs.setInt(
+          'lastConnectionTime', DateTime.now().millisecondsSinceEpoch);
 
       if (!mounted) return;
 
       final userAuth = Provider.of<UserAuthProvider>(context, listen: false);
       await userAuth.loadUserFromPrefs();
 
-
       if (!mounted) return;
-      final bottomNavProvider = Provider.of<BottomNavProvider>(context, listen: false);
+      final bottomNavProvider =
+          Provider.of<BottomNavProvider>(context, listen: false);
       bottomNavProvider.setFullName(response.user.name ?? '');
 
       if (!mounted) return;
       ToastMessage.show(message: "Login Successful", type: MessageType.success);
 
-       walletVM.appKitModal!.closeModal();
+      walletVM.appKitModal!.closeModal();
     } catch (e) {
       final errorString = e.toString().toLowerCase();
       String subtitle;
 
-      if (errorString.contains("user rejected") || errorString.contains("user cancelled")) {
+      if (errorString.contains("user rejected") ||
+          errorString.contains("user cancelled")) {
         subtitle = "You cancelled the signature request in your wallet.";
       } else {
         subtitle = "An unexpected error occurred. Please try again.";
@@ -576,7 +385,6 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
     ].join("\n");
   }
 
-
   @override
   void dispose() {
     _debounceTimer?.cancel();
@@ -590,56 +398,46 @@ class _ExistingVestingWrapperState extends State<ExistingVestingWrapper> with Au
   Widget build(BuildContext context) {
     super.build(context);
     return Selector<WalletViewModel, Tuple3<String?, String?, bool>>(
-        selector: (context, walletVM) => Tuple3(
-          walletVM.existingVestingAddress,
-          walletVM.existingVestingStatus,
-          walletVM.isConnected && walletVM.walletAddress.isNotEmpty,
-        ),
-        builder: (context, data, child){
-          final walletVM = Provider.of<WalletViewModel>(context, listen: false);
-          _walletVM ??= walletVM;
-          debugPrint('ExistingVestingWrapper Selector: isLoading: ${walletVM.isLoading}, '
-              'existingVestingAddress: ${walletVM.existingVestingAddress}, '
-              'existingVestingStatus: ${walletVM.existingVestingStatus}');
+      selector: (context, walletVM) => Tuple3(
+        walletVM.existingVestingAddress,
+        walletVM.existingVestingStatus,
+        walletVM.isConnected && walletVM.walletAddress.isNotEmpty,
+      ),
+      builder: (context, data, child) {
+        final walletVM = Provider.of<WalletViewModel>(context, listen: false);
+        _walletVM ??= walletVM;
+        debugPrint(
+            'ExistingVestingWrapper Selector: isLoading: ${walletVM.isLoading}, '
+            'existingVestingAddress: ${walletVM.existingVestingAddress}, '
+            'existingVestingStatus: ${walletVM.existingVestingStatus}');
 
-          if(!data.item3){
-            if (_retryCount >= _maxRetries) {
-              print('Connection failed. Please restart the app.');
-            }
-
-            return Scaffold(
-              backgroundColor: const Color(0xFF01090B),
-              body: Center(
-                child: CircularProgressIndicator()
-              ),
-            );
+        if (!data.item3) {
+          if (_retryCount >= _maxRetries) {
+            print('Connection failed. Please restart the app.');
           }
 
-
-
-          return ExistingUserVesting(
-            key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
-            onStartVestingComplete: () async {
-              await walletVM.getExistingVestingInformation();
-              if (mounted) {
-                setState(() {});
-              }
-            },
-            isPostVesting: data.item2 != null,
-            existingVestingInfo: walletVM.existingVestInfo,
-            existingVestingStatus: data.item2,
-            vestingBalance: walletVM.balance ?? '0',
+          return Scaffold(
+            backgroundColor: const Color(0xFF01090B),
+            body: Center(child: CircularProgressIndicator()),
           );
+        }
 
-        },
-
-
+        return ExistingUserVesting(
+          key: ValueKey('${data.item1 ?? 'null'}_${data.item2 ?? 'null'}'),
+          onStartVestingComplete: () async {
+            await walletVM.getExistingVestingInformation();
+            if (mounted) {
+              setState(() {});
+            }
+          },
+          isPostVesting: data.item2 != null,
+          existingVestingInfo: walletVM.existingVestInfo,
+          existingVestingStatus: data.item2,
+          vestingBalance: walletVM.balance ?? '0',
+        );
+      },
     );
-
-
   }
-
-
 }
 
 class ExistingUserVesting extends StatefulWidget {
@@ -681,10 +479,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
   TextEditingController _searchController = TextEditingController();
 
-
   List<Claim> _claimHistory = [];
   List<Claim> _filteredClaimHistory = [];
-
 
   @override
   void initState() {
@@ -713,7 +509,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
         });
       }
     });
-
   }
 
   Future<void> _fetchInitialData() async {
@@ -741,7 +536,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     }
   }
 
-
   Future<List<Claim>> fetchClaimHistory() async {
     if (!mounted) return [];
     final walletVM = Provider.of<WalletViewModel>(context, listen: false);
@@ -759,20 +553,24 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
         final token = prefs.getString('token');
 
         final response = await http.get(
-          Uri.parse('${ApiConstants.baseUrl}/vesting-claim-history/Exiting_Vesting/$_walletAddress'),
+          Uri.parse(
+              '${ApiConstants.baseUrl}/vesting-claim-history/Exiting_Vesting/$_walletAddress'),
           headers: {
             "Content-Type": "application/json",
-            'Authorization': token != null && token.isNotEmpty ? 'Bearer $token' : '',
+            'Authorization':
+                token != null && token.isNotEmpty ? 'Bearer $token' : '',
           },
         );
         if (response.statusCode == 200 && mounted) {
           final data = jsonDecode(response.body) as List;
-          return data.map((json) => Claim(
-            amount: 'ECM ${json['amount'] ?? '0.0'}',
-            dateTime: json['created_at'] ?? '',
-            walletAddress: json['wallet_address'] ?? '',
-            hash: json['hash'] ?? '',
-          )).toList();
+          return data
+              .map((json) => Claim(
+                    amount: 'ECM ${json['amount'] ?? '0.0'}',
+                    dateTime: json['created_at'] ?? '',
+                    walletAddress: json['wallet_address'] ?? '',
+                    hash: json['hash'] ?? '',
+                  ))
+              .toList();
         } else if (response.statusCode >= 400) {
           await Future.delayed(const Duration(seconds: 2));
           retryCount++;
@@ -813,7 +611,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     setState(() {
       _filteredClaimHistory = _claimHistory.where((claim) {
         final amount = claim.amount.replaceAll('ECM ', '').toLowerCase();
-         final dateTime = claim.dateTime.toLowerCase();
+        final dateTime = claim.dateTime.toLowerCase();
         final wallet = claim.walletAddress.toLowerCase();
 
         return amount.contains(query) ||
@@ -822,7 +620,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
       }).toList();
     });
   }
-
 
   @override
   void dispose() {
@@ -840,10 +637,13 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
   void _initializeTimers(ExistingVestingInfo existingVestInfo) {
     if (!mounted) return;
-    existingVestingStartDate = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.start! * 1000);
+    existingVestingStartDate =
+        DateTime.fromMillisecondsSinceEpoch(existingVestInfo.start! * 1000);
     // cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000).subtract(const Duration(days: 365));
-    cliffEndTime = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000);
-    fullVestedDate = DateTime.fromMillisecondsSinceEpoch(existingVestInfo.end! * 1000);
+    cliffEndTime =
+        DateTime.fromMillisecondsSinceEpoch(existingVestInfo.cliff! * 1000);
+    fullVestedDate =
+        DateTime.fromMillisecondsSinceEpoch(existingVestInfo.end! * 1000);
     _lastVestedAmount = _walletVM?.existingVestedAmount;
     _startCountdownTimer();
   }
@@ -872,8 +672,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
             _countdownText = "Cliff Period Active";
           });
         }
-      }
-      else {
+      } else {
         if (mounted) {
           setState(() {
             isCliffPeriodOver = true;
@@ -902,7 +701,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     double scaleHeight(double size) => size * screenHeight / baseHeight;
     double scaleText(double size) => size * screenWidth / baseWidth;
 
-    return  Scaffold(
+    return Scaffold(
         key: _scaffoldKey,
         drawerEnableOpenDragGesture: true,
         drawerEdgeDragWidth: 80,
@@ -914,7 +713,6 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
         ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
-
         body: SafeArea(
           child: Container(
               width: screenWidth,
@@ -925,11 +723,9 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     image: AssetImage('assets/images/starGradientBg.png'),
                     fit: BoxFit.cover,
                     alignment: Alignment.topRight,
-                    filterQuality : FilterQuality.low
-                ),
+                    filterQuality: FilterQuality.low),
               ),
-              child:
-              Column(
+              child: Column(
                 children: [
                   SizedBox(height: screenHeight * 0.02),
                   Row(
@@ -969,8 +765,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                         vertical: screenHeight * 0.02,
                       ),
                       child: ScrollConfiguration(
-                        behavior: const ScrollBehavior().copyWith(overscroll: false),
-
+                        behavior:
+                            const ScrollBehavior().copyWith(overscroll: false),
                         child: RefreshIndicator(
                           onRefresh: () async {
                             if (!mounted) return;
@@ -978,130 +774,140 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                               _localLoading = true;
                             });
                             _startLoadingTimeout();
-                            try{
-                              await walletVM.ensureModalWithValidContext(context);
+                            try {
+                              await walletVM
+                                  .ensureModalWithValidContext(context);
                               await walletVM.rehydrate();
                               await walletVM.getBalance();
                               await walletVM.getExistingVestingInformation();
-                              print('Refresh: Vesting status = ${walletVM.existingVestingStatus}');
+                              print(
+                                  'Refresh: Vesting status = ${walletVM.existingVestingStatus}');
                               if (mounted) {
                                 setState(() {
                                   balanceText = walletVM.balance ?? '0';
                                 });
                               }
-                            }catch (e) {
+                            } catch (e) {
                               print('Refresh Error: $e');
                             } finally {
                               if (mounted) {
-                                Future.delayed(const Duration(milliseconds: 500), () {
+                                Future.delayed(
+                                    const Duration(milliseconds: 500), () {
                                   _endLoading();
                                 });
                               }
                             }
-
                           },
                           child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-
-
+                            physics: const AlwaysScrollableScrollPhysics(
+                                parent: BouncingScrollPhysics()),
                             child: Consumer<WalletViewModel>(
-                                builder: (context , walletVM, child){
-
-                                  final userBalance = getUserBalance(walletVM);
-                                  return Column(
-                                    children: [
-
-                                      if (widget.existingVestingStatus == 'locked') ...[
-
-                                        VestingContainer(
-                                          width: screenWidth * 0.9,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(height: screenHeight * 0.02),
-                                              if (existingVestingStartDate != null)
-                                                Text(
-                                                  'Vesting Period Begin on \n${DateFormat('d MMMM yyyy').format(existingVestingStartDate!)}',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(0xFFFFF5ED),
-                                                    fontSize: getResponsiveFontSize(context, 22),
-                                                    fontFamily: 'Poppins',
-                                                    fontWeight: FontWeight.w500,
-
-                                                  ),
-                                                ),
-                                              SizedBox(height: screenHeight * 0.02),
-                                              if (existingVestingStartDate != null)
-                                                ChangeNotifierProvider(
-                                                  create: (_) {
-                                                    return CountdownTimerProvider(
-                                                      targetDateTime: existingVestingStartDate!,
-                                                    );
-                                                  },
-                                                  child: CountdownTimer(
-                                                    scaleWidth: scaleWidth,
-                                                    scaleHeight: scaleHeight,
-                                                    scaleText: scaleText,
-                                                    showMonths: true,
-                                                  ),
-                                                ),
-                                              SizedBox(height: screenHeight * 0.03),
-
-                                            ],
-                                          ),
-                                        ),
-
-                                        SizedBox(height: screenHeight * 0.02),
-                                        existingVestingDetails(screenHeight, screenWidth, context,),
-                                        SizedBox(height: screenHeight * 0.9),
-
-                                        ] else if (widget.existingVestingStatus == 'process') ...[
-
-                                        SizedBox(height: screenHeight * 0.02),
-                                        cliffTimerAndClaimSection(screenHeight, screenWidth, context, walletVM),
-                                        SizedBox(height: screenHeight * 0.02),
-                                        vestingSummary(screenHeight, screenWidth, context),
-                                        SizedBox(height: screenHeight * 0.02),
-                                        claimHistory(screenHeight, screenWidth, context),
-
-                                      ] else ...[
-                                        totalBalance(screenHeight, screenWidth, context, walletVM, userBalance, widget.isPostVesting),
-                                        SizedBox(height: screenHeight * 0.02),
-                                        whyVesting(screenHeight, screenWidth, context),
-                                        SizedBox(height: screenHeight * 0.09),
-                                      ],
-
-
-                                    ],
-                                  );
-
-
-                                }
-                            ),
-
+                                builder: (context, walletVM, child) {
+                              final userBalance = getUserBalance(walletVM);
+                              return Column(
+                                children: [
+                                  if (widget.existingVestingStatus ==
+                                      'locked') ...[
+                                    VestingContainer(
+                                      width: screenWidth * 0.9,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(height: screenHeight * 0.02),
+                                          if (existingVestingStartDate != null)
+                                            Text(
+                                              'Vesting Period Begin on \n${DateFormat('d MMMM yyyy').format(existingVestingStartDate!)}',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: const Color(0xFFFFF5ED),
+                                                fontSize: getResponsiveFontSize(
+                                                    context, 22),
+                                                fontFamily: 'Poppins',
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          SizedBox(height: screenHeight * 0.02),
+                                          if (existingVestingStartDate != null)
+                                            ChangeNotifierProvider(
+                                              create: (_) {
+                                                return CountdownTimerProvider(
+                                                  targetDateTime:
+                                                      existingVestingStartDate!,
+                                                );
+                                              },
+                                              child: CountdownTimer(
+                                                scaleWidth: scaleWidth,
+                                                scaleHeight: scaleHeight,
+                                                scaleText: scaleText,
+                                                showMonths: true,
+                                              ),
+                                            ),
+                                          SizedBox(height: screenHeight * 0.03),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: screenHeight * 0.02),
+                                    existingVestingDetails(
+                                      screenHeight,
+                                      screenWidth,
+                                      context,
+                                    ),
+                                    SizedBox(height: screenHeight * 0.9),
+                                  ] else if (widget.existingVestingStatus ==
+                                      'process') ...[
+                                    SizedBox(height: screenHeight * 0.02),
+                                    cliffTimerAndClaimSection(screenHeight,
+                                        screenWidth, context, walletVM),
+                                    SizedBox(height: screenHeight * 0.02),
+                                    vestingSummary(
+                                        screenHeight, screenWidth, context),
+                                    SizedBox(height: screenHeight * 0.02),
+                                    claimHistory(
+                                        screenHeight, screenWidth, context),
+                                  ] else ...[
+                                    totalBalance(
+                                        screenHeight,
+                                        screenWidth,
+                                        context,
+                                        walletVM,
+                                        userBalance,
+                                        widget.isPostVesting),
+                                    SizedBox(height: screenHeight * 0.02),
+                                    whyVesting(
+                                        screenHeight, screenWidth, context),
+                                    SizedBox(height: screenHeight * 0.09),
+                                  ],
+                                ],
+                              );
+                            }),
                           ),
                         ),
                       ),
                     ),
                   ),
                 ],
-              )
-          ),
-        )
-    );
+              )),
+        ));
   }
 
-  Widget totalBalance(double screenHeight,double screenWidth,BuildContext context,WalletViewModel walletVm ,double userBalance, bool isPostVesting){
+  Widget totalBalance(
+      double screenHeight,
+      double screenWidth,
+      BuildContext context,
+      WalletViewModel walletVm,
+      double userBalance,
+      bool isPostVesting) {
     final isLowBalance = userBalance <= 1;
-    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
+    final displayBalance = widget.existingVestingStatus != null
+        ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2)
+        : _formatBalance(balanceText);
     return VestingContainer(
       width: screenWidth * 0.9,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           SizedBox(height: screenHeight * 0.02),
 
           Text(
@@ -1193,53 +999,58 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
           /// Start Vesting Disable Button
           Text(
             'Vesting period has expired.',
-            style:  TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
               color: Colors.white54,
               fontSize: getResponsiveFontSize(context, 16),
-             ),
+            ),
           ),
 
           SizedBox(height: screenHeight * 0.02),
-
         ],
       ),
     );
   }
 
-  Widget whyVesting(screenHeight, screenWidth, context){
+  Widget whyVesting(screenHeight, screenWidth, context) {
     final vestingData = [
       {
         "image": "assets/images/vestingImg1.png",
-        "text": "Vesting is the process of gradually unlocking your ECM tokens over time, instead of receiving them all at once. This helps protect token value and ensures long-term commitment from holders."
+        "text":
+            "Vesting is the process of gradually unlocking your ECM tokens over time, instead of receiving them all at once. This helps protect token value and ensures long-term commitment from holders."
       },
-
       {
         "image": "assets/images/vestingImg2.png",
-        "text": "Without vesting, your tokens will remain non-tradable. Only vested tokens can be listed and traded once ECM goes live at the end of Q1 2026."
+        "text":
+            "Without vesting, your tokens will remain non-tradable. Only vested tokens can be listed and traded once ECM goes live at the end of Q1 2026."
       },
       {
         "image": "assets/images/vestingImg3.png",
-        "text": "During the cliff, your tokens are vesting in the background but cannot be claimed. Once the cliff ends, all tokens vested up to that point will become claimable immediately."
+        "text":
+            "During the cliff, your tokens are vesting in the background but cannot be claimed. Once the cliff ends, all tokens vested up to that point will become claimable immediately."
       },
       {
         "image": "assets/images/vestingImg4.png",
-        "text": "Linear vesting means your tokens unlock gradually every second. After the cliff, you don’t need to wait for monthly unlocks — your vested balance grows continuously and can be claimed at any time."
+        "text":
+            "Linear vesting means your tokens unlock gradually every second. After the cliff, you don’t need to wait for monthly unlocks — your vested balance grows continuously and can be claimed at any time."
       },
       {
         "image": "assets/images/vestingImg5.png",
-        "text": "Vesting gives you tradability at listing, protects ECM’s price by preventing oversupply, and makes you eligible for exclusive rewards, ecosystem benefits, and stronger community participation."
+        "text":
+            "Vesting gives you tradability at listing, protects ECM’s price by preventing oversupply, and makes you eligible for exclusive rewards, ecosystem benefits, and stronger community participation."
       },
       {
         "image": "assets/images/moneyVesting.png",
-        "text": "Claims are only possible after the cliff period is over. At that time, the tokens vested during the cliff will be released to you."
+        "text":
+            "Claims are only possible after the cliff period is over. At that time, the tokens vested during the cliff will be released to you."
       },
     ];
 
     return VestingContainer(
       width: screenWidth * 0.9,
       borderColor: const Color(0XFF2C2E41),
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1252,129 +1063,125 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
               fontWeight: FontWeight.w500,
             ),
           ),
-
           SizedBox(height: screenHeight * 0.02),
-
           ...vestingData.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: VestingItem(
-              imagePath: item['image']!,
-              text: item['text']!,
-              height: screenHeight,
-            ),
-          )),
-
+                padding: const EdgeInsets.only(bottom: 8),
+                child: VestingItem(
+                  imagePath: item['image']!,
+                  text: item['text']!,
+                  height: screenHeight,
+                ),
+              )),
         ],
       ),
     );
   }
 
-  Widget existingVestingDetails(double screenHeight, double screenWidth, BuildContext context) {
-    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
+  Widget existingVestingDetails(
+      double screenHeight, double screenWidth, BuildContext context) {
+    final displayBalance = widget.existingVestingStatus != null
+        ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2)
+        : _formatBalance(balanceText);
 
-    return Consumer<WalletViewModel>(
-        builder: (context,walletVM, child) {
+    return Consumer<WalletViewModel>(builder: (context, walletVM, child) {
+      debugPrint(
+          " ExistingVestingDetails Consumer: walletVM.balance = ${walletVM.balance}, displayExistingBalanceText = $balanceText");
 
-          debugPrint(" ExistingVestingDetails Consumer: walletVM.balance = ${walletVM.balance}, displayExistingBalanceText = $balanceText");
-
-          return VestingContainer(
-            width: screenWidth * 0.9,
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-
-                Text(
-                  'Total Vesting ECM',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0XFFFFFFFF),
-                    fontSize: getResponsiveFontSize(context, 12),
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.001),
-
-                (walletVM.existingVestingStatus == null)
-                    ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
-                ) :
-                ShaderMask(
-                  blendMode: BlendMode.srcIn,
-                  shaderCallback: (Rect bounds) {
-                    return const LinearGradient(
-                      colors:  [
-                        Color(0xFF2680EF),
-                        Color(0xFF1CD494),
-                      ],
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    // 'ECM ${_formatBalance(balanceText)}',
-                    'ECM $displayBalance',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getResponsiveFontSize(context, 22),
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w700,
+      return VestingContainer(
+        width: screenWidth * 0.9,
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'Total Vesting ECM',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0XFFFFFFFF),
+                fontSize: getResponsiveFontSize(context, 12),
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.001),
+            (walletVM.existingVestingStatus == null)
+                ? const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : ShaderMask(
+                    blendMode: BlendMode.srcIn,
+                    shaderCallback: (Rect bounds) {
+                      return const LinearGradient(
+                        colors: [
+                          Color(0xFF2680EF),
+                          Color(0xFF1CD494),
+                        ],
+                      ).createShader(bounds);
+                    },
+                    child: Text(
+                      // 'ECM ${_formatBalance(balanceText)}',
+                      'ECM $displayBalance',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getResponsiveFontSize(context, 22),
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.03),
-
-                Builder(
-                    builder: (context) {
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: VestingDetailInfoRow(
-                              iconPath: 'assets/icons/vestingStartDate.svg',
-                              title: 'Vesting Start Date',
-                              // value: formattedStart,
-                              value: existingVestingStartDate != null ? DateFormat('d MMMM yyyy').format(existingVestingStartDate!) : '...',
-
-                            ),
-                          ),
-                          SizedBox(width: screenWidth * 0.03),
-                          Flexible(
-                            child: VestingDetailInfoRow(
-                              iconPath: 'assets/icons/vestingFullDate.svg',
-                              title: 'Full Vested Date',
-                              // value: formattedEnd,
-                              value: fullVestedDate != null ? DateFormat('d MMMM yyyy').format(fullVestedDate!) : '...',
-
-                            ),
-                          ),
-
-                        ],
-
-                      );
-                    }
-                ),
-
-              ],
-            ),
-          );
-        }
-    );
-
+            SizedBox(height: screenHeight * 0.03),
+            Builder(builder: (context) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: VestingDetailInfoRow(
+                      iconPath: 'assets/icons/vestingStartDate.svg',
+                      title: 'Vesting Start Date',
+                      // value: formattedStart,
+                      value: existingVestingStartDate != null
+                          ? DateFormat('d MMMM yyyy')
+                              .format(existingVestingStartDate!)
+                          : '...',
+                    ),
+                  ),
+                  SizedBox(width: screenWidth * 0.03),
+                  Flexible(
+                    child: VestingDetailInfoRow(
+                      iconPath: 'assets/icons/vestingFullDate.svg',
+                      title: 'Full Vested Date',
+                      // value: formattedEnd,
+                      value: fullVestedDate != null
+                          ? DateFormat('d MMMM yyyy').format(fullVestedDate!)
+                          : '...',
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ],
+        ),
+      );
+    });
   }
 
-  Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth, BuildContext context, WalletViewModel walletVM ) {
-    final displayBalance = widget.existingVestingStatus != null ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2) : _formatBalance(balanceText);
-     return VestingContainer(
+  Widget cliffTimerAndClaimSection(double screenHeight, double screenWidth,
+      BuildContext context, WalletViewModel walletVM) {
+    final displayBalance = widget.existingVestingStatus != null
+        ? widget.existingVestingInfo.totalVestingAmount?.toStringAsFixed(2)
+        : _formatBalance(balanceText);
+    return VestingContainer(
       width: screenWidth * 0.9,
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.02, vertical: screenHeight * 0.02),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1425,7 +1232,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
             ),
             SizedBox(height: screenHeight * 0.01),
             ChangeNotifierProvider(
-              create: (_) => CountdownTimerProvider(targetDateTime: cliffEndTime!),
+              create: (_) =>
+                  CountdownTimerProvider(targetDateTime: cliffEndTime!),
               child: Builder(
                 builder: (context) => CountdownTimer(
                   scaleWidth: (size) => size * screenWidth / 335.0,
@@ -1451,7 +1259,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     child: VestingDetailInfoRow(
                       iconPath: 'assets/icons/checkIcon.svg',
                       title: 'Claimed',
-                      value: 'ECM ${walletVM.existingVestInfo.released?.toStringAsFixed(6) ?? '0.0'}',
+                      value:
+                          'ECM ${walletVM.existingVestInfo.released?.toStringAsFixed(6) ?? '0.0'}',
                       iconSize: screenHeight * 0.025,
                     ),
                   ),
@@ -1460,7 +1269,8 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     child: VestingDetailInfoRow(
                       iconPath: 'assets/icons/claimedIcon.svg',
                       title: 'Available claim',
-                      value: 'ECM ${walletVM.availableClaimableAmountForExistingUser.toStringAsFixed(6)}',
+                      value:
+                          'ECM ${walletVM.availableClaimableAmountForExistingUser.toStringAsFixed(6)}',
                       iconSize: screenHeight * 0.032,
                     ),
                   ),
@@ -1478,10 +1288,7 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                 fontSize: getResponsiveFontSize(context, 16),
                 height: 1.6,
               ),
-              gradientColors: const [
-                Color(0xFF2680EF),
-                Color(0xFF1CD494)
-              ],
+              gradientColors: const [Color(0xFF2680EF), Color(0xFF1CD494)],
               onTap: () {
                 print('CLAIM button tapped for testing');
                 walletVM.releaseECM(context);
@@ -1493,26 +1300,35 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
     );
   }
 
-  Widget vestingSummary(double screenHeight, double screenWidth, BuildContext context) {
+  Widget vestingSummary(
+      double screenHeight, double screenWidth, BuildContext context) {
     final dateFormat = DateFormat('d MMMM, yyyy');
-    String formattedVestingStart = existingVestingStartDate != null ? dateFormat.format(existingVestingStartDate!) : 'Loading...';
-    String formattedCliffEnd = cliffEndTime != null ? dateFormat.format(cliffEndTime!) : 'Loading...';
-    String formattedFullVested = fullVestedDate != null ? dateFormat.format(fullVestedDate!) : 'Loading...';
+    String formattedVestingStart = existingVestingStartDate != null
+        ? dateFormat.format(existingVestingStartDate!)
+        : 'Loading...';
+    String formattedCliffEnd =
+        cliffEndTime != null ? dateFormat.format(cliffEndTime!) : 'Loading...';
+    String formattedFullVested = fullVestedDate != null
+        ? dateFormat.format(fullVestedDate!)
+        : 'Loading...';
     String totalVestingPeriodStr = 'Calculating...';
     String cliffPeriodStr = 'Calculating...';
 
     if (existingVestingStartDate != null && fullVestedDate != null) {
-      Duration totalDuration = fullVestedDate!.difference(existingVestingStartDate!);
+      Duration totalDuration =
+          fullVestedDate!.difference(existingVestingStartDate!);
       totalVestingPeriodStr = _formatOverallDuration(totalDuration);
     }
     if (existingVestingStartDate != null && cliffEndTime != null) {
-      Duration cliffDuration = cliffEndTime!.difference(existingVestingStartDate!);
+      Duration cliffDuration =
+          cliffEndTime!.difference(existingVestingStartDate!);
       cliffPeriodStr = _formatOverallDuration(cliffDuration);
     }
 
     return VestingContainer(
       width: screenWidth * 0.9,
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
+      padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1528,26 +1344,35 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
             ),
           ),
           SizedBox(height: screenHeight * 0.03),
-          VestingSummaryRow(label: 'Vesting Start Date', value: formattedVestingStart),
+          VestingSummaryRow(
+              label: 'Vesting Start Date', value: formattedVestingStart),
           SizedBox(height: screenHeight * 0.01),
-          VestingSummaryRow(label: 'Vesting Period', value: totalVestingPeriodStr),
+          VestingSummaryRow(
+              label: 'Vesting Period', value: totalVestingPeriodStr),
           SizedBox(height: screenHeight * 0.01),
-          VestingSummaryRow(label: 'Cliff Info', value: '$cliffPeriodStr until $formattedCliffEnd'),
+          VestingSummaryRow(
+              label: 'Cliff Info',
+              value: '$cliffPeriodStr until $formattedCliffEnd'),
           SizedBox(height: screenHeight * 0.01),
-          VestingSummaryRow(label: 'Full Vested Date', value: formattedFullVested),
+          VestingSummaryRow(
+              label: 'Full Vested Date', value: formattedFullVested),
           SizedBox(height: screenHeight * 0.02),
           if (existingVestingStartDate != null && fullVestedDate != null)
-            ECMProgressIndicator(vestingStartDate: existingVestingStartDate!, fullVestedDate: fullVestedDate!),
+            ECMProgressIndicator(
+                vestingStartDate: existingVestingStartDate!,
+                fullVestedDate: fullVestedDate!),
         ],
       ),
     );
   }
 
-  Widget claimHistory(double screenHeight, double screenWidth, BuildContext context){
+  Widget claimHistory(
+      double screenHeight, double screenWidth, BuildContext context) {
     return VestingContainer(
         width: screenWidth * 0.9,
         height: screenHeight * 0.5,
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
+        padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.03, vertical: screenHeight * 0.02),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1566,56 +1391,56 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  width: _isSearchOpen ? screenWidth * 0.5 : screenHeight * 0.034,
+                  width:
+                      _isSearchOpen ? screenWidth * 0.5 : screenHeight * 0.034,
                   child: _isSearchOpen
                       ? TextField(
-                    controller: _searchController,
-                    autofocus: true,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: "Search...",
-                      hintStyle: const TextStyle(color: Colors.white54),
-                      filled: true,
-                      fillColor: Colors.white12,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.008,
-                        horizontal: screenWidth * 0.02,
-                      ),
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isSearchOpen = false;
-                            _searchController.clear();
-                            _onSearchChanged();
-                          });
-                        },
-                        child: const Icon(Icons.close, color: Colors.white, size: 20),
-                      ),
-                    ),
-                    onChanged: (value) => _onSearchChanged(),
-                  )
+                          controller: _searchController,
+                          autofocus: true,
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: "Search...",
+                            hintStyle: const TextStyle(color: Colors.white54),
+                            filled: true,
+                            fillColor: Colors.white12,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: screenHeight * 0.008,
+                              horizontal: screenWidth * 0.02,
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isSearchOpen = false;
+                                  _searchController.clear();
+                                  _onSearchChanged();
+                                });
+                              },
+                              child: const Icon(Icons.close,
+                                  color: Colors.white, size: 20),
+                            ),
+                          ),
+                          onChanged: (value) => _onSearchChanged(),
+                        )
                       : GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isSearchOpen = true;
-                      });
-                    },
-                    child: SvgPicture.asset(
-                      'assets/icons/search.svg',
-                      fit: BoxFit.contain,
-                      height: screenHeight * 0.034,
-                    ),
-                  ),
+                          onTap: () {
+                            setState(() {
+                              _isSearchOpen = true;
+                            });
+                          },
+                          child: SvgPicture.asset(
+                            'assets/icons/search.svg',
+                            fit: BoxFit.contain,
+                            height: screenHeight * 0.034,
+                          ),
+                        ),
                 )
-
-
               ],
             ),
             SizedBox(
@@ -1633,70 +1458,73 @@ class _ExistingUserVestingState extends State<ExistingUserVesting> {
 
             Expanded(
               child: _filteredClaimHistory.isEmpty
-                  ?  Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Opacity(
-                      opacity: 0.5,
-                      child: Image.asset(
-                        'assets/images/noDataFoundImg.png',
-                        fit: BoxFit.contain,
-                        height: screenHeight * 0.2,
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Opacity(
+                            opacity: 0.5,
+                            child: Image.asset(
+                              'assets/images/noDataFoundImg.png',
+                              fit: BoxFit.contain,
+                              height: screenHeight * 0.2,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          Text(
+                            "No Data Founds",
+                            style: TextStyle(
+                              color: Color(0XFF7D8FA9),
+                              fontSize: getResponsiveFontSize(context, 12),
+                              fontFamily: "Poppins",
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.02),
-                    Text(
-                      "No Data Founds",
-                      style: TextStyle(
-                        color: Color(0XFF7D8FA9),
-                        fontSize: getResponsiveFontSize(context, 12) ,
-                        fontFamily: "Poppins",
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+                    )
                   : ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                itemCount: _filteredClaimHistory.length,
-                separatorBuilder: (_, __) => SizedBox(height: screenHeight * 0.01),
-                itemBuilder: (context, index) {
-                  final claim = _filteredClaimHistory[index];
-                  final explorerUrl = 'https://etherscan.io/tx/${claim.hash}';
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _filteredClaimHistory.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: screenHeight * 0.01),
+                      itemBuilder: (context, index) {
+                        final claim = _filteredClaimHistory[index];
+                        final explorerUrl =
+                            'https://etherscan.io/tx/${claim.hash}';
 
-                  final amountNumeric = double.tryParse(claim.amount.replaceAll('ECM ', '')) ?? 0.0;
-                  final formattedAmount = "ECM ${amountNumeric.toStringAsFixed(6)}";
+                        final amountNumeric = double.tryParse(
+                                claim.amount.replaceAll('ECM ', '')) ??
+                            0.0;
+                        final formattedAmount =
+                            "ECM ${amountNumeric.toStringAsFixed(6)}";
 
-                  final dateTimeFormatted = DateFormat("dd MMM yyyy HH:mm")
-                      .format(DateTime.parse(claim.dateTime));
+                        final dateTimeFormatted =
+                            DateFormat("dd MMM yyyy HH:mm")
+                                .format(DateTime.parse(claim.dateTime));
 
-                  return ClaimHistoryCard(
-                    // amount: claim.amount,
-                    // dateTime: claim.dateTime,
-                    amount: formattedAmount,
-                    dateTime: dateTimeFormatted,
-                    walletAddress: claim.walletAddress,
-                    buttonLabel: "Explore",
-                    onButtonTap: () async{
-                      if(await canLaunchUrl(Uri.parse(explorerUrl))){
-                        await launchUrl(Uri.parse(explorerUrl));
-                      }
-                      debugPrint("Explore tapped for ${claim.hash}");
-                    },
-                  );
-                },
-              ),
+                        return ClaimHistoryCard(
+                          // amount: claim.amount,
+                          // dateTime: claim.dateTime,
+                          amount: formattedAmount,
+                          dateTime: dateTimeFormatted,
+                          walletAddress: claim.walletAddress,
+                          buttonLabel: "Explore",
+                          onButtonTap: () async {
+                            if (await canLaunchUrl(Uri.parse(explorerUrl))) {
+                              await launchUrl(Uri.parse(explorerUrl));
+                            }
+                            debugPrint("Explore tapped for ${claim.hash}");
+                          },
+                        );
+                      },
+                    ),
             ),
           ],
-        )
-    );
+        ));
   }
 }
-
-
 
 String _formatOverallDuration(Duration duration) {
   if (duration.inDays < 0) return "N/A";
@@ -1713,8 +1541,8 @@ String _formatOverallDuration(Duration duration) {
     parts.add("$months month${months > 1 ? 's' : ''}");
   }
   if (parts.isEmpty) {
-
-    if (duration.inDays > 0) return "${duration.inDays} day${duration.inDays > 1 ? 's' : ''}";
+    if (duration.inDays > 0)
+      return "${duration.inDays} day${duration.inDays > 1 ? 's' : ''}";
     return "Approx. ${duration.inHours} hours";
   }
   return parts.join(', ');

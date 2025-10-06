@@ -53,7 +53,7 @@ Future<void> main() async {
     await prefs.setString('unique_id', uniqueId);
   }
 
-  runApp(const MyApp());
+  // runApp(const MyApp());
 
   LogRocket.wrapAndInitialize(
       LogRocketWrapConfiguration(

@@ -1,7 +1,7 @@
 
-# myCoinPollMetaMask
+# MY-COIN-POLL
 
-A Flutter app for interacting with MetaMask and managing coin polls.
+A Crypto launchpad platform designed to support community-driven token launches. Enabled IDO participation, staking, vesting, and voting features, empowering investors to access early-stage blockchain projects within the ECM ecosystem.
 
 ## Table of Contents
 - [Prerequisites](#prerequisites)

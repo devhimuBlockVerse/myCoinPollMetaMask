@@ -12,6 +12,7 @@ A Crypto launchpad platform designed to support community-driven token launches.
 - [CI / CD Recommendations](#ci--cd-recommendations)
 - [Code Style & Contributing](#code-style--contributing)
 - [Common Issues & Fixes](#common-issues--fixes)
+- [Project Module Guide](#project-module-guide)
 
 ---
 
@@ -156,3 +157,6 @@ flutter devices
 cd android
 ./gradlew clean
 ```
+---
+## Project Module Guide
+

@@ -253,3 +253,6 @@ Known file
   - lib/firebase_options.dart (Firebase Configuration)
   - lib/permission_handler_widget.dart (Permission Flow)
   - lib/version-service.dart (Versioning/ Updates)
+
+
+---
